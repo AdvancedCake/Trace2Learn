@@ -10,11 +10,12 @@ import android.graphics.PointF;
 
 public class Stroke {
 	
-	List<PointF> mPoints;
+	List<PointF> _points;
+	Path _cachedPath = null;
 	
 	public Stroke()
 	{
-		mPoints = new LinkedList<PointF>();
+		_points = new LinkedList<PointF>();
 	}
 	
 	public Stroke(float startX, float startY)
@@ -25,19 +26,18 @@ public class Stroke {
 	
 	public Stroke(PointF startP)
 	{
-		this();
-		addPoint(startP.x, startP.y);
+		this(startP.x, startP.y);
 	}
 	
 	public int getNumSamples()
 	{
-		return mPoints.size();
+		return _points.size();
 	}
 	
 	public List<PointF> getSamplePoints()
 	{
 		List<PointF> samples = new ArrayList<PointF>();
-		for(PointF p : mPoints)
+		for(PointF p : _points)
 		{
 			PointF p1 = new PointF(p.x, p.y);
 			samples.add(p1);
@@ -47,7 +47,8 @@ public class Stroke {
 	
 	public void addPoint(float x, float y)
 	{
-		mPoints.add(new PointF(x, y));
+		_points.add(new PointF(x, y));
+		_cachedPath = null;
 	}
 	
 	public void addPoint(PointF p)
@@ -57,17 +58,21 @@ public class Stroke {
 	
 	public Path toPath()
 	{
+		if(_cachedPath != null)
+		{
+			return _cachedPath;
+		}
 		Path path = new Path();
-		if(mPoints.size() <= 0) 
+		if(_points.size() <= 0) 
 		{
 			return path;
 		}
-		else if(mPoints.size() == 1) 
+		else if(_points.size() == 1) 
 		{
-			PointF p = mPoints.get(0);
+			PointF p = _points.get(0);
 			path.moveTo(p.x, p.y);
 		}
-		Iterator<PointF> iter = mPoints.iterator();
+		Iterator<PointF> iter = _points.iterator();
 		PointF p1 = iter.next();
 		PointF p2 = iter.next();
 		path.moveTo(p1.x, p1.y);
@@ -80,7 +85,7 @@ public class Stroke {
 		}
 		
 		path.lineTo(p2.x, p2.y);
-		
+		_cachedPath = path;
 		return path;
 	}
 	

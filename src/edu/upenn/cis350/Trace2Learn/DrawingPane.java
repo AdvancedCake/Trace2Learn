@@ -1,10 +1,10 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.LinkedList;
 import java.util.List;
 
+import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -13,20 +13,19 @@ import android.view.MotionEvent;
 import android.view.View;
 
 public abstract class DrawingPane extends View {
-
-	private static final float MINP = 0.25f;
-	private static final float MAXP = 0.75f;
-
-	private Path mPath;
-	protected Paint mPaint;
 	
-	protected int mBackgroundColor = Color.GRAY;
+	private Path _path;
+	protected Paint _paint;
+	
+	protected int _backgroundColor = Color.GRAY;
+	
+	private float _prevX, _prevY;
+	private static final float TOUCH_TOLERANCE = 4;
 
 	public DrawingPane(Context c, Paint paint) {
 		super(c);
 
-		mPaint = paint;
-		mPath = new Path();
+		_paint = paint;
 	}
 
 	@Override
@@ -36,40 +35,44 @@ public abstract class DrawingPane extends View {
 
 	@Override
 	protected void onDraw(Canvas canvas) {
-		canvas.drawColor(mBackgroundColor);
-		canvas.drawPath(mPath, mPaint);
+		canvas.drawColor(_backgroundColor);
+		canvas.drawPath(_path, _paint);
+	}
+	
+	protected void drawStroke(Canvas canvas, Stroke stroke)
+	{
+		canvas.drawPath(stroke.toPath(), _paint);
+	}
+	
+	protected void drawCharacter(Canvas canvas, LessonCharacter character)
+	{
+		List<Stroke> strokes = character.getStrokes();
+		for(Stroke s : strokes)
+		{
+			drawStroke(canvas, s);
+		}
 	}
 
-	private float mX, mY;
-	private static final float TOUCH_TOLERANCE = 4;
-
+	protected abstract void beginStroke(float newX, float newY);
+	protected abstract void updateStroke(float newX, float newY);
+	protected abstract void completeStroke(float newX, float newY);
+	
 	private void touchStart(float x, float y) {
-		mPath.moveTo(x, y);
-		mX = x;
-		mY = y;
-		beginStroke(x, y, mPath);
+		beginStroke(x, y);
 	}
 
 	private void touchMove(float x, float y) {
-		float dx = Math.abs(x - mX);
-		float dy = Math.abs(y - mY);
+		float dx = Math.abs(x - _prevX);
+		float dy = Math.abs(y - _prevY);
 		if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-			mPath.quadTo(mX, mY, (x + mX) / 2, (y + mY) / 2);
-			mX = x;
-			mY = y;
+			updateStroke(x, y);
 		}
-		updateStroke(x, y);
+		
 	}
 
 	private void touchUp() {
-		mPath.lineTo(mX, mY);
-		mPath = new Path();
-		completeStroke(mX, mY, mPath);
+		completeStroke(_prevX, _prevY);
 	}
-	
-	protected abstract void beginStroke(float newx, float newy, Path startPath);
-	protected abstract void updateStroke(float newX, float newY);
-	protected abstract void completeStroke(float newX, float newY, Path endPath);
 
 	@Override
 	public boolean onTouchEvent(MotionEvent event) {
