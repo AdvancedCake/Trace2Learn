@@ -18,15 +18,22 @@ public class Stroke {
 		_points = new LinkedList<PointF>();
 	}
 	
+	/**
+	 * creates a new strokes which starts at (startX,  startY)
+	 */
 	public Stroke(float startX, float startY)
 	{
-		this();
-		addPoint(startX, startY);
+		this(new PointF(startX, startY));
 	}
 	
+	/**
+	 * creates a new strokes which starts at startP
+	 * @param startP
+	 */
 	public Stroke(PointF startP)
 	{
-		this(startP.x, startP.y);
+		this();
+		addPoint(startP);
 	}
 	
 	public int getNumSamples()
@@ -34,6 +41,9 @@ public class Stroke {
 		return _points.size();
 	}
 	
+	/**
+	 * @return a list of points sampled to represent the stroke
+	 */
 	public List<PointF> getSamplePoints()
 	{
 		List<PointF> samples = new ArrayList<PointF>();
@@ -47,15 +57,18 @@ public class Stroke {
 	
 	public void addPoint(float x, float y)
 	{
-		_points.add(new PointF(x, y));
-		_cachedPath = null;
+		addPoint(new PointF(x, y));
 	}
 	
 	public void addPoint(PointF p)
 	{
-		addPoint(p.x, p.y);
+		_points.add(p);
+		_cachedPath = null;
 	}
 	
+	/**	
+	 * @return A path representation of the stroke which can be drawn on-screen
+	 */
 	public Path toPath()
 	{
 		if(_cachedPath != null)

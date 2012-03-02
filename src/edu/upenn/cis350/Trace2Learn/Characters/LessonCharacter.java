@@ -9,12 +9,30 @@ public class LessonCharacter {
 
 	private List<Stroke> _strokes;
 	
-	Map<String, String> _tags;
+	private int _id;
+	
+	private Map<String, Object> _tags;
 	
 	public LessonCharacter()
 	{
-		_tags = new HashMap<String, String>();
+		_tags = new HashMap<String, Object>();
 		_strokes = new ArrayList<Stroke>();
+	}
+	
+	public LessonCharacter(int id)
+	{
+		this();
+		_id = id;
+	}
+	
+	public void setId(int id)
+	{
+		_id = id;
+	}
+	
+	public int getId()
+	{
+		return _id;
 	}
 	
 	public void addStroke(Stroke stroke)
@@ -34,16 +52,41 @@ public class LessonCharacter {
 		return _strokes.get(i);
 	}
 	
-	public void removeStroke(Stroke stroke)
+	/**
+	 * removes the known stroke for the character
+	 * @param stroke - The stroke to be removed from the character
+	 * @return - true if the stroke was removed, false otherwise
+	 */
+	public boolean removeStroke(Stroke stroke)
 	{
-		_strokes.remove(stroke);
+		return _strokes.remove(stroke);
 	}
 	
-	public void removeStroke(int i)
+	/**
+	 * removes the ith stroke of the character
+	 * @param i - the index of the stroke to be removed
+	 * @return - the stroke that was removed from the character
+	 */
+	public Stroke removeStroke(int i)
 	{
-		_strokes.remove(i);
+		return _strokes.remove(i);
+	}
+	
+	/**
+	 * removes all of the strokes from the character
+	 */
+	public void clearStrokes()
+	{
+		_strokes.clear();
 	}
 
+	/**
+	 * Moves the stroke to a new position in the stroke order.
+	 * The other strokes will be shifted as appropriate 
+	 * 
+	 * @param oldIndex - the original ordering of the stroke
+	 * @param newIndex - the new position of the stroke in the order
+	 */
 	public void reorderStroke(int oldIndex, int newIndex)
 	{
 		if(oldIndex < 0 || oldIndex >= _strokes.size())
@@ -76,12 +119,17 @@ public class LessonCharacter {
 		
 	}
 	
-	public void setTag(String tag, String value)
+	public boolean hasTag(String tag)
+	{
+		return _tags.containsKey(tag);
+	}
+	
+	public void setTag(String tag, Object value)
 	{
 		_tags.put(tag, value);
 	}
 	
-	public String getTag(String tag)
+	public Object getTag(String tag)
 	{
 		return _tags.get(tag);
 	}

@@ -39,11 +39,21 @@ public abstract class DrawingPane extends View {
 		canvas.drawPath(_path, _paint);
 	}
 	
+	/**
+	 * Draws the given stroke onto the screen
+	 * @param canvas - the canvas on which to draw the stroke
+	 * @param stroke - the stroke that should be drawn
+	 */
 	protected void drawStroke(Canvas canvas, Stroke stroke)
 	{
 		canvas.drawPath(stroke.toPath(), _paint);
 	}
 	
+	/**
+	 * Draws the given character onto the screen
+	 * @param canvas - the canvas on which to draw the stroke
+	 * @param character - the character that should be drawn
+	 */
 	protected void drawCharacter(Canvas canvas, LessonCharacter character)
 	{
 		List<Stroke> strokes = character.getStrokes();
@@ -53,8 +63,25 @@ public abstract class DrawingPane extends View {
 		}
 	}
 
+	/**
+	 * The method that is called every time a new stroke begins
+	 * This is where the creation of a new stroke should be handled
+	 * @param newX - the x coordinate where the stroke begins
+	 * @param newY - the y coordinate where the stroke ends
+	 */
 	protected abstract void beginStroke(float newX, float newY);
+	/**
+	 * The method that is called every time a new point is sampled for the current stroke
+	 * @param newX - the x coordinate of the sample point
+	 * @param newY - the y coordinate of the sample point
+	 */
 	protected abstract void updateStroke(float newX, float newY);
+	/**
+	 * The method that is called every when the stroke is completed
+	 * This is where the completion of a stroke should be handled
+	 * @param newX - the x coordinate of the sample point
+	 * @param newY - the y coordinate of the sample point
+	 */
 	protected abstract void completeStroke(float newX, float newY);
 	
 	private void touchStart(float x, float y) {
