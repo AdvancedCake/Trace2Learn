@@ -10,13 +10,13 @@ import android.widget.TextView;
 
 public class TestTagDbActivity extends Activity {
 
-	private TagsDbAdapter mDbHelper;
+	private DbAdapter mDbHelper;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.test_tag_db);
-        mDbHelper = new TagsDbAdapter(this);
+        mDbHelper = new DbAdapter(this);
         mDbHelper.open();
     }
 	
@@ -47,7 +47,7 @@ public class TestTagDbActivity extends Activity {
 				builder.append("No results");
 				break;
 			}
-			builder.append(c.getString(c.getColumnIndexOrThrow(TagsDbAdapter.CHARTAG_TAG))+"\n");			
+			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_TAG))+"\n");			
 		}
 		while(c.moveToNext());
 		String output = builder.toString();
@@ -70,7 +70,7 @@ public class TestTagDbActivity extends Activity {
 				builder.append("No results");
 				break;
 			}
-			builder.append(c.getString(c.getColumnIndexOrThrow(TagsDbAdapter.CHARTAG_ROWID))+"\n");			
+			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
 		}
 		while(c.moveToNext());
 		String output = builder.toString();

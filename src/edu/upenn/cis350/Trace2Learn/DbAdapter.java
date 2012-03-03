@@ -54,13 +54,33 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
         
-    private static final String DATABASE_CREATE_Lessons_DETAILS =
-            "CREATE TABLE CharacterDetails (" +
+    private static final String DATABASE_CREATE_LESSONS_DETAILS =
+            "CREATE TABLE LessonsDetails (" +
             "LessonId INTEGER, " +
             "WordId INTEGER," +
             "Order INTEGER NOT NULL, " +
             "FOREIGN KEY(LessonId) REFERENCES Lessons(_id)," +
             "FOREIGN KEY(WordId) REFERENCES Words(_id));";
+    
+    //DB Drop Statements
+    
+    private static final String DATABASE_DROP_CHAR = 
+    		"DROP TABLE IF EXISTS Character";
+    private static final String DATABASE_DROP_CHARTAG = 
+    		"DROP TABLE IF EXISTS CharacterTag";
+    private static final String DATABASE_DROP_CHAR_DETAILS = 
+    		"DROP TABLE IF EXISTS CharacterDetails";
+    private static final String DATABASE_DROP_WORDS = 
+    		"DROP TABLE IF EXISTS Words";
+    private static final String DATABASE_DROP_WORDSTAG = 
+    		"DROP TABLE IF EXISTS WordsTag";
+    private static final String DATABASE_DROP_LESSONS = 
+    		"DROP TABLE IF EXISTS Lessons";
+    private static final String DATABASE_DROP_LESSONS_DETAILS = 
+    		"DROP TABLE IF EXISTS LessonsDetails";
+    
+    
+    
     
     
     private static final String DATABASE_NAME = "CharTags";
@@ -81,14 +101,24 @@ public class DbAdapter {
 
             db.execSQL(DATABASE_CREATE_CHAR);
             db.execSQL(DATABASE_CREATE_CHARTAG);
+            db.execSQL(DATABASE_CREATE_CHAR_DETAILS);
+            db.execSQL(DATABASE_CREATE_WORDS);
+            db.execSQL(DATABASE_CREATE_WORDSTAG);
+            db.execSQL(DATABASE_CREATE_LESSONS);
+            db.execSQL(DATABASE_CREATE_LESSONS_DETAILS);
         }
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
                     + newVersion + ", which will destroy all old data");
-            db.execSQL("DROP TABLE IF EXISTS Character");
-            db.execSQL("DROP TABLE IF EXISTS CharacterTag");
+            db.execSQL(DATABASE_DROP_CHAR);
+            db.execSQL(DATABASE_DROP_CHARTAG);
+            db.execSQL(DATABASE_DROP_CHAR_DETAILS);
+            db.execSQL(DATABASE_DROP_WORDS);
+            db.execSQL(DATABASE_DROP_WORDSTAG);
+            db.execSQL(DATABASE_DROP_LESSONS);
+            db.execSQL(DATABASE_DROP_LESSONS_DETAILS);
             onCreate(db);
         }
     }
