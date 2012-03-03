@@ -3,6 +3,14 @@
 
     <string name="hello">Hello World, Trace2LearnActivity!</string>
     <string name="app_name">Trace2Learn</string>
+    <string name="insert_tag">Insert a new tag</string>
+    <string name="character">Character</string>
+    <string name="tag">Tag</string>
+    <string name="submit">Submit</string>
+    <string name="search_char">Search a character</string>
+    <string name="search">Search</string>
+    <string name="search_tag">Search a tag</string>
+    <string name="results">Results displayed here</string>
 
 	<string name="word">Word/Character here as whatever object structure</string>
 	<string name="tag1">Tagged</string>
