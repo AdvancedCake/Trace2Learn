@@ -9,7 +9,7 @@ public class LessonCharacter {
 
 	private List<Stroke> _strokes;
 	
-	private int _id;
+	private long _id;
 	
 	private Map<String, Object> _tags;
 	
@@ -19,18 +19,18 @@ public class LessonCharacter {
 		_strokes = new ArrayList<Stroke>();
 	}
 	
-	public LessonCharacter(int id)
+	public LessonCharacter(long id)
 	{
 		this();
 		_id = id;
 	}
 	
-	public void setId(int id)
+	public void setId(long id)
 	{
 		_id = id;
 	}
 	
-	public int getId()
+	public long getId()
 	{
 		return _id;
 	}

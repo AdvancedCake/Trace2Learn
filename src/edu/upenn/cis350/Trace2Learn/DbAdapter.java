@@ -1,11 +1,17 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.List;
+
+import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
+import android.graphics.PointF;
 import android.util.Log;
 
 public class DbAdapter {
@@ -49,7 +55,7 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_WORDSTAG =
             "CREATE TABLE WordsTag (_id INTEGER, " +
             "tag TEXT NOT NULL, " +
-            "FOREIGN KEY(_id) REFERENCES Words(_id));";
+            "FOREIGN KEY(Wordid) REFERENCES Words(_id));";
 
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
@@ -85,7 +91,10 @@ public class DbAdapter {
     
     private static final String DATABASE_NAME = "CharTags";
     private static final String CHAR_TABLE = "Character";
+    private static final String CHAR_DETAILS_TABLE = "CharacterDetails";
     private static final String CHARTAG_TABLE = "CharacterTag";
+    private static final String WORDS_TABLE = "Words";
+    
     private static final int DATABASE_VERSION = 2;
 
     private final Context mCtx;
@@ -180,6 +189,74 @@ public class DbAdapter {
 
         return mDb.delete(CHARTAG_TABLE, CHARTAG_ROWID + "=" + rowId + " AND " + CHARTAG_TAG+"="+tag, null) > 0;
     }
+   
+    /**
+     * Add a character to the database
+     * @param c character to be added to the database
+     * @return true if character is added to DB.  False on error.
+     */
+    public boolean addCharacter(LessonCharacter c)
+    {
+    	mDb.beginTransaction();
+    	//add to CHAR_TABLE
+    	ContentValues initialCharValues = new ContentValues();
+    	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
+    	if(id == -1)
+    	{
+    		//if error
+    		Log.e(CHAR_TABLE, "cannot add new character to table "+CHAR_TABLE);
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	c.setId(id);
+    	
+    	//add each stroke to CHAR_DETAILS_TABLE
+    	List<Stroke> l = c.getStrokes();
+    	//stroke ordering
+    	int strokeNumber=0;
+    	for(Stroke s:l)
+    	{
+    		ContentValues strokeValues = new ContentValues();
+    		strokeValues.put("CharId", id);
+    		strokeValues.put("Stroke", strokeNumber);
+    		//point ordering
+    		int pointNumber=0;
+    		for(PointF p : s.getSamplePoints())
+    		{
+    			strokeValues.put("PointX", p.x);
+        		strokeValues.put("PointY", p.y);
+        		strokeValues.put("OrderPoint", pointNumber);
+        		long success = mDb.insert(CHAR_DETAILS_TABLE, null, strokeValues);
+        		if(success == -1)
+        		{	
+        			//if error
+        			Log.e(CHAR_DETAILS_TABLE,"cannot add stroke");
+        			mDb.endTransaction();
+        			return false;
+        		}
+        		pointNumber++;
+    		}
+    		strokeNumber++;
+    	}
+    	//need to add character as a word so that we can add them to lessons as not part of a word
+    	ContentValues wordValues = new ContentValues();
+    	wordValues.put("CharId", id);
+    	wordValues.put("Order", 0);
+    	wordValues.put("FlagUserCreated", 0);
+    	long success = mDb.insert(WORDS_TABLE, null, wordValues);
+		if(success == -1)
+		{	
+			//if error
+			Log.e(WORDS_TABLE,"cannot add to table");
+			mDb.endTransaction();
+			return false;
+		}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    	
+    }
     
     /**
      * Return a Cursor positioned at the tag that matches the given character's charId
@@ -222,5 +299,6 @@ public class DbAdapter {
         return mCursor;
 
     }
+    
     
 }
