@@ -14,7 +14,7 @@ public class CharacterCreationActivity extends Activity {
 		mPaint = new Paint();
 		
 		//Sam: This is an error since DrawingPane is abstract.....
-		setContentView(new DrawingPane(this, mPaint));
+		setContentView(new CharacterCreationPane(this, mPaint));
 
 		mPaint.setAntiAlias(true);
 		mPaint.setDither(true);
