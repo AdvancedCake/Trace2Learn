@@ -20,6 +20,9 @@ public class DbAdapter {
         
     public static final String CHARTAG_ROWID = "_id";
     public static final String CHARTAG_TAG= "tag";
+    
+    public static final String WORDTAG_ROWID = "_id";
+    public static final String WORDTAG_TAG= "tag";
 
     private static final String TAG = "TagsDbAdapter";
     private DatabaseHelper mDbHelper;
@@ -93,6 +96,7 @@ public class DbAdapter {
     private static final String CHAR_TABLE = "Character";
     private static final String CHAR_DETAILS_TABLE = "CharacterDetails";
     private static final String CHARTAG_TABLE = "CharacterTag";
+    private static final String WORDTAG_TABLE = "WordsTag";
     private static final String WORDS_TABLE = "Words";
     
     private static final int DATABASE_VERSION = 2;
@@ -300,5 +304,44 @@ public class DbAdapter {
 
     }
     
+    /**
+     * Return a Cursor positioned at the tag that matches the given word's wordId
+     * 
+     * @param wordId id of word whose tags we want to retrieve
+     * @return Cursor positioned to matching tags, if found
+     * @throws SQLException if word could not be found/retrieved
+     */
+    public Cursor getWordTags(long wordId) throws SQLException {
+
+        Cursor mCursor =
+
+            mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_TAG}, WORDTAG_ROWID + "=" + wordId, null,
+                    null, null, WORDTAG_TAG+" ASC", null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+
+    }
+    
+    /**
+     * Return a Cursor positioned at the word that matches the given tag
+     * 
+     * @param tag text of tag to match
+     * @return Cursor positioned to matching word, if found
+     * @throws SQLException if word could not be found/retrieved
+     */
+    public Cursor getWords(String tag) throws SQLException {
+
+        Cursor mCursor =
+
+            mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_ROWID}, WORDTAG_TAG + "='" + tag+"'", null,
+                    null, null, WORDTAG_ROWID + " ASC", null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+
+    }
     
 }
