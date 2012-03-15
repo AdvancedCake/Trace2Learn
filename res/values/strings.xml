@@ -12,6 +12,9 @@
     <string name="search_tag">Search a tag</string>
     <string name="results">Results displayed here</string>
 
+	<string name="new_tag">Create new tag</string>
+	<string name="add_tag">Add existing tag</string>
+	
 	<string name="word">Word/Character here as whatever object structure</string>
 	<string name="tag1">Tagged</string>
 </resources>

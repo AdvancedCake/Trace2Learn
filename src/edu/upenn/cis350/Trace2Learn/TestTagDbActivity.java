@@ -15,7 +15,8 @@ public class TestTagDbActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.test_tag_db);
+        //setContentView(R.layout.test_tag_db);
+        setContentView(R.layout.tag); //Isabel
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
     }
@@ -29,8 +30,6 @@ public class TestTagDbActivity extends Activity {
 		String tagText = tagEt.getText().toString();
 		
 		mDbHelper.createTags(charId,tagText);
-		
-		
 	}
 	
 	public void onCharSearchButtonClick(View view){
