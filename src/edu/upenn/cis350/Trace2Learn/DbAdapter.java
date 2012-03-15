@@ -51,7 +51,7 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_WORDS =
             "CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
             "CharId INTEGER," +
-            "Order INTEGER NOT NULL," +
+            "WordOrder INTEGER NOT NULL," +
             "FlagUserCreated INTEGER," +
             "FOREIGN KEY(CharId) REFERENCES Character(_id));";
     
