@@ -41,7 +41,7 @@ public class DbAdapter {
             "CharId INTEGER, " +
             "Stroke INTEGER NOT NULL, " +
             "PointX DOUBLE NOT NULL, " +
-            "PointY DOUBLE NOT NULL" +
+            "PointY DOUBLE NOT NULL," +
             "OrderPoint INTEGER NOT NULL, " +
             "FOREIGN KEY(CharId) REFERENCES Character(_id));";
     
