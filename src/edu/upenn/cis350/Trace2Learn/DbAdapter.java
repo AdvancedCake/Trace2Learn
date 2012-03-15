@@ -67,7 +67,7 @@ public class DbAdapter {
             "CREATE TABLE LessonsDetails (" +
             "LessonId INTEGER, " +
             "WordId INTEGER," +
-            "Order INTEGER NOT NULL, " +
+            "LessonOrder INTEGER NOT NULL, " +
             "FOREIGN KEY(LessonId) REFERENCES Lessons(_id)," +
             "FOREIGN KEY(WordId) REFERENCES Words(_id));";
     
