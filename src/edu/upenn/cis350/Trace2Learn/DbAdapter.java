@@ -58,7 +58,7 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_WORDSTAG =
             "CREATE TABLE WordsTag (_id INTEGER, " +
             "tag TEXT NOT NULL, " +
-            "FOREIGN KEY(Wordid) REFERENCES Words(_id));";
+            "FOREIGN KEY(_id) REFERENCES Words(_id));";
 
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
