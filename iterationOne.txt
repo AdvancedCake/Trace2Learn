@@ -1,16 +1,16 @@
 User stories (and current assignments):
 User wants to design a character 5 points
--Sam: Storing design (file structure/database design) ~2point
--Ryan: Drawing and Sampling drawn points ~3 points 
+-X Sam: Storing design (file structure/database design) ~2point
+-X Ryan: Drawing and Sampling drawn points ~3 points 
 User wants to playback a drawing they designed 2 point
--Blocked by 1a until design is concrete
+-X Blocked by 1a until design is concrete
 Search for character based on tags 2 point
 -Blocked by 1a until design is concrete 
--Bryan for DB
+-X Bryan for DB
 -Isabel for UI
 User wants to tag/untag character 1 point
 -Isabel for UI
--Bryan for DB
+-X Bryan for DB
 User wants to design a word 2 points
 -Unknown
 User wants to tag/untag a word 1 point

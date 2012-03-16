@@ -1,5 +1,8 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.Iterator;
+import java.util.List;
+
 import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -15,8 +18,8 @@ public class TestTagDbActivity extends Activity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.test_tag_db);
-        setContentView(R.layout.tag); //Isabel
+        setContentView(R.layout.test_tag_db);
+        //setContentView(R.layout.tag); //Isabel
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
     }
@@ -38,9 +41,13 @@ public class TestTagDbActivity extends Activity {
 		long charId = Long.valueOf(charText);
 		Log.d(ACTIVITY_SERVICE, "here");
 		
-		Cursor c = mDbHelper.getTags(charId);
+		List<String> c = mDbHelper.getTags(charId);
 		StringBuilder builder = new StringBuilder();
-		do{
+		Iterator<String> i = c.iterator();
+		while(i.hasNext()){
+			builder.append(i.next() + "\n");
+		}
+		/*do{
 			if(c.getCount()==0){
 				Log.d(ACTIVITY_SERVICE, "zeroRows");
 				builder.append("No results");
@@ -48,7 +55,7 @@ public class TestTagDbActivity extends Activity {
 			}
 			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_TAG))+"\n");			
 		}
-		while(c.moveToNext());
+		while(c.moveToNext());*/
 		String output = builder.toString();
 		
 		Log.d(ACTIVITY_SERVICE, output);

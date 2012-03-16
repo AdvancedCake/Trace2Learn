@@ -12,20 +12,16 @@ import android.graphics.Path;
 import android.view.MotionEvent;
 import android.view.View;
 
-public abstract class DrawingPane extends View {
+public abstract class DrawingPane extends CharacterViewPane {
 	
 	private Path _path;
-	protected Paint _paint;
 	
-	protected int _backgroundColor = Color.GRAY;
 	
 	private float _prevX, _prevY;
 	private static final float TOUCH_TOLERANCE = 4;
 
 	public DrawingPane(Context c, Paint paint) {
-		super(c);
-
-		_paint = paint;
+		super(c, paint);
 	}
 
 	@Override
@@ -37,30 +33,6 @@ public abstract class DrawingPane extends View {
 	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(_backgroundColor);
 		canvas.drawPath(_path, _paint);
-	}
-	
-	/**
-	 * Draws the given stroke onto the screen
-	 * @param canvas - the canvas on which to draw the stroke
-	 * @param stroke - the stroke that should be drawn
-	 */
-	protected void drawStroke(Canvas canvas, Stroke stroke)
-	{
-		canvas.drawPath(stroke.toPath(), _paint);
-	}
-	
-	/**
-	 * Draws the given character onto the screen
-	 * @param canvas - the canvas on which to draw the stroke
-	 * @param character - the character that should be drawn
-	 */
-	protected void drawCharacter(Canvas canvas, LessonCharacter character)
-	{
-		List<Stroke> strokes = character.getStrokes();
-		for(Stroke s : strokes)
-		{
-			drawStroke(canvas, s);
-		}
 	}
 
 	/**
@@ -97,8 +69,8 @@ public abstract class DrawingPane extends View {
 		
 	}
 
-	private void touchUp() {
-		completeStroke(_prevX, _prevY);
+	private void touchUp(float x, float y) {
+		completeStroke(x, y);
 	}
 
 	@Override
@@ -116,10 +88,12 @@ public abstract class DrawingPane extends View {
 			invalidate();
 			break;
 		case MotionEvent.ACTION_UP:
-			touchUp();
+			touchUp(x, y);
 			invalidate();
 			break;
 		}
+		_prevX = x;
+		_prevY = y;
 		return true;
 	}
 }

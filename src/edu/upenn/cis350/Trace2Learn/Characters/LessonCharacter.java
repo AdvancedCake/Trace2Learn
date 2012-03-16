@@ -5,17 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LessonCharacter {
+public class LessonCharacter extends LessonItem {
 
 	private List<Stroke> _strokes;
 	
 	private long _id;
 	
-	private Map<String, Object> _tags;
-	
 	public LessonCharacter()
 	{
-		_tags = new HashMap<String, Object>();
+		_type = ItemType.CHARACTER;
 		_strokes = new ArrayList<Stroke>();
 	}
 	
@@ -25,29 +23,25 @@ public class LessonCharacter {
 		_id = id;
 	}
 	
-	public void setId(long id)
-	{
-		_id = id;
+	public LessonCharacter(LessonCharacter character) {
+		this(character._id);
+		_strokes = character.getStrokes();
+		_tags = new ArrayList<String>(character._tags);
 	}
 	
-	public long getId()
-	{
-		return _id;
-	}
-	
-	public void addStroke(Stroke stroke)
+	public synchronized void addStroke(Stroke stroke)
 	{
 		_strokes.add(stroke);
 	}
 	
-	public List<Stroke> getStrokes()
+	public synchronized List<Stroke> getStrokes()
 	{
 		List<Stroke> l = new ArrayList<Stroke>();
 		l.addAll(_strokes);
 		return l;
 	}
 	
-	public Stroke getStroke(int i)
+	public synchronized Stroke getStroke(int i)
 	{
 		return _strokes.get(i);
 	}
@@ -57,7 +51,7 @@ public class LessonCharacter {
 	 * @param stroke - The stroke to be removed from the character
 	 * @return - true if the stroke was removed, false otherwise
 	 */
-	public boolean removeStroke(Stroke stroke)
+	public synchronized boolean removeStroke(Stroke stroke)
 	{
 		return _strokes.remove(stroke);
 	}
@@ -67,7 +61,7 @@ public class LessonCharacter {
 	 * @param i - the index of the stroke to be removed
 	 * @return - the stroke that was removed from the character
 	 */
-	public Stroke removeStroke(int i)
+	public synchronized Stroke removeStroke(int i)
 	{
 		return _strokes.remove(i);
 	}
@@ -75,7 +69,7 @@ public class LessonCharacter {
 	/**
 	 * removes all of the strokes from the character
 	 */
-	public void clearStrokes()
+	public synchronized void clearStrokes()
 	{
 		_strokes.clear();
 	}
@@ -87,7 +81,7 @@ public class LessonCharacter {
 	 * @param oldIndex - the original ordering of the stroke
 	 * @param newIndex - the new position of the stroke in the order
 	 */
-	public void reorderStroke(int oldIndex, int newIndex)
+	public synchronized void reorderStroke(int oldIndex, int newIndex)
 	{
 		if(oldIndex < 0 || oldIndex >= _strokes.size())
 		{
@@ -118,25 +112,9 @@ public class LessonCharacter {
 		}
 		
 	}
-	
-	public boolean hasTag(String tag)
-	{
-		return _tags.containsKey(tag);
-	}
-	
-	public void setTag(String tag, Object value)
-	{
-		_tags.put(tag, value);
-	}
-	
-	public Object getTag(String tag)
-	{
-		return _tags.get(tag);
-	}
-	
-	public List<String> getTagNames()
-	{
-		return new ArrayList<String>(_tags.keySet());
+
+	public synchronized int getNumStrokes() {
+		return _strokes.size();
 	}
 	
 }

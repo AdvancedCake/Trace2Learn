@@ -36,7 +36,7 @@ public class Stroke {
 		addPoint(startP);
 	}
 	
-	public int getNumSamples()
+	public synchronized int getNumSamples()
 	{
 		return _points.size();
 	}
@@ -44,7 +44,7 @@ public class Stroke {
 	/**
 	 * @return a list of points sampled to represent the stroke
 	 */
-	public List<PointF> getSamplePoints()
+	public synchronized List<PointF> getSamplePoints()
 	{
 		List<PointF> samples = new ArrayList<PointF>();
 		for(PointF p : _points)
@@ -55,12 +55,12 @@ public class Stroke {
 		return samples;
 	}
 	
-	public void addPoint(float x, float y)
+	public synchronized void addPoint(float x, float y)
 	{
 		addPoint(new PointF(x, y));
 	}
 	
-	public void addPoint(PointF p)
+	public synchronized void addPoint(PointF p)
 	{
 		_points.add(p);
 		_cachedPath = null;
@@ -69,7 +69,7 @@ public class Stroke {
 	/**	
 	 * @return A path representation of the stroke which can be drawn on-screen
 	 */
-	public Path toPath()
+	public synchronized Path toPath()
 	{
 		if(_cachedPath != null)
 		{
@@ -84,17 +84,25 @@ public class Stroke {
 		{
 			PointF p = _points.get(0);
 			path.moveTo(p.x, p.y);
+			return path;
 		}
+		
 		Iterator<PointF> iter = _points.iterator();
 		PointF p1 = iter.next();
 		PointF p2 = iter.next();
 		path.moveTo(p1.x, p1.y);
 		
-		for(p1 = p2, p2 = iter.next();
-			iter.hasNext();
-		    p1 = p2, p2 = iter.next())
+		if(iter.hasNext())
+		{
+			p1 = p2;
+			p2 = iter.next();
+		}
+		
+		while(iter.hasNext())
 		{
 			path.quadTo(p1.x, p1.y, (p2.x + p1.x) / 2, (p2.y + p1.y) / 2);
+			p1 = p2;
+			p2 = iter.next();
 		}
 		
 		path.lineTo(p2.x, p2.y);
