@@ -1,12 +1,14 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.ArrayList;
 import java.util.List;
+
+import edu.upenn.cis350.Trace2Learn.Characters.LessonItem.*;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -19,20 +21,22 @@ public class TagActivity extends Activity {
 	
 	//Controls
 	private EditText editText;
-	private ListView tagList;
+	private ListView lv;
 	private Button addTagButton;
 	
 	//Variables
 	private long id;
 	private List<String> currentTags;
+	//String itemType;
+	ItemType type;
+	ArrayAdapter<String> arrAdapter;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tag); //tag.xml
         
         editText = (EditText) findViewById(R.id.edittext);
-        tagList = (ListView) findViewById(R.id.list);
+        lv = (ListView) findViewById(R.id.list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
         
         mDbHelper = new DbAdapter(this);
@@ -40,12 +44,20 @@ public class TagActivity extends Activity {
         
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
-                
+       // itemType = this.getIntent().getStringExtra("TYPE");
+        type = ItemType.valueOf(this.getIntent().getStringExtra("TYPE"));
+        
         //Assuming that it is a character
         currentTags = mDbHelper.getTags(id);
         
         //Populate the ListView
+        arrAdapter = new ArrayAdapter<String>(this, 
+        		android.R.layout.simple_list_item_1, currentTags);
         
+        lv.setAdapter(arrAdapter);
+        
+        setContentView(R.layout.tag); //tag.xml
+
         }
 	
 	/**
@@ -63,10 +75,15 @@ public class TagActivity extends Activity {
 			String input2 = input.toString(); //This is the string of the tag you typed in
 			
 			//if the LessonItem is a character
-			mDbHelper.createTags(id, input2); //added it to db
-			
-			//else if the LessonItem is a word
-			//mDbHelper.createWordTags(word id, input2);
+			if (type == ItemType.CHARACTER)
+			{
+				mDbHelper.createTags(id, input2); //added it to db
+			}
+			else if (type == ItemType.WORD)
+			{		
+				//else if the LessonItem is a word
+				mDbHelper.createWordTags(id, input2);	
+			}
 			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
