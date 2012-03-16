@@ -27,6 +27,7 @@ public class CharacterCreationPane extends DrawingPane {
 	@Override
 	protected void beginStroke(float newX, float newY) {
 		_currentStroke = new Stroke(newX, newY);
+		_character.addStroke(_currentStroke);
 	}
 	
 	/**
@@ -50,7 +51,6 @@ public class CharacterCreationPane extends DrawingPane {
 	protected void completeStroke(float newX, float newY) {
 		// consider drawing just one stroke
 		_currentStroke.addPoint(newX, newY);
-		_character.addStroke(_currentStroke);
 	}
 
 	@Override
@@ -60,6 +60,22 @@ public class CharacterCreationPane extends DrawingPane {
 
 		// Consider using a bitmap buffer so only new strokes are drawn.
 		drawCharacter(canvas, _character);
+	}
+	
+	/**
+	 * Returns a copy on the drawn character
+	 * We make a copy so that we do not inadvertently make changes to a saved
+	 * character if the pane is revisited
+	 * @return a copy of the on screen character
+	 */
+	public LessonCharacter getCharacter()
+	{
+		return new LessonCharacter(_character);
+	}
+	
+	public void clearPane()
+	{
+		_character = new LessonCharacter();
 	}
 	
 }

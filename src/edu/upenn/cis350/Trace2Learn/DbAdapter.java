@@ -58,7 +58,7 @@ public class DbAdapter {
             "WordOrder INTEGER NOT NULL," +
             "FlagUserCreated INTEGER," +
             "FOREIGN KEY(CharId) REFERENCES Character(_id)," +
-            "FOREIGN KEY(_id) REFERENCES Words(_id);";
+            "FOREIGN KEY(_id) REFERENCES Words(_id));";
     
     private static final String DATABASE_CREATE_WORDSTAG =
             "CREATE TABLE WordsTag (_id INTEGER, " +

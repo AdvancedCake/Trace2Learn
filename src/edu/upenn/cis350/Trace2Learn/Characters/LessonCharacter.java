@@ -25,6 +25,12 @@ public class LessonCharacter {
 		_id = id;
 	}
 	
+	public LessonCharacter(LessonCharacter character) {
+		_id = character._id;
+		_strokes = character.getStrokes();
+		_tags = new HashMap<String, Object>(character._tags);
+	}
+
 	public void setId(long id)
 	{
 		_id = id;
@@ -137,6 +143,10 @@ public class LessonCharacter {
 	public List<String> getTagNames()
 	{
 		return new ArrayList<String>(_tags.keySet());
+	}
+
+	public int getNumStrokes() {
+		return _strokes.size();
 	}
 	
 }
