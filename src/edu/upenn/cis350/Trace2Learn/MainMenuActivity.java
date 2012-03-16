@@ -15,7 +15,7 @@ import android.widget.TextView;
 public class MainMenuActivity extends ListActivity {
 	
 	static final String[] APPS = new String[] { "Create Character", 
-		"Create Word", "Tag Stuff"};
+		"Create Word"};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -45,11 +45,6 @@ public class MainMenuActivity extends ListActivity {
 					startActivity(i);
 				
 				}
-				else if(clicked.equals(APPS[2]))
-				{
-					Intent i = new Intent(c, TagActivity.class);
-					startActivity(i);
-				}	
 		}});
 
 	}
