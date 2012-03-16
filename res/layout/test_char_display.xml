@@ -11,11 +11,6 @@
 	    android:layout_height="fill_parent"
 	    android:orientation="vertical" >
 
-	    <TextView
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:text="@string/word" />
-
 	    <LinearLayout
 	        android:id="@+id/character_view_slot"
 	        xmlns:android="http://schemas.android.com/apk/res/android"
@@ -23,9 +18,14 @@
 	        android:layout_height="match_parent"
 	        android:layout_weight="0.97"
 	        android:orientation="vertical" >
-
 	    </LinearLayout>
 
+	    <TextView
+	        android:id="@+id/tag_list"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:text="" />
+	    
 	    <LinearLayout
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
@@ -44,6 +44,13 @@
 		        android:layout_height="wrap_content"
 		        android:onClick="onSaveButtonClick"
 		        android:text="Save" />
+		    
+		    <Button
+		        android:id="@+id/tag_button"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:onClick="onTagButtonClick"
+		        android:text="Tag" />
 		    
 			<Button
 		        android:id="@+id/display_button"

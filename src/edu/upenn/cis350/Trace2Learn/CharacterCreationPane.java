@@ -76,6 +76,7 @@ public class CharacterCreationPane extends DrawingPane {
 	public void clearPane()
 	{
 		_character = new LessonCharacter();
+		invalidate();
 	}
 	
 }

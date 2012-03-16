@@ -1,8 +1,11 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.List;
+
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
 import android.app.Activity;
+import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.text.Layout;
@@ -10,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 public class CharacterCreationActivity extends Activity {
 	
@@ -17,6 +21,10 @@ public class CharacterCreationActivity extends Activity {
 	private CharacterCreationPane _creationPane;
 	private CharacterPlaybackPane _playbackPane;
 	private Button _contextButton;
+	
+	private TextView _tagText;
+	
+	private DbAdapter _dbHelper;
 	
 	private Mode _currentMode = Mode.INVALID;
 	
@@ -33,21 +41,26 @@ public class CharacterCreationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		mPaint = new Paint();
+		_paint = new Paint();
 		setContentView(R.layout.test_char_display);
 
 		_characterViewSlot = (LinearLayout)this.findViewById(id.character_view_slot);
 		_contextButton = (Button)this.findViewById(id.context_button);
-		_creationPane = new CharacterCreationPane(this, mPaint);
-		_playbackPane = new CharacterPlaybackPane(this, mPaint, false, 2);
+		_creationPane = new CharacterCreationPane(this, _paint);
+		_playbackPane = new CharacterPlaybackPane(this, _paint, false, 2);
 
-		mPaint.setAntiAlias(true);
-		mPaint.setDither(true);
-		mPaint.setColor(0xFFFF0000);
-		mPaint.setStyle(Paint.Style.STROKE);
-		mPaint.setStrokeJoin(Paint.Join.ROUND);
-		mPaint.setStrokeCap(Paint.Cap.ROUND);
-		mPaint.setStrokeWidth(12);
+		_tagText = (TextView)this.findViewById(id.tag_list);
+		
+		_paint.setAntiAlias(true);
+		_paint.setDither(true);
+		_paint.setColor(0xFFFF0000);
+		_paint.setStyle(Paint.Style.STROKE);
+		_paint.setStrokeJoin(Paint.Join.ROUND);
+		_paint.setStrokeCap(Paint.Cap.ROUND);
+		_paint.setStrokeWidth(12);
+		
+		_dbHelper = new DbAdapter(this);
+        _dbHelper.open();
 		
 		setCharacterCreationPane();
 
@@ -94,10 +107,10 @@ public class CharacterCreationActivity extends Activity {
         super.setContentView(view);
     }
 	
-	private Paint mPaint;
+	private Paint _paint;
 
 	public void colorChanged(int color) {
-		mPaint.setColor(color);
+		_paint.setColor(color);
 	}
 	
 	
@@ -123,6 +136,20 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 
+	
+	private String tagsToString(Cursor c)
+	{
+		if(c.getCount() == 0) return "";
+		StringBuffer buf = new StringBuffer();
+		do
+		{
+			buf.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_TAG))+", ");			
+		}
+		while(c.moveToNext());
+		
+		return buf.toString();
+	}
+	
 	public void onCreateButtonClick(View view)
 	{
 		setCharacterCreationPane();
@@ -130,7 +157,18 @@ public class CharacterCreationActivity extends Activity {
 	
 	public void onSaveButtonClick(View view)
 	{
-		//setCharacterSavePane();
+		_dbHelper.addCharacter(_creationPane.getCharacter());
+	}
+	
+	public void onTagButtonClick(View view)
+	{
+		LessonCharacter character = _creationPane.getCharacter();
+		character.addTag("Char");
+		// TODO Launch tag activity
+		_dbHelper.addCharacter(character);
+		String tags = tagsToString(_dbHelper.getTags(character.getId()));
+		Log.i("TAGS", tags);
+		_tagText.setText(tags);
 	}
 	
 	public void onDisplayButtonClick(View view)
