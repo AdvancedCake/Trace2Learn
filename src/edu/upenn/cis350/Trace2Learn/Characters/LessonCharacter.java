@@ -9,12 +9,11 @@ public class LessonCharacter extends LessonItem {
 
 	private List<Stroke> _strokes;
 	
-	private long _id;
-	
 	public LessonCharacter()
 	{
 		_type = ItemType.CHARACTER;
 		_strokes = new ArrayList<Stroke>();
+		_id = -1;
 	}
 	
 	public LessonCharacter(long id)
