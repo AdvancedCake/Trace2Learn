@@ -8,7 +8,7 @@ public abstract class LessonItem {
 	protected List<String> _tags;
 	protected long _id;
 	
-	enum ItemType
+	public enum ItemType
 	{
 		CHARACTER,
 		WORD,

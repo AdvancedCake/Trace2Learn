@@ -4,7 +4,9 @@ import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Characters.LessonItem;
 import android.app.Activity;
+import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -162,7 +164,12 @@ public class CharacterCreationActivity extends Activity {
 	{
 		LessonCharacter character = _creationPane.getCharacter();
 		character.addTag("Char");
-		// TODO Launch tag activity
+		
+		Intent i = new Intent(this, TagActivity.class);
+		i.putExtra("ID", character.getId());
+		i.putExtra("TYPE", character.getItemType());
+		startActivity(i);
+		
 		_dbHelper.addCharacter(character);
 		String tags = tagsToString(_dbHelper.getTags(character.getId()));
 		Log.i("TAGS", tags);
