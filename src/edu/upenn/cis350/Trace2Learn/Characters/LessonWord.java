@@ -28,48 +28,48 @@ public class LessonWord {
 		return _id;
 	}
 	
-	public void addCharacter(LessonCharacter character){
+	public synchronized void addCharacter(LessonCharacter character){
 		_characters.add(character);
 	}
 	
-	public List<LessonCharacter> getCharacters(){
+	public synchronized List<LessonCharacter> getCharacters(){
 		List<LessonCharacter> l = new ArrayList<LessonCharacter>();
 		l.addAll(_characters);
 		return l;
 	}
 	
-	public LessonCharacter getCharacter(int i){
+	public synchronized LessonCharacter getCharacter(int i){
 		return _characters.get(i);
 	}
 	
-	public boolean removeCharacter(LessonCharacter character){
+	public synchronized boolean removeCharacter(LessonCharacter character){
 		return _characters.remove(character);
 	}
 	
-	public LessonCharacter removeCharacter(int i){
+	public synchronized LessonCharacter removeCharacter(int i){
 		return _characters.remove(i);
 	}
 	
-	public void clearCharacters(){
+	public synchronized void clearCharacters(){
 		_characters.clear();
 	}
 	
-	public boolean hasTag(String tag)
+	public synchronized boolean hasTag(String tag)
 	{
 		return _tags.containsKey(tag);
 	}
 	
-	public void setTag(String tag, Object value)
+	public synchronized void setTag(String tag, Object value)
 	{
 		_tags.put(tag, value);
 	}
 	
-	public Object getTag(String tag)
+	public synchronized Object getTag(String tag)
 	{
 		return _tags.get(tag);
 	}
 	
-	public List<String> getTagNames()
+	public synchronized List<String> getTagNames()
 	{
 		return new ArrayList<String>(_tags.keySet());
 	}
