@@ -6,6 +6,7 @@ import java.util.List;
 public abstract class LessonItem {
 	
 	protected List<String> _tags;
+	protected long _id;
 	
 	enum ItemType
 	{
@@ -24,6 +25,16 @@ public abstract class LessonItem {
 	public ItemType getItemType()
 	{
 		return _type;
+	}
+	
+	public void setId(long id)
+	{
+		_id = id;
+	}
+	
+	public long getId()
+	{
+		return _id;
 	}
 	
 	public synchronized boolean hasTag(String tag)

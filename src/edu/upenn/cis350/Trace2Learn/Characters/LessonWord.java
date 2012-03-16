@@ -11,21 +11,9 @@ public class LessonWord extends LessonItem {
 	
 	private List<LessonCharacter> _characters;
 	
-	private long _id;
-	
 	public LessonWord(){
 		_type = ItemType.WORD;
 		_characters = new ArrayList<LessonCharacter>();
-	}
-	
-	public void setId(long id)
-	{
-		_id = id;
-	}
-	
-	public long getId()
-	{
-		return _id;
 	}
 	
 	public synchronized void addCharacter(LessonCharacter character){

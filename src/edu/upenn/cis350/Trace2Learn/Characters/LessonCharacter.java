@@ -28,16 +28,6 @@ public class LessonCharacter extends LessonItem {
 		_strokes = character.getStrokes();
 		_tags = new ArrayList<String>(character._tags);
 	}
-
-	public void setId(long id)
-	{
-		_id = id;
-	}
-	
-	public long getId()
-	{
-		return _id;
-	}
 	
 	public synchronized void addStroke(Stroke stroke)
 	{
