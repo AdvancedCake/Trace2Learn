@@ -9,31 +9,31 @@ import edu.upenn.cis350.Trace2Learn.Characters.LessonItem.ItemType;
 
 public class LessonWord extends LessonItem {
 	
-	private List<Integer> _characters;
+	private List<Long> _characters;
 	
 	public LessonWord(){
 		_type = ItemType.WORD;
-		_characters = new ArrayList<Integer>();
+		_characters = new ArrayList<Long>();
 	}
 	
-	public synchronized void addCharacter(Integer character){
+	public synchronized void addCharacter(Long character){
 		_characters.add(character);
 	}
 	
-	public synchronized List<Integer> getCharacters(){
-		return new ArrayList<Integer>(_characters);
+	public synchronized List<Long> getCharacters(){
+		return new ArrayList<Long>(_characters);
 	}
 	
-	public synchronized int getCharacter(int i){
-		return _characters.get(i).intValue();
+	public synchronized long getCharacter(int i){
+		return _characters.get(i).longValue();
 	}
 	
-	public synchronized boolean removeCharacter(Integer character){
+	public synchronized boolean removeCharacter(Long character){
 		return _characters.remove(character);
 	}
 	
-	public synchronized int removeCharacter(int i){
-		return _characters.remove(i).intValue();
+	public synchronized long removeCharacter(int i){
+		return _characters.remove(i).longValue();
 	}
 	
 	public synchronized void clearCharacters(){
