@@ -167,7 +167,8 @@ public class CharacterCreationActivity extends Activity {
 		
 		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", character.getId());
-		i.putExtra("TYPE", character.getItemType());
+		i.putExtra("TYPE", character.getItemType().toString());
+		
 		startActivity(i);
 		
 		_dbHelper.addCharacter(character);
