@@ -19,6 +19,10 @@ public class TagActivity extends Activity {
 	private ListView tagList;
 	private Button addTagButton;
 	
+	//Variables
+	private long id;
+	private String lessonItemType;
+	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,7 +34,15 @@ public class TagActivity extends Activity {
         
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
-    }
+        
+        //Grab the intent/extras. This should be called from CharacterCreation
+        id = this.getIntent().getLongExtra("ID", -1); 
+        
+        //Populate the ListView
+        
+        //Assuming that it is a character
+        tagList = mDbHelper.
+        }
 	
 	/**
 	 * When you want to add a tag to a character/word,
@@ -41,17 +53,25 @@ public class TagActivity extends Activity {
 	 */
 	public void onAddTagButtonClick (View view)
     {
-		Editable input = editText.getText();
-		String input2 = input.toString(); //This is the string of the tag you typed in
-		
-		//if the LessonItem is a character
-		//mDbHelper.createTags(character id, input2);
-		
-		//else if the LessonItem is a word
-		//mDbHelper.createWordTags(word id, input2);
-		
-		//update the listview --> update the entire view
-		//Refactor this, because refreshing the view is inefficient
-		
+		if (view == addTagButton)
+		{
+			Editable input = editText.getText();
+			String input2 = input.toString(); //This is the string of the tag you typed in
+			
+			//if the LessonItem is a character
+			mDbHelper.createTags(id, input2); //added it to db
+			
+			//else if the LessonItem is a word
+			//mDbHelper.createWordTags(word id, input2);
+			
+			//update the listview --> update the entire view
+			//Refactor this, because refreshing the view is inefficient
+			
+			
+			//Set edit text back to nothing
+			editText.setText("");
+		}
     }
+	
+
 }
