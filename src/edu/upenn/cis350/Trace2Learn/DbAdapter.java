@@ -1,5 +1,6 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
@@ -358,24 +359,30 @@ public class DbAdapter {
     }
     
     /**
-     * Return a Cursor positioned at the tag that matches the given character's charId
+     * Return a List of tags that matches the given character's charId
      * 
      * @param charId id of character whose tags we want to retrieve
-     * @return Cursor positioned to matching character, if found
+     * @return List of tags
      * @throws SQLException if character could not be found/retrieved
      */
-    public Cursor getTags(long charId) throws SQLException {
+    public List<String> getTags(long charId) throws SQLException {
 
         Cursor mCursor =
 
             mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_TAG}, CHARTAG_ROWID + "=" + charId, null,
                     null, null, CHARTAG_TAG+" ASC", null);
+        List<String> tags = new ArrayList<String>();
         if (mCursor != null) {
-        	Log.d(CHARTAG_TABLE, "not null");
             mCursor.moveToFirst();
-            Log.d(CHARTAG_TABLE, Integer.toString(mCursor.getCount()));
         }
-        return mCursor;
+        do {
+        	if(mCursor.getCount()==0){
+        		break;
+        	}
+        	tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow(CHARTAG_TAG)));
+        }
+        while(mCursor.moveToNext());
+        return tags;
 
     }
     
@@ -400,22 +407,30 @@ public class DbAdapter {
     }
     
     /**
-     * Return a Cursor positioned at the tag that matches the given word's wordId
+     * Return a List of tags that matches the given word's wordId
      * 
      * @param wordId id of word whose tags we want to retrieve
-     * @return Cursor positioned to matching tags, if found
+     * @return List of tags
      * @throws SQLException if word could not be found/retrieved
      */
-    public Cursor getWordTags(long wordId) throws SQLException {
+    public List<String> getWordTags(long wordId) throws SQLException {
 
         Cursor mCursor =
 
             mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_TAG}, WORDTAG_ROWID + "=" + wordId, null,
                     null, null, WORDTAG_TAG+" ASC", null);
+        List<String> tags = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
-        return mCursor;
+        do {
+        	if(mCursor.getCount()==0){
+        		break;
+        	}
+        	tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow(WORDTAG_TAG)));
+        }
+        while(mCursor.moveToNext());
+        return tags;
 
     }
     
