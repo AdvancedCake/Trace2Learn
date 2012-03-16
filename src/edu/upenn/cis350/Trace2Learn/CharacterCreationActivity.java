@@ -163,15 +163,14 @@ public class CharacterCreationActivity extends Activity {
 	public void onTagButtonClick(View view)
 	{
 		LessonCharacter character = _creationPane.getCharacter();
-		character.addTag("Char");
 		
 		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", character.getId());
 		i.putExtra("TYPE", character.getItemType().toString());
 		
-		startActivity(i);
+		//startActivity(i);
 		
-		_dbHelper.addCharacter(character);
+		_dbHelper.createTags(character.getId(), "Char");
 		String tags = tagsToString(_dbHelper.getTags(character.getId()));
 		Log.i("TAGS", tags);
 		_tagText.setText(tags);

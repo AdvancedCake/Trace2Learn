@@ -3,6 +3,8 @@ package edu.upenn.cis350.Trace2Learn.Characters;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.upenn.cis350.Trace2Learn.DbAdapter;
+
 public abstract class LessonItem {
 	
 	protected List<String> _tags;
@@ -35,6 +37,26 @@ public abstract class LessonItem {
 	public long getId()
 	{
 		return _id;
+	}
+	
+	/**
+	 * Updates the LessonItem's tags to represent those in the database
+	 */
+	public synchronized void updateTags(DbAdapter db)
+	{
+		switch(_type)
+		{
+		case CHARACTER:
+			_tags = db.getTags(_id);
+			break;
+		case WORD:
+			_tags = db.getWordTags(_id);
+			break;
+		case LESSON:
+			// TODO uncomment when there is lesson support
+			//_tags = db.getLessonTags(_id);
+			break;
+		}
 	}
 	
 	public synchronized boolean hasTag(String tag)
