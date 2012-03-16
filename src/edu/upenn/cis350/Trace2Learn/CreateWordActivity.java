@@ -64,7 +64,7 @@ public class CreateWordActivity extends ListActivity {
 		
 		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", newWord.getId());
-		i.putExtra("TYPE", newWord.getItemType());
+		i.putExtra("TYPE", newWord.getItemType().toString());
 		startActivity(i);
 	}
 }
