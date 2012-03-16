@@ -5,17 +5,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LessonCharacter {
+public class LessonCharacter extends LessonItem {
 
 	private List<Stroke> _strokes;
 	
 	private long _id;
 	
-	private Map<String, Object> _tags;
-	
 	public LessonCharacter()
 	{
-		_tags = new HashMap<String, Object>();
+		_type = ItemType.CHARACTER;
 		_strokes = new ArrayList<Stroke>();
 	}
 	
@@ -26,9 +24,9 @@ public class LessonCharacter {
 	}
 	
 	public LessonCharacter(LessonCharacter character) {
-		_id = character._id;
+		this(character._id);
 		_strokes = character.getStrokes();
-		_tags = new HashMap<String, Object>(character._tags);
+		_tags = new ArrayList<String>(character._tags);
 	}
 
 	public void setId(long id)
@@ -123,26 +121,6 @@ public class LessonCharacter {
 			_strokes.set(newIndex, movedStroke);
 		}
 		
-	}
-	
-	public synchronized boolean hasTag(String tag)
-	{
-		return _tags.containsKey(tag);
-	}
-	
-	public synchronized void setTag(String tag, Object value)
-	{
-		_tags.put(tag, value);
-	}
-	
-	public synchronized Object getTag(String tag)
-	{
-		return _tags.get(tag);
-	}
-	
-	public synchronized List<String> getTagNames()
-	{
-		return new ArrayList<String>(_tags.keySet());
 	}
 
 	public synchronized int getNumStrokes() {

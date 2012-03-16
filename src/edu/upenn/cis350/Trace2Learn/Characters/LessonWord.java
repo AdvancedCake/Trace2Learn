@@ -5,16 +5,16 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class LessonWord {
+import edu.upenn.cis350.Trace2Learn.Characters.LessonItem.ItemType;
+
+public class LessonWord extends LessonItem {
 	
 	private List<LessonCharacter> _characters;
 	
 	private long _id;
 	
-	private Map<String, Object> _tags;
-	
 	public LessonWord(){
-		_tags = new HashMap<String,Object>();
+		_type = ItemType.WORD;
 		_characters = new ArrayList<LessonCharacter>();
 	}
 	
@@ -33,9 +33,7 @@ public class LessonWord {
 	}
 	
 	public synchronized List<LessonCharacter> getCharacters(){
-		List<LessonCharacter> l = new ArrayList<LessonCharacter>();
-		l.addAll(_characters);
-		return l;
+		return new ArrayList<LessonCharacter>(_characters);
 	}
 	
 	public synchronized LessonCharacter getCharacter(int i){
@@ -52,26 +50,6 @@ public class LessonWord {
 	
 	public synchronized void clearCharacters(){
 		_characters.clear();
-	}
-	
-	public synchronized boolean hasTag(String tag)
-	{
-		return _tags.containsKey(tag);
-	}
-	
-	public synchronized void setTag(String tag, Object value)
-	{
-		_tags.put(tag, value);
-	}
-	
-	public synchronized Object getTag(String tag)
-	{
-		return _tags.get(tag);
-	}
-	
-	public synchronized List<String> getTagNames()
-	{
-		return new ArrayList<String>(_tags.keySet());
 	}
 	
 }
