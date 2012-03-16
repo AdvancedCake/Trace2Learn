@@ -289,14 +289,20 @@ public class DbAdapter {
     	}
     	//need to add character as a word so that we can add them to lessons as not part of a word
     	ContentValues initialWordValue = new ContentValues();
+    	initialWordValue.put("name", "");
     	long word_id = mDb.insert(WORDS_TABLE, null, initialWordValue);
     	if(word_id == -1)
     	{
     		//if error
-    		Log.e(WORDS_TABLE, "cannot add new word to table "+WORDS_TABLE);
+    		Log.e(WORDS_TABLE, "cannot add new character to table "+WORDS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
+    	Cursor cur = mDb.query(WORDS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
+    	if (cur != null) {
+            cur.moveToFirst();
+        }
+    	word_id = cur.getInt(cur.getColumnIndexOrThrow("_id"));
     	ContentValues wordValues = new ContentValues();
     	wordValues.put("_id", word_id);
     	wordValues.put("CharId", id);
@@ -327,6 +333,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
+    	initialWordsValues.put("name", "");
     	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
     	if(id == -1)
     	{
@@ -335,17 +342,21 @@ public class DbAdapter {
     		mDb.endTransaction();
     		return false;
     	}
-    	w.setId(id);
+    	Cursor x = mDb.query(WORDS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
+    	if (x != null) {
+            x.moveToFirst();
+        }
+    	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
     	
     	//add each character to WORDS_TABLE
-    	List<LessonCharacter> l = w.getCharacters();
+    	List<Integer> l = w.getCharacters();
     	//character ordering
     	int charNumber=0;
-    	for(LessonCharacter c:l)
+    	for(Integer c:l)
     	{
     		ContentValues characterValues = new ContentValues();
     		characterValues.put("_id", id);
-    		characterValues.put("CharId", c.getId());
+    		characterValues.put("CharId", c.intValue());
     		characterValues.put("WordOrder", charNumber);
     		characterValues.put("FlagUserCreated", 1);
     		long success = mDb.insert(WORDS_DETAILS_TABLE, null, characterValues);
@@ -483,8 +494,8 @@ public class DbAdapter {
     public Cursor getAllCharIdsCursor(){
    	 Cursor mCursor =
 
-	            mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, null, null,
-	                    null, null, CHARTAG_ROWID+" ASC", null);
+	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
+	                    null, null, CHAR_ROWID+" ASC", null);
 	        if (mCursor != null) {
 	            mCursor.moveToFirst();
 	        }
