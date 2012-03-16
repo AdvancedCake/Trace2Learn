@@ -14,6 +14,7 @@
 
 	<string name="new_tag">Create new tag</string>
 	<string name="add_tag">Add existing tag</string>
+	<string name="back">Back</string>
 	
 	<string name="word">Word/Character here as whatever object structure</string>
 	<string name="tag1">Tagged</string>

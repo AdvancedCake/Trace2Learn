@@ -4,28 +4,23 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-    <LinearLayout
-        android:id="@+id/linearLayout1"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
-        
-        <TextView android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/tag" />
-        
-       <Button android:id="@+id/new_tag"
-            android:text="@string/new_tag"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSubmitButtonClick"/>
-       
-       <Button android:id="@+id/add_tag"
-            android:text="@string/add_tag"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:onClick="onSubmitButtonClick"/>
-              
-    </LinearLayout>
+
+    <Button
+        android:id="@+id/new_tag"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onSubmitButtonClick"
+        android:text="@string/new_tag" />
+
+    <Button
+        android:id="@+id/add_tag"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:onClick="onSubmitButtonClick"
+        android:text="@string/add_tag" />
 
 </LinearLayout>
