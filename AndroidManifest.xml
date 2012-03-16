@@ -10,7 +10,7 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name" >
         <activity
-            android:name="CharacterCreationActivity"
+            android:name="MainMenuActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -18,9 +18,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="TagActivity"
-            android:label="Tag Characters"/>
+        <activity android:name="CharacterCreationActivity"></activity>
+        <activity android:name="CreateWordActivity"></activity>
+        <activity android:name="TagActivity"></activity>
     </application>
 
 </manifest>
