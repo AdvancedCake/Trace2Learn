@@ -3,6 +3,7 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Characters.LessonWord;
 import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
 import android.content.ContentValues;
 import android.content.Context;
@@ -48,12 +49,16 @@ public class DbAdapter {
             "OrderPoint INTEGER NOT NULL, " +
             "FOREIGN KEY(CharId) REFERENCES Character(_id));";
     
-    private static final String DATABASE_CREATE_WORDS =
-            "CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+    private static final String DATABASE_CREATE_WORDS = 
+    		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
+    
+    private static final String DATABASE_CREATE_WORDS_DETAILS =
+            "CREATE TABLE WordsDetails (_id INTEGER," +
             "CharId INTEGER," +
             "WordOrder INTEGER NOT NULL," +
             "FlagUserCreated INTEGER," +
-            "FOREIGN KEY(CharId) REFERENCES Character(_id));";
+            "FOREIGN KEY(CharId) REFERENCES Character(_id)," +
+            "FOREIGN KEY(_id) REFERENCES Words(_id));";
     
     private static final String DATABASE_CREATE_WORDSTAG =
             "CREATE TABLE WordsTag (_id INTEGER, " +
@@ -81,6 +86,8 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS CharacterDetails";
     private static final String DATABASE_DROP_WORDS = 
     		"DROP TABLE IF EXISTS Words";
+    private static final String DATABASE_DROP_WORDS_DETAILS = 
+    		"DROP TABLE IF EXISTS WordsDetails";
     private static final String DATABASE_DROP_WORDSTAG = 
     		"DROP TABLE IF EXISTS WordsTag";
     private static final String DATABASE_DROP_LESSONS = 
@@ -98,6 +105,7 @@ public class DbAdapter {
     private static final String CHARTAG_TABLE = "CharacterTag";
     private static final String WORDTAG_TABLE = "WordsTag";
     private static final String WORDS_TABLE = "Words";
+    private static final String WORDS_DETAILS_TABLE = "WordsDetails";
     
     private static final int DATABASE_VERSION = 2;
 
@@ -116,6 +124,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_CREATE_CHARTAG);
             db.execSQL(DATABASE_CREATE_CHAR_DETAILS);
             db.execSQL(DATABASE_CREATE_WORDS);
+            db.execSQL(DATABASE_CREATE_WORDS_DETAILS);
             db.execSQL(DATABASE_CREATE_WORDSTAG);
             db.execSQL(DATABASE_CREATE_LESSONS);
             db.execSQL(DATABASE_CREATE_LESSONS_DETAILS);
@@ -129,6 +138,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_DROP_CHARTAG);
             db.execSQL(DATABASE_DROP_CHAR_DETAILS);
             db.execSQL(DATABASE_DROP_WORDS);
+            db.execSQL(DATABASE_DROP_WORDS_DETAILS);
             db.execSQL(DATABASE_DROP_WORDSTAG);
             db.execSQL(DATABASE_DROP_LESSONS);
             db.execSQL(DATABASE_DROP_LESSONS_DETAILS);
@@ -166,8 +176,25 @@ public class DbAdapter {
     }
     
     /**
-     * Create a new character. If the character is
-     * successfully created return the new rowId for that note, otherwise return
+     * Create a new character tag. If the character tag is
+     * successfully created return the new rowId for that tag, otherwise return
+     * a -1 to indicate failure.
+     * 
+     * @param id the row_id of the tag
+     * @param tag the text of the tag
+     * @return rowId or -1 if failed
+     */
+    public long createWordTags(long id, String tag) {
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(WORDTAG_ROWID, id);
+        initialValues.put(WORDTAG_TAG, tag);
+
+        return mDb.insert(WORDTAG_TABLE, null, initialValues);
+    }
+    
+    /**
+     * Create a new word tag. If the tag is
+     * successfully created return the new rowId for that tag, otherwise return
      * a -1 to indicate failure.
      * 
      * @param id the row_id of the tag
@@ -190,8 +217,18 @@ public class DbAdapter {
      * @return true if deleted, false otherwise
      */
     public boolean deleteTag(long rowId, String tag) {
-
         return mDb.delete(CHARTAG_TABLE, CHARTAG_ROWID + "=" + rowId + " AND " + CHARTAG_TAG+"="+tag, null) > 0;
+    }
+    
+    /**
+     * Delete the word tag with the given rowId and tag
+     * 
+     * @param rowId id of tag to delete
+     * @param tag text of tag to delete
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteWordTag(long rowId, String tag) {
+        return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId + " AND " + WORDTAG_TAG+"="+tag, null) > 0;
     }
    
     /**
@@ -243,18 +280,76 @@ public class DbAdapter {
     		strokeNumber++;
     	}
     	//need to add character as a word so that we can add them to lessons as not part of a word
+    	ContentValues initialWordValue = new ContentValues();
+    	long word_id = mDb.insert(WORDS_TABLE, null, initialWordValue);
+    	if(word_id == -1)
+    	{
+    		//if error
+    		Log.e(WORDS_TABLE, "cannot add new word to table "+WORDS_TABLE);
+    		mDb.endTransaction();
+    		return false;
+    	}
     	ContentValues wordValues = new ContentValues();
+    	wordValues.put("_id", word_id);
     	wordValues.put("CharId", id);
-    	wordValues.put("Order", 0);
+    	wordValues.put("WordOrder", 0);
     	wordValues.put("FlagUserCreated", 0);
-    	long success = mDb.insert(WORDS_TABLE, null, wordValues);
+    	long success = mDb.insert(WORDS_DETAILS_TABLE, null, wordValues);
 		if(success == -1)
 		{	
 			//if error
-			Log.e(WORDS_TABLE,"cannot add to table");
+			Log.e(WORDS_DETAILS_TABLE,"cannot add to table");
 			mDb.endTransaction();
 			return false;
 		}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    	
+    }
+    
+    /**
+     * Add a word to the database
+     * @param w word to be added to the database
+     * @return true if word is added to DB.  False on error.
+     */
+    public boolean addWord(LessonWord w)
+    {
+    	mDb.beginTransaction();
+    	//add to WORDS_TABLE
+    	ContentValues initialWordsValues = new ContentValues();
+    	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
+    	if(id == -1)
+    	{
+    		//if error
+    		Log.e(WORDS_TABLE, "cannot add new character to table "+WORDS_TABLE);
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	w.setId(id);
+    	
+    	//add each character to WORDS_TABLE
+    	List<LessonCharacter> l = w.getCharacters();
+    	//character ordering
+    	int charNumber=0;
+    	for(LessonCharacter c:l)
+    	{
+    		ContentValues characterValues = new ContentValues();
+    		characterValues.put("_id", id);
+    		characterValues.put("CharId", c.getId());
+    		characterValues.put("WordOrder", charNumber);
+    		characterValues.put("FlagUserCreated", 1);
+    		long success = mDb.insert(WORDS_DETAILS_TABLE, null, characterValues);
+    		if(success == -1)
+    		{	
+    			//if error
+    			Log.e(WORDS_DETAILS_TABLE,"cannot add to table");
+    			mDb.endTransaction();
+    			return false;
+    		}
+    		charNumber++;
+    	}
     	
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
