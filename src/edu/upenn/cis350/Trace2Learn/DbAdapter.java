@@ -349,10 +349,10 @@ public class DbAdapter {
     	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
     	
     	//add each character to WORDS_TABLE
-    	List<Integer> l = w.getCharacters();
+    	List<Long> l = w.getCharacters();
     	//character ordering
     	int charNumber=0;
-    	for(Integer c:l)
+    	for(Long c:l)
     	{
     		ContentValues characterValues = new ContentValues();
     		characterValues.put("_id", id);

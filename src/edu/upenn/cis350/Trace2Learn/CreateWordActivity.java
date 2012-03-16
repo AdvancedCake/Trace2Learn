@@ -42,13 +42,13 @@ public class CreateWordActivity extends ListActivity {
 		super.onListItemClick(l, v, position, id);
 		
 		Cursor c = (Cursor) getListView().getItemAtPosition(position);
-		int index = c.getInt(0);
+		long index = c.getLong(0);
 		Log.e("Clicked",c.getString(0));
-		newWord.addCharacter((Integer)index);
+		newWord.addCharacter((Long)index);
 		
 		TextView word = (TextView)findViewById(R.id.characters);
 		CharSequence cs = word.getText();
-		String newString = cs.toString() + Integer.toString(index);
+		String newString = cs.toString() + Long.toString(index);
 		word.setText(newString);
 	}
 	
