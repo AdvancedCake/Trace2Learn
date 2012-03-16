@@ -1,5 +1,8 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
@@ -21,7 +24,7 @@ public class TagActivity extends Activity {
 	
 	//Variables
 	private long id;
-	private String lessonItemType;
+	private List<String> currentTags;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,11 +40,12 @@ public class TagActivity extends Activity {
         
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
+                
+        //Assuming that it is a character
+        currentTags = mDbHelper.getTags(id);
         
         //Populate the ListView
         
-        //Assuming that it is a character
-        tagList = mDbHelper.
         }
 	
 	/**
@@ -66,7 +70,6 @@ public class TagActivity extends Activity {
 			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
-			
 			
 			//Set edit text back to nothing
 			editText.setText("");
