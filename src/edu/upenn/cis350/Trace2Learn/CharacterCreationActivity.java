@@ -137,15 +137,13 @@ public class CharacterCreationActivity extends Activity {
 	}
 
 	
-	private String tagsToString(Cursor c)
+	private String tagsToString(List<String> tags)
 	{
-		if(c.getCount() == 0) return "";
 		StringBuffer buf = new StringBuffer();
-		do
+		for(String str : tags)
 		{
-			buf.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_TAG))+", ");			
+			buf.append(str + ", ");
 		}
-		while(c.moveToNext());
 		
 		return buf.toString();
 	}
