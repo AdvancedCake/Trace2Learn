@@ -30,6 +30,8 @@ public class CharacterCreationActivity extends Activity {
 	
 	private Mode _currentMode = Mode.INVALID;
 	
+	private long _characterId;
+	
 	private enum Mode
 	{
 		CREATION,
@@ -168,9 +170,9 @@ public class CharacterCreationActivity extends Activity {
 		i.putExtra("ID", character.getId());
 		i.putExtra("TYPE", character.getItemType().toString());
 		
-		//startActivity(i);
+		startActivity(i);
 		
-		_dbHelper.createTags(character.getId(), "Char");
+		//_dbHelper.createTags(character.getId(), "Char");
 		String tags = tagsToString(_dbHelper.getTags(character.getId()));
 		Log.i("TAGS", tags);
 		_tagText.setText(tags);
