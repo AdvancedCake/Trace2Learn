@@ -1,5 +1,6 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Characters.LessonItem.*;
@@ -34,6 +35,8 @@ public class TagActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         
+        setContentView(R.layout.tag); //tag.xml
+
         editText = (EditText) findViewById(R.id.edittext);
         lv = (ListView) findViewById(R.id.list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
@@ -42,22 +45,25 @@ public class TagActivity extends Activity {
         mDbHelper.open();
         
         //Grab the intent/extras. This should be called from CharacterCreation
-        id = this.getIntent().getLongExtra("ID", -1); 
-        // itemType = this.getIntent().getStringExtra("TYPE");
-        type = ItemType.valueOf(this.getIntent().getStringExtra("TYPE"));
+        //id = this.getIntent().getLongExtra("ID", -1); 
+        //type = ItemType.valueOf(this.getIntent().getStringExtra("TYPE"));
         
         //Assuming that it is a character
-        currentTags = mDbHelper.getTags(id);
-        
+/*        currentTags = mDbHelper.getTags(id);
+
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
-        		android.R.layout.simple_list_item_1, currentTags);
+        		android.R.layout.simple_list_item_multiple_choice, currentTags);
         arrAdapter.notifyDataSetChanged();
+       
+        lv.setAdapter(arrAdapter);*/
         
-        lv.setAdapter(arrAdapter);
+        final String [] items = new String[]{"boo","hey","wga","Item4"};
         
-        setContentView(R.layout.tag); //tag.xml
-
+        ArrayAdapter ad = new ArrayAdapter(this,android.R.layout.simple_list_item_multiple_choice,items);
+        lv.setAdapter(ad);
+        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        
         }
 	
 	/**
@@ -74,29 +80,21 @@ public class TagActivity extends Activity {
 			Editable input = editText.getText();
 			String input2 = input.toString(); //This is the string of the tag you typed in
 			
-			//if the LessonItem is a character
-			if (type == ItemType.CHARACTER)
+			/*if (type == ItemType.CHARACTER)
 			{
 				mDbHelper.createTags(id, input2); //added it to db
 			}
 			else if (type == ItemType.WORD)
 			{		
-				//else if the LessonItem is a word
 				mDbHelper.createWordTags(id, input2);	
-			}
+			}*/
 			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
+			currentTags.add(input2);
 			//currentTags.clear();
-	        
-			currentTags = mDbHelper.getTags(id);
+			//currentTags = mDbHelper.getTags(id);
 	        arrAdapter.notifyDataSetChanged();
-
-	        /*arrAdapter = new ArrayAdapter<String>(this, 
-	        		android.R.layout.simple_list_item_1, currentTags);
-	        arrAdapter.notifyDataSetChanged();
-
-	        lv.setAdapter(arrAdapter);*/
 
 			//Set edit text back to nothing
 			editText.setText("");
