@@ -34,7 +34,8 @@ public class DbAdapter {
      * Database creation sql statement
      */
     private static final String DATABASE_CREATE_CHAR =
-        "CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
+    		"CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+    		"name TEXT);";
     
     private static final String DATABASE_CREATE_CHARTAG =
             "CREATE TABLE CharacterTag (_id INTEGER, " +
@@ -51,7 +52,8 @@ public class DbAdapter {
             "FOREIGN KEY(CharId) REFERENCES Character(_id));";
     
     private static final String DATABASE_CREATE_WORDS = 
-    		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
+    		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+    		"name TEXT);";
     
     private static final String DATABASE_CREATE_WORDS_DETAILS =
             "CREATE TABLE WordsDetails (_id INTEGER," +
@@ -242,6 +244,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
+    	initialCharValues.put("name","");
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
@@ -250,7 +253,11 @@ public class DbAdapter {
     		mDb.endTransaction();
     		return false;
     	}
-    	c.setId(id);
+    	Cursor x = mDb.query(CHAR_TABLE, new String[]{CHAR_ROWID}, null, null, null, null, CHAR_ROWID+" DESC", "1");
+    	if (x != null) {
+            x.moveToFirst();
+        }
+    	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID)));
     	
     	//add each stroke to CHAR_DETAILS_TABLE
     	List<Stroke> l = c.getStrokes();
@@ -453,5 +460,35 @@ public class DbAdapter {
         return mCursor;
 
     }
+    
+    public List<Long> getAllCharIds(){
+    	 Cursor mCursor =
+
+	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
+	                    null, null, CHAR_ROWID+" ASC", null);
+	        List<Long> ids = new ArrayList<Long>();
+	        if (mCursor != null) {
+	            mCursor.moveToFirst();
+	        }
+	        do {
+	        	if(mCursor.getCount()==0){
+	        		break;
+	        	}
+	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ROWID)));
+	        }
+	        while(mCursor.moveToNext());
+	        return ids;
+    }
+    
+    public Cursor getAllCharIdsCursor(){
+   	 Cursor mCursor =
+
+	            mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, null, null,
+	                    null, null, CHARTAG_ROWID+" ASC", null);
+	        if (mCursor != null) {
+	            mCursor.moveToFirst();
+	        }
+	        return mCursor;
+   }
     
 }
