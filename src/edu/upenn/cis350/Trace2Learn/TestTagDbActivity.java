@@ -24,7 +24,7 @@ public class TestTagDbActivity extends Activity {
         mDbHelper.open();
     }
 	
-	public void onSubmitButtonClick(View view){
+	/*public void onSubmitButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.character);
 		String charText = charEt.getText().toString();
 		long charId = Long.valueOf(charText);
@@ -33,12 +33,12 @@ public class TestTagDbActivity extends Activity {
 		String tagText = tagEt.getText().toString();
 		
 		mDbHelper.createTags(charId,tagText);
-	}
+	}*/
 	
 	public void onCharSearchButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.search_char);
 		String charText = charEt.getText().toString();
-		long charId = Long.valueOf(charText);
+		/*long charId = Long.valueOf(charText);
 		Log.d(ACTIVITY_SERVICE, "here");
 		
 		List<String> c = mDbHelper.getTags(charId);
@@ -47,7 +47,7 @@ public class TestTagDbActivity extends Activity {
 		while(i.hasNext()){
 			builder.append(i.next() + "\n");
 		}
-		/*do{
+		do{
 			if(c.getCount()==0){
 				Log.d(ACTIVITY_SERVICE, "zeroRows");
 				builder.append("No results");
@@ -55,7 +55,24 @@ public class TestTagDbActivity extends Activity {
 			}
 			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_TAG))+"\n");			
 		}
-		while(c.moveToNext());*/
+		while(c.moveToNext());
+		String output = builder.toString();
+		
+		Log.d(ACTIVITY_SERVICE, output);
+		
+		TextView results = (TextView)findViewById(R.id.results);
+		results.setText(output);*/
+		Cursor c = mDbHelper.getChars(charText);
+		StringBuilder builder = new StringBuilder();
+		do{
+			if(c.getCount()==0){
+				Log.d(ACTIVITY_SERVICE, "zeroRows");
+				builder.append("No results");
+				break;
+			}
+			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
+		}
+		while(c.moveToNext());
 		String output = builder.toString();
 		
 		Log.d(ACTIVITY_SERVICE, output);
@@ -64,11 +81,11 @@ public class TestTagDbActivity extends Activity {
 		results.setText(output);
 	}
 	
-	public void onTagSearchButtonClick(View view){
+	public void onWordSearchButtonClick(View view){
 		EditText tagEt = (EditText)findViewById(R.id.search_tag);
 		String tagText = tagEt.getText().toString();
 		
-		Cursor c = mDbHelper.getChars(tagText);
+		Cursor c = mDbHelper.getWords(tagText);
 		StringBuilder builder = new StringBuilder();
 		do{
 			if(c.getCount()==0){

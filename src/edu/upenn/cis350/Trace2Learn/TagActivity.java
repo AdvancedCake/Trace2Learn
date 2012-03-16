@@ -8,6 +8,7 @@ import edu.upenn.cis350.Trace2Learn.Characters.LessonItem.*;
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -28,7 +29,8 @@ public class TagActivity extends Activity {
 	//Variables
 	private long id;
 	private List<String> currentTags;
-	ItemType type;
+	//ItemType type;
+	String type;
 	ArrayAdapter<String> arrAdapter;
 	
 	@Override
@@ -45,23 +47,29 @@ public class TagActivity extends Activity {
         mDbHelper.open();
         
         //Grab the intent/extras. This should be called from CharacterCreation
-        //id = this.getIntent().getLongExtra("ID", -1); 
-        //type = ItemType.valueOf(this.getIntent().getStringExtra("TYPE"));
+        id = this.getIntent().getLongExtra("ID", -1); 
+        type = this.getIntent().getStringExtra("TYPE");
+        
+        Log.e("ID",Long.toString(id));
+        Log.e("TYPE",type.toString());
         
         //Assuming that it is a character
-/*        currentTags = mDbHelper.getTags(id);
+        if(type.equals("CHARACTER"))
+        	currentTags = mDbHelper.getTags(id);
+        if(type.equals("WORD"))
+        	currentTags = mDbHelper.getWordTags(id);
 
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
         		android.R.layout.simple_list_item_multiple_choice, currentTags);
         arrAdapter.notifyDataSetChanged();
        
-        lv.setAdapter(arrAdapter);*/
+        lv.setAdapter(arrAdapter);
         
-        final String [] items = new String[]{"boo","hey","wga","Item4"};
+        /*final String [] items = new String[]{"boo","hey","wga","Item4"};
         
         ArrayAdapter ad = new ArrayAdapter(this,android.R.layout.simple_list_item_multiple_choice,items);
-        lv.setAdapter(ad);
+        lv.setAdapter(ad);*/
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
         
         }
@@ -80,14 +88,14 @@ public class TagActivity extends Activity {
 			Editable input = editText.getText();
 			String input2 = input.toString(); //This is the string of the tag you typed in
 			
-			/*if (type == ItemType.CHARACTER)
+			if (type.equals("CHARACTER"))
 			{
 				mDbHelper.createTags(id, input2); //added it to db
 			}
-			else if (type == ItemType.WORD)
+			else if (type.equals("WORD"))
 			{		
 				mDbHelper.createWordTags(id, input2);	
-			}*/
+			}
 			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient

@@ -30,7 +30,11 @@ public class CharacterCreationActivity extends Activity {
 	
 	private Mode _currentMode = Mode.INVALID;
 	
+<<<<<<< HEAD
 	private long _characterId;
+=======
+	private long id_to_pass;
+>>>>>>> 7eaef36f8716a74437c01bbaec65df990856f063
 	
 	private enum Mode
 	{
@@ -159,14 +163,19 @@ public class CharacterCreationActivity extends Activity {
 	
 	public void onSaveButtonClick(View view)
 	{
-		_dbHelper.addCharacter(_creationPane.getCharacter());
+		LessonCharacter character = _creationPane.getCharacter();
+		_dbHelper.addCharacter(character);
+		Log.e("Adding to DB",Long.toString(character.getId()));
+		id_to_pass = character.getId();
 	}
 	
 	public void onTagButtonClick(View view)
 	{
 		LessonCharacter character = _creationPane.getCharacter();
 		
+		Log.e("Passing this CharID",Long.toString(id_to_pass));
 		Intent i = new Intent(this, TagActivity.class);
+<<<<<<< HEAD
 		i.putExtra("ID", character.getId());
 		i.putExtra("TYPE", character.getItemType().toString());
 		
@@ -174,6 +183,14 @@ public class CharacterCreationActivity extends Activity {
 		
 		//_dbHelper.createTags(character.getId(), "Char");
 		String tags = tagsToString(_dbHelper.getTags(character.getId()));
+=======
+		i.putExtra("ID", id_to_pass);
+		i.putExtra("TYPE", character.getItemType().toString());
+		startActivity(i);
+		
+		//_dbHelper.addCharacter(character);
+		String tags = tagsToString(_dbHelper.getTags(id_to_pass));
+>>>>>>> 7eaef36f8716a74437c01bbaec65df990856f063
 		Log.i("TAGS", tags);
 		_tagText.setText(tags);
 	}
