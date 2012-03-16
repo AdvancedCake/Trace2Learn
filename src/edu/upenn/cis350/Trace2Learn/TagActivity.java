@@ -27,7 +27,6 @@ public class TagActivity extends Activity {
 	//Variables
 	private long id;
 	private List<String> currentTags;
-	//String itemType;
 	ItemType type;
 	ArrayAdapter<String> arrAdapter;
 	
@@ -44,7 +43,7 @@ public class TagActivity extends Activity {
         
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
-       // itemType = this.getIntent().getStringExtra("TYPE");
+        // itemType = this.getIntent().getStringExtra("TYPE");
         type = ItemType.valueOf(this.getIntent().getStringExtra("TYPE"));
         
         //Assuming that it is a character
@@ -53,6 +52,7 @@ public class TagActivity extends Activity {
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
         		android.R.layout.simple_list_item_1, currentTags);
+        arrAdapter.notifyDataSetChanged();
         
         lv.setAdapter(arrAdapter);
         
@@ -87,7 +87,17 @@ public class TagActivity extends Activity {
 			
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
-			
+			//currentTags.clear();
+	        
+			currentTags = mDbHelper.getTags(id);
+	        arrAdapter.notifyDataSetChanged();
+
+	        /*arrAdapter = new ArrayAdapter<String>(this, 
+	        		android.R.layout.simple_list_item_1, currentTags);
+	        arrAdapter.notifyDataSetChanged();
+
+	        lv.setAdapter(arrAdapter);*/
+
 			//Set edit text back to nothing
 			editText.setText("");
 		}
