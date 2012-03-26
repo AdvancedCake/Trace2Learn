@@ -1,4 +1,4 @@
-package edu.upenn.cis350.Trace2Learn.Characters;
+package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
 import java.util.Iterator;

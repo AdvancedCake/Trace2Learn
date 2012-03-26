@@ -1,11 +1,11 @@
-package edu.upenn.cis350.Trace2Learn.Characters;
+package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonItem.ItemType;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 
 public class LessonWord extends LessonItem {
 	

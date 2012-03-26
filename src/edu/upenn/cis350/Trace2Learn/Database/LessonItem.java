@@ -1,14 +1,16 @@
-package edu.upenn.cis350.Trace2Learn.Characters;
+package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.DbAdapter;
 
 public abstract class LessonItem {
 	
 	protected List<String> _tags;
 	protected long _id;
+	
+	/** Identifier for type of character **/
+	protected ItemType _type;
 	
 	public enum ItemType
 	{
@@ -16,8 +18,6 @@ public abstract class LessonItem {
 		WORD,
 		LESSON
 	}
-	
-	protected ItemType _type;
 	
 	protected LessonItem()
 	{
@@ -40,9 +40,17 @@ public abstract class LessonItem {
 	}
 	
 	/**
+	 * Updates the LessonItem's contents to match those in the database
+	 */
+	public synchronized void update(DbAdapter db)
+	{
+		updateTags(db);
+	}
+	
+	/**
 	 * Updates the LessonItem's tags to represent those in the database
 	 */
-	public synchronized void updateTags(DbAdapter db)
+	protected synchronized void updateTags(DbAdapter db)
 	{
 		switch(_type)
 		{

@@ -11,7 +11,8 @@ import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class CreateWordActivity extends ListActivity {
 	

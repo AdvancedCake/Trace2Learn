@@ -5,7 +5,7 @@ package edu.upenn.cis350.Trace2Learn;
 
 import java.util.Timer;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;

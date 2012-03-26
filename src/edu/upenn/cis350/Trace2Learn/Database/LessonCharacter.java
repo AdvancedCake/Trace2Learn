@@ -1,9 +1,10 @@
-package edu.upenn.cis350.Trace2Learn.Characters;
+package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 
 public class LessonCharacter extends LessonItem {
 
@@ -43,6 +44,22 @@ public class LessonCharacter extends LessonItem {
 	public synchronized Stroke getStroke(int i)
 	{
 		return _strokes.get(i);
+	}
+	
+	@Override
+	public synchronized void update(DbAdapter db)
+	{
+		super.update(db);
+		updateStrokes(db);
+	}
+	
+	/**
+	 * Update the strokes to match the ones in the database
+	 */
+	protected synchronized void updateStrokes(DbAdapter db)
+	{
+		// TODO add a get stroke method.
+		// Do we need this?
 	}
 	
 	/**

@@ -3,8 +3,9 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.R.id;
-import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Characters.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;

@@ -2,8 +2,8 @@ package edu.upenn.cis350.Trace2Learn;
 
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;

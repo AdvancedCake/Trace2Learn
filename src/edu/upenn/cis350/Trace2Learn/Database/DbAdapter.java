@@ -1,11 +1,8 @@
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Characters.LessonWord;
-import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
