@@ -5,13 +5,10 @@ import java.util.List;
 import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Paint;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -30,9 +27,6 @@ public class CharacterCreationActivity extends Activity {
 	private DbAdapter _dbHelper;
 	
 	private Mode _currentMode = Mode.INVALID;
-	
-
-	private long _characterId;
 
 	private long id_to_pass;
 	
@@ -56,6 +50,8 @@ public class CharacterCreationActivity extends Activity {
 		_contextButton = (Button)this.findViewById(id.context_button);
 		_creationPane = new CharacterCreationPane(this, _paint);
 		_playbackPane = new CharacterPlaybackPane(this, _paint, false, 2);
+		
+		setCharacter(new LessonCharacter());
 
 		_tagText = (TextView)this.findViewById(id.tag_list);
 		
@@ -121,6 +117,18 @@ public class CharacterCreationActivity extends Activity {
 		_paint.setColor(color);
 	}
 	
+	private void setCharacter(LessonCharacter character)
+	{
+		_creationPane.setCharacter(character);
+		_playbackPane.setCharacter(character);
+		
+	}
+	
+	private void updateTags()
+	{
+		List<String> tags = _dbHelper.getTags(id_to_pass);
+		this._tagText.setText(tagsToString(tags));
+	}
 	
 	public void onContextButtonClick(View view)
 	{
@@ -144,6 +152,12 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 
+	@Override
+	public void onRestart()
+	{
+		super.onRestart();
+		updateTags();
+	}
 	
 	private String tagsToString(List<String> tags)
 	{
@@ -167,25 +181,22 @@ public class CharacterCreationActivity extends Activity {
 		_dbHelper.addCharacter(character);
 		Log.e("Adding to DB",Long.toString(character.getId()));
 		id_to_pass = character.getId();
+		updateTags();
 	}
 	
 	public void onTagButtonClick(View view)
-	{
+	{		
 		LessonCharacter character = _creationPane.getCharacter();
 		
 		Log.e("Passing this CharID",Long.toString(id_to_pass));
 		Intent i = new Intent(this, TagActivity.class);
 
-		i.putExtra("ID", character.getId());
+		i.putExtra("ID", id_to_pass);
 		i.putExtra("TYPE", character.getItemType().toString());
 		
 		startActivity(i);
 		
-		//_dbHelper.createTags(character.getId(), "Char");
-		String tags = tagsToString(_dbHelper.getTags(character.getId()));
-		
-		Log.i("TAGS", tags);
-		_tagText.setText(tags);
+		updateTags();
 	}
 	
 	public void onDisplayButtonClick(View view)

@@ -16,6 +16,7 @@ public class CharacterCreationPane extends DrawingPane {
 		super(c, paint);
 
 		_character = new LessonCharacter();
+		
 	}
 
 	/**
@@ -70,7 +71,13 @@ public class CharacterCreationPane extends DrawingPane {
 	 */
 	public LessonCharacter getCharacter()
 	{
-		return new LessonCharacter(_character);
+		return _character;
+	}
+	
+	public void setCharacter(LessonCharacter character)
+	{
+		_character = character;
+		invalidate();
 	}
 	
 	public void clearPane()
