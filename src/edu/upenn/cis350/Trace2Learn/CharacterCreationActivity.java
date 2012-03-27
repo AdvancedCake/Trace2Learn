@@ -176,7 +176,7 @@ public class CharacterCreationActivity extends Activity {
 		Log.e("Passing this CharID",Long.toString(id_to_pass));
 		Intent i = new Intent(this, TagActivity.class);
 
-		i.putExtra("ID", character.getId());
+		i.putExtra("ID", id_to_pass);
 		i.putExtra("TYPE", character.getItemType().toString());
 		
 		startActivity(i);

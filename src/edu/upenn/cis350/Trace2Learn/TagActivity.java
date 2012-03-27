@@ -24,6 +24,7 @@ public class TagActivity extends Activity {
 	
 	//Controls
 	private EditText editText;
+	private EditText editPrivateText;
 	private ListView lv;
 	private Button addTagButton;
 	
@@ -41,6 +42,7 @@ public class TagActivity extends Activity {
         setContentView(R.layout.tag); //tag.xml
 
         editText = (EditText) findViewById(R.id.edittext);
+        editPrivateText = (EditText) findViewById(R.id.editprivate);
         lv = (ListView) findViewById(R.id.list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
         
@@ -109,6 +111,22 @@ public class TagActivity extends Activity {
 			editText.setText("");
 		}
     }
+	
+	public void onAddPrivateTagButtonClick(View view){
+		Editable input = editPrivateText.getText();
+		String input2 = input.toString();
+		if (type.equals("CHARACTER"))
+		{
+			mDbHelper.updatePrivateTag(id, input2); //added it to db
+		}
+		else if (type.equals("WORD"))
+		{		
+			mDbHelper.updatePrivateWordTag(id, input2);	
+		}
+		currentTags.add(input2);
+		arrAdapter.notifyDataSetChanged();
+		editPrivateText.setText("");
+	}
 	
 
 }
