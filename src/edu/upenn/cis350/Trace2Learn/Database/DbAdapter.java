@@ -241,7 +241,10 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
-    	initialCharValues.put("name","");
+    	if(c.getPrivateTag()!=null)
+    		initialCharValues.put("name",c.getPrivateTag());
+    	else	
+    		initialCharValues.put("name","");
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
@@ -330,7 +333,10 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
-    	initialWordsValues.put("name", "");
+    	if(w.getPrivateTag()!=null)
+    		initialWordsValues.put("name", w.getPrivateTag());
+    	else
+    		initialWordsValues.put("name", "");
     	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
     	if(id == -1)
     	{
@@ -498,5 +504,21 @@ public class DbAdapter {
 	        }
 	        return mCursor;
    }
+    
+    public long updatePrivateTag(long id, String tag){
+    	ContentValues initialValues = new ContentValues();
+        initialValues.put(CHAR_ROWID, id);
+        initialValues.put("name", tag);
+        Log.e("Adding Private Tag",tag);
+        return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID+"="+id,null);
+    }
+    
+    public long updatePrivateWordTag(long id, String tag){
+    	ContentValues initialValues = new ContentValues();
+        //initialValues.put(CHAR_ROWID, id);
+        initialValues.put("name", tag);
+
+        return mDb.update(WORDS_TABLE, initialValues, "_id="+id,null);
+    }
     
 }

@@ -8,6 +8,7 @@ public abstract class LessonItem {
 	
 	protected List<String> _tags;
 	protected long _id;
+	protected String private_tag;
 	
 	/** Identifier for type of character **/
 	protected ItemType _type;
@@ -37,6 +38,14 @@ public abstract class LessonItem {
 	public long getId()
 	{
 		return _id;
+	}
+	
+	public void setPrivateTag(String tag){
+		private_tag = tag;
+	}
+	
+	public String getPrivateTag(){
+		return private_tag;
 	}
 	
 	/**

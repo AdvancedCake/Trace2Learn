@@ -20,6 +20,30 @@
 
     </ListView>
 
+     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Add Private Tag" />
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/editprivate"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/add_private_tag_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onAddPrivateTagButtonClick"
+            android:text="@string/add" />
+    </LinearLayout>
+    
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
