@@ -1,8 +1,5 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import java.util.Iterator;
-import java.util.List;
-
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 
 import android.app.Activity;

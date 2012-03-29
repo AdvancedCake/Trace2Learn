@@ -94,17 +94,6 @@ public class CharacterCreationActivity extends Activity {
 			_contextButton.setText("Animate");
 		}
 	}
-	
-	private synchronized void setCharacterSavePane()
-	{
-		if(_currentMode != Mode.SAVE)
-		{
-			_currentMode = Mode.SAVE;
-			_characterViewSlot.removeAllViews();
-			//_characterViewSlot.addView(_savePane);	
-			_contextButton.setText("Commit");
-		}
-	}
 
 	public void setContentView(View view)
 	{
@@ -128,6 +117,8 @@ public class CharacterCreationActivity extends Activity {
 	{
 		List<String> tags = _dbHelper.getTags(id_to_pass);
 		this._tagText.setText(tagsToString(tags));
+		// TODO need functionality for getting Characters from DB
+		//setCharacter(_dbHelper.getCharacter(id_to_pass));
 	}
 	
 	public void onContextButtonClick(View view)
@@ -196,7 +187,6 @@ public class CharacterCreationActivity extends Activity {
 		
 		startActivity(i);
 		
-		updateTags();
 	}
 	
 	public void onDisplayButtonClick(View view)

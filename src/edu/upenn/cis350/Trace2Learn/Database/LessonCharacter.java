@@ -1,9 +1,7 @@
 package edu.upenn.cis350.Trace2Learn.Database;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 public class LessonCharacter extends LessonItem {

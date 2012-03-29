@@ -1,6 +1,5 @@
 package edu.upenn.cis350.Trace2Learn;
 
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;

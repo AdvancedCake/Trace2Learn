@@ -1,9 +1,4 @@
-/**
- * 
- */
 package edu.upenn.cis350.Trace2Learn;
-
-import java.util.Timer;
 
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import android.content.Context;

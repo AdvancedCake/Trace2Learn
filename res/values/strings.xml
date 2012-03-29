@@ -11,6 +11,10 @@
     <string name="search">Search</string>
     <string name="search_tag">Search a tag</string>
     <string name="results">Results displayed here</string>
+    <string name="create">Create</string>
+    <string name="save">Save</string>
+    <string name="clear">Clear</string>
+    <string name="display">Display</string>
 
 	<string name="tag_header">Current Tags</string>
 	<string name="addtag_header">Add Tag</string>
