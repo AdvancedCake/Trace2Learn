@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class CharacterCreationActivity extends Activity {
@@ -51,6 +52,10 @@ public class CharacterCreationActivity extends Activity {
 		_creationPane = new CharacterCreationPane(this, _paint);
 		_playbackPane = new CharacterPlaybackPane(this, _paint, false, 2);
 		
+		/*RelativeLayout layout = (RelativeLayout)this.findViewById(id.view_slot);
+		LessonItemListingLayout li = new LessonItemListingLayout(this);
+		layout.addView(li);*/
+		
 		setCharacter(new LessonCharacter());
 
 		_tagText = (TextView)this.findViewById(id.tag_list);
@@ -87,8 +92,8 @@ public class CharacterCreationActivity extends Activity {
 		if(_currentMode != Mode.DISPLAY)
 		{
 			LessonCharacter curChar = _creationPane.getCharacter();
+			setCharacter(curChar);
 			_currentMode = Mode.DISPLAY;
-			_playbackPane.setCharacter(curChar);
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_playbackPane);
 			_contextButton.setText("Animate");

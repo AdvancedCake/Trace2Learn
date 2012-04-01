@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.PointF;
 
@@ -73,7 +74,7 @@ public class Stroke {
 	{
 		if(_cachedPath != null)
 		{
-			return _cachedPath;
+			return new Path(_cachedPath);
 		}
 		Path path = new Path();
 		if(_points.size() <= 0) 
@@ -107,7 +108,14 @@ public class Stroke {
 		
 		path.lineTo(p2.x, p2.y);
 		_cachedPath = path;
-		return path;
+		return new Path(path);
+	}
+	
+	public Path toPath(Matrix transform)
+	{
+		Path p = toPath();
+		p.transform(transform);
+		return p;
 	}
 	
 }

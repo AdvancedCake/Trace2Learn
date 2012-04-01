@@ -1,13 +1,22 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 
 import android.app.Activity;
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
 
 public class TestTagDbActivity extends Activity {
@@ -33,6 +42,21 @@ public class TestTagDbActivity extends Activity {
 		
 		mDbHelper.createTags(charId,tagText);
 	}*/
+	
+	private void setCharList(List<Long> ids)
+	{
+		ListView list = (ListView)this.findViewById(R.id.results);
+		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
+		for(long id : ids)
+		{
+			Log.i("Found", "id:"+id);
+			LessonItem character = new LessonCharacter(id);
+			items.add(character);
+			
+		}
+		 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		list.setAdapter(new LessonItemListAdapter(this, items, vi));
+	}
 	
 	public void onCharSearchButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.search_char);
@@ -61,7 +85,7 @@ public class TestTagDbActivity extends Activity {
 		
 		TextView results = (TextView)findViewById(R.id.results);
 		results.setText(output);*/
-		Cursor c = mDbHelper.getChars(charText);
+		/*Cursor c = mDbHelper.getChars(charText);
 		StringBuilder builder = new StringBuilder();
 		do{
 			if(c.getCount()==0){
@@ -77,7 +101,27 @@ public class TestTagDbActivity extends Activity {
 		Log.d(ACTIVITY_SERVICE, output);
 		
 		TextView results = (TextView)findViewById(R.id.results);
-		results.setText(output);
+		results.setText(output);*/
+		
+		Cursor c = mDbHelper.getChars(charText);
+		List<Long> ids = new LinkedList<Long>();
+		do{
+			if(c.getCount()==0){
+				Log.d(ACTIVITY_SERVICE, "zeroRows");
+				//builder.append("No results");
+				break;
+			}
+			ids.add(c.getLong(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+			//builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
+		}
+		while(c.moveToNext());
+		/*String output = builder.toString();
+		
+		Log.d(ACTIVITY_SERVICE, output);
+		
+		TextView results = (TextView)findViewById(R.id.results);
+		results.setText(output);*/
+		setCharList(ids);
 	}
 	
 	public void onWordSearchButtonClick(View view){

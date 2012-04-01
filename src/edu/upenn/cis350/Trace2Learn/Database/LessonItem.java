@@ -3,6 +3,10 @@ package edu.upenn.cis350.Trace2Learn.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
+
 
 public abstract class LessonItem {
 	
@@ -90,4 +94,28 @@ public abstract class LessonItem {
 	{
 		return new ArrayList<String>(_tags);
 	}
+	
+	public void draw(Canvas canvas)
+	{
+		Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setDither(true);
+        paint.setColor(0xFFFF0000);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeWidth(12);
+        
+        draw(canvas, paint);
+		
+	}
+	
+	public void draw(Canvas canvas, Paint paint)
+	{
+		Rect bounds = canvas.getClipBounds();
+		draw(canvas, paint, bounds.left, bounds.top, bounds.width(), bounds.height());
+	}
+	
+	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height);
+	
 }

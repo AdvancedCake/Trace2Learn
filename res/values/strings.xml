@@ -22,4 +22,7 @@
 	
 	<string name="word">Word/Character here as whatever object structure</string>
 	<string name="tag1">Tagged</string>
+	
+	<string name="li_preview_description">Preview</string>
+	
 </resources>

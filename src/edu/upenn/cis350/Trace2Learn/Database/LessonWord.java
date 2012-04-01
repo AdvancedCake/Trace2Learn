@@ -3,6 +3,9 @@ package edu.upenn.cis350.Trace2Learn.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Canvas;
+import android.graphics.Paint;
+
 public class LessonWord extends LessonItem {
 	
 	private List<Long> _characters;
@@ -35,5 +38,12 @@ public class LessonWord extends LessonItem {
 	public synchronized void clearCharacters(){
 		_characters.clear();
 	}
+	
+	@Override
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
+	{
+		// TODO determine how LessonWords should be shown
+	}
+	
 	
 }

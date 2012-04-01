@@ -3,6 +3,13 @@ package edu.upenn.cis350.Trace2Learn.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.PointF;
+import android.util.Log;
+
 
 public class LessonCharacter extends LessonItem {
 
@@ -129,6 +136,21 @@ public class LessonCharacter extends LessonItem {
 
 	public synchronized int getNumStrokes() {
 		return _strokes.size();
+	}
+	
+	@Override
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
+	{
+		Matrix matrix = new Matrix();
+		Log.i("DRAW", "Scale: " + width + " " + height);
+		matrix.postScale(width, height);
+		matrix.postTranslate(left,  top);
+		List<Stroke> strokes = getStrokes();
+		for(Stroke stroke : strokes)
+		{
+			Path path = stroke.toPath(matrix);
+			canvas.drawPath(path, paint);
+		}
 	}
 	
 }

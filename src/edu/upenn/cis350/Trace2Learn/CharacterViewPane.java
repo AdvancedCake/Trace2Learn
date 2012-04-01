@@ -45,11 +45,12 @@ public abstract class CharacterViewPane extends View {
 	 */
 	protected void drawCharacter(Canvas canvas, LessonCharacter character)
 	{
-		List<Stroke> strokes = character.getStrokes();
+		character.draw(canvas);
+		/*List<Stroke> strokes = character.getStrokes();
 		for(Stroke s : strokes)
 		{
 			drawStroke(canvas, s);
-		}
+		}*/
 	}
 	
 	public abstract void clearPane();

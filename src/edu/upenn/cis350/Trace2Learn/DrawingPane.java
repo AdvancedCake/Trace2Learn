@@ -51,20 +51,20 @@ public abstract class DrawingPane extends CharacterViewPane {
 	protected abstract void completeStroke(float newX, float newY);
 	
 	private void touchStart(float x, float y) {
-		beginStroke(x, y);
+		beginStroke(x/getWidth(), y/getHeight());
 	}
 
 	private void touchMove(float x, float y) {
 		float dx = Math.abs(x - _prevX);
 		float dy = Math.abs(y - _prevY);
 		if (dx >= TOUCH_TOLERANCE || dy >= TOUCH_TOLERANCE) {
-			updateStroke(x, y);
+			updateStroke(x/getWidth(), y/getHeight());
 		}
 		
 	}
 
 	private void touchUp(float x, float y) {
-		completeStroke(x, y);
+		completeStroke(x/getWidth(), y/getHeight());
 	}
 
 	@Override

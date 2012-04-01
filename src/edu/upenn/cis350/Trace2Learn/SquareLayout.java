@@ -10,6 +10,10 @@ public class SquareLayout extends LinearLayout {
 		super(context, attrs);
 	}
 
+	public SquareLayout(Context context) {
+		super(context);
+	}
+
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     	if(widthMeasureSpec > heightMeasureSpec)

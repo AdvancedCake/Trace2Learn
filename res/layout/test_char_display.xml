@@ -5,6 +5,7 @@
     android:gravity="bottom"
     android:orientation="vertical" >  
     	<RelativeLayout
+    	    android:id="@+id/view_slot"
     	    android:layout_width="match_parent"
 		    android:layout_height="0dip"
 		    android:layout_weight=".97">
@@ -18,10 +19,13 @@
 		        android:orientation="vertical" />
    	    </RelativeLayout>
 	    
+    	
+    	
 	    <TextView
 	        android:id="@+id/tag_list"
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content" />
+	        android:layout_height="wrap_content" 
+	        android:text="@string/tag"/>
 	    
 	    <LinearLayout
 	        android:layout_width="wrap_content"
