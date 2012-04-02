@@ -6,5 +6,7 @@ User wants to browse all existing characters by thumbnails 2 points
 User wants to go to a character playback page by clicking on a thumbnail 1 point
 User wants to see strokes displayed in the correct stroke order 2 points
 User wants to assemble a phrase from a set of characters 2 points
+	Bryan
 User wants to assemble a lesson from a set of phrases 2 points
 User wants to create a private/shared tag 1 point
+	Bryan
