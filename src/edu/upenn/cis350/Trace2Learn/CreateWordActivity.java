@@ -69,10 +69,8 @@ public class CreateWordActivity extends Activity {
         list.setAdapter(new LessonItemListAdapter(this, items, vi));
         //dba.close();
         list.setOnItemClickListener(new OnItemClickListener() {
-     
-            public void onItemClick(AdapterView<?> parent, View view, int position,
-                    long id) {
-                
+    
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {                
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
                 long charId = ((LessonCharacter)list.getItemAtPosition(position)).getId();

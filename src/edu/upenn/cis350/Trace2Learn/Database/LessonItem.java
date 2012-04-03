@@ -13,6 +13,7 @@ public abstract class LessonItem {
 	protected List<String> _tags;
 	protected long _id;
 	protected String private_tag;
+	protected DbAdapter _db;
 	
 	/** Identifier for type of character **/
 	protected ItemType _type;
@@ -37,6 +38,11 @@ public abstract class LessonItem {
 	public void setId(long id)
 	{
 		_id = id;
+	}
+	
+	public void setDatabase(DbAdapter db)
+	{
+		_db = db;
 	}
 	
 	public long getId()
@@ -114,6 +120,20 @@ public abstract class LessonItem {
 	{
 		Rect bounds = canvas.getClipBounds();
 		draw(canvas, paint, bounds.left, bounds.top, bounds.width(), bounds.height());
+	}
+	
+	public void draw(Canvas canvas, float left, float top, float width, float height)
+	{
+		Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setDither(true);
+        paint.setColor(0xFFFF0000);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeWidth(12);
+        
+        draw(canvas, paint, left, top, width, height);
 	}
 	
 	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height);

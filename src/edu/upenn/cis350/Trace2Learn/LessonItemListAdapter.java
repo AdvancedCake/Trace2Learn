@@ -40,12 +40,12 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		LessonItem item = _items.get(position);
 		ImageView image = (ImageView)v.findViewById(R.id.li_image);
 		TextView text = (TextView)v.findViewById(R.id.li_description);
-		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
+		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
 		image.setImageBitmap(bitmap);
-		// Initialize TextView part
+		// TODO Initialize TextView part
 		//StringBuilder string = new StringBuilder();
 		//string.append(string)
-		text.setText(item.getId()+"Hallooo");
+		text.setText(item.getId()+"");
 		return v;
 	}
 	
