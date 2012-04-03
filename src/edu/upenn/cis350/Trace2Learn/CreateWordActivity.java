@@ -69,7 +69,7 @@ public class CreateWordActivity extends Activity {
         list.setAdapter(new LessonItemListAdapter(this, items, vi));
         //dba.close();
         list.setOnItemClickListener(new OnItemClickListener() {
-            @Override
+     
             public void onItemClick(AdapterView<?> parent, View view, int position,
                     long id) {
                 
