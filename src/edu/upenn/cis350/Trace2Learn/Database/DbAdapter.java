@@ -322,6 +322,48 @@ public class DbAdapter {
     	
     }
     
+    
+    /**
+     * Get a LessonCharacter from the database
+     * @param id id of the LessonCharacter
+     * @return The LessonCharacter if id exists, null otherwise.
+     */
+    public LessonCharacter getCharacterById(long id)
+    {
+        Cursor mCursor =
+            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+                    null, null, WORDTAG_TAG+" ASC", null);
+        LessonCharacter c = new LessonCharacter();
+        //if the character doesn't exists
+        if (mCursor == null) {
+            return null;
+        }
+        
+        //grab its details (step one might not be necessary and might cause slow downs
+        // but it is for data consistency.
+        mCursor =
+            mDb.query(true, CHAR_DETAILS_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+                    null, null, "Stroke ASC, OrderPoint ASC", null);
+        mCursor.moveToFirst();
+        Stroke s = new Stroke();
+        int strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
+        do {
+        	if(mCursor.getCount()==0){
+        		c.addStroke(s);
+        		break;
+        	}
+        	if(strokeNumber == mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke")))
+        	{
+        		c.addStroke(s);
+        		strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
+        	}
+        	s.addPoint(mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointX")),
+        			mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointY")));
+        }
+        while(mCursor.moveToNext());
+        return c;
+    }
+    
     /**
      * Add a word to the database
      * @param w word to be added to the database
