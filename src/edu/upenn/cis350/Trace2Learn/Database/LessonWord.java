@@ -64,6 +64,13 @@ public class LessonWord extends LessonItem {
 	}
 	
 	@Override
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
+	{
+		// TODO add animation code
+		draw(canvas, paint, left, top, width, height);
+	}
+	
+	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
 	{
 		int i = 0;

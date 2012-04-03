@@ -154,4 +154,29 @@ public class LessonCharacter extends LessonItem {
 		}
 	}
 	
+	@Override
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
+	{
+		Matrix matrix = new Matrix();
+		Log.i("DRAW", "Scale: " + width + " " + height);
+		Log.i("DRAW", "Strokes: " + _strokes.size());
+		Log.i("DRAW", "Time: " + time);
+		matrix.postScale(width, height);
+		matrix.postTranslate(left,  top);
+		
+		List<Stroke> strokes = getStrokes();
+		
+		float strokeTime = 1F/strokes.size();
+		float coveredTime = 0;
+		for(Stroke stroke : strokes)
+		{
+			if(coveredTime > time) break;
+			float sTime = time - coveredTime;
+			if(sTime > strokeTime) sTime = strokeTime;
+			Path path = stroke.toPath(matrix, sTime/strokeTime);
+			canvas.drawPath(path, paint);
+			coveredTime += strokeTime;
+		}
+	}
+	
 }

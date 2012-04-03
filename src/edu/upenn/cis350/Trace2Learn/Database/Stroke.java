@@ -70,12 +70,9 @@ public class Stroke {
 	/**	
 	 * @return A path representation of the stroke which can be drawn on-screen
 	 */
-	public synchronized Path toPath()
+	public synchronized Path toPath(float time)
 	{
-		if(_cachedPath != null)
-		{
-			return new Path(_cachedPath);
-		}
+		if(time > 1) return toPath();
 		Path path = new Path();
 		if(_points.size() <= 0) 
 		{
@@ -87,27 +84,29 @@ public class Stroke {
 			path.moveTo(p.x, p.y);
 			return path;
 		}
-		
+		float pTime = 1F/_points.size();
+		if(time < pTime) return path;
 		Iterator<PointF> iter = _points.iterator();
 		PointF p1 = iter.next();
 		PointF p2 = iter.next();
 		path.moveTo(p1.x, p1.y);
-		
-		if(iter.hasNext())
+		float covered = pTime;
+		if(covered <= time && iter.hasNext())
 		{
 			p1 = p2;
 			p2 = iter.next();
+			covered+=pTime;
 		}
 		
-		while(iter.hasNext())
+		while(covered <= time && iter.hasNext())
 		{
 			path.quadTo(p1.x, p1.y, (p2.x + p1.x) / 2, (p2.y + p1.y) / 2);
 			p1 = p2;
 			p2 = iter.next();
+			covered+=pTime;
 		}
 		
 		path.lineTo(p2.x, p2.y);
-		_cachedPath = path;
 		return new Path(path);
 	}
 	
@@ -116,6 +115,18 @@ public class Stroke {
 		Path p = toPath();
 		p.transform(transform);
 		return p;
+	}
+	
+	public Path toPath(Matrix transform, float time)
+	{
+		Path p = toPath(time);
+		p.transform(transform);
+		return p;
+	}
+	
+	public Path toPath()
+	{
+		return toPath(1);
 	}
 	
 }

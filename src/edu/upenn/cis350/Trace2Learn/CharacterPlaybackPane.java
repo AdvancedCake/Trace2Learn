@@ -15,19 +15,20 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	protected int _currentStroke = 0;
 	protected boolean _animated;
 	protected long _lastTick;
-	protected int _fps;
+	protected float _animationLength;
 	
 	protected Thread _refreshTimer;
 	protected Handler _handler;
 	
 	protected boolean _timerOff = true;
+	private float _elapsedTime;
 	
-	public CharacterPlaybackPane(Context context, Paint paint, boolean animated, int fps)
+	public CharacterPlaybackPane(Context context, Paint paint, boolean animated, float animationLength)
 	{
 		super(context, paint);
 		resetPlayback();
 		_animated = animated;
-		_fps = fps;
+		_animationLength = animationLength;
 		
 		_handler = new Handler();
 		
@@ -106,15 +107,15 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		}
 	}
 	
-	public void setAnimated(boolean animate, int fps)
+	public void setAnimated(boolean animate, float length)
 	{
 		setAnimated(animate);
-		setFrameRate(fps);
+		setAnimationLength(length);
 	}
 	
-	public void setFrameRate(int fps)
+	public void setAnimationLength(float length)
 	{
-		if(fps > 0) _fps = fps;
+		if(length > 0) _animationLength = length;
 	}
 	
 	/**
@@ -124,6 +125,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	{
 		_currentStroke = 0;
 		_lastTick = System.currentTimeMillis();
+		_elapsedTime = 0;
 	}
 	
 	/**
@@ -163,44 +165,30 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	protected void animate()
 	{
 		long ticks = System.currentTimeMillis() - _lastTick;
-		if(ticks >= 1000/_fps)
-		{
-			_lastTick = System.currentTimeMillis();
-			stepPlayback();
-		}
+		_elapsedTime += ticks/1000F;
+		_lastTick = System.currentTimeMillis();
 	}
 	
 	@Override
 	public void onDraw(Canvas canvas)
 	{
 		animate();
+		
+		float time = _elapsedTime/_animationLength;
+		
 		canvas.drawColor(_backgroundColor);
 		
 		if(_character != null)
 		{
 			if(_animated)
 			{
-				drawStrokes(canvas, _character, _currentStroke);
+				_character.draw(canvas, time);
 			}
 			else
 			{
-				drawCharacter(canvas, _character);
+				_character.draw(canvas);
 			}
 			
-		}
-	}
-
-	/**
-	 * Draws the first strokes of a character to the canvas
-	 * @param canvas - the canvas to draw the strokes from
-	 * @param character - the character being drawn
-	 * @param strokes - the number of strokes to be drawn (will draw from stroke 0 to strokes)
-	 */
-	protected void drawStrokes(Canvas canvas, LessonCharacter character, int strokes)
-	{
-		for(int i = 0; i < strokes; i++)
-		{
-			drawStroke(canvas, character.getStroke(i));
 		}
 	}
 	

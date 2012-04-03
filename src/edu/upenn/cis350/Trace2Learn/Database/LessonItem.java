@@ -106,13 +106,32 @@ public abstract class LessonItem {
 		Paint paint = buildPaint(canvas.getHeight());
         
         draw(canvas, paint);
-		
+	}
+	
+	public void draw(Canvas canvas, float time)
+	{
+		Paint paint = buildPaint(canvas.getHeight());
+        
+        draw(canvas, paint, time);
 	}
 	
 	public void draw(Canvas canvas, Paint paint)
 	{
 		Rect bounds = canvas.getClipBounds();
 		draw(canvas, paint, bounds.left, bounds.top, bounds.width(), bounds.height());
+	}
+	
+	public void draw(Canvas canvas, Paint paint, float time)
+	{
+		Rect bounds = canvas.getClipBounds();
+		draw(canvas, paint, bounds.left, bounds.top, bounds.width(), bounds.height(), time);
+	}
+	
+	public void draw(Canvas canvas, float left, float top, float width, float height, float time)
+	{
+		Paint paint = buildPaint(height);
+        
+        draw(canvas, paint, left, top, width, height, 1);
 	}
 	
 	public void draw(Canvas canvas, float left, float top, float width, float height)
@@ -137,7 +156,11 @@ public abstract class LessonItem {
         
         return paint;
 	}
-
-	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height);
 	
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
+	{
+		draw(canvas, paint, left, top, width, height, 1F);
+	}
+	
+	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time);
 }
