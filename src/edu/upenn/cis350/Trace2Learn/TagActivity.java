@@ -3,6 +3,8 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.List;
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -29,8 +31,8 @@ public class TagActivity extends Activity {
 	//Variables
 	private long id;
 	private List<String> currentTags;
-	//ItemType type;
-	String type;
+	
+	ItemType type;
 	ArrayAdapter<String> arrAdapter;
 	
 	@Override
@@ -49,16 +51,24 @@ public class TagActivity extends Activity {
         
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
-        type = this.getIntent().getStringExtra("TYPE");
+        type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));
         
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
         
         //Assuming that it is a character
-        if(type.equals("CHARACTER"))
+        if(type == ItemType.CHARACTER)
+        {
         	currentTags = mDbHelper.getTags(id);
-        if(type.equals("WORD"))
+        }
+        else if(type == ItemType.WORD)
+        {
         	currentTags = mDbHelper.getWordTags(id);
+        }
+        else
+        {
+        	Log.e("Tag", "Unsupported Type");
+        }
 
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
@@ -89,11 +99,11 @@ public class TagActivity extends Activity {
 			Editable input = editText.getText();
 			String input2 = input.toString(); //This is the string of the tag you typed in
 			
-			if (type.equals("CHARACTER"))
+			if (type == ItemType.CHARACTER)
 			{
 				mDbHelper.createTags(id, input2); //added it to db
 			}
-			else if (type.equals("WORD"))
+			else if (type == ItemType.WORD)
 			{		
 				mDbHelper.createWordTags(id, input2);	
 			}
@@ -113,11 +123,11 @@ public class TagActivity extends Activity {
 	public void onAddPrivateTagButtonClick(View view){
 		Editable input = editPrivateText.getText();
 		String input2 = input.toString();
-		if (type.equals("CHARACTER"))
+		if (type == ItemType.CHARACTER)
 		{
 			mDbHelper.updatePrivateTag(id, input2); //added it to db
 		}
-		else if (type.equals("WORD"))
+		else if (type == ItemType.WORD)
 		{		
 			mDbHelper.updatePrivateWordTag(id, input2);	
 		}

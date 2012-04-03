@@ -387,7 +387,7 @@ public class DbAdapter {
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
         mCursor =
-            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"_id"}, "_id = "+ id, null,
+            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID, "CharId"}, WORDS_ROWID + "=" + id, null,
                     null, null, "WordOrder ASC", null);
         mCursor.moveToFirst();
         Stroke s = new Stroke();
@@ -395,7 +395,9 @@ public class DbAdapter {
         	if(mCursor.getCount()==0){
         		break;
         	}
-        	w.addCharacter(mCursor.getLong(mCursor.getColumnIndexOrThrow("CharId")));
+        	long charId = mCursor.getLong(mCursor.getColumnIndexOrThrow("CharId"));
+        	Log.i("LOAD", "Char: " + charId);
+        	w.addCharacter(charId);
         } while(mCursor.moveToNext());
         return w;
     }

@@ -73,7 +73,7 @@ public class TestTagDbActivity extends Activity {
 		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
 		for(long id : ids)
 		{
-			Log.i("Found", "id:"+id);
+			Log.i("Found", "Word id: "+id);
 			// TODO add in code for loading LessonWord
 			LessonWord word = this.mDbHelper.getWordById(id);
 			items.add(word);
@@ -86,47 +86,6 @@ public class TestTagDbActivity extends Activity {
 	public void onCharSearchButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.search_char);
 		String charText = charEt.getText().toString();
-		/*long charId = Long.valueOf(charText);
-		Log.d(ACTIVITY_SERVICE, "here");
-		
-		List<String> c = mDbHelper.getTags(charId);
-		StringBuilder builder = new StringBuilder();
-		Iterator<String> i = c.iterator();
-		while(i.hasNext()){
-			builder.append(i.next() + "\n");
-		}
-		do{
-			if(c.getCount()==0){
-				Log.d(ACTIVITY_SERVICE, "zeroRows");
-				builder.append("No results");
-				break;
-			}
-			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_TAG))+"\n");			
-		}
-		while(c.moveToNext());
-		String output = builder.toString();
-		
-		Log.d(ACTIVITY_SERVICE, output);
-		
-		TextView results = (TextView)findViewById(R.id.results);
-		results.setText(output);*/
-		/*Cursor c = mDbHelper.getChars(charText);
-		StringBuilder builder = new StringBuilder();
-		do{
-			if(c.getCount()==0){
-				Log.d(ACTIVITY_SERVICE, "zeroRows");
-				builder.append("No results");
-				break;
-			}
-			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
-		}
-		while(c.moveToNext());
-		String output = builder.toString();
-		
-		Log.d(ACTIVITY_SERVICE, output);
-		
-		TextView results = (TextView)findViewById(R.id.results);
-		results.setText(output);*/
 		
 		Cursor c = mDbHelper.getChars(charText);
 		List<Long> ids = new LinkedList<Long>();
@@ -161,7 +120,7 @@ public class TestTagDbActivity extends Activity {
 				//builder.append("No results");
 				break;
 			}
-			ids.add(c.getLong(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+			ids.add(c.getLong(c.getColumnIndexOrThrow(DbAdapter.WORDTAG_ROWID)));
 			//builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
 		}
 		while(c.moveToNext());
