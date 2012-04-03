@@ -15,6 +15,7 @@ import android.util.Log;
 public class DbAdapter {
 	
     public static final String CHAR_ROWID = "_id";
+    public static final String WORDS_ROWID = "_id";
         
     public static final String CHARTAG_ROWID = "_id";
     public static final String CHARTAG_TAG= "tag";
@@ -332,7 +333,7 @@ public class DbAdapter {
     {
         Cursor mCursor =
             mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
-                    null, null, WORDTAG_TAG+" ASC", null);
+                    null, null, null, null);
         LessonCharacter c = new LessonCharacter();
         //if the character doesn't exists
         if (mCursor == null) {
@@ -342,7 +343,7 @@ public class DbAdapter {
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
         mCursor =
-            mDb.query(true, CHAR_DETAILS_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+            mDb.query(true, CHAR_DETAILS_TABLE, new String[] {"CharId"}, "CharId = "+ id, null,
                     null, null, "Stroke ASC, OrderPoint ASC", null);
         mCursor.moveToFirst();
         Stroke s = new Stroke();
@@ -362,6 +363,39 @@ public class DbAdapter {
         }
         while(mCursor.moveToNext());
         return c;
+    }
+    
+
+    /**
+     * Get a LessonCharacter from the database
+     * @param id id of the LessonCharacter
+     * @return The LessonCharacter if id exists, null otherwise.
+     */
+    public LessonWord getWordById(long id)
+    {
+        Cursor mCursor =
+            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, WORDS_ROWID + "=" + id, null,
+                    null, null, null, null);
+        LessonWord w = new LessonWord();
+        //if the character doesn't exists
+        if (mCursor == null) {
+            return null;
+        }
+        
+        //grab its details (step one might not be necessary and might cause slow downs
+        // but it is for data consistency.
+        mCursor =
+            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"_id"}, "_id = "+ id, null,
+                    null, null, "WordOrder ASC", null);
+        mCursor.moveToFirst();
+        Stroke s = new Stroke();
+        do {
+        	if(mCursor.getCount()==0){
+        		break;
+        	}
+        	w.addCharacter(mCursor.getLong(mCursor.getColumnIndexOrThrow("CharId")));
+        } while(mCursor.moveToNext());
+        return w;
     }
     
     /**
