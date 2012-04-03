@@ -103,14 +103,7 @@ public abstract class LessonItem {
 	
 	public void draw(Canvas canvas)
 	{
-		Paint paint = new Paint();
-        paint.setAntiAlias(true);
-        paint.setDither(true);
-        paint.setColor(0xFFFF0000);
-        paint.setStyle(Paint.Style.STROKE);
-        paint.setStrokeJoin(Paint.Join.ROUND);
-        paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeWidth(12);
+		Paint paint = buildPaint(canvas.getHeight());
         
         draw(canvas, paint);
 		
@@ -124,6 +117,15 @@ public abstract class LessonItem {
 	
 	public void draw(Canvas canvas, float left, float top, float width, float height)
 	{
+		Paint paint = buildPaint(height);
+        
+        draw(canvas, paint, left, top, width, height);
+	}
+	
+	private static final float _heightToStroke = 12F/400F;
+	
+	private Paint buildPaint(float height) {
+		
 		Paint paint = new Paint();
         paint.setAntiAlias(true);
         paint.setDither(true);
@@ -131,11 +133,11 @@ public abstract class LessonItem {
         paint.setStyle(Paint.Style.STROKE);
         paint.setStrokeJoin(Paint.Join.ROUND);
         paint.setStrokeCap(Paint.Cap.ROUND);
-        paint.setStrokeWidth(12);
+        paint.setStrokeWidth(height*_heightToStroke);
         
-        draw(canvas, paint, left, top, width, height);
+        return paint;
 	}
-	
+
 	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height);
 	
 }

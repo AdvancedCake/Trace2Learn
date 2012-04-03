@@ -353,15 +353,17 @@ public class DbAdapter {
         		c.addStroke(s);
         		break;
         	}
-        	if(strokeNumber == mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke")))
+        	if(strokeNumber != mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke")))
         	{
         		c.addStroke(s);
         		strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
+        		s = new Stroke();
         	}
         	s.addPoint(mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointX")),
         			mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointY")));
         }
         while(mCursor.moveToNext());
+        c.addStroke(s);
         return c;
     }
     

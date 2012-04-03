@@ -143,6 +143,7 @@ public class LessonCharacter extends LessonItem {
 	{
 		Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
+		Log.i("DRAW", "Strokes: " + _strokes.size());
 		matrix.postScale(width, height);
 		matrix.postTranslate(left,  top);
 		List<Stroke> strokes = getStrokes();
