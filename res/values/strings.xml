@@ -24,5 +24,6 @@
 	<string name="tag1">Tagged</string>
 	
 	<string name="li_preview_description">Preview</string>
+	<string name="charplace">Placeholder</string>
 	
 </resources>
