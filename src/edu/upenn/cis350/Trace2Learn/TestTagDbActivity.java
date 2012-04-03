@@ -7,6 +7,7 @@ import java.util.List;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 import android.app.Activity;
 import android.content.Context;
@@ -50,6 +51,7 @@ public class TestTagDbActivity extends Activity {
 		for(long id : ids)
 		{
 			Log.i("Found", "id:"+id);
+			// TODO add in code for loading LessonWord
 			LessonItem character = new LessonCharacter(id);
 			items.add(character);
 			
@@ -57,6 +59,24 @@ public class TestTagDbActivity extends Activity {
 		 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		list.setAdapter(new LessonItemListAdapter(this, items, vi));
 	}
+	private void setWordList(List<Long> ids)
+	{
+		ListView list = (ListView)this.findViewById(R.id.results);
+		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
+		for(long id : ids)
+		{
+			Log.i("Found", "id:"+id);
+			// TODO add in code for loading LessonWord
+			LessonWord word = new LessonWord();
+			word.setId(id);
+			word.addCharacter(0L);
+			word.addCharacter(1L);
+			items.add(word);
+		}
+		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		list.setAdapter(new LessonItemListAdapter(this, items, vi));
+	}
+	
 	
 	public void onCharSearchButtonClick(View view){
 		EditText charEt = (EditText)findViewById(R.id.search_char);
@@ -129,21 +149,18 @@ public class TestTagDbActivity extends Activity {
 		String tagText = tagEt.getText().toString();
 		
 		Cursor c = mDbHelper.getWords(tagText);
-		StringBuilder builder = new StringBuilder();
+		List<Long> ids = new LinkedList<Long>();
 		do{
 			if(c.getCount()==0){
 				Log.d(ACTIVITY_SERVICE, "zeroRows");
-				builder.append("No results");
+				//builder.append("No results");
 				break;
 			}
-			builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
+			ids.add(c.getLong(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+			//builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
 		}
 		while(c.moveToNext());
-		String output = builder.toString();
+		setWordList(ids);
 		
-		Log.d(ACTIVITY_SERVICE, output);
-		
-		TextView results = (TextView)findViewById(R.id.results);
-		results.setText(output);
 	}
 }

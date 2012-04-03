@@ -1,18 +1,40 @@
 package edu.upenn.cis350.Trace2Learn;
 
+import java.util.List;
+
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class BitmapFactory {
 	
-	private static final int _default_width = 256;
-	private static final int _default_height = 256;
+	private static final int _default_width = 64;
+	private static final int _default_height = 64;
 	
 	public static Bitmap buildBitmap(LessonItem item)
 	{
 		return buildBitmap(item, _default_width, _default_height);
+	}
+	
+	/**
+	 * Builds a bitmap composed of the provided items, each item with the given height
+	 * @param items
+	 * @param height
+	 * @return a bitmap which is size (items.size()*height)x(height) in dimensions
+	 */
+	public static Bitmap buildBitmap(LessonItem item, int height)
+	{
+		if(item instanceof LessonWord)
+		{
+			int width = ((LessonWord)item).length()*height;
+			return buildBitmap(item, width, height);
+		}
+		else
+		{
+			return buildBitmap(item, height, height);
+		}
 	}
 	
 	public static Bitmap buildBitmap(LessonItem item, int width, int height)
@@ -23,5 +45,7 @@ public class BitmapFactory {
         item.draw(canvas);
         return bitmap;
 	}
+	
+	
 	
 }

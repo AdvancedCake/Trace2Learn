@@ -116,6 +116,20 @@ public abstract class LessonItem {
 		draw(canvas, paint, bounds.left, bounds.top, bounds.width(), bounds.height());
 	}
 	
+	public void draw(Canvas canvas, float left, float top, float width, float height)
+	{
+		Paint paint = new Paint();
+        paint.setAntiAlias(true);
+        paint.setDither(true);
+        paint.setColor(0xFFFF0000);
+        paint.setStyle(Paint.Style.STROKE);
+        paint.setStrokeJoin(Paint.Join.ROUND);
+        paint.setStrokeCap(Paint.Cap.ROUND);
+        paint.setStrokeWidth(12);
+        
+        draw(canvas, paint, left, top, width, height);
+	}
+	
 	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height);
 	
 }

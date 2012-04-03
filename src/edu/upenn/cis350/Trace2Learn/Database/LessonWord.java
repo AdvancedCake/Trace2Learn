@@ -27,6 +27,11 @@ public class LessonWord extends LessonItem {
 		return _characters.get(i).longValue();
 	}
 	
+	public int length()
+	{
+		return _characters.size();
+	}
+	
 	public synchronized boolean removeCharacter(Long character){
 		return _characters.remove(character);
 	}
@@ -42,7 +47,14 @@ public class LessonWord extends LessonItem {
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
 	{
-		// TODO determine how LessonWords should be shown
+		int i = 0;
+		float charWidth = width/length();
+		for(Long id : _characters)
+		{
+			LessonCharacter character = new LessonCharacter(id);
+			character.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
+			i++;
+		}
 	}
 	
 	
