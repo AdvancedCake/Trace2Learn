@@ -29,6 +29,7 @@ public class BitmapFactory {
 		if(item instanceof LessonWord)
 		{
 			int width = ((LessonWord)item).length()*height;
+			if(width == 0) width = height;
 			return buildBitmap(item, width, height);
 		}
 		else

@@ -13,6 +13,7 @@ public abstract class LessonItem {
 	protected List<String> _tags;
 	protected long _id;
 	protected String private_tag;
+	protected DbAdapter _db;
 	
 	/** Identifier for type of character **/
 	protected ItemType _type;
@@ -37,6 +38,11 @@ public abstract class LessonItem {
 	public void setId(long id)
 	{
 		_id = id;
+	}
+	
+	public void setDatabase(DbAdapter db)
+	{
+		_db = db;
 	}
 	
 	public long getId()

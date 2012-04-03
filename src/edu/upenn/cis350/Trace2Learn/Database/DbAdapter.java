@@ -343,7 +343,7 @@ public class DbAdapter {
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
         mCursor =
-            mDb.query(true, CHAR_DETAILS_TABLE, new String[] {"CharId"}, "CharId = "+ id, null,
+            mDb.query(true, CHAR_DETAILS_TABLE, new String[] {"CharId", "Stroke","PointX","PointY"}, "CharId = "+ id, null,
                     null, null, "Stroke ASC, OrderPoint ASC", null);
         mCursor.moveToFirst();
         Stroke s = new Stroke();
@@ -427,7 +427,7 @@ public class DbAdapter {
     	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
     	
     	//add each character to WORDS_TABLE
-    	List<Long> l = w.getCharacters();
+    	List<Long> l = w.getCharacterIds();
     	//character ordering
     	int charNumber=0;
     	for(Long c:l)

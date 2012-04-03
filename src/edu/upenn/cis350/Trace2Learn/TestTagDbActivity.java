@@ -52,9 +52,17 @@ public class TestTagDbActivity extends Activity {
 		{
 			Log.i("Found", "id:"+id);
 			// TODO add in code for loading LessonWord
-			LessonItem character = new LessonCharacter(id);
+			LessonItem character;
+			try
+			{
+				character = mDbHelper.getCharacterById(id);
+			}
+			catch(Exception e)
+			{
+				character = new LessonCharacter(id);
+				Log.d("SEARCH", "Character " + id + " not found in db");
+			}
 			items.add(character);
-			
 		}
 		 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		list.setAdapter(new LessonItemListAdapter(this, items, vi));
@@ -67,10 +75,7 @@ public class TestTagDbActivity extends Activity {
 		{
 			Log.i("Found", "id:"+id);
 			// TODO add in code for loading LessonWord
-			LessonWord word = new LessonWord();
-			word.setId(id);
-			word.addCharacter(0L);
-			word.addCharacter(1L);
+			LessonWord word = this.mDbHelper.getWordById(id);
 			items.add(word);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

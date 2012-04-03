@@ -19,12 +19,31 @@ public class LessonWord extends LessonItem {
 		_characters.add(character);
 	}
 	
-	public synchronized List<Long> getCharacters(){
+	public synchronized List<Long> getCharacterIds(){
 		return new ArrayList<Long>(_characters);
 	}
 	
-	public synchronized long getCharacter(int i){
+	public synchronized long getCharacterId(int i){
 		return _characters.get(i).longValue();
+	}
+	
+	public synchronized List<LessonCharacter> getCharacters()
+	{
+		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_characters.size());
+		for(Long id : _characters)
+		{
+			if(_db == null) 
+			{
+				chars.add(new LessonCharacter(id));
+			}
+			else
+			{
+				LessonCharacter ch = _db.getCharacterById(id);
+				chars.add(ch);
+			}
+			
+		}
+		return chars;
 	}
 	
 	public int length()
@@ -51,7 +70,15 @@ public class LessonWord extends LessonItem {
 		float charWidth = width/length();
 		for(Long id : _characters)
 		{
-			LessonCharacter character = new LessonCharacter(id);
+			LessonCharacter character;
+			if(_db == null)
+			{
+				character = new LessonCharacter(id);
+			}
+			else
+			{
+				character = _db.getCharacterById(id);
+			}
 			character.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
 			i++;
 		}
