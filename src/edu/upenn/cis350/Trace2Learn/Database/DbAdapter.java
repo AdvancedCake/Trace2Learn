@@ -364,6 +364,7 @@ public class DbAdapter {
         }
         while(mCursor.moveToNext());
         c.addStroke(s);
+        c.setId(id);
         return c;
     }
     
