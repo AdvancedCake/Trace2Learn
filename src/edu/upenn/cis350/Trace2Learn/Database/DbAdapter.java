@@ -365,6 +365,14 @@ public class DbAdapter {
         while(mCursor.moveToNext());
         c.addStroke(s);
         c.setId(id);
+        
+        mCursor =
+                mDb.query(true, CHAR_TABLE, new String[] {"name"}, CHAR_ROWID + " = "+ id, null,
+                        null, null, null, null);
+        mCursor.moveToFirst();
+        String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+        c.setPrivateTag(privateTag);
+        
         return c;
     }
     

@@ -30,6 +30,7 @@ public class BrowseCharactersActivity extends ListActivity {
         List<Long> ids = dba.getAllCharIds();
         for(long id : ids){
         	LessonItem character = dba.getCharacterById(id);
+        	character.setTagList(dba.getTags(id));
         	items.add(character);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
