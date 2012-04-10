@@ -20,6 +20,7 @@
         </activity>
         <activity android:name="CharacterCreationActivity"></activity>
         <activity android:name="CreateWordActivity"></activity>
+        <activity android:name="CreateLessonActivity"></activity>
         <activity android:name="TagActivity"></activity>
         <activity android:name="TestTagDbActivity"></activity>
         <activity android:name="BrowseCharactersActivity"></activity>
