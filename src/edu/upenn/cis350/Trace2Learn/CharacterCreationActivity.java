@@ -44,13 +44,12 @@ public class CharacterCreationActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		_paint = new Paint();
 		setContentView(R.layout.test_char_display);
 
 		_characterViewSlot = (LinearLayout)this.findViewById(id.character_view_slot);
 		_contextButton = (Button)this.findViewById(id.context_button);
-		_creationPane = new CharacterCreationPane(this, _paint);
-		_playbackPane = new CharacterPlaybackPane(this, _paint, false, 2);
+		_creationPane = new CharacterCreationPane(this);
+		_playbackPane = new CharacterPlaybackPane(this, false, 2);
 		
 		/*RelativeLayout layout = (RelativeLayout)this.findViewById(id.view_slot);
 		LessonItemListingLayout li = new LessonItemListingLayout(this);
@@ -59,14 +58,6 @@ public class CharacterCreationActivity extends Activity {
 		setCharacter(new LessonCharacter());
 
 		_tagText = (TextView)this.findViewById(id.tag_list);
-		
-		_paint.setAntiAlias(true);
-		_paint.setDither(true);
-		_paint.setColor(0xFFFF0000);
-		_paint.setStyle(Paint.Style.STROKE);
-		_paint.setStrokeJoin(Paint.Join.ROUND);
-		_paint.setStrokeCap(Paint.Cap.ROUND);
-		_paint.setStrokeWidth(12);
 		
 		_dbHelper = new DbAdapter(this);
         _dbHelper.open();

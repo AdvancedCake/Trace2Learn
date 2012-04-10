@@ -14,8 +14,8 @@ public abstract class DrawingPane extends CharacterViewPane {
 	private float _prevX, _prevY;
 	private static final float TOUCH_TOLERANCE = 4;
 
-	public DrawingPane(Context c, Paint paint) {
-		super(c, paint);
+	public DrawingPane(Context c) {
+		super(c);
 	}
 
 	@Override

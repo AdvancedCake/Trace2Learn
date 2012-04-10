@@ -23,9 +23,9 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	protected boolean _timerOff = true;
 	private float _elapsedTime;
 	
-	public CharacterPlaybackPane(Context context, Paint paint, boolean animated, float animationLength)
+	public CharacterPlaybackPane(Context context, boolean animated, float animationLength)
 	{
-		super(context, paint);
+		super(context);
 		resetPlayback();
 		_animated = animated;
 		_animationLength = animationLength;
@@ -33,13 +33,13 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		_handler = new Handler();
 		
 	}
-	public CharacterPlaybackPane(Context context, Paint paint, boolean animated)
+	public CharacterPlaybackPane(Context context, boolean animated)
 	{
-		this(context, paint, false, 30);
+		this(context, false, 30);
 	}
 	
-	public CharacterPlaybackPane(Context context, Paint paint) {
-		this(context, paint, false);
+	public CharacterPlaybackPane(Context context) {
+		this(context, false);
 	}
 	
 	public void setCharacter(LessonCharacter character)

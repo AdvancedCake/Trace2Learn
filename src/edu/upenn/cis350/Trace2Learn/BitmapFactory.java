@@ -21,9 +21,9 @@ public class BitmapFactory {
 	
 	/**
 	 * Builds a bitmap composed of the provided items, each item with the given height
-	 * @param items
-	 * @param height
-	 * @return a bitmap which is size (items.size()*height)x(height) in dimensions
+	 * @param item - The item to be drawn
+	 * @param height - the height of the bitmap to be created
+	 * @return a bitmap which is size (items.length()*height)x(height) in dimensions
 	 */
 	public static Bitmap buildBitmap(LessonItem item, int height)
 	{
@@ -39,6 +39,13 @@ public class BitmapFactory {
 		}
 	}
 	
+	/**
+	 * Builds a bitmap of the given image which is width x height in size
+	 * @param item - The item to be drawn
+	 * @param width - The width of the bitmap to be created
+	 * @param height - The height of the bitmap to be created
+	 * @return
+	 */
 	public static Bitmap buildBitmap(LessonItem item, int width, int height)
 	{
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
