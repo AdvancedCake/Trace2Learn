@@ -69,11 +69,18 @@ public class Lesson extends LessonItem {
 		// TODO add animation code
 		draw(canvas, paint, left, top, width, height);
 	}
+
+	@Override
+	protected boolean updateTypeData() {
+		// TODO Auto-generated method stub
+		return false;
+	}
 	
-	//@Override
-	/*public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
+	@Override
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
 	{
-		int i = 0;
+		// TODO
+		/*int i = 0;
 		float charWidth = width/length();
 		for(Long id : _phrases)
 		{
@@ -88,8 +95,8 @@ public class Lesson extends LessonItem {
 			}
 			word.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
 			i++;
-		}
-	}*/
+		}*/
+	}
 	
 	
 }
