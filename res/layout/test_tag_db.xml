@@ -4,53 +4,82 @@
     android:layout_height="fill_parent"
     android:orientation="vertical" >
 
-     
-    
-     <TextView android:layout_width="wrap_content"
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search a character tag" />
-     
-     <LinearLayout android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
 
-         <EditText android:id="@+id/search_char"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:layout_weight="1" />
-        
-        <Button android:id="@+id/search_char_button"
-            android:text="@string/search"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/search_char"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/search_char_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onCharSearchButtonClick"/>
-        
+            android:onClick="onCharSearchButtonClick"
+            android:text="@string/search" />
     </LinearLayout>
-    
-     <TextView android:layout_width="wrap_content"
+
+    <TextView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Search a word tag" />
-     
-     <LinearLayout android:orientation="horizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
 
-         <EditText android:id="@+id/search_tag"
+    <LinearLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content" 
-        android:layout_weight="1" />
-        
-        <Button android:id="@+id/search_tag_button"
-            android:text="@string/search"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/search_tag"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/search_tag_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onWordSearchButtonClick"/>
-        
+            android:onClick="onWordSearchButtonClick"
+            android:text="@string/search" />
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Search a lesson tag" />
+    
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <EditText
+            android:id="@+id/search_lesson_tag"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/search_lesson_tag_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onLessonSearchButtonClick"
+            android:text="@string/search" />
     </LinearLayout>
     
-     <ListView android:id="@android:id/list"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/results"/>
+    <ListView
+        android:id="@android:id/list"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/results" />
 
 </LinearLayout>

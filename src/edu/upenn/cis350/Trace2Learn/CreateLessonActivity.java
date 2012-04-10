@@ -90,9 +90,9 @@ public class CreateLessonActivity extends Activity {
 	}
 	
 	public void onAddTagButtonClick(View view){
-		/*Intent i = new Intent(this, TagActivity.class);
+		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", newLesson.getId());
 		i.putExtra("TYPE", newLesson.getItemType().toString());
-		startActivity(i);*/
+		startActivity(i);
 	}
 }

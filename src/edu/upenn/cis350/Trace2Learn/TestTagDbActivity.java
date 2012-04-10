@@ -160,4 +160,27 @@ public class TestTagDbActivity extends ListActivity {
 		showingChars=false;
 		
 	}
+	
+	public void onLessonSearchButtonClick(View view){
+		// TODO: Add in Lesson search support
+		/*EditText tagEt = (EditText)findViewById(R.id.search_lesson_tag);
+		String tagText = tagEt.getText().toString();
+		
+		Cursor c = mDbHelper.getLessons(tagText);
+		List<Long> ids = new LinkedList<Long>();
+		do{
+			if(c.getCount()==0){
+				Log.d(ACTIVITY_SERVICE, "zeroRows");
+				//builder.append("No results");
+				break;
+			}
+			ids.add(c.getLong(c.getColumnIndexOrThrow(DbAdapter.WORDTAG_ROWID)));
+			//builder.append(c.getString(c.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID))+"\n");			
+		}
+		while(c.moveToNext());
+		setWordList(ids);
+		showingChars=false;*/
+		
+	}
+	
 }

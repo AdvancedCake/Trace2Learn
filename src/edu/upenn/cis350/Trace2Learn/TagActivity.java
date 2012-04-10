@@ -56,18 +56,19 @@ public class TagActivity extends Activity {
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
         
-        //Assuming that it is a character
-        if(type == ItemType.CHARACTER)
+        switch(type)
         {
+        case CHARACTER:
         	currentTags = mDbHelper.getTags(id);
-        }
-        else if(type == ItemType.WORD)
-        {
+        	break;
+        case WORD:
         	currentTags = mDbHelper.getWordTags(id);
-        }
-        else
-        {
-        	Log.e("Tag", "Unsupported Type");
+        	break;
+        case LESSON:
+        	currentTags = mDbHelper.getLessonTags(id);
+        	break;
+        default:
+    		Log.e("Tag", "Unsupported Type");
         }
 
         //Populate the ListView
@@ -99,15 +100,20 @@ public class TagActivity extends Activity {
 			Editable input = editText.getText();
 			String input2 = input.toString(); //This is the string of the tag you typed in
 			
-			if (type == ItemType.CHARACTER)
-			{
-				mDbHelper.createTags(id, input2); //added it to db
-			}
-			else if (type == ItemType.WORD)
-			{		
-				mDbHelper.createWordTags(id, input2);	
-			}
-			
+			switch(type)
+	        {
+	        case CHARACTER:
+	        	mDbHelper.createTags(id, input2);
+	        	break;
+	        case WORD:
+	        	mDbHelper.createWordTags(id, input2);
+	        	break;
+	        case LESSON:
+	        	mDbHelper.createLessonTags(id, input2);
+	        	break;
+	        default:
+	    		Log.e("Tag", "Unsupported Type");
+	        }
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
 			currentTags.add(input2);
