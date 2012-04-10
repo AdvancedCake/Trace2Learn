@@ -7,6 +7,7 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -40,12 +41,25 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		LessonItem item = _items.get(position);
 		ImageView image = (ImageView)v.findViewById(R.id.li_image);
 		TextView text = (TextView)v.findViewById(R.id.li_description);
+		TextView text2 = (TextView)v.findViewById(R.id.li_description2);
 		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
 		image.setImageBitmap(bitmap);
 		// TODO Initialize TextView part
 		//StringBuilder string = new StringBuilder();
 		//string.append(string)
-		text.setText(item.getId()+"");
+		text.setText(item.getId()+" "+item.getPrivateTag());
+		ArrayList<String> tags = new ArrayList<String>(item.getTags());
+		StringBuilder sb = new StringBuilder();
+		for(String tag : tags){
+			Log.e("Tag","Found");
+			sb.append(", "+tag);
+		}
+		String s = "";
+		if(sb.length()>0){
+			s = sb.substring(2);
+			Log.e("Printing Tags",s);
+		}
+		text2.setText(s);
 		return v;
 	}
 	

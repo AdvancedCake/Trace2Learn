@@ -102,6 +102,10 @@ public abstract class LessonItem {
 		return private_tag;
 	}
 	
+	public void setTagList(List<String> tags){
+		_tags.addAll(tags);
+	}
+	
 	/**
 	 * Updates the LessonItem's contents to match those in the database
 	 */

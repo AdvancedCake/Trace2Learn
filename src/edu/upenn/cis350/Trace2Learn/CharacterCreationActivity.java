@@ -71,7 +71,20 @@ public class CharacterCreationActivity extends Activity {
 		_dbHelper = new DbAdapter(this);
         _dbHelper.open();
 		
-		setCharacterCreationPane();
+        Bundle bun = getIntent().getExtras();
+        if(bun != null && bun.containsKey("mode")){
+        	String mode = bun.getString("mode");
+        	if(mode.equals("display"))
+        	{
+        		setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
+        		setCharacterDisplayPane();
+        		id_to_pass = bun.getLong("charId");
+        		updateTags();
+        	}
+        	       		
+        }
+        else
+        	setCharacterCreationPane();
 
 	}
 	

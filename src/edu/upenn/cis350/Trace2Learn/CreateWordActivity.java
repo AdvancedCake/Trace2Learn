@@ -34,10 +34,12 @@ public class CreateWordActivity extends Activity {
 	private ArrayList<Bitmap> currentChars;
 	private Gallery gallery;
 	private ImageAdapter imgAdapter;
+	private int numChars;
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        numChars = 0;
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
         dba = new DbAdapter(this);
@@ -47,6 +49,7 @@ public class CreateWordActivity extends Activity {
         gallery = (Gallery)findViewById(R.id.gallery);
         //gallery.setUnselectedAlpha(1.0f);
         gallery.setSpacing(0);
+        
         gallery.setAdapter(imgAdapter);
         
         list = (ListView)findViewById(R.id.charslist);
@@ -58,11 +61,11 @@ public class CreateWordActivity extends Activity {
         		c,
         		new String[]{DbAdapter.CHAR_ROWID},
         		new int[]{android.R.id.text1});*/
-        
+        newWord = new LessonWord();
         ArrayList<LessonItem> items = new ArrayList<LessonItem>();
         List<Long> ids = dba.getAllCharIds();
         for(long id : ids){
-        	LessonItem character = new LessonCharacter(id);
+        	LessonItem character = dba.getCharacterById(id);
         	items.add(character);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -70,19 +73,24 @@ public class CreateWordActivity extends Activity {
         //dba.close();
         list.setOnItemClickListener(new OnItemClickListener() {
     
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {                
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
+            	numChars++;
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
                 long charId = ((LessonCharacter)list.getItemAtPosition(position)).getId();
                 Log.e("Id",Long.toString(charId));
+                newWord.addCharacter(charId);
                 LessonItem item = (LessonCharacter)list.getItemAtPosition(position);
-                Bitmap bitmap = BitmapFactory.buildBitmap(item, 50, 50);
+                //LessonItem item = dba.getCharacterById(((LessonCharacter)list.getItemAtPosition(position)).getId());
+                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
                 currentChars.add(bitmap);
                 imgAdapter.update(currentChars);
                 imgAdapter.notifyDataSetChanged();
+                //gallery.setAdapter(imgAdapter);
+                gallery.setSelection(numChars/2);
             }
         });
-        newWord = new LessonWord();
+        
     }
 	
 	/*@Override
