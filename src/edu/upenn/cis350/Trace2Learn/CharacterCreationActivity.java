@@ -78,6 +78,8 @@ public class CharacterCreationActivity extends Activity {
         	{
         		setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
         		setCharacterDisplayPane();
+        		id_to_pass = bun.getLong("charId");
+        		updateTags();
         	}
         	       		
         }
