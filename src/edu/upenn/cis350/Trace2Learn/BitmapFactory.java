@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class BitmapFactory {
@@ -26,7 +27,7 @@ public class BitmapFactory {
 	 */
 	public static Bitmap buildBitmap(LessonItem item, int height)
 	{
-		if(item instanceof LessonWord)
+		if(item.getItemType() == ItemType.WORD)
 		{
 			int width = ((LessonWord)item).length()*height;
 			if(width == 0) width = height;
