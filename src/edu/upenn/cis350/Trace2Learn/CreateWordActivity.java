@@ -36,6 +36,7 @@ public class CreateWordActivity extends Activity {
 	private ImageAdapter imgAdapter;
 	private int numChars;
 	
+	//initializes the list if all characters in the database
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,20 +48,12 @@ public class CreateWordActivity extends Activity {
         
         imgAdapter = new ImageAdapter(this,currentChars);
         gallery = (Gallery)findViewById(R.id.gallery);
-        //gallery.setUnselectedAlpha(1.0f);
         gallery.setSpacing(0);
         
         gallery.setAdapter(imgAdapter);
         
         list = (ListView)findViewById(R.id.charslist);
-        /*Cursor c = dba.getAllCharIdsCursor();
-        Log.e("getCharIDs",Integer.toString(c.getCount()));
-        ListAdapter adapter = new SimpleCursorAdapter(
-        		this,
-        		android.R.layout.simple_list_item_1,
-        		c,
-        		new String[]{DbAdapter.CHAR_ROWID},
-        		new int[]{android.R.id.text1});*/
+
         newWord = new LessonWord();
         ArrayList<LessonItem> items = new ArrayList<LessonItem>();
         List<Long> ids = dba.getAllCharIds();
@@ -72,43 +65,26 @@ public class CreateWordActivity extends Activity {
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         list.setAdapter(new LessonItemListAdapter(this, items, vi));
         //dba.close();
+        
+        //when a char is clicked, it is added to the new word and added to the gallery
         list.setOnItemClickListener(new OnItemClickListener() {
     
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
             	numChars++;
-                Log.e("Position",Long.toString(position));
-                Log.e("Type",list.getItemAtPosition(position).getClass().getName());
                 long charId = ((LessonCharacter)list.getItemAtPosition(position)).getId();
-                Log.e("Id",Long.toString(charId));
                 newWord.addCharacter(charId);
                 LessonItem item = (LessonCharacter)list.getItemAtPosition(position);
-                //LessonItem item = dba.getCharacterById(((LessonCharacter)list.getItemAtPosition(position)).getId());
                 Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
                 currentChars.add(bitmap);
                 imgAdapter.update(currentChars);
                 imgAdapter.notifyDataSetChanged();
-                //gallery.setAdapter(imgAdapter);
                 gallery.setSelection(numChars/2);
             }
         });
         
     }
 	
-	/*@Override
-	protected void onListItemClick(ListView l, View v, int position, long id){
-		super.onListItemClick(l, v, position, id);
-		
-		Cursor c = (Cursor) getListView().getItemAtPosition(position);
-		long index = c.getLong(0);
-		Log.e("Clicked",c.getString(0));
-		newWord.addCharacter((Long)index);
-		
-		TextView word = (TextView)findViewById(R.id.characters);
-		CharSequence cs = word.getText();
-		String newString = cs.toString() + Long.toString(index);
-		word.setText(newString);
-	}*/
-	
+	//adds the new word to the database
 	public void onSaveWordButtonClick(View view){
 		if(dba.addWord(newWord)){
 			TextView word = (TextView)findViewById(R.id.characters);
@@ -117,6 +93,7 @@ public class CreateWordActivity extends Activity {
 		//return to home screen
 	}
 	
+	//brings the user to the tag screen
 	public void onAddTagButtonClick(View view){
 		
 		Intent i = new Intent(this, TagActivity.class);
@@ -125,6 +102,7 @@ public class CreateWordActivity extends Activity {
 		startActivity(i);
 	}
 	
+	//for testing purposes
 	public LessonWord getWord(){
 		return newWord;
 	}

@@ -11,6 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.Gallery;
 import android.widget.ImageView;
 
+//Adapter class for a list of bitmap images
 public class ImageAdapter extends BaseAdapter {
     int mGalleryItemBackground;
     private Context mContext;
@@ -26,18 +27,22 @@ public class ImageAdapter extends BaseAdapter {
         this.images = images;
     }
 
+    //returns the number of images in the list
     public int getCount() {
         return images.size();
     }
 
+    //returns the bitmap at position
     public Object getItem(int position) {
         return images.get(position);
     }
 
+    //get the position of the item
     public long getItemId(int position) {
         return position;
     }
     
+    //update the list of bitmaps with images
     public void update(ArrayList<Bitmap> images){
     	this.images = images;
     }

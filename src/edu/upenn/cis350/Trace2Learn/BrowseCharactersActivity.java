@@ -19,6 +19,8 @@ public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
 	private ListView list;
 	private ArrayList<LessonItem> items;
+	
+	//initialized list of all characters
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +45,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	  clickOnItem(items.get(position));
 	}  
 
+	//when character is clicked, it starts the display mode for that char
 	public void clickOnItem(LessonItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
