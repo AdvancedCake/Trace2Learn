@@ -27,6 +27,10 @@ public class LessonWord extends LessonItem {
 		return _characters.get(i).longValue();
 	}
 	
+	/**
+	 * Gets a list of the Characters that make up the word
+	 * @return
+	 */
 	public List<LessonCharacter> getCharacters()
 	{
 		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_characters.size());

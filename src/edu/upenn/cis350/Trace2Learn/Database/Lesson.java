@@ -7,7 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 
 public class Lesson extends LessonItem {
-
+	
 	private List<Long> _words;
 
 	public Lesson(){
@@ -27,23 +27,27 @@ public class Lesson extends LessonItem {
 		return _words.get(i).longValue();
 	}
 
-	public synchronized List<LessonCharacter> getWords()
+	/**
+	 * Get the list of items that compose this lesson
+	 * @return the list of characters that compose this word
+	 */
+	public synchronized List<LessonWord> getWords()
 	{
-		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_words.size());
+		ArrayList<LessonWord> words = new ArrayList<LessonWord>(_words.size());
 		for(Long id : _words)
 		{
 			if(_db == null) 
 			{
-				chars.add(new LessonCharacter(id));
+				words.add(new LessonWord());
 			}
 			else
 			{
-				LessonCharacter ch = _db.getCharacterById(id);
-				chars.add(ch);
+				LessonWord word = _db.getWordById(id);
+				words.add(word);
 			}
 
 		}
-		return chars;
+		return words;
 	}
 
 	public int length()
@@ -79,7 +83,6 @@ public class Lesson extends LessonItem {
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
 	{
-		// TODO add animation code
 		draw(canvas, paint, left, top, width, height);
 	}
 
