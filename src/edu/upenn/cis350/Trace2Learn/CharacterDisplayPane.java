@@ -9,8 +9,8 @@ public class CharacterDisplayPane extends CharacterViewPane {
 
 	protected LessonCharacter _character;
 	
-	public CharacterDisplayPane(Context context, Paint paint) {
-		super(context, paint);
+	public CharacterDisplayPane(Context context) {
+		super(context);
 	}
 	
 	public void setCharacter(LessonCharacter character)

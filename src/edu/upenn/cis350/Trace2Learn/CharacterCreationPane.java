@@ -12,8 +12,8 @@ public class CharacterCreationPane extends DrawingPane {
 	private LessonCharacter _character;
 	private Stroke _currentStroke;
 	
-	public CharacterCreationPane(Context c, Paint paint) {
-		super(c, paint);
+	public CharacterCreationPane(Context c) {
+		super(c);
 
 		_character = new LessonCharacter();
 		

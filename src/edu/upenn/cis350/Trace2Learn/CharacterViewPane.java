@@ -23,9 +23,16 @@ public abstract class CharacterViewPane extends View {
 	
 	protected int _backgroundColor = Color.GRAY;
 	
-	public CharacterViewPane(Context context, Paint paint) {
+	public CharacterViewPane(Context context) {
 		super(context);
-		_paint = paint;
+		_paint = new Paint();
+		_paint.setAntiAlias(true);
+		_paint.setDither(true);
+		_paint.setColor(0xFFFF0000);
+		_paint.setStyle(Paint.Style.STROKE);
+		_paint.setStrokeJoin(Paint.Join.ROUND);
+		_paint.setStrokeCap(Paint.Cap.ROUND);
+		_paint.setStrokeWidth(12);
 	}
 
 	/**
