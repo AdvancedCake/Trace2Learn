@@ -123,4 +123,8 @@ public class CreateWordActivity extends Activity {
 		i.putExtra("TYPE", newWord.getItemType().toString());
 		startActivity(i);
 	}
+	
+	public LessonWord getWord(){
+		return newWord;
+	}
 }
