@@ -48,7 +48,7 @@
         
     </LinearLayout>
     
-     <ListView android:id="@+id/results"
+     <ListView android:id="@android:id/list"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/results"/>
