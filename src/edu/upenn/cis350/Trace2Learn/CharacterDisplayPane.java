@@ -23,7 +23,6 @@ public class CharacterDisplayPane extends CharacterViewPane {
 	{
 		canvas.drawColor(_backgroundColor);
 
-		// Consider using a bitmap buffer so only new strokes are drawn.
 		if(_character != null)
 		{
 			drawCharacter(canvas, _character);

@@ -17,83 +17,91 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 public class CharacterCreationActivity extends Activity {
-	
+
 	private LinearLayout _characterViewSlot;
 	private CharacterCreationPane _creationPane;
 	private CharacterPlaybackPane _playbackPane;
 	private Button _contextButton;
-	
+
 	private TextView _tagText;
-	
+
 	private DbAdapter _dbHelper;
-	
+
 	private Mode _currentMode = Mode.INVALID;
 
-	private long id_to_pass;
-	
-	private enum Mode
-	{
-		CREATION,
-		DISPLAY,
-		ANIMATE,
-		SAVE,
-		INVALID;
+	private long id_to_pass = -1;
+
+	private enum Mode {
+		CREATION, DISPLAY, ANIMATE, SAVE, INVALID;
 	}
-	
+
 	@Override
-	protected void onCreate(Bundle savedInstanceState) {
+	protected void onCreate(Bundle savedInstanceState) 
+	{
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.test_char_display);
 
-		_characterViewSlot = (LinearLayout)this.findViewById(id.character_view_slot);
-		_contextButton = (Button)this.findViewById(id.context_button);
+		_characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
+		_contextButton = (Button) this.findViewById(id.context_button);
 		_creationPane = new CharacterCreationPane(this);
 		_playbackPane = new CharacterPlaybackPane(this, false, 2);
-		
-		/*RelativeLayout layout = (RelativeLayout)this.findViewById(id.view_slot);
-		LessonItemListingLayout li = new LessonItemListingLayout(this);
-		layout.addView(li);*/
-		
+
 		setCharacter(new LessonCharacter());
 
-		_tagText = (TextView)this.findViewById(id.tag_list);
-		
+		_tagText = (TextView) this.findViewById(id.tag_list);
+
 		_dbHelper = new DbAdapter(this);
-        _dbHelper.open();
-		
-        Bundle bun = getIntent().getExtras();
-        if(bun != null && bun.containsKey("mode")){
-        	String mode = bun.getString("mode");
-        	if(mode.equals("display"))
-        	{
-        		setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
-        		setCharacterDisplayPane();
-        		id_to_pass = bun.getLong("charId");
-        		updateTags();
-        	}
-        	       		
-        }
-        else
-        	setCharacterCreationPane();
+		_dbHelper.open();
+
+		initializeMode();
 
 	}
-	
-	private synchronized void setCharacterCreationPane()
+
+	/**
+	 * Initialize the display mode, if the activity was started with intent to
+	 * display a character, that character should be displayed
+	 */
+	private void initializeMode() 
 	{
-		if(_currentMode != Mode.CREATION)
+		Bundle bun = getIntent().getExtras();
+		if (bun != null && bun.containsKey("mode")) 
+		{
+			String mode = bun.getString("mode");
+			if (mode.equals("display")) 
+			{
+				setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
+				setCharacterDisplayPane();
+				id_to_pass = bun.getLong("charId");
+				updateTags();
+			}
+		} else 
+		{
+			setCharacterCreationPane();
+		}
+	}
+
+	/**
+	 * Switches the display mode to creation
+	 */
+	private synchronized void setCharacterCreationPane() 
+	{
+		if (_currentMode != Mode.CREATION) 
 		{
 			_currentMode = Mode.CREATION;
 			_characterViewSlot.removeAllViews();
-			_characterViewSlot.addView(_creationPane);	
+			_characterViewSlot.addView(_creationPane);
 			_contextButton.setText("Clear");
 		}
 	}
-	
+
+	/**
+	 * Switches the display mode to display
+	 */
 	private synchronized void setCharacterDisplayPane()
 	{
 		_playbackPane.setAnimated(false);
-		if(_currentMode != Mode.DISPLAY)
+		if (_currentMode != Mode.DISPLAY) 
 		{
 			LessonCharacter curChar = _creationPane.getCharacter();
 			setCharacter(curChar);
@@ -106,33 +114,28 @@ public class CharacterCreationActivity extends Activity {
 
 	public void setContentView(View view)
 	{
-        super.setContentView(view);
-    }
-	
-	private Paint _paint;
-
-	public void colorChanged(int color) {
-		_paint.setColor(color);
+		super.setContentView(view);
 	}
-	
+
 	private void setCharacter(LessonCharacter character)
 	{
 		_creationPane.setCharacter(character);
 		_playbackPane.setCharacter(character);
-		
 	}
-	
+
 	private void updateTags()
 	{
-		List<String> tags = _dbHelper.getTags(id_to_pass);
-		this._tagText.setText(tagsToString(tags));
-		// TODO need functionality for getting Characters from DB
-		//setCharacter(_dbHelper.getCharacter(id_to_pass));
+		if (id_to_pass >= 0)
+		{
+			List<String> tags = _dbHelper.getTags(id_to_pass);
+			this._tagText.setText(tagsToString(tags));
+			setCharacter(_dbHelper.getCharacterById(id_to_pass));
+		}
 	}
-	
+
 	public void onContextButtonClick(View view)
 	{
-		switch(_currentMode)
+		switch (_currentMode)
 		{
 		case CREATION:
 			_creationPane.clearPane();
@@ -158,47 +161,52 @@ public class CharacterCreationActivity extends Activity {
 		super.onRestart();
 		updateTags();
 	}
-	
+
 	private String tagsToString(List<String> tags)
 	{
 		StringBuffer buf = new StringBuffer();
-		for(String str : tags)
+		for (String str : tags)
 		{
 			buf.append(str + ", ");
 		}
-		
+
 		return buf.toString();
 	}
-	
+
 	public void onCreateButtonClick(View view)
 	{
 		setCharacterCreationPane();
 	}
-	
+
 	public void onSaveButtonClick(View view)
 	{
 		LessonCharacter character = _creationPane.getCharacter();
 		_dbHelper.addCharacter(character);
-		Log.e("Adding to DB",Long.toString(character.getId()));
+		Log.e("Adding to DB", Long.toString(character.getId()));
 		id_to_pass = character.getId();
 		updateTags();
 	}
-	
-	public void onTagButtonClick(View view)
-	{		
-		LessonCharacter character = _creationPane.getCharacter();
-		
-		Log.e("Passing this CharID",Long.toString(id_to_pass));
-		Intent i = new Intent(this, TagActivity.class);
 
-		i.putExtra("ID", id_to_pass);
-		i.putExtra("TYPE", character.getItemType().toString());
-		
-		startActivity(i);
-		
+	public void onTagButtonClick(View view) 
+	{
+		LessonCharacter character = _creationPane.getCharacter();
+		if (id_to_pass >= 0) 
+		{
+			Log.e("Passing this CharID", Long.toString(id_to_pass));
+			Intent i = new Intent(this, TagActivity.class);
+
+			i.putExtra("ID", id_to_pass);
+			i.putExtra("TYPE", character.getItemType().toString());
+
+			startActivity(i);
+		} else
+		{
+			_tagText.setText("Error: Save the character before adding tags");
+		}
+
 	}
-	
-	public void onDisplayButtonClick(View view)
+
+	public void onDisplayButtonClick(View view) 
 	{
 		Log.i("CLICK", "DISPLAY");
 		setCharacterDisplayPane();

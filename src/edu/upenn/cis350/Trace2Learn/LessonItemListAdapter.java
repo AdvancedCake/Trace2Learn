@@ -30,12 +30,16 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		_items = new ArrayList<LessonItem>(objects);
 		_vi = vi;
 	}
-	
+	/**
+	 * Configures the view for the given item in the list
+	 * @param position - the index of the item in the list
+	 * @param convertView - the constructed view that should be modified
+	 * @param parent - The contained of the list
+	 */
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
 		if (v == null) {
-			
 			v = _vi.inflate(R.layout.lesson_item_desc, null);
 		}
 		LessonItem item = _items.get(position);
@@ -44,10 +48,8 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		TextView text2 = (TextView)v.findViewById(R.id.li_description2);
 		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
 		image.setImageBitmap(bitmap);
-		// TODO Initialize TextView part
-		//StringBuilder string = new StringBuilder();
-		//string.append(string)
-		text.setText(item.getId()+" "+item.getPrivateTag());
+		
+		text.setText(item.getPrivateTag());
 		ArrayList<String> tags = new ArrayList<String>(item.getTags());
 		StringBuilder sb = new StringBuilder();
 		for(String tag : tags){

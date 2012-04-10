@@ -35,7 +35,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	}
 	public CharacterPlaybackPane(Context context, boolean animated)
 	{
-		this(context, false, 30);
+		this(context, false, 60);
 	}
 	
 	public CharacterPlaybackPane(Context context) {
@@ -48,6 +48,9 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		resetPlayback();
 	}
 	
+	/**
+	 * Builds and starts the animation timer
+	 */
 	public void startTimer()
 	{
 		if(_refreshTimer == null)
@@ -79,6 +82,9 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		}
 	}
 	
+	/**
+	 * If the timer is running, stop the timer
+	 */
 	public void stopTimer()
 	{
 		if(_refreshTimer != null)
@@ -93,6 +99,10 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		}
 	}
 	
+	/**
+	 * Toggles whether or not the character should be drawn stroke by stroke
+	 * @param animate whether the character should be animated
+	 */
 	public void setAnimated(boolean animate)
 	{
 		resetPlayback();
@@ -107,6 +117,11 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		}
 	}
 	
+	/**
+	 * Toggles whether or not the character should be drawn stroke by stroke
+	 * @param animate whether the character should be animated
+	 * @param length the duration of the animation
+	 */
 	public void setAnimated(boolean animate, float length)
 	{
 		setAnimated(animate);

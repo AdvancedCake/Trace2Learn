@@ -14,6 +14,9 @@ public class SquareLayout extends LinearLayout {
 		super(context);
 	}
 
+	/**
+	 * Restricts the view to be square in shape
+	 */
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
     	if(widthMeasureSpec > heightMeasureSpec)

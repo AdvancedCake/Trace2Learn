@@ -13,55 +13,66 @@ import android.widget.TextView;
 
 public class MainMenuActivity extends ListActivity {
 	
-	static final String[] APPS = new String[] { "Create Character", 
-		"Create Word", "Create Lesson", "Test Search by Tags", "Browse All Characters"};
+	static final String[] APPS = new String[]
+		{ 
+			"Create Character", 
+			"Create Word",
+			"Create Lesson", 
+			"Test Search by Tags",
+			"Browse All Characters"
+		};
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
-		// no more this
-		// setContentView(R.layout.list_fruit);
 
 		setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu,APPS));
 
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
 		final Context c=this;
-		listView.setOnItemClickListener(new OnItemClickListener() {
-			public void onItemClick(AdapterView<?> parent, View view,
-					int position, long id) {
-				CharSequence clicked = ((TextView) view).getText();
-				if(clicked.equals(APPS[0]))
+		
+		listView.setOnItemClickListener(
+			new OnItemClickListener() 
+			{
+				public void onItemClick(
+						AdapterView<?> parent,
+						View view,
+						int position,
+						long id) 
 				{
-					Intent i = new Intent().setClass(c, CharacterCreationActivity.class);
-					startActivity(i);
+					CharSequence clicked = ((TextView) view).getText();
+					if(clicked.equals(APPS[0]))
+					{
+						Intent i = new Intent().setClass(c, CharacterCreationActivity.class);
+						startActivity(i);
+					}
+					else if(clicked.equals(APPS[1]))
+					{
+	
+						Intent i = new Intent(c, CreateWordActivity.class);
+						startActivity(i);
+					
+					}
+					else if(clicked.equals(APPS[2]))
+					{
+	
+						Intent i = new Intent(c, CreateLessonActivity.class);
+						startActivity(i);
+					
+					}
+					else if(clicked.equals(APPS[3]))
+					{
+						Intent i = new Intent(c, TestTagDbActivity.class);
+						startActivity(i);
+					
+					}
+					else{
+						Intent i = new Intent(c, BrowseCharactersActivity.class);
+						startActivity(i);
+					}
 				}
-				else if(clicked.equals(APPS[1]))
-				{
-
-					Intent i = new Intent(c, CreateWordActivity.class);
-					startActivity(i);
-				
-				}
-				else if(clicked.equals(APPS[2]))
-				{
-
-					Intent i = new Intent(c, CreateLessonActivity.class);
-					startActivity(i);
-				
-				}
-				else if(clicked.equals(APPS[3]))
-				{
-					Intent i = new Intent(c, TestTagDbActivity.class);
-					startActivity(i);
-				
-				}
-				else{
-					Intent i = new Intent(c, BrowseCharactersActivity.class);
-					startActivity(i);
-				}
-		}});
-
+			}
+		);
 	}
 }
