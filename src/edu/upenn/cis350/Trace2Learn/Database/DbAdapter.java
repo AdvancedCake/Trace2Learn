@@ -66,7 +66,8 @@ public class DbAdapter {
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
 
     private static final String DATABASE_CREATE_LESSONS=
-            "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT);";
+            "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            "name TEXT);";
         
     private static final String DATABASE_CREATE_LESSONS_DETAILS =
             "CREATE TABLE LessonsDetails (" +
