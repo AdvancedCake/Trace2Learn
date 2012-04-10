@@ -70,12 +70,12 @@ public class Lesson extends LessonItem {
 		draw(canvas, paint, left, top, width, height);
 	}
 	
-	//@Override
-	/*public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
+	@Override
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
 	{
 		int i = 0;
 		float charWidth = width/length();
-		for(Long id : _phrases)
+		for(Long id : _words)
 		{
 			LessonWord word;
 			if(_db == null)
@@ -84,12 +84,12 @@ public class Lesson extends LessonItem {
 			}
 			else
 			{
-				word = _db.getCharacterById(id);
+				word = _db.getWordById(id);
 			}
 			word.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
 			i++;
 		}
-	}*/
+	}
 	
 	
 }
