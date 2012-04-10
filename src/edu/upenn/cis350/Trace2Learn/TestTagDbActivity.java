@@ -10,7 +10,9 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 import android.app.Activity;
+import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,9 +22,12 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class TestTagDbActivity extends Activity {
+public class TestTagDbActivity extends ListActivity {
 
 	private DbAdapter mDbHelper;
+	private boolean showingChars;
+	ArrayList<LessonItem> items;
+	
 	
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,8 +51,7 @@ public class TestTagDbActivity extends Activity {
 	
 	private void setCharList(List<Long> ids)
 	{
-		ListView list = (ListView)this.findViewById(R.id.results);
-		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
+		items = new ArrayList<LessonItem>();
 		for(long id : ids)
 		{
 			Log.i("Found", "id:"+id);
@@ -62,15 +66,15 @@ public class TestTagDbActivity extends Activity {
 				character = new LessonCharacter(id);
 				Log.d("SEARCH", "Character " + id + " not found in db");
 			}
+			character.setTagList(mDbHelper.getTags(id));
 			items.add(character);
 		}
-		 LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		list.setAdapter(new LessonItemListAdapter(this, items, vi));
+		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		setListAdapter(new LessonItemListAdapter(this, items, vi));
 	}
 	private void setWordList(List<Long> ids)
 	{
-		ListView list = (ListView)this.findViewById(R.id.results);
-		ArrayList<LessonItem> items = new ArrayList<LessonItem>();
+		items = new ArrayList<LessonItem>();
 		for(long id : ids)
 		{
 			Log.i("Found", "Word id: "+id);
@@ -79,8 +83,35 @@ public class TestTagDbActivity extends Activity {
 			items.add(word);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-		list.setAdapter(new LessonItemListAdapter(this, items, vi));
+		setListAdapter(new LessonItemListAdapter(this, items, vi));
 	}
+	
+	@Override  
+	protected void onListItemClick(ListView l, View v, int position, long id) {  
+	  super.onListItemClick(l, v, position, id);  
+	  if(this.showingChars)
+		  clickOnChar(items.get(position));
+	  else
+		  clickOnWord(items.get(position));
+	}  
+	
+	public void clickOnChar(LessonItem li){
+		Intent intent = new Intent();
+		Bundle bun = new Bundle();
+
+		bun.putString("mode", "display");
+		bun.putLong("charId", li.getId());
+
+		intent.setClass(this, CharacterCreationActivity.class);
+		intent.putExtras(bun);
+		startActivity(intent);
+	}
+
+	public void clickOnWord(LessonItem li){
+		//TODO: implement 
+	}
+
+	
 	
 	
 	public void onCharSearchButtonClick(View view){
@@ -106,6 +137,7 @@ public class TestTagDbActivity extends Activity {
 		TextView results = (TextView)findViewById(R.id.results);
 		results.setText(output);*/
 		setCharList(ids);
+		showingChars=true;
 	}
 	
 	public void onWordSearchButtonClick(View view){
@@ -125,6 +157,7 @@ public class TestTagDbActivity extends Activity {
 		}
 		while(c.moveToNext());
 		setWordList(ids);
+		showingChars=false;
 		
 	}
 }

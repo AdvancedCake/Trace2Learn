@@ -42,8 +42,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	  super.onListItemClick(l, v, position, id);  
 	  clickOnItem(items.get(position));
 	}  
-	// To be called when a packet is clicked.
-	// Creates a new ViewPostActivity with dp's fields as parameters (might be clunky?)
+
 	public void clickOnItem(LessonItem li){
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();

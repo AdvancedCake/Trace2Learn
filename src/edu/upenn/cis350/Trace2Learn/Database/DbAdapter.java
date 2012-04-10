@@ -107,8 +107,10 @@ public class DbAdapter {
     private static final String WORDTAG_TABLE = "WordsTag";
     private static final String WORDS_TABLE = "Words";
     private static final String WORDS_DETAILS_TABLE = "WordsDetails";
+    private static final String LESSONS_TABLE = "Lessons";
+    private static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
     
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     private final Context mCtx;
 
@@ -242,10 +244,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
-    	if(c.getPrivateTag()!=null)
-    		initialCharValues.put("name",c.getPrivateTag());
-    	else	
-    		initialCharValues.put("name","");
+    	initializePrivateTag(c,initialCharValues);
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
@@ -409,19 +408,11 @@ public class DbAdapter {
         	Log.i("LOAD", "Char: " + charId);
         	w.addCharacter(charId);
         } while(mCursor.moveToNext());
+        w.setId(id);
+        w.setDatabase(this);
         return w;
     }
-    
-    /**
-     * Add a lesson to the database
-     * @param l lesson to be added to the database
-     * @return true if lesson is added to DB. False on error.
-     */
-    public boolean addLesson(Lesson l)
-    {
-    	return false;
-    }
-    
+     
     /**
      * Add a word to the database
      * @param w word to be added to the database
@@ -432,10 +423,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
-    	if(w.getPrivateTag()!=null)
-    		initialWordsValues.put("name", w.getPrivateTag());
-    	else
-    		initialWordsValues.put("name", "");
+    	initializePrivateTag(w, initialWordsValues);
     	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
     	if(id == -1)
     	{
@@ -450,7 +438,7 @@ public class DbAdapter {
         }
     	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
     	
-    	//add each character to WORDS_TABLE
+    	//add each character to WORDS_DETAILS_TABLE
     	List<Long> l = w.getCharacterIds();
     	//character ordering
     	int charNumber=0;
@@ -642,5 +630,65 @@ public class DbAdapter {
  	        }
  	        while(mCursor.moveToNext());
  	        return ids;
+    }
+    
+    /**
+     * Add a Lesson to the database
+     * @param les lesson to be added to the database
+     * @return true if lesson is added to DB.  False on error.
+     */
+    public boolean addLesson(Lesson les)
+    {
+    	mDb.beginTransaction();
+    	//add to WORDS_TABLE
+    	ContentValues initialLessonValues = new ContentValues();
+    	initializePrivateTag(les,initialLessonValues);
+    	long id = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
+    	if(id == -1)
+    	{
+    		//if error
+    		Log.e(LESSONS_TABLE, "cannot add new character to table "+LESSONS_TABLE);
+    		mDb.endTransaction();
+    		return false;
+    	}
+    	Cursor x = mDb.query(LESSONS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
+    	if (x != null) {
+            x.moveToFirst();
+        }
+    	les.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
+    	
+    	//add each word to LESSONS_DETAILS_TABLE
+    	List<Long> l = les.getWordIds();
+    	//word ordering
+    	int wordNumber=0;
+    	for(Long wordId:l)
+    	{
+    		ContentValues lessonValues = new ContentValues();
+    		lessonValues.put("LessonId", id);
+    		lessonValues.put("WordId", wordId);
+    		lessonValues.put("LessonOrder", wordNumber);
+    		long success = mDb.insert(LESSONS_DETAILS_TABLE, null, lessonValues);
+    		if(success == -1)
+    		{	
+    			//if error
+    			Log.e(LESSONS_DETAILS_TABLE,"cannot add to table");
+    			mDb.endTransaction();
+    			return false;
+    		}
+    		wordNumber++;
+    	}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    	
+    }
+    
+    private void initializePrivateTag(LessonItem i, ContentValues v)
+    {
+    	if(i.getPrivateTag()!=null)
+    		v.put("name",i.getPrivateTag());
+    	else	
+    		v.put("name","");
     }
 }
