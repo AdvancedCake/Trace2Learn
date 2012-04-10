@@ -77,6 +77,11 @@ public class DbAdapter {
             "FOREIGN KEY(LessonId) REFERENCES Lessons(_id)," +
             "FOREIGN KEY(WordId) REFERENCES Words(_id));";
     
+    private static final String DATABASE_CREATE_LESSONTAG =
+            "CREATE TABLE LessonTag (_id INTEGER, " +
+            "tag TEXT NOT NULL, " +
+            "FOREIGN KEY(_id) REFERENCES Lessons(_id));";
+    
     //DB Drop Statements
     
     private static final String DATABASE_DROP_CHAR = 
@@ -95,6 +100,8 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS Lessons";
     private static final String DATABASE_DROP_LESSONS_DETAILS = 
     		"DROP TABLE IF EXISTS LessonsDetails";
+    private static final String DATABASE_DROP_LESSONTAG= 
+    		"DROP TABLE IF EXISTS LessonTag";
     
     
     
@@ -109,6 +116,8 @@ public class DbAdapter {
     private static final String WORDS_DETAILS_TABLE = "WordsDetails";
     private static final String LESSONS_TABLE = "Lessons";
     private static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
+    private static final String LESSONTAG_TABLE = "LessonTag";
+    
     
     private static final int DATABASE_VERSION = 3;
 
@@ -131,6 +140,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_CREATE_WORDSTAG);
             db.execSQL(DATABASE_CREATE_LESSONS);
             db.execSQL(DATABASE_CREATE_LESSONS_DETAILS);
+            db.execSQL(DATABASE_CREATE_LESSONTAG);
         }
 
         @Override
@@ -145,6 +155,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_DROP_WORDSTAG);
             db.execSQL(DATABASE_DROP_LESSONS);
             db.execSQL(DATABASE_DROP_LESSONS_DETAILS);
+            db.execSQL(DATABASE_DROP_LESSONTAG);     
             onCreate(db);
         }
     }
@@ -193,6 +204,14 @@ public class DbAdapter {
         initialValues.put(WORDTAG_TAG, tag);
 
         return mDb.insert(WORDTAG_TABLE, null, initialValues);
+    }
+    
+    public long createLessonTags(long id, String tag) {
+    	ContentValues initialValues = new ContentValues();
+        initialValues.put("_id", id);
+        initialValues.put("tag", tag);
+
+        return mDb.insert(LESSONTAG_TABLE, null, initialValues);
     }
     
     /**
@@ -511,6 +530,34 @@ public class DbAdapter {
             mCursor.moveToFirst();
         }
         return mCursor;
+
+    }
+   
+    /**
+     * Return a List of tags that matches the given Lesson's id
+     * 
+     * @param lessonId id of lesson whose tags we want to retrieve
+     * @return List of tags
+     * @throws SQLException if lesson could not be found/retrieved
+     */
+    public List<String> getLessonTags(long lessonId) throws SQLException {
+
+        Cursor mCursor =
+
+            mDb.query(true, LESSONTAG_TABLE, new String[] {"tag"}, "_id" + "=" + lessonId, null,
+                    null, null, "tag"+" ASC", null);
+        List<String> tags = new ArrayList<String>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+        	if(mCursor.getCount()==0){
+        		break;
+        	}
+        	tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow("tag")));
+        }
+        while(mCursor.moveToNext());
+        return tags;
 
     }
     
