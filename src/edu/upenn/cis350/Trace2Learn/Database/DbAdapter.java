@@ -206,6 +206,15 @@ public class DbAdapter {
         return mDb.insert(WORDTAG_TABLE, null, initialValues);
     }
     
+    /**
+     * Create a new lesson tag. If the lesson tag is
+     * successfully created return the new rowId for that tag, otherwise sreturn
+     * a -1 to indicate failure.
+     * 
+     * @param id the row_id of the tag
+     * @param tag the text of the tag
+     * @return rowId or -1 if failed
+     */
     public long createLessonTags(long id, String tag) {
     	ContentValues initialValues = new ContentValues();
         initialValues.put("_id", id);
@@ -609,6 +618,10 @@ public class DbAdapter {
 
     }
     
+    /**
+     * Return a list of char ids from the database
+     * @return ids list of all char ids
+     */
     public List<Long> getAllCharIds(){
     	 Cursor mCursor =
 
@@ -628,6 +641,10 @@ public class DbAdapter {
 	        return ids;
     }
     
+    /**
+     * Return a Cursor positioned at all characters
+     * @return Cursor positioned to characters
+     */
     public Cursor getAllCharIdsCursor(){
    	 Cursor mCursor =
 
@@ -639,6 +656,13 @@ public class DbAdapter {
 	        return mCursor;
    }
     
+    /**
+     * Updates a private tag for a character. 
+     * 
+     * @param id row id for a character
+     * @param tag the text of the tag to add
+     * @return number of rows that were affected, 0 on no rows affected
+     */
     public long updatePrivateTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
         initialValues.put(CHAR_ROWID, id);
@@ -647,6 +671,13 @@ public class DbAdapter {
         return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID+"="+id,null);
     }
     
+    /**
+     * Updates a private tag for a word. Returns row id on 
+     * 
+     * @param id row id for a word
+     * @param tag the text of the tag to add
+     * @return number of rows that were affected, 0 on no rows affected
+     */
     public long updatePrivateWordTag(long id, String tag){
     	ContentValues initialValues = new ContentValues();
         //initialValues.put(CHAR_ROWID, id);
@@ -654,7 +685,6 @@ public class DbAdapter {
 
         return mDb.update(WORDS_TABLE, initialValues, "_id="+id,null);
     }
-    
     
     /**
      * Return a list of word ids from the database
@@ -731,6 +761,12 @@ public class DbAdapter {
     	
     }
     
+    /**
+     * Initializes a private tag
+     * 
+     * @param i the LessonItem
+     * @param v ContentValues
+     */
     private void initializePrivateTag(LessonItem i, ContentValues v)
     {
     	if(i.getPrivateTag()!=null)

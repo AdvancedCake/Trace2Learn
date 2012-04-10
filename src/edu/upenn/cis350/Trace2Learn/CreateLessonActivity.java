@@ -25,10 +25,10 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 public class CreateLessonActivity extends Activity {
 	
 	private DbAdapter dba; 
-	private ListView list; //list of words to display
-	private Gallery gallery; //gallery for every word
+	private ListView list; //list of words to display in listview
+	private Gallery gallery; 
 	private ImageAdapter imgAdapter;
-	private Lesson newLesson; //should we create a new object type?
+	private Lesson newLesson; 
 	private ArrayList<Bitmap> currentWords;
 	private int numWords;
 
@@ -43,7 +43,7 @@ public class CreateLessonActivity extends Activity {
         
         imgAdapter = new ImageAdapter(this,currentWords);
         gallery = (Gallery)findViewById(R.id.gallery);
-        //gallery.setUnselectedAlpha(1.0f);
+
         gallery.setSpacing(0);
         
         gallery.setAdapter(imgAdapter);
@@ -76,7 +76,7 @@ public class CreateLessonActivity extends Activity {
                 currentWords.add(bitmap);
                 imgAdapter.update(currentWords);
                 imgAdapter.notifyDataSetChanged();
-                //gallery.setAdapter(imgAdapter);
+
                 gallery.setSelection(numWords/2);
             }
         });
