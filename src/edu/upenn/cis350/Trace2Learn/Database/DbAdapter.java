@@ -413,6 +413,16 @@ public class DbAdapter {
     }
     
     /**
+     * Add a lesson to the database
+     * @param l lesson to be added to the database
+     * @return true if lesson is added to DB. False on error.
+     */
+    public boolean addLesson(Lesson l)
+    {
+    	return false;
+    }
+    
+    /**
      * Add a word to the database
      * @param w word to be added to the database
      * @return true if word is added to DB.  False on error.
@@ -610,4 +620,27 @@ public class DbAdapter {
         return mDb.update(WORDS_TABLE, initialValues, "_id="+id,null);
     }
     
+    
+    /**
+     * Return a list of word ids from the database
+     * @return ids list of all word ids
+     */
+    public List<Long> getAllWordIds() {
+    	 Cursor mCursor =
+
+ 	            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, null, null,
+ 	                    null, null, WORDS_ROWID+" ASC", null);
+ 	        List<Long> ids = new ArrayList<Long>();
+ 	        if (mCursor != null) {
+ 	            mCursor.moveToFirst();
+ 	        }
+ 	        do {
+ 	        	if(mCursor.getCount()==0){
+ 	        		break;
+ 	        	}
+ 	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
+ 	        }
+ 	        while(mCursor.moveToNext());
+ 	        return ids;
+    }
 }

@@ -7,9 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.util.Log;
-
 
 public class LessonCharacter extends LessonItem {
 
@@ -28,10 +26,12 @@ public class LessonCharacter extends LessonItem {
 		_id = id;
 	}
 	
-	public LessonCharacter(LessonCharacter character) {
-		this(character._id);
-		_strokes = character.getStrokes();
-		_tags = new ArrayList<String>(character._tags);
+	protected boolean updateTypeData()
+	{
+		// TODO: check against db timestamp
+		
+		
+		return true;
 	}
 	
 	public synchronized void addStroke(Stroke stroke)
@@ -138,6 +138,16 @@ public class LessonCharacter extends LessonItem {
 		return _strokes.size();
 	}
 	
+	/**
+	 * Draws the item in the canvas provided, using the provided paint brush
+	 * within the provided bounding box
+	 * @param canvas - the canvas to draw on
+	 * @param paint - the drawing settings for the item
+	 * @param left - the left bound in which the item should be drawn
+	 * @param top - the top bound in which the item should be drawn
+	 * @param width - the width of the bounding box in which the item should be drawn
+	 * @param height - the height of the bounding box in which the item should be drawn
+	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
 	{
@@ -154,6 +164,19 @@ public class LessonCharacter extends LessonItem {
 		}
 	}
 	
+	/**
+	 * Draws the item in the canvas provided, using the provided paint brush
+	 * within the provided bounding box
+	 * The time is a normalized step from 0 to 1, 0 being not shown at all
+	 * and 1 being completely drawn.
+	 * @param canvas - the canvas to draw on
+	 * @param paint - the drawing settings for the item
+	 * @param left - the left bound in which the item should be drawn
+	 * @param top - the top bound in which the item should be drawn
+	 * @param width - the width of the bounding box in which the item should be drawn
+	 * @param height - the height of the bounding box in which the item should be drawn
+	 * @param time - the time in the animation from 0 to 1
+	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
 	{
