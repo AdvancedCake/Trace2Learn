@@ -112,7 +112,7 @@ public class Stroke {
 	
 	public Path toPath(Matrix transform)
 	{
-		Path p = toPath();
+		Path p = toPath(1);
 		p.transform(transform);
 		return p;
 	}
