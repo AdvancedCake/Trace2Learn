@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/popup_layout"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#444444">
+
+    <TextView android:id="@+id/instructions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Click on a collection to add this word to it"
+            />
+    
+    <ListView
+        android:id="@+id/collectionlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0" >
+    </ListView>
+    
+    <TextView android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add word to a new collection"
+            />
+    
+    <LinearLayout
+	        android:layout_width="fill_parent"
+	        android:layout_height="wrap_content"
+	        android:orientation="horizontal">
+
+	        <EditText
+	            android:id="@+id/newcollection"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_weight="1" />
+	        
+    		<Button
+		        android:id="@+id/new_collection_button"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:onClick="onNewCollectionButtonClick"
+		        android:text="Create New" />
+			</LinearLayout>
+			
+	 <Button
+        android:id="@+id/skip_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onSkipButtonClick"
+        android:text="Skip Adding to Collection" />
+
+</LinearLayout>

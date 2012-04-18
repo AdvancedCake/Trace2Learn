@@ -709,6 +709,54 @@ public class DbAdapter {
  	        return ids;
     }
     
+    public List<String> getAllLessonNames(){
+    	 Cursor mCursor =
+
+  	            mDb.query(true, LESSONS_TABLE, new String[] {"name"}, null, null,
+  	                    null, null, "name ASC", null);
+  	        List<String> names = new ArrayList<String>();
+  	      if (mCursor != null) {
+	            mCursor.moveToFirst();
+	        }
+	        do {
+	        	if(mCursor.getCount()==0){
+	        		break;
+	        	}
+	        	names.add(mCursor.getString((mCursor.getColumnIndexOrThrow("name"))));
+	        }
+	        while(mCursor.moveToNext());
+	        return names;
+    }
+    
+    public long addWordToLesson(String lessonName, long wordId){
+    	mDb.beginTransaction();
+    	Cursor x = mDb.query(LESSONS_TABLE, new String[]{"_id"}, "name='"+lessonName+"'", null, null, null, null, null);
+    	if (x != null) {
+            x.moveToFirst();
+        }
+    	else{
+    		return -1;
+    	}
+    	int lessonId = x.getInt(x.getColumnIndexOrThrow("_id"));
+    	
+    	x = mDb.query(LESSONS_DETAILS_TABLE, new String[]{"LessonOrder"}, null, null, null, null, "LessonOrder DESC", "1");
+    	if (x != null) {
+            x.moveToFirst();
+        }
+    	else{
+    		return -1;
+    	}
+    	int lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
+    	ContentValues values = new ContentValues();
+    	values.put("LessonId", lessonId);
+    	values.put("WordId", wordId);
+    	values.put("LessonOrder",lessonOrder);
+    	long ret = mDb.insert(LESSONS_DETAILS_TABLE, null, values);
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return ret;
+    }
+    
     /**
      * Add a Lesson to the database
      * @param les lesson to be added to the database
