@@ -115,12 +115,12 @@ public class CharacterCreationActivity extends Activity {
 	 */
 	private synchronized void setCharacterTracePane()
 	{
+		_tracePane.clearPane();
 		if (_currentMode != Mode.TRACE) 
 		{
 			LessonCharacter curChar = _creationPane.getCharacter();
 			setCharacter(curChar);
 			_currentMode = Mode.TRACE;
-			_tracePane.clearPane();
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_tracePane);
 		}
