@@ -14,7 +14,6 @@
     <string name="create">Create</string>
     <string name="save">Save</string>
     <string name="clear">Clear</string>
-    <string name="display">Display</string>
 
 	<string name="tag_header">Current Tags</string>
 	<string name="addtag_header">Add Tag</string>
@@ -25,5 +24,7 @@
 	
 	<string name="li_preview_description">Preview</string>
 	<string name="charplace">Placeholder</string>
+	<string name="practice">Practice</string>
+	<string name="animate">Playback</string>
 	
 </resources>

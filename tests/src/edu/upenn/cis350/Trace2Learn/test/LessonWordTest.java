@@ -1,8 +1,8 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Characters.LessonWord;
-import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import junit.framework.TestCase;
 
 public class LessonWordTest extends TestCase {
@@ -26,7 +26,7 @@ public class LessonWordTest extends TestCase {
 		LessonWord w = new LessonWord();
 		assertEquals(0,w.getCharacters().size());
 		try{
-			w.getCharacter(0);
+			w.getCharacterId(0);
 		}catch(IndexOutOfBoundsException e){}
 		try{
 			w.removeCharacter(0);
@@ -39,7 +39,7 @@ public class LessonWordTest extends TestCase {
 		LessonWord w = new LessonWord();
 		w.addCharacter(c1.getId());
 		assertEquals(1,w.getCharacters().size());
-		assertEquals(c1.getId(),w.getCharacter(0));
+		assertEquals(c1.getId(),w.getCharacterId(0));
 		assertTrue(!w.removeCharacter(c2.getId()));
 		assertTrue(w.removeCharacter(c1.getId()));
 		assertTrue(!w.removeCharacter(c1.getId()));
@@ -59,7 +59,7 @@ public class LessonWordTest extends TestCase {
 		w.addCharacter(c3.getId());
 		assertEquals(4,w.getCharacters().size());
 		
-		assertEquals(c3.getId(),w.getCharacter(3));
+		assertEquals(c3.getId(),w.getCharacterId(3));
 		assertEquals(c2.getId(),w.removeCharacter(1));
 		assertEquals(c3.getId(),w.removeCharacter(2));
 		assertEquals(c1.getId(),w.removeCharacter(0));

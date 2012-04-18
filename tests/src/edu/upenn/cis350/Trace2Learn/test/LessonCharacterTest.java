@@ -1,17 +1,36 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
-import edu.upenn.cis350.Trace2Learn.Characters.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Characters.Stroke;
+import android.test.AndroidTestCase;
+import android.test.ProviderTestCase2;
+import android.util.Log;
+import edu.upenn.cis350.Trace2Learn.BrowseCharactersActivity;
+import edu.upenn.cis350.Trace2Learn.CharacterCreationActivity;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 import junit.framework.TestCase;
 
-public class LessonCharacterTest extends TestCase {
+public class LessonCharacterTest extends AndroidTestCase {
 	
 	Stroke s1, s2, s3;
 
-
+	protected void dumpDBs()
+	{
+		for(String str : this.getContext().databaseList())
+		{
+			Log.i("DELETE", str);
+			this.getContext().deleteDatabase(str);
+		}
+	}
+	
+	DbAdapter db;
 	protected void setUp() throws Exception {
 		super.setUp();
-
+		dumpDBs();
+		db = new DbAdapter(this.getContext());
+		db.open();
+		// TODO: Clear Database
+		
 		s1 = new Stroke(1,1);
 		s1.addPoint(2, 2);
 		s1.addPoint(3, 3);
@@ -26,6 +45,19 @@ public class LessonCharacterTest extends TestCase {
 
 	}
 
+	protected void tearDown()
+	{
+		dumpDBs();
+	}
+	
+	public void compareCharacters(LessonCharacter expected, LessonCharacter actual)
+	{
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getNumStrokes(), actual.getNumStrokes());
+		assertEquals(expected.getItemType(), actual.getItemType());
+		assertEquals(expected.getTags(), actual.getTags());
+	}
+	
 	public void testNoStrokes()
 	{
 		LessonCharacter c = new LessonCharacter();
@@ -38,6 +70,13 @@ public class LessonCharacterTest extends TestCase {
 			c.removeStroke(0);
 		}catch(IndexOutOfBoundsException e){}
 		
+	}
+	
+	public void testNoStrokesSave()
+	{
+		LessonCharacter c = new LessonCharacter();
+		db.addCharacter(c);
+		compareCharacters(c, db.getCharacterById(c.getId()));
 	}
 	
 	public void testOneStroke()
@@ -56,6 +95,25 @@ public class LessonCharacterTest extends TestCase {
 		assertTrue(!c.removeStroke(s2));
 		
 	}
+	
+	public void testOneStrokeSave()
+	{
+		LessonCharacter c = new LessonCharacter();
+		c.addStroke(s1);
+		db.addCharacter(c);
+		compareCharacters(c, db.getCharacterById(c.getId()));
+	}
+	
+	public void testAddStrokeAfterSave()
+	{
+		LessonCharacter c = new LessonCharacter();
+		c.addStroke(s1);
+		db.addCharacter(c);
+		compareCharacters(c, db.getCharacterById(c.getId()));
+		c.addStroke(s2);
+		compareCharacters(c, db.getCharacterById(c.getId()));
+	}
+	
 	
 	public void testRemovalByIndex()
 	{
@@ -117,7 +175,13 @@ public class LessonCharacterTest extends TestCase {
 		
 	}
 	
-	
-	
+	public void testSaveTags()
+	{
+		LessonCharacter c = new LessonCharacter();
+		c.addTag("Tag1");
+		db.addCharacter(c);
+		LessonCharacter c1 = db.getCharacterById(c.getId());
+		compareCharacters(c1, c);
+	}
 	
 }

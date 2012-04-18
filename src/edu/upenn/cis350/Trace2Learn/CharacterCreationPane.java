@@ -9,7 +9,7 @@ import android.graphics.Paint;
 
 public class CharacterCreationPane extends DrawingPane {
 
-	private LessonCharacter _character;
+	protected LessonCharacter _character;
 	private Stroke _currentStroke;
 	
 	public CharacterCreationPane(Context c) {

@@ -5,7 +5,8 @@ import java.util.List;
 import android.graphics.PointF;
 import android.graphics.Path;
 import junit.framework.TestCase;
-import edu.upenn.cis350.Trace2Learn.Characters.*;
+import edu.upenn.cis350.Trace2Learn.Database.*;
+import edu.upenn.cis350.Trace2Learn.Database.Stroke;
 
 public class StrokeTest extends TestCase {
 

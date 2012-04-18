@@ -20,9 +20,9 @@ public class CharacterCreationActivity extends Activity {
 
 	private LinearLayout _characterViewSlot;
 	private CharacterCreationPane _creationPane;
-	private CharacterPlaybackPane _playbackPane;
-	private Button _contextButton;
-
+	private CharacterPlaybackPane _playbackPane;	
+	private CharacterTracePane _tracePane;
+	
 	private TextView _tagText;
 
 	private DbAdapter _dbHelper;
@@ -32,7 +32,7 @@ public class CharacterCreationActivity extends Activity {
 	private long id_to_pass = -1;
 
 	private enum Mode {
-		CREATION, DISPLAY, ANIMATE, SAVE, INVALID;
+		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
 
 	@Override
@@ -43,9 +43,9 @@ public class CharacterCreationActivity extends Activity {
 		setContentView(R.layout.test_char_display);
 
 		_characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
-		_contextButton = (Button) this.findViewById(id.context_button);
 		_creationPane = new CharacterCreationPane(this);
 		_playbackPane = new CharacterPlaybackPane(this, false, 2);
+		_tracePane = new CharacterTracePane(this);
 
 		setCharacter(new LessonCharacter());
 
@@ -91,7 +91,6 @@ public class CharacterCreationActivity extends Activity {
 			_currentMode = Mode.CREATION;
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_creationPane);
-			_contextButton.setText("Clear");
 		}
 	}
 
@@ -100,7 +99,7 @@ public class CharacterCreationActivity extends Activity {
 	 */
 	private synchronized void setCharacterDisplayPane()
 	{
-		_playbackPane.setAnimated(false);
+		_playbackPane.setAnimated(true);
 		if (_currentMode != Mode.DISPLAY) 
 		{
 			LessonCharacter curChar = _creationPane.getCharacter();
@@ -108,10 +107,25 @@ public class CharacterCreationActivity extends Activity {
 			_currentMode = Mode.DISPLAY;
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_playbackPane);
-			_contextButton.setText("Animate");
 		}
 	}
 
+	/**
+	 * Switches the display mode to display
+	 */
+	private synchronized void setCharacterTracePane()
+	{
+		if (_currentMode != Mode.TRACE) 
+		{
+			LessonCharacter curChar = _creationPane.getCharacter();
+			setCharacter(curChar);
+			_currentMode = Mode.TRACE;
+			_tracePane.clearPane();
+			_characterViewSlot.removeAllViews();
+			_characterViewSlot.addView(_tracePane);
+		}
+	}
+	
 	public void setContentView(View view)
 	{
 		super.setContentView(view);
@@ -121,6 +135,7 @@ public class CharacterCreationActivity extends Activity {
 	{
 		_creationPane.setCharacter(character);
 		_playbackPane.setCharacter(character);
+		_tracePane.setTemplate(character);
 	}
 
 	private void updateTags()
@@ -133,28 +148,18 @@ public class CharacterCreationActivity extends Activity {
 		}
 	}
 
-	public void onContextButtonClick(View view)
+	public void onClearButtonClick(View view)
 	{
-		switch (_currentMode)
-		{
-		case CREATION:
-			_creationPane.clearPane();
-			break;
-		case DISPLAY:
-			_currentMode = Mode.ANIMATE;
-			_playbackPane.setAnimated(true);
-			_contextButton.setText("Stop");
-			break;
-		case ANIMATE:
-			_currentMode = Mode.DISPLAY;
-			_playbackPane.setAnimated(false);
-			_contextButton.setText("Animate");
-			break;
-		case SAVE:
-			break;
-		}
+		_creationPane.clearPane();
+		_tracePane.clearPane();
+		_playbackPane.clearPane();
 	}
-
+	
+	public void onTraceButtonClick(View view)
+	{
+		setCharacterTracePane();
+	}
+	
 	@Override
 	public void onRestart()
 	{
@@ -181,9 +186,14 @@ public class CharacterCreationActivity extends Activity {
 	public void onSaveButtonClick(View view)
 	{
 		LessonCharacter character = _creationPane.getCharacter();
+		long id = character.getId();
 		_dbHelper.addCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
 		id_to_pass = character.getId();
+		if(id >= 0)
+		{
+			onTagButtonClick(view);
+		}
 		updateTags();
 	}
 
@@ -206,7 +216,7 @@ public class CharacterCreationActivity extends Activity {
 
 	}
 
-	public void onDisplayButtonClick(View view) 
+	public void onAnimateButtonClick(View view) 
 	{
 		Log.i("CLICK", "DISPLAY");
 		setCharacterDisplayPane();

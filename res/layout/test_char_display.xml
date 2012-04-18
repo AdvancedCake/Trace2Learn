@@ -46,25 +46,25 @@
 		        android:onClick="onSaveButtonClick"
 		        android:text="@string/save" />
 		    
-		    <Button
-		        android:id="@+id/tag_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onTagButtonClick"
-		        android:text="@string/tag" />
-		    
 			<Button
-		        android:id="@+id/display_button"
+		        android:id="@+id/trace_button"
 		        android:layout_width="wrap_content"
 		        android:layout_height="wrap_content"
-		        android:onClick="onDisplayButtonClick"
-		        android:text="@string/display" />
+		        android:onClick="onTraceButtonClick"
+		        android:text="@string/practice" />
 			
 			<Button
-			    android:id="@+id/context_button"
+			    android:id="@+id/animate_button"
 			    android:layout_width="wrap_content"
 			    android:layout_height="wrap_content"
-			    android:onClick="onContextButtonClick"
+			    android:onClick="onAnimateButtonClick"
+			    android:text="@string/animate"/>
+			
+			<Button
+			    android:id="@+id/clear_button"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:onClick="onClearButtonClick"
 			    android:text="@string/clear"/>
 			
 	    </LinearLayout>

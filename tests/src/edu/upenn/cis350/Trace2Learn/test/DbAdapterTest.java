@@ -2,6 +2,7 @@ package edu.upenn.cis350.Trace2Learn.test;
 
 import junit.framework.TestCase;
 import edu.upenn.cis350.Trace2Learn.*;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbAdapterTest extends TestCase {
