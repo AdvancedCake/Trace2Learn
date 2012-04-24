@@ -153,7 +153,7 @@ public abstract class LessonItem {
 	 * The ratio for determining how large a stroke should be given the size
 	 * of the canvas
 	 */
-	private static final float _heightToStroke = 12F/400F;
+	private static final float _heightToStroke = 8F/400F;
 	
 	/**
 	 * Configures the paint options given the size of the canvas
