@@ -6,19 +6,6 @@
     android:layout_height="match_parent"
     android:background="#444444">
 
-    <TextView android:id="@+id/instructions"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Click on a collection to add this word to it"
-            />
-    
-    <ListView
-        android:id="@+id/collectionlist"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.0" >
-    </ListView>
-    
     <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Add word to a new collection"
@@ -42,6 +29,19 @@
 		        android:onClick="onNewCollectionButtonClick"
 		        android:text="Create New" />
 			</LinearLayout>
+    
+    <TextView android:id="@+id/instructions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Click on a collection to add this word to it"
+            />
+    
+    <ListView
+        android:id="@+id/collectionlist"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.0" >
+    </ListView>
 			
 	 <Button
         android:id="@+id/skip_button"

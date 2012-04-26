@@ -5,6 +5,7 @@ import java.util.List;
 
 
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import android.app.Activity;
 import android.app.ListActivity;
@@ -73,7 +74,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Delete"};
+	    String[] menuItems = {"Add Tag","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -83,12 +84,22 @@ public class BrowseCharactersActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  LessonItem li = items.get(info.position);
+	  LessonCharacter lc = (LessonCharacter)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
-	  //delete
+	  
+	  //add tags
 	  if(menuItemIndex==0){
-		  long id = li.getId();
+		  Intent i = new Intent(this, TagActivity.class);
+		  i.putExtra("ID", lc.getId());
+		  i.putExtra("TYPE", "CHARACTER");
+		  startActivity(i);
+		  return true;
+	  }
+	  
+	  //delete
+	  else if(menuItemIndex==1){
+		  long id = lc.getId();
 		  long result = dba.deleteCharacter(id);
 		  Log.e("Result",Long.toString(result));
 		  if(result<0){

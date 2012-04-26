@@ -190,10 +190,10 @@ public class CharacterCreationActivity extends Activity {
 		_dbHelper.addCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
 		id_to_pass = character.getId();
-		if(id >= 0)
-		{
+		//if(id >= 0)
+		//{
 			onTagButtonClick(view);
-		}
+		//}
 		updateTags();
 	}
 
