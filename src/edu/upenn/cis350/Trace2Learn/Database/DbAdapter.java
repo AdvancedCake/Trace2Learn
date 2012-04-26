@@ -368,6 +368,18 @@ public class DbAdapter {
     	 else{
     		 mDb.delete(CHAR_TABLE, CHAR_ROWID + "=" + id, null);
     		 mDb.delete(CHAR_DETAILS_TABLE, "CharId = " + id, null);
+    		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID}, "CharId =" + id, null,
+                     null, null, null, null);
+    		 mCursor.moveToFirst();
+    		 do {
+ 	        	if(mCursor.getCount()==0){
+ 	        		break;
+ 	        	}
+ 	        	long wordId = (mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
+ 	        	mDb.delete(WORDS_TABLE, WORDS_ROWID + "=" + wordId, null);
+ 	         }
+ 	         while(mCursor.moveToNext());
+    		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
     	 }
     	return id;
     }
