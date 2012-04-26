@@ -24,6 +24,7 @@
         <activity android:name="TagActivity"></activity>
         <activity android:name="TestTagDbActivity"></activity>
         <activity android:name="BrowseCharactersActivity"></activity>
+        <activity android:name="BrowseWordsActivity"></activity>
     </application>
 
 </manifest>

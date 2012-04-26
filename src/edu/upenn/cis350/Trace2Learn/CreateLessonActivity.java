@@ -48,7 +48,7 @@ public class CreateLessonActivity extends Activity {
         
         gallery.setAdapter(imgAdapter);
     	
-        list = (ListView)findViewById(R.id.wordlist);
+        //list = (ListView)findViewById(R.id.wordlist);
      
         newLesson = new Lesson();
         
@@ -82,7 +82,7 @@ public class CreateLessonActivity extends Activity {
         });
     }
 	
-	public void onSaveLessonButtonClick(View view){
+	/*public void onSaveLessonButtonClick(View view){
 		if(dba.addLesson(newLesson)){
 			TextView word = (TextView)findViewById(R.id.words);
 			word.setText("Successfully added!");
@@ -94,5 +94,5 @@ public class CreateLessonActivity extends Activity {
 		i.putExtra("ID", newLesson.getId());
 		i.putExtra("TYPE", newLesson.getItemType().toString());
 		startActivity(i);
-	}
+	}*/
 }

@@ -17,9 +17,9 @@ public class MainMenuActivity extends ListActivity {
 		{ 
 			"Create Character", 
 			"Create Word",
-			"Create Lesson", 
 			"Test Search by Tags",
-			"Browse All Characters"
+			"Browse All Characters",
+			"Browse All Words"
 		};
 
 	@Override
@@ -54,21 +54,25 @@ public class MainMenuActivity extends ListActivity {
 						startActivity(i);
 					
 					}
-					else if(clicked.equals(APPS[2]))
+					/*else if(clicked.equals(APPS[2]))
 					{
 	
 						Intent i = new Intent(c, CreateLessonActivity.class);
 						startActivity(i);
 					
-					}
-					else if(clicked.equals(APPS[3]))
+					}*/
+					else if(clicked.equals(APPS[2]))
 					{
 						Intent i = new Intent(c, TestTagDbActivity.class);
 						startActivity(i);
 					
 					}
-					else{
+					else if(clicked.equals(APPS[3])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
+						startActivity(i);
+					}
+					else{
+						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
 				}

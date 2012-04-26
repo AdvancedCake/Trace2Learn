@@ -380,6 +380,7 @@ public class DbAdapter {
  	         }
  	         while(mCursor.moveToNext());
     		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
+    		 mDb.delete(CHARTAG_TABLE, CHAR_ROWID + "=" + id, null);
     	 }
     	return id;
     }
@@ -525,6 +526,22 @@ public class DbAdapter {
     	mDb.endTransaction();
     	return true;
     	
+    }
+    
+    public long deleteWord(long id){
+    	Cursor mCursor =
+                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, WORDS_ROWID + "=" + id, null,
+                        null, null, null, null);
+    	 if (mCursor == null) {
+             return -1;
+         }
+    	 
+		 mDb.delete(WORDS_TABLE, WORDS_ROWID + "=" + id, null);
+		 mDb.delete(WORDS_DETAILS_TABLE, "_id = " + id, null);
+		 mDb.delete(WORDTAG_TABLE, "_id="+id, null);
+		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId="+id, null);
+    	 
+    	return id;
     }
     
     /**
