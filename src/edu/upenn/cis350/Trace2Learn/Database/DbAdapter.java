@@ -351,6 +351,27 @@ public class DbAdapter {
     	
     }
     
+    public long deleteCharacter(long id){
+    	Cursor mCursor =
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+                        null, null, null, null);
+    	 if (mCursor == null) {
+             return -2;
+         }
+    	 
+    	 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId =" + id +" AND FlagUserCreated=1", null,
+                 null, null, null, null);
+    	 if(mCursor.getCount()>0){
+    		 //Some word is using the character
+    		 return -1;
+    	 }
+    	 else{
+    		 mDb.delete(CHAR_TABLE, CHAR_ROWID + "=" + id, null);
+    		 mDb.delete(CHAR_DETAILS_TABLE, "CharId = " + id, null);
+    	 }
+    	return id;
+    }
+    
     
     /**
      * Get a LessonCharacter from the database
