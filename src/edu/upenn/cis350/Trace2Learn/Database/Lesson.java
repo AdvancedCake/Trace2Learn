@@ -9,6 +9,7 @@ import android.graphics.Paint;
 public class Lesson extends LessonItem {
 	
 	private List<Long> _words;
+	private String name;
 
 	public Lesson(){
 		_type = ItemType.LESSON;
@@ -25,6 +26,10 @@ public class Lesson extends LessonItem {
 
 	public synchronized long getWordId(int i){
 		return _words.get(i).longValue();
+	}
+	
+	public String getLessonName(){
+		return this.name;
 	}
 
 	/**
