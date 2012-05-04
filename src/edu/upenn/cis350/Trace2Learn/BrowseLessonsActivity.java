@@ -54,7 +54,7 @@ public class BrowseLessonsActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
-        list = (ListView)findViewById(R.id.list);
+        list = this.getListView();
         
         items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();
@@ -71,12 +71,18 @@ public class BrowseLessonsActivity extends ListActivity {
     
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) { 
             	Lesson le = ((Lesson)list.getItemAtPosition(position));
-        		//Intent i = new Intent(this, BrowseWordsActivity.class);
-        		//i.putExtra("ID", le.getId());
-        		//startActivity(i);
+        		browseWords(position);
             }
         });
     }
+	
+	private void browseWords(int position)
+	{
+		Intent i = new Intent();
+		i.setClass(this, BrowseWordsActivity.class);
+		i.putExtra("ID", le.getId());
+		startActivity(i);
+	}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
