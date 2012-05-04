@@ -856,7 +856,26 @@ public class DbAdapter {
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
     	return true;
-    	
+    }
+    
+    /**
+     * Return a list of lesson ids from the database
+     * @return ids list of all lesson ids
+     */
+    public List<Long> getAllLessonIds() {
+    	//TO-DO (SAM)
+ 	    List<Long> ids = new ArrayList<Long>();
+ 	    return ids;
+    }
+    
+    /**
+     * @param id
+     * @return
+     */
+    public Lesson getLessonById(long id) {
+    	//TO-DO (SAM)
+    	Lesson le = null;
+    	return le;
     }
     
     /**
