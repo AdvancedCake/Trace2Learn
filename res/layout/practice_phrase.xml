@@ -3,8 +3,14 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:gravity="bottom"
-    android:orientation="vertical" >  
-    	<RelativeLayout
+    android:orientation="vertical" >  
+
+    	<Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
+		    android:id="@+id/gallery"
+		    android:layout_width="fill_parent"
+		    android:layout_height="wrap_content"/>
+    
+    	<ViewAnimator
     	    android:id="@+id/view_slot"
     	    android:layout_width="match_parent"
 		    android:layout_height="0dip"
@@ -17,7 +23,7 @@
 		        android:layout_centerHorizontal="true"
 		        android:layout_centerVertical="true"
 		        android:orientation="vertical" />
-   	    </RelativeLayout>
+   	    </ViewAnimator>
 	    
     	
     	
@@ -31,20 +37,6 @@
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
 	        android:orientation="horizontal">
-	        
-		    <Button
-		        android:id="@+id/create_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onCreateButtonClick"
-		        android:text="@string/edit" />
-		    
-		    <Button
-		        android:id="@+id/save_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onSaveButtonClick"
-		        android:text="@string/save" />
 		    
 			<Button
 		        android:id="@+id/trace_button"
