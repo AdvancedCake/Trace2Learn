@@ -16,7 +16,9 @@ public class DbAdapter {
 	
     public static final String CHAR_ROWID = "_id";
     public static final String WORDS_ROWID = "_id";
-        
+    public static final String LESSONS_ROWID = "_id";
+    public static final String LESSONTAG_ROWID = "_id";
+    
     public static final String CHARTAG_ROWID = "_id";
     public static final String CHARTAG_TAG= "tag";
     
@@ -863,9 +865,21 @@ public class DbAdapter {
      * @return ids list of all lesson ids
      */
     public List<Long> getAllLessonIds() {
-    	//TO-DO (SAM)
- 	    List<Long> ids = new ArrayList<Long>();
- 	    return ids;
+    	Cursor mCursor =
+    			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, null, null,
+    					null, null, LESSONS_ROWID+" ASC", null);
+    	List<Long> ids = new ArrayList<Long>();
+    	if (mCursor != null) {
+    		mCursor.moveToFirst();
+    	}
+    	do {
+    		if(mCursor.getCount()==0){
+    			break;
+    		}
+    		ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(LESSONS_ROWID)));
+    	}
+    	while(mCursor.moveToNext());
+    	return ids;
     }
     
     /**
@@ -874,8 +888,23 @@ public class DbAdapter {
      * @return id if found, -1 if not
      */
     public long deleteLesson(long id){
-		//TO-DO (SAM)
-    	return id;
+    	Cursor mCursor =
+                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, LESSONS_ROWID + "=" + id, null,
+                        null, null, null, null);
+    	int rowsDeleted=0;
+    	if (mCursor == null) {
+             return -1;
+         }
+    	 else{
+    		 rowsDeleted += mDb.delete(LESSONS_TABLE, LESSONS_ROWID + "=" + id, null);
+    		 rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = " + id, null);
+    		 rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ROWID + "=" + id, null);
+    	 }
+    	 if(rowsDeleted>0)
+    		 return id;
+    	 else
+    		 return -1;
+
     }
     
     /**
@@ -883,8 +912,34 @@ public class DbAdapter {
      * @return
      */
     public Lesson getLessonById(long id) {
-    	//TO-DO (SAM)
-    	Lesson le = null;
+    	Cursor mCursor =
+    			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID, "name"}, LESSONS_ROWID + "=" + id, null,
+    					null, null, null, null);
+    	Lesson le = new Lesson();
+    	//if the Lesson doesn't exists
+    	if (mCursor == null) {
+    		return null;
+    	}else{
+    		mCursor.moveToFirst();
+    		le.setPrivateTag(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	}
+
+    	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
+    	// but it is for data consistency.
+    	mCursor =
+    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {LESSONS_ROWID, "LessonId", "WordId", "LessonOrder"}, "LessonId" + "=" + id, null,
+    					null, null, "LessonOrder ASC", null);
+    	mCursor.moveToFirst();
+    	do {
+    		if(mCursor.getCount()==0){
+    			break;
+    		}
+    		long wordId = mCursor.getLong(mCursor.getColumnIndexOrThrow("WordId"));
+    		Log.i("LOAD", "Word: " + wordId);
+    		le.addWord(wordId);
+    	} while(mCursor.moveToNext());
+    	le.setId(id);
+    	le.setDatabase(this);
     	return le;
     }
     
