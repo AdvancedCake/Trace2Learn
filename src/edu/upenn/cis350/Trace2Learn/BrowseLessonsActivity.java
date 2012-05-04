@@ -38,11 +38,12 @@ import android.widget.AdapterView.OnItemClickListener;
 public class BrowseLessonsActivity extends ListActivity {
 	private View layout;
 	private PopupWindow window;
-	private ListView list, lessonList; //list of words to display in listview
+	private ListView lv, lessonList; //list of words to display in listview
 
 	private Lesson le;
 	private DbAdapter dba; 
 	private ArrayList<LessonItem> items;
+	ArrayAdapter<String> arrAdapter;
 
 	final Context c = this;
 
@@ -54,6 +55,7 @@ public class BrowseLessonsActivity extends ListActivity {
         dba.open(); //opening the connection to database
                         
         //Set up the ListView
+        lv = (ListView) findViewById(R.id.list);
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();
         for(long id : ids){
@@ -61,8 +63,18 @@ public class BrowseLessonsActivity extends ListActivity {
         	lesson.setTagList(dba.getLessonTags(id)); 
         	items.add(lesson);
         }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        setListAdapter(new LessonItemListAdapter(this, items, vi));
+        ArrayList<String> lessonNames = new ArrayList<String>();
+        for(LessonItem le: items) {
+        	lessonNames.add(((Lesson)le).getLessonName());
+        }
+        //Populate the ListView
+        arrAdapter = new ArrayAdapter<String>(this, 
+        		android.R.layout.simple_list_item_multiple_choice, lessonNames);
+        arrAdapter.notifyDataSetChanged();
+       
+        lv.setAdapter(arrAdapter);
+
+        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
 
         registerForContextMenu(getListView());
     }
