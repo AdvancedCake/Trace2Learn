@@ -121,7 +121,7 @@ public class DbAdapter {
     private static final String LESSONTAG_TABLE = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 3;
+    private static final int DATABASE_VERSION = 4;
 
     private final Context mCtx;
 
@@ -927,7 +927,7 @@ public class DbAdapter {
     	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
     	// but it is for data consistency.
     	mCursor =
-    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {LESSONS_ROWID, "LessonId", "WordId", "LessonOrder"}, "LessonId" + "=" + id, null,
+    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] { "LessonId", "WordId", "LessonOrder"}, "LessonId" + "=" + id, null,
     					null, null, "LessonOrder ASC", null);
     	mCursor.moveToFirst();
     	do {
