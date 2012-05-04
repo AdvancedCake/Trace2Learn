@@ -869,6 +869,16 @@ public class DbAdapter {
     }
     
     /**
+     * Deletes the lesson by lesson id
+     * @param id 
+     * @return id if found, -1 if not
+     */
+    public long deleteLesson(long id){
+		//TO-DO (SAM)
+    	return id;
+    }
+    
+    /**
      * @param id
      * @return
      */
