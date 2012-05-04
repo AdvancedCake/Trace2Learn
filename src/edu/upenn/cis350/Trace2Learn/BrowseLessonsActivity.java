@@ -60,7 +60,7 @@ public class BrowseLessonsActivity extends ListActivity {
         List<Long> ids = dba.getAllLessonIds();
         for(long id : ids){
         	Lesson le = dba.getLessonById(id);
-        	le.setTagList(dba.getTags(id));
+        	le.setTagList(dba.getLessonTags(id));
         	items.add(le);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
