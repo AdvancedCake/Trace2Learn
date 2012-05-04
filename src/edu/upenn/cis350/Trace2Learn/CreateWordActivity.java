@@ -46,11 +46,13 @@ public class CreateWordActivity extends Activity {
 	private int numChars;
 	private PopupWindow window;
 	private View layout;
+	private boolean saved;
 	
 	//initializes the list if all characters in the database
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        saved = false;
         numChars = 0;
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
@@ -159,6 +161,7 @@ public class CreateWordActivity extends Activity {
 	//adds the new word to the database
 	public void onSaveWordButtonClick(View view){
 		if(newWord.length() > 0 && dba.addWord(newWord)){
+			saved = true;
 			TextView word = (TextView)findViewById(R.id.characters);
 			word.setText("Successfully added!");
 			initiatePopupWindow();
@@ -170,7 +173,10 @@ public class CreateWordActivity extends Activity {
 	
 	//brings the user to the tag screen
 	public void onAddTagButtonClick(View view){
-		
+		if(!saved){
+			showToast("Save the word first");
+			return;
+		}
 		Intent i = new Intent(this, TagActivity.class);
 		i.putExtra("ID", newWord.getId());
 		i.putExtra("TYPE", newWord.getItemType().toString());
