@@ -17,7 +17,7 @@ public class MainMenuActivity extends ListActivity {
 		{ 
 			"Create Character", 
 			"Create Word",
-			"Test Search by Tags",
+			"Search Characters",
 			"Browse All Characters",
 			"Browse All Words",
 			"Browse All Lessons"
