@@ -31,6 +31,10 @@ public class Lesson extends LessonItem {
 	public String getLessonName(){
 		return this.name;
 	}
+	
+	public void setName(String name){
+		this.name = name;
+	}
 
 	/**
 	 * Get the list of items that compose this lesson

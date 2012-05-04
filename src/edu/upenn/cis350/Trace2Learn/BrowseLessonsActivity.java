@@ -38,11 +38,11 @@ import android.widget.AdapterView.OnItemClickListener;
 public class BrowseLessonsActivity extends ListActivity {
 	private View layout;
 	private PopupWindow window;
-	private ListView lv, lessonList; //list of words to display in listview
+	private ListView list, lessonList; //list of words to display in listview
 
 	private Lesson le;
 	private DbAdapter dba; 
-	private ArrayList<LessonItem> items;
+	private ArrayList<Lesson> items;
 	ArrayAdapter<String> arrAdapter;
 
 	final Context c = this;
@@ -52,31 +52,30 @@ public class BrowseLessonsActivity extends ListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_lessons);
         dba = new DbAdapter(this);
-        dba.open(); //opening the connection to database
-                        
-        //Set up the ListView
-        lv = (ListView) findViewById(R.id.list);
-        items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
+        dba.open(); //opening the connection to database        
+        
+        list = (ListView)findViewById(R.id.list);
+        
+        items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();
         for(long id : ids){
-        	LessonItem lesson = dba.getLessonById(id);
-        	lesson.setTagList(dba.getLessonTags(id)); 
-        	items.add(lesson);
+        	Lesson le = dba.getLessonById(id);
+        	le.setTagList(dba.getTags(id));
+        	items.add(le);
         }
-        ArrayList<String> lessonNames = new ArrayList<String>();
-        for(LessonItem le: items) {
-        	lessonNames.add(((Lesson)le).getLessonName());
-        }
-        //Populate the ListView
-        arrAdapter = new ArrayAdapter<String>(this, 
-        		android.R.layout.simple_list_item_multiple_choice, lessonNames);
-        arrAdapter.notifyDataSetChanged();
-       
-        lv.setAdapter(arrAdapter);
+        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        list.setAdapter(new LessonListAdapter(this, items, vi));
 
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-
-        registerForContextMenu(getListView());
+        //when a char is clicked, it is added to the new word and added to the gallery
+        list.setOnItemClickListener(new OnItemClickListener() {
+    
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) { 
+            	Lesson le = ((Lesson)list.getItemAtPosition(position));
+        		//Intent i = new Intent(this, BrowseWordsActivity.class);
+        		//i.putExtra("ID", le.getId());
+        		//startActivity(i);
+            }
+        });
     }
 	
 	@Override
@@ -84,7 +83,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Edit Tags","Edits Words", "Delete"};
+	    String[] menuItems = {"Edit Tags", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -106,13 +105,13 @@ public class BrowseLessonsActivity extends ListActivity {
 	  }
 	  
 	  //edit words
-	  else if(menuItemIndex==1){
-		  Intent i = new Intent(c, BrowseWordsActivity.class);
+	  /*else if(menuItemIndex==1){
+		  Intent i = new Intent(c, EditWordsActivity.class);
 		  startActivity(i);
-	  }
+	  }*/
 	  
 	  //delete lesson
-	  else if(menuItemIndex==2){
+	  else if(menuItemIndex==1){
 		  long id = le.getId();
 		  long result = dba.deleteLesson(id);
 		  Log.e("Result",Long.toString(result));

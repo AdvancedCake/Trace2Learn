@@ -940,6 +940,25 @@ public class DbAdapter {
     	return true;
     }
     
+    public List<Long> getWordsFromLessonId(long id){
+    	Cursor mCursor =
+    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId="+id, null,
+    					null, null, "LessonOrder ASC", null);
+    	List<Long> ids = new ArrayList<Long>();
+    	if (mCursor != null) {
+    		mCursor.moveToFirst();
+    	}
+    	do {
+    		if(mCursor.getCount()==0){
+    			break;
+    		}
+    		ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow("WordId")));
+    	}
+    	while(mCursor.moveToNext());
+    	return ids;
+    	//return null;
+    }
+    
     /**
      * Return a list of lesson ids from the database
      * @return ids list of all lesson ids
@@ -1001,7 +1020,7 @@ public class DbAdapter {
     		return null;
     	}else{
     		mCursor.moveToFirst();
-    		le.setPrivateTag(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    		le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	}
 
     	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
