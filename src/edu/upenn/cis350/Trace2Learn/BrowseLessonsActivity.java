@@ -36,37 +36,29 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class BrowseLessonsActivity extends ListActivity {
-	private DbAdapter dba; 
-	private ListView list, lessonList; //list of words to display in listview
-	//private Gallery gallery; 
-	private ImageAdapter imgAdapter;
-	//private ArrayList<Bitmap> currentWords;
-	//private int numLessons;
-	private ArrayList<LessonItem> items;
-	
 	private View layout;
 	private PopupWindow window;
+	private ListView list, lessonList; //list of words to display in listview
 
 	private Lesson le;
-	private Lesson newLesson; 
+	private DbAdapter dba; 
+	private ArrayList<LessonItem> items;
+
+	final Context c = this;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //numLessons = 0;
-        //currentWords = new ArrayList<Bitmap>();
         setContentView(R.layout.browse_lessons);
         dba = new DbAdapter(this);
-        dba.open();
-        
-        newLesson = new Lesson();
-        
+        dba.open(); //opening the connection to database
+                        
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();
         for(long id : ids){
         	LessonItem lesson = dba.getLessonById(id);
-        	lesson.setTagList(dba.getTags(id));
+        	lesson.setTagList(dba.getLessonTags(id)); 
         	items.add(lesson);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -80,7 +72,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add to Collection","Delete"};
+	    String[] menuItems = {"Edit Tags","Edits Words", "Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -94,19 +86,26 @@ public class BrowseLessonsActivity extends ListActivity {
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
-	  //add to collection
+	  //edit tags
 	  if(menuItemIndex==0){
-		  initiatePopupWindow();
+		  Intent i = new Intent(c, TagActivity.class);
+		  startActivity(i);
 		  return true;
 	  }
 	  
-	  //delete
+	  //edit words
 	  else if(menuItemIndex==1){
+		  Intent i = new Intent(c, BrowseWordsActivity.class);
+		  startActivity(i);
+	  }
+	  
+	  //delete lesson
+	  else if(menuItemIndex==2){
 		  long id = le.getId();
-		  long result = dba.deleteWord(id);
+		  long result = dba.deleteLesson(id);
 		  Log.e("Result",Long.toString(result));
-		  if(result<0){
-			  showToast("Could not delete the word");
+		  if(result < 0){
+			  showToast("Could not delete the lesson");
 			  return false;
 		  }
 		  else{
@@ -159,11 +158,6 @@ public class BrowseLessonsActivity extends ListActivity {
 	               window.dismiss();
 	            }
 	        });
-	          
-	        /*mResultText = (TextView) layout.findViewById(R.id.server_status_text);
-	        Button cancelButton = (Button) layout.findViewById(R.id.end_data_send_button);
-	        makeBlack(cancelButton);
-	        cancelButton.setOnClickListener(cancel_button_click_listener);*/
 	 
 	    } catch (Exception e) {
 	        e.printStackTrace();
@@ -173,20 +167,4 @@ public class BrowseLessonsActivity extends ListActivity {
 	public void onSkipButtonClick(View view){
 		window.dismiss();
 	}
-	
-/*	public void onNewCollectionButtonClick(View view){
-		EditText editText = (EditText)layout.findViewById(R.id.newcollection);
-		Editable edit = editText.getText();
-		String name = edit.toString();
-		if(name.equals("")){
-			showToast("You must name the collection!");
-			return;
-		}
-		Lesson lesson = new Lesson();
-		lesson.setPrivateTag(name);
-		lesson.addWord(lw.getId());
-		dba.addLesson(lesson);
-		showToast("Successfully Created");
-		window.dismiss();
-	}*/
 }
