@@ -66,7 +66,7 @@ public class TestTagDbActivity extends ListActivity {
 				character = new LessonCharacter(id);
 				Log.d("SEARCH", "Character " + id + " not found in db");
 			}
-			character.setTagList(mDbHelper.getTags(id));
+			character.setTagList(mDbHelper.getCharacterTags(id));
 			items.add(character);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -140,7 +140,7 @@ public class TestTagDbActivity extends ListActivity {
 		showingChars=true;
 	}
 	
-	public void onWordSearchButtonClick(View view){
+	/*public void onWordSearchButtonClick(View view){
 		EditText tagEt = (EditText)findViewById(R.id.search_tag);
 		String tagText = tagEt.getText().toString();
 		
@@ -159,7 +159,7 @@ public class TestTagDbActivity extends ListActivity {
 		setWordList(ids);
 		showingChars=false;
 		
-	}
+	}*/
 	
 	public void onLessonSearchButtonClick(View view){
 		// TODO: Add in Lesson search support

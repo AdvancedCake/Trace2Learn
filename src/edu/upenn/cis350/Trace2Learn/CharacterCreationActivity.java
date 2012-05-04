@@ -144,7 +144,7 @@ public class CharacterCreationActivity extends Activity {
 	{
 		if (id_to_pass >= 0)
 		{
-			List<String> tags = _dbHelper.getTags(id_to_pass);
+			List<String> tags = _dbHelper.getCharacterTags(id_to_pass);
 			this._tagText.setText(tagsToString(tags));
 			setCharacter(_dbHelper.getCharacterById(id_to_pass));
 		}
@@ -193,7 +193,10 @@ public class CharacterCreationActivity extends Activity {
 			return;
 		}
 		long id = character.getId();
-		_dbHelper.addCharacter(character);
+		if(id==-1)
+			_dbHelper.addCharacter(character);
+		else
+			_dbHelper.modifyCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
 		id_to_pass = character.getId();
 		//if(id >= 0)
