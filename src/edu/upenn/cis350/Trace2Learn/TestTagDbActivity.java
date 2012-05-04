@@ -66,7 +66,7 @@ public class TestTagDbActivity extends ListActivity {
 				character = new LessonCharacter(id);
 				Log.d("SEARCH", "Character " + id + " not found in db");
 			}
-			character.setTagList(mDbHelper.getTags(id));
+			character.setTagList(mDbHelper.getCharacterTags(id));
 			items.add(character);
 		}
 		LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

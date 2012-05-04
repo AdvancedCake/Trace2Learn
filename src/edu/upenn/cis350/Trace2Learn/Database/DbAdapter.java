@@ -3,6 +3,8 @@ package edu.upenn.cis350.Trace2Learn.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -264,6 +266,55 @@ public class DbAdapter {
         return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId + " AND " + WORDTAG_TAG+"="+tag, null) > 0;
     }
    
+    /**
+     * Modify a character already in the database
+     * @param c character to be modified to the database
+     * @return true if change is pushed to DB.  False on error.
+     */
+    public boolean modifyCharacter(LessonCharacter c)
+    {
+    	mDb.beginTransaction();
+    	long charId = c.getId();
+    	//drop the current details
+    	mDb.delete(CHAR_DETAILS_TABLE, "CharId = " + charId, null);
+    	
+    	//add each stroke to CHAR_DETAILS_TABLE
+    	List<Stroke> l = c.getStrokes();
+    	//stroke ordering
+    	int strokeNumber=0;
+    	for(Stroke s:l)
+    	{
+    		ContentValues strokeValues = new ContentValues();
+    		strokeValues.put("CharId", charId);
+    		strokeValues.put("Stroke", strokeNumber);
+    		//point ordering
+    		int pointNumber=0;
+    		for(PointF p : s.getSamplePoints())
+    		{
+    			strokeValues.put("PointX", p.x);
+        		strokeValues.put("PointY", p.y);
+        		strokeValues.put("OrderPoint", pointNumber);
+        		long success = mDb.insert(CHAR_DETAILS_TABLE, null, strokeValues);
+        		if(success == -1)
+        		{	
+        			//if error
+        			Log.e(CHAR_DETAILS_TABLE,"cannot add stroke");
+        			mDb.endTransaction();
+        			return false;
+        		}
+        		pointNumber++;
+    		}
+    		strokeNumber++;
+    	}
+    	
+    	mDb.setTransactionSuccessful();
+    	mDb.endTransaction();
+    	return true;
+    	
+    }
+    
+    
+    
     /**
      * Add a character to the database
      * @param c character to be added to the database
@@ -546,6 +597,35 @@ public class DbAdapter {
     	return id;
     }
     
+    public String getPrivateTag(long id, ItemType type)
+    {
+    	String tableName;
+    	switch(type)
+    	{
+    	case CHARACTER:
+    		tableName=CHAR_TABLE;
+    		break;
+    	case WORD:
+    		tableName=WORDS_TABLE;
+    		break;
+    	case LESSON:
+    		tableName=LESSONS_TABLE;
+    		break;
+    	default:
+    		Log.e("Tag", "Unsupported Type");
+    		return "";
+    	}
+    	Cursor mCursor =
+    			mDb.query(true, tableName, new String[] {"_id","name"}, "_id=" + id, null,
+    					null, null, null, null);
+    	if (mCursor != null) {
+    		mCursor.moveToFirst();
+        	return (mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	}
+
+    	return "";
+    }
+    
     /**
      * Return a List of tags that matches the given character's charId
      * 
@@ -553,7 +633,7 @@ public class DbAdapter {
      * @return List of tags
      * @throws SQLException if character could not be found/retrieved
      */
-    public List<String> getTags(long charId) throws SQLException {
+    public List<String> getCharacterTags(long charId) throws SQLException {
 
         Cursor mCursor =
 

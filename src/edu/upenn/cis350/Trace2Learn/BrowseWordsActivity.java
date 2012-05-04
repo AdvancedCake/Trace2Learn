@@ -73,7 +73,7 @@ public class BrowseWordsActivity extends ListActivity {
         List<Long> ids = dba.getAllWordIds();
         for(long id : ids){
         	LessonItem word = dba.getWordById(id);
-        	word.setTagList(dba.getTags(id));
+        	word.setTagList(dba.getWordTags(id));
         	items.add(word);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

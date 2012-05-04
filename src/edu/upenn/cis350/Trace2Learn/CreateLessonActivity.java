@@ -57,7 +57,7 @@ public class CreateLessonActivity extends Activity {
         List<Long> ids = dba.getAllWordIds();
         for(long id : ids){
         	LessonItem word = dba.getWordById(id);
-        	word.setTagList(dba.getTags(id));
+        	word.setTagList(dba.getCharacterTags(id));
         	items.add(word);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

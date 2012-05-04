@@ -70,7 +70,7 @@ public class CreateWordActivity extends Activity {
         List<Long> ids = dba.getAllCharIds();
         for(long id : ids){
         	LessonItem character = dba.getCharacterById(id);
-        	character.setTagList(dba.getTags(id));
+        	character.setTagList(dba.getCharacterTags(id));
         	items.add(character);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
