@@ -47,6 +47,7 @@ public class BrowseWordsActivity extends ListActivity {
 	private View layout;
 	private PopupWindow window;
 	private LessonWord lw;
+	private long id;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -66,15 +67,35 @@ public class BrowseWordsActivity extends ListActivity {
     	
         //list = (ListView)findViewById(R.id.wordlist);
      
-        newLesson = new Lesson();
+        //newLesson = new Lesson();
         
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
-        List<Long> ids = dba.getAllWordIds();
-        for(long id : ids){
-        	LessonItem word = dba.getWordById(id);
-        	word.setTagList(dba.getWordTags(id));
-        	items.add(word);
+        id = this.getIntent().getLongExtra("ID", -1);
+        //id=1;
+        if(id==-1){
+        
+	        List<Long> ids = dba.getAllWordIds();
+	        for(long id : ids){
+	        	LessonItem word = dba.getWordById(id);
+	        	word.setTagList(dba.getWordTags(id));
+	        	items.add(word);
+	        }
+        }
+        else{
+        	Lesson les = dba.getLessonById(id);
+            String name = les.getLessonName();
+            
+            TextView title = (TextView)findViewById(R.id.instructions);
+    		title.setText("Browsing " + name);
+    		
+    		items = new ArrayList<LessonItem>();
+    		List<Long> ids = dba.getWordsFromLessonId(id);
+    		 for(long id : ids){
+    	        	LessonItem word = dba.getWordById(id);
+    	        	word.setTagList(dba.getWordTags(id));
+    	        	items.add(word);
+    	        }
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new LessonItemListAdapter(this, items, vi));
