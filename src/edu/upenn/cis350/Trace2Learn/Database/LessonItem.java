@@ -122,7 +122,7 @@ public abstract class LessonItem {
 		switch(_type)
 		{
 		case CHARACTER:
-			_tags = db.getTags(_id);
+			_tags = db.getCharacterTags(_id);
 			break;
 		case WORD:
 			_tags = db.getWordTags(_id);

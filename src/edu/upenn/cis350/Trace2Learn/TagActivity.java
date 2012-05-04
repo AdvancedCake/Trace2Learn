@@ -18,6 +18,8 @@ import android.widget.ListView;
 
 public class TagActivity extends Activity {
 
+	private final String PRIVATE_PREFIX = "Private: ";
+	
 	//Should be able to take BOTH character and word
 	
 	private DbAdapter mDbHelper;
@@ -56,10 +58,12 @@ public class TagActivity extends Activity {
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
         
+        String privateTag;
+        
         switch(type)
         {
         case CHARACTER:
-        	currentTags = mDbHelper.getTags(id);
+        	currentTags = mDbHelper.getCharacterTags(id);
         	break;
         case WORD:
         	currentTags = mDbHelper.getWordTags(id);
@@ -71,6 +75,9 @@ public class TagActivity extends Activity {
     		Log.e("Tag", "Unsupported Type");
         }
 
+        //add private tag
+        currentTags.add(0, PRIVATE_PREFIX+mDbHelper.getPrivateTag(id, type));
+        
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
         		android.R.layout.simple_list_item_multiple_choice, currentTags);
@@ -137,7 +144,9 @@ public class TagActivity extends Activity {
 		{		
 			mDbHelper.updatePrivateWordTag(id, input2);	
 		}
-		currentTags.add(input2);
+		if(currentTags.get(0).contains(PRIVATE_PREFIX))
+			currentTags.remove(0);
+		currentTags.add(0,PRIVATE_PREFIX+input2);
 		arrAdapter.notifyDataSetChanged();
 		editPrivateText.setText("");
 	}
