@@ -140,7 +140,7 @@ public class TestTagDbActivity extends ListActivity {
 		showingChars=true;
 	}
 	
-	public void onWordSearchButtonClick(View view){
+	/*public void onWordSearchButtonClick(View view){
 		EditText tagEt = (EditText)findViewById(R.id.search_tag);
 		String tagText = tagEt.getText().toString();
 		
@@ -159,7 +159,7 @@ public class TestTagDbActivity extends ListActivity {
 		setWordList(ids);
 		showingChars=false;
 		
-	}
+	}*/
 	
 	public void onLessonSearchButtonClick(View view){
 		// TODO: Add in Lesson search support
