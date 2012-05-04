@@ -6,6 +6,7 @@ import edu.upenn.cis350.Trace2Learn.R.id;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class CharacterCreationActivity extends Activity {
 
@@ -186,6 +188,10 @@ public class CharacterCreationActivity extends Activity {
 	public void onSaveButtonClick(View view)
 	{
 		LessonCharacter character = _creationPane.getCharacter();
+		if(character.getNumStrokes()==0){
+			showToast("Please add a stroke");
+			return;
+		}
 		long id = character.getId();
 		_dbHelper.addCharacter(character);
 		Log.e("Adding to DB", Long.toString(character.getId()));
@@ -220,6 +226,15 @@ public class CharacterCreationActivity extends Activity {
 	{
 		Log.i("CLICK", "DISPLAY");
 		setCharacterDisplayPane();
+	}
+	
+	public void showToast(String msg){
+		Context context = getApplicationContext();
+		CharSequence text = msg;
+		int duration = Toast.LENGTH_SHORT;
+
+		Toast toast = Toast.makeText(context, text, duration);
+		toast.show();
 	}
 
 }
