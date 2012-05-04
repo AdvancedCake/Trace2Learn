@@ -113,6 +113,25 @@ public class BrowseWordsActivity extends ListActivity {
 		startActivity(i);
 	}*/
 	
+	@Override  
+	protected void onListItemClick(ListView l, View v, int position, long id) {  
+	  super.onListItemClick(l, v, position, id);  
+	  clickOnItem(items.get(position));
+	}  
+
+	//when character is clicked, it starts the display mode for that char
+	public void clickOnItem(LessonItem li){
+		Intent intent = new Intent();
+		Bundle bun = new Bundle();
+
+		bun.putString("mode", "display");
+		bun.putLong("wordId", li.getId());
+
+		intent.setClass(this, PhrasePracticeActivity.class);
+		intent.putExtras(bun);
+		startActivity(intent);
+	}
+	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {

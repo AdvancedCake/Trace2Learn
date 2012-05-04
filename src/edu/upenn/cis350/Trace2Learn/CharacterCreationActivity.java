@@ -33,7 +33,7 @@ public class CharacterCreationActivity extends Activity {
 
 	private long id_to_pass = -1;
 
-	private enum Mode {
+	public enum Mode {
 		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
 
