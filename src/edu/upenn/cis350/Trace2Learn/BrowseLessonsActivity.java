@@ -46,6 +46,8 @@ public class BrowseLessonsActivity extends ListActivity {
 	ArrayAdapter<String> arrAdapter;
 
 	final Context c = this;
+	
+	Intent i;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -64,19 +66,46 @@ public class BrowseLessonsActivity extends ListActivity {
         	items.add(le);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        list.setAdapter(new LessonListAdapter(this, items, vi));
+        LessonListAdapter la = new LessonListAdapter(this,items,vi);
+        setListAdapter(la);
 
         //when a char is clicked, it is added to the new word and added to the gallery
-        list.setOnItemClickListener(new OnItemClickListener() {
-    
+        i = new Intent(this, BrowseWordsActivity.class);
+        /*list.setOnItemClickListener(new OnItemClickListener() {
+        	
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) { 
             	Lesson le = ((Lesson)list.getItemAtPosition(position));
-        		//Intent i = new Intent(this, BrowseWordsActivity.class);
-        		//i.putExtra("ID", le.getId());
-        		//startActivity(i);
+        		
+        		i.putExtra("ID", le.getId());
+        		startActivity(i);
             }
-        });
+        });*/
     }
+	
+	@Override  
+	protected void onListItemClick(ListView l, View v, int position, long id) {  
+	  super.onListItemClick(l, v, position, id);  
+	  
+	  clickOnItem(items.get(position));
+	} 
+	
+	//when character is clicked, it starts the display mode for that char
+		public void clickOnItem(LessonItem li){
+			Lesson le = ((Lesson)li);
+    		
+    		i.putExtra("ID", le.getId());
+    		startActivity(i);
+			
+			Intent intent = new Intent();
+			Bundle bun = new Bundle();
+
+			bun.putString("mode", "display");
+			bun.putLong("wordId", li.getId());
+
+			intent.setClass(this, PhrasePracticeActivity.class);
+			intent.putExtras(bun);
+			startActivity(intent);
+		}
 	
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
