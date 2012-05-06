@@ -54,7 +54,7 @@ public class BrowseLessonsActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
-        list = this.getListView();
+        list = (ListView)findViewById(R.id.list);
         
         items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();
@@ -68,15 +68,14 @@ public class BrowseLessonsActivity extends ListActivity {
         setListAdapter(la);
         registerForContextMenu(getListView());
     }
-	
-	
+
 	@Override  
 	protected void onListItemClick(ListView l, View v, int position, long id) {  
 	  super.onListItemClick(l, v, position, id);  
-	  
+
 	  clickOnItem(items.get(position));
 	} 
-	
+
 	//when character is clicked, it starts the display mode for that char
 		public void clickOnItem(LessonItem li){
 			Lesson le = ((Lesson)li);
@@ -84,7 +83,7 @@ public class BrowseLessonsActivity extends ListActivity {
     		i.putExtra("ID", le.getId());
     		startActivity(i);
 		}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
@@ -95,7 +94,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
@@ -103,7 +102,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	  le = (Lesson)items.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
-	  
+
 	  //delete lesson
 	  if(menuItemIndex==0){
 		  long id = le.getId();
@@ -122,7 +121,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	  }
 	  return false;
 	}
-	
+
 	public void showToast(String msg){
 		Context context = getApplicationContext();
 		CharSequence text = msg;
@@ -131,5 +130,5 @@ public class BrowseLessonsActivity extends ListActivity {
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
 	}
-	
+
 }
