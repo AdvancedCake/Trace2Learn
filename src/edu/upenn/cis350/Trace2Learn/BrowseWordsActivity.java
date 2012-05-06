@@ -117,7 +117,7 @@ public class BrowseWordsActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add to Collection","Add Tag","Delete"};
+	    String[] menuItems = {"Add to Lesson","Add Tag","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -220,7 +220,7 @@ public class BrowseWordsActivity extends ListActivity {
 		Editable edit = editText.getText();
 		String name = edit.toString();
 		if(name.equals("")){
-			showToast("You must name the collection!");
+			showToast("You must name the lesson!");
 			return;
 		}
 		Lesson lesson = new Lesson();

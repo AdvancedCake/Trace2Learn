@@ -8,7 +8,7 @@
 
     <TextView android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add word to a new collection"
+            android:text="Add word to a new lesson"
             />
     
     <LinearLayout
@@ -33,7 +33,7 @@
     <TextView android:id="@+id/instructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click on a collection to add this word to it"
+            android:text="Click on a lesson to add this word to it"
             />
     
     <ListView
@@ -48,6 +48,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:onClick="onSkipButtonClick"
-        android:text="Skip Adding to Collection" />
+        android:text="Skip Adding to Lesson" />
 
 </LinearLayout>

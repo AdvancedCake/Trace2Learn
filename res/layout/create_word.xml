@@ -7,7 +7,7 @@
     <TextView android:id="@+id/instructions"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click on a character to add it to the phrase"
+            android:text="Click on a character to add it to the word"
             />
     
     <ListView

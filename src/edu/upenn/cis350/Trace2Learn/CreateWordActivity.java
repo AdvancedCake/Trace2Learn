@@ -148,7 +148,7 @@ public class CreateWordActivity extends Activity {
 		Editable edit = editText.getText();
 		String name = edit.toString();
 		if(name.equals("")){
-			showToast("You must name the collection!");
+			showToast("You must name the lesson!");
 			return;
 		}
 		Lesson lesson = new Lesson();
