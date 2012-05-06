@@ -524,6 +524,14 @@ public class DbAdapter {
         	w.addCharacter(charId);
         } while(mCursor.moveToNext());
         w.setId(id);
+        
+        mCursor =
+                mDb.query(true, WORDS_TABLE, new String[] {"name"}, WORDS_ROWID + " = "+ id, null,
+                        null, null, null, null);
+        mCursor.moveToFirst();
+        String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+        w.setPrivateTag(privateTag);
+        
         w.setDatabase(this);
         return w;
     }

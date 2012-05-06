@@ -117,7 +117,7 @@ public class BrowseWordsActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add to Collection","Delete"};
+	    String[] menuItems = {"Add to Collection","Add Tag","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -137,8 +137,16 @@ public class BrowseWordsActivity extends ListActivity {
 		  return true;
 	  }
 	  
-	  //delete
 	  else if(menuItemIndex==1){
+		  Intent i = new Intent(this, TagActivity.class);
+		  i.putExtra("ID", lw.getId());
+		  i.putExtra("TYPE", "WORD");
+		  startActivity(i);
+		  return true;
+	  }
+	  
+	  //delete
+	  else if(menuItemIndex==2){
 		  long id = lw.getId();
 		  long result = dba.deleteWord(id);
 		  Log.e("Result",Long.toString(result));
