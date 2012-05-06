@@ -46,8 +46,6 @@ public class BrowseLessonsActivity extends ListActivity {
 	ArrayAdapter<String> arrAdapter;
 
 	final Context c = this;
-	
-	Intent i;
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -68,18 +66,7 @@ public class BrowseLessonsActivity extends ListActivity {
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         LessonListAdapter la = new LessonListAdapter(this,items,vi);
         setListAdapter(la);
-
-        //when a char is clicked, it is added to the new word and added to the gallery
-        i = new Intent(this, BrowseWordsActivity.class);
-        /*list.setOnItemClickListener(new OnItemClickListener() {
-        	
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) { 
-            	Lesson le = ((Lesson)list.getItemAtPosition(position));
-        		Intent i = new Intent(c, BrowseWordsActivity.class);
-        		i.putExtra("ID", le.getId());
-        		startActivity(i);
-            }
-        });*/
+        registerForContextMenu(getListView());
     }
 	
 	@Override  
@@ -92,19 +79,9 @@ public class BrowseLessonsActivity extends ListActivity {
 	//when character is clicked, it starts the display mode for that char
 		public void clickOnItem(LessonItem li){
 			Lesson le = ((Lesson)li);
-    		
+			Intent i = new Intent(this, BrowseWordsActivity.class);
     		i.putExtra("ID", le.getId());
     		startActivity(i);
-			
-			Intent intent = new Intent();
-			Bundle bun = new Bundle();
-
-			bun.putString("mode", "display");
-			bun.putLong("wordId", li.getId());
-
-			intent.setClass(this, PhrasePracticeActivity.class);
-			intent.putExtras(bun);
-			startActivity(intent);
 		}
 	
 	@Override
@@ -112,7 +89,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	    ContextMenuInfo menuInfo) {
 	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Edit Tags", "Delete"};
+	    String[] menuItems = {"Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -126,21 +103,8 @@ public class BrowseLessonsActivity extends ListActivity {
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
-	  //edit tags
-	  if(menuItemIndex==0){
-		  Intent i = new Intent(c, TagActivity.class);
-		  startActivity(i);
-		  return true;
-	  }
-	  
-	  //edit words
-	  /*else if(menuItemIndex==1){
-		  Intent i = new Intent(c, EditWordsActivity.class);
-		  startActivity(i);
-	  }*/
-	  
 	  //delete lesson
-	  else if(menuItemIndex==1){
+	  if(menuItemIndex==0){
 		  long id = le.getId();
 		  long result = dba.deleteLesson(id);
 		  Log.e("Result",Long.toString(result));
@@ -167,44 +131,4 @@ public class BrowseLessonsActivity extends ListActivity {
 		toast.show();
 	}
 	
-	private void initiatePopupWindow(){
-		try {
-			Display display = getWindowManager().getDefaultDisplay(); 
-			int width = display.getWidth();  // deprecated
-			int height = display.getHeight();  // deprecated
-	        //We need to get the instance of the LayoutInflater, use the context of this activity
-	        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	        //Inflate the view from a predefined XML layout
-	        layout = inflater.inflate(R.layout.add_to_collection_popup,(ViewGroup) findViewById(R.id.popup_layout));
-	        layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
-	        // create a 300px width and 470px height PopupWindow
-	        List<String> allLessons = dba.getAllLessonNames();
-	        Log.e("numLessons",Integer.toString(allLessons.size()));
-	        lessonList = (ListView)layout.findViewById(R.id.collectionlist);
-	        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
-	        lessonList.setAdapter(adapter);
-	        window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
-	        // display the popup in the center
-	        window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-	
-	        lessonList.setOnItemClickListener(new OnItemClickListener() {
-	            
-	            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-	               String name = ((String)lessonList.getItemAtPosition(position));
-	               Log.e("name",name);
-	               long success = dba.addWordToLesson(name, le.getId());
-	               Log.e("adding word",Long.toString(success));
-	               showToast("Successfully Added");
-	               window.dismiss();
-	            }
-	        });
-	 
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
-	}
-	
-	public void onSkipButtonClick(View view){
-		window.dismiss();
-	}
 }

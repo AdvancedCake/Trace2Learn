@@ -100,39 +100,9 @@ public class BrowseWordsActivity extends ListActivity {
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         setListAdapter(new LessonItemListAdapter(this, items, vi));
 
-        /*list.setOnItemClickListener(new OnItemClickListener() {    
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-            	numWords++;
-                Log.e("Position",Long.toString(position));
-                Log.e("Type",list.getItemAtPosition(position).getClass().getName());
-                long wordId = ((LessonWord)list.getItemAtPosition(position)).getId();
-                Log.e("Id",Long.toString(wordId));
-                newLesson.addWord(wordId);
-                LessonItem item = (LessonWord)list.getItemAtPosition(position);
-                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
-                currentWords.add(bitmap);
-                imgAdapter.update(currentWords);
-                imgAdapter.notifyDataSetChanged();
-
-                gallery.setSelection(numWords/2);
-            }
-        });*/
         registerForContextMenu(getListView());
     }
-	
-	/*public void onSaveLessonButtonClick(View view){
-		if(dba.addLesson(newLesson)){
-			TextView word = (TextView)findViewById(R.id.words);
-			word.setText("Successfully added!");
-		}
-	}
-	
-	public void onAddTagButtonClick(View view){
-		Intent i = new Intent(this, TagActivity.class);
-		i.putExtra("ID", newLesson.getId());
-		i.putExtra("TYPE", newLesson.getItemType().toString());
-		startActivity(i);
-	}*/
+
 	
 	@Override  
 	protected void onListItemClick(ListView l, View v, int position, long id) {  
@@ -238,11 +208,6 @@ public class BrowseWordsActivity extends ListActivity {
 	            }
 	        });
 	        
-	        
-	        /*mResultText = (TextView) layout.findViewById(R.id.server_status_text);
-	        Button cancelButton = (Button) layout.findViewById(R.id.end_data_send_button);
-	        makeBlack(cancelButton);
-	        cancelButton.setOnClickListener(cancel_button_click_listener);*/
 	 
 	    } catch (Exception e) {
 	        e.printStackTrace();
