@@ -75,7 +75,7 @@ public class BrowseLessonsActivity extends ListActivity {
         	
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) { 
             	Lesson le = ((Lesson)list.getItemAtPosition(position));
-        		
+        		Intent i = new Intent(c, BrowseWordsActivity.class);
         		i.putExtra("ID", le.getId());
         		startActivity(i);
             }
