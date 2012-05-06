@@ -80,7 +80,7 @@ public class TagActivity extends Activity {
         
         //Populate the ListView
         arrAdapter = new ArrayAdapter<String>(this, 
-        		android.R.layout.simple_list_item_multiple_choice, currentTags);
+        		android.R.layout.simple_list_item_1, currentTags);
         arrAdapter.notifyDataSetChanged();
        
         lv.setAdapter(arrAdapter);

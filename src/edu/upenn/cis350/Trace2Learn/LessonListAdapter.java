@@ -35,10 +35,10 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 	public View getView(int position, View convertView, ViewGroup parent) {	
 		View v = convertView;
 		if (v == null) {
-			v = _vi.inflate(R.layout.lesson_item_desc, null);
+			v = _vi.inflate(R.layout.main_menu, null);
 		}
 		Lesson item = _items.get(position);
-		TextView text = (TextView)v.findViewById(R.id.li_description);
+		TextView text = (TextView)v.findViewById(R.id.main_text);
 		text.setText(item.getLessonName());
 		
 		return v;
