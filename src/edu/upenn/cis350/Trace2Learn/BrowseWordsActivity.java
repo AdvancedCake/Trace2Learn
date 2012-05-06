@@ -58,17 +58,6 @@ public class BrowseWordsActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open();
         
-        //imgAdapter = new ImageAdapter(this,currentWords);
-        //gallery = (Gallery)findViewById(R.id.gallery);
-
-        //gallery.setSpacing(0);
-        
-        //gallery.setAdapter(imgAdapter);
-    	
-        //list = (ListView)findViewById(R.id.wordlist);
-     
-        //newLesson = new Lesson();
-        
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         id = this.getIntent().getLongExtra("ID", -1);
