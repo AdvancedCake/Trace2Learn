@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.upenn.cis350.Trace2Learn"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        <activity
+            android:name="MainMenuActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="CharacterCreationActivity"></activity>
+        <activity android:name="CreateWordActivity"></activity>
+        <activity android:name="CreateLessonActivity"></activity>
+        <activity android:name="TagActivity"></activity>
+        <activity android:name="TestTagDbActivity"></activity>
+        <activity android:name="BrowseCharactersActivity"></activity>
+        <activity android:name="BrowseWordsActivity"></activity>
+        <activity android:name="BrowseLessonsActivity"></activity>
+        <activity android:name="PhrasePracticeActivity"></activity>
+    </application>
+
+</manifest>

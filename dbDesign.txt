@@ -1,0 +1,34 @@
+Table Character
+-id PK int "unique identifier"
+
+Table CharacterDetails
+-id PK int "unique stroke identifier"
+-CharId FK to Character(id)
+-Stroke int "Stroke number of Character
+-PointX double "x coordinate"
+-PointY double "y coordinate"
+-OrderPoint in "order in the stroke"
+
+Table CharacterTagDetails
+-CharId FK to Character(id)
+-tag String
+
+Table Words
+-id PK int "unique stroke identifier"
+-CharId FK to Character(id)
+-Order int "order in the word"
+-FlagUserCreated int "If the word was user created or auto generated"
+
+
+Table WordTagDetails
+-CharId FK to Words(id)
+-tag String
+
+Table Lessons
+-id PK int "unique stroke identifier"
+
+
+Table LessonDetails
+-LessonId FK to Lessons(id)
+-WordId FK to Words(id)
+-Order int "order in the lesson"
