@@ -3,12 +3,6 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -17,6 +11,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -24,36 +19,34 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.Lesson;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class BrowseWordsActivity extends ListActivity {
 	private DbAdapter dba; 
-	private ListView list, lessonList; //list of words to display in listview
-	private Gallery gallery; 
-	private ImageAdapter imgAdapter;
-	private Lesson newLesson; 
-	private ArrayList<Bitmap> currentWords;
-	private int numWords;
+	private ListView lessonList; //list of words to display in listview
 	private ArrayList<LessonItem> items;
 	private View layout;
 	private PopupWindow window;
 	private LessonWord lw;
 	private long id;
+	private static final String[] menuItems = { "Add to Lesson","Edit Tag", "Delete" };
+	private static enum menuItemsInd { Add2Lesson, EditTag, Delete }
+	private static enum requestCodeENUM { EditTag }; 
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        numWords = 0;
-        currentWords = new ArrayList<Bitmap>();
         setContentView(R.layout.create_lesson);
         dba = new DbAdapter(this);
         dba.open();
@@ -115,9 +108,7 @@ public class BrowseWordsActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add to Lesson","Add Tag","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -132,21 +123,21 @@ public class BrowseWordsActivity extends ListActivity {
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
 	  //add to collection
-	  if(menuItemIndex==0){
+	  if(menuItemIndex == menuItemsInd.Add2Lesson.ordinal()){
 		  initiatePopupWindow();
 		  return true;
 	  }
 	  
-	  else if(menuItemIndex==1){
+	  else if(menuItemIndex == menuItemsInd.EditTag.ordinal()){
 		  Intent i = new Intent(this, TagActivity.class);
 		  i.putExtra("ID", lw.getId());
 		  i.putExtra("TYPE", "WORD");
-		  startActivity(i);
+		  startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
 		  return true;
 	  }
 	  
 	  //delete
-	  else if(menuItemIndex==2){
+	  else if(menuItemIndex == menuItemsInd.Delete.ordinal()){
 		  long id = lw.getId();
 		  long result = dba.deleteWord(id);
 		  Log.e("Result",Long.toString(result));
@@ -176,7 +167,7 @@ public class BrowseWordsActivity extends ListActivity {
 	private void initiatePopupWindow(){
 		try {
 			Display display = getWindowManager().getDefaultDisplay(); 
-			int width = display.getWidth();  // deprecated
+			display.getWidth();
 			int height = display.getHeight();  // deprecated
 	        //We need to get the instance of the LayoutInflater, use the context of this activity
 	        LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -229,5 +220,17 @@ public class BrowseWordsActivity extends ListActivity {
 		dba.addLesson(lesson);
 		showToast("Successfully Created");
 		window.dismiss();
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == requestCodeENUM.EditTag.ordinal() 
+				&& resultCode == RESULT_OK) {
+			// re-launch the current activity to reflect the changes of tags
+			// we could use recreate() instead, but note that it is supported since API 11.
+			// TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
+			startActivity(getIntent());
+			finish();
+		}
 	}
 }

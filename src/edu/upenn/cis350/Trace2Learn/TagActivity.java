@@ -2,23 +2,31 @@ package edu.upenn.cis350.Trace2Learn;
 
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.Toast;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem.ItemType;
 
 public class TagActivity extends Activity {
 
 	private final String PRIVATE_PREFIX = "Private: ";
+	private static final String[] menuItems = { "Delete" };
+	private static enum menuItemsInd { Delete }
+	private static final String TagDeleteSuccessMsg = "Deleted the tag successfully.";
+	private static final String TagDeleteErrorMsg = "Failed to delete the tag.";
 	
 	//Should be able to take BOTH character and word
 	
@@ -33,6 +41,7 @@ public class TagActivity extends Activity {
 	//Variables
 	private long id;
 	private List<String> currentTags;
+	private boolean isChanged;
 	
 	ItemType type;
 	ArrayAdapter<String> arrAdapter;
@@ -57,8 +66,6 @@ public class TagActivity extends Activity {
         
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
-        
-        String privateTag;
         
         switch(type)
         {
@@ -90,8 +97,74 @@ public class TagActivity extends Activity {
         ArrayAdapter ad = new ArrayAdapter(this,android.R.layout.simple_list_item_multiple_choice,items);
         lv.setAdapter(ad);*/
         lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        registerForContextMenu(lv);
         
+        isChanged = false;
         }
+
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+	    ContextMenuInfo menuInfo) {
+	    menu.setHeaderTitle("Options");
+	    for (int i = 0; i<menuItems.length; i++) {
+	      menu.add(Menu.NONE, i, i, menuItems[i]);
+	    }
+	}	
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+		int menuItemIndex = item.getItemId();
+		
+		if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
+			String selectedTag = (String)lv.getItemAtPosition(info.position);	
+			boolean isPrivateTag = selectedTag.regionMatches(0, PRIVATE_PREFIX, 0, PRIVATE_PREFIX.length());	
+			boolean isSqlQuerySuccessful = false;
+
+			switch(type)
+			{
+			case CHARACTER:
+				if (isPrivateTag) {
+					isSqlQuerySuccessful = (mDbHelper.updatePrivateTag(id, "") > 0);
+				}
+				else {
+					isSqlQuerySuccessful = mDbHelper.deleteTag(id,'"' + selectedTag + '"');
+				}
+				break;
+			case WORD:
+				if (isPrivateTag) {
+					isSqlQuerySuccessful = (mDbHelper.updatePrivateWordTag(id, "") > 0);
+				}
+				else {
+					isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedTag + '"');
+				}
+				break;
+			default:
+				Log.e("Tag", "Unsupported Type");
+				return false;
+			}
+			
+			// show pop-up message and update ListView 
+			if (isSqlQuerySuccessful) {
+				showToast(TagDeleteSuccessMsg);
+				if (isPrivateTag) {
+					currentTags.set(0, PRIVATE_PREFIX);
+				} else {
+					currentTags.remove(info.position);
+				}
+				arrAdapter.notifyDataSetChanged();
+			} else {
+				showToast(TagDeleteErrorMsg);
+			}	
+		} else {
+			Log.e("Tag", "Unsupported context menu");
+			return false;
+		}
+
+		isChanged = true;
+		
+		return true;
+	}	
 	
 	/**
 	 * When you want to add a tag to a character/word,
@@ -120,6 +193,7 @@ public class TagActivity extends Activity {
 	        	break;
 	        default:
 	    		Log.e("Tag", "Unsupported Type");
+	    		return;
 	        }
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
@@ -129,7 +203,8 @@ public class TagActivity extends Activity {
 	        arrAdapter.notifyDataSetChanged();
 
 			//Set edit text back to nothing
-			editText.setText("");
+			editText.setText("");			
+			isChanged = true;
 		}
     }
 	
@@ -149,7 +224,20 @@ public class TagActivity extends Activity {
 		currentTags.add(0,PRIVATE_PREFIX+input2);
 		arrAdapter.notifyDataSetChanged();
 		editPrivateText.setText("");
+		isChanged = true;
 	}
-	
 
+	private final void showToast(String msg){
+		Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+	}	
+	
+	@Override
+	public void onBackPressed() {
+		if (isChanged) {
+			setResult(RESULT_OK);
+		} else {
+			setResult(RESULT_CANCELED);
+		}
+		finish();
+	}
 }

@@ -3,11 +3,6 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -22,12 +17,17 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 
 public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
-	private ListView list;
 	private ArrayList<LessonItem> items;
 	private LessonItemListAdapter adapter;
+	private static final String[] menuItems = {"Edit Tag","Delete"};
+	private static enum menuItemsInd { EditTag, Delete }
+	private static enum requestCodeENUM { EditTag }; 
 	
 	//initialized list of all characters
 	@Override
@@ -72,9 +72,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Add Tag","Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
@@ -88,17 +86,17 @@ public class BrowseCharactersActivity extends ListActivity {
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
-	  //add tags
-	  if(menuItemIndex==0){
+	  //edit tags
+	  if(menuItemIndex == menuItemsInd.EditTag.ordinal()){
 		  Intent i = new Intent(this, TagActivity.class);
 		  i.putExtra("ID", lc.getId());
 		  i.putExtra("TYPE", "CHARACTER");
-		  startActivity(i);
+		  startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
 		  return true;
 	  }
 	  
 	  //delete
-	  else if(menuItemIndex==1){
+	  else if(menuItemIndex == menuItemsInd.Delete.ordinal()){
 		  long id = lc.getId();
 		  long result = dba.deleteCharacter(id);
 		  Log.e("Result",Long.toString(result));
@@ -124,5 +122,16 @@ public class BrowseCharactersActivity extends ListActivity {
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
 	}
-	
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (requestCode == requestCodeENUM.EditTag.ordinal() 
+				&& resultCode == RESULT_OK) {
+			// re-launch the current activity to reflect the changes of tags
+			// we could use recreate() instead, but note that it is supported since API 11.
+			// TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
+			startActivity(getIntent());
+			finish();
+		}
+	}	
 }
