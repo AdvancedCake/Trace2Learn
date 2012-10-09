@@ -36,7 +36,8 @@ public class DbAdapter {
      */
     private static final String DATABASE_CREATE_CHAR =
     		"CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-    		"name TEXT);";
+    		"name TEXT, " +
+    		"sort DOUBLE);";
     
     private static final String DATABASE_CREATE_CHARTAG =
             "CREATE TABLE CharacterTag (_id INTEGER, " +
@@ -123,7 +124,7 @@ public class DbAdapter {
     private static final String LESSONTAG_TABLE = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
 
     private final Context mCtx;
 
@@ -148,9 +149,9 @@ public class DbAdapter {
         }
 
         @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-            Log.w(TAG, "Upgrading database from version " + oldVersion + " to "
-                    + newVersion + ", which will destroy all old data");
+        public void onUpgrade(SQLiteDatabase db, int oldVer, int newVer) {
+            Log.w(TAG, "Upgrading database from version " + oldVer + " to "
+                    + newVer + ", which will destroy all old data");
             db.execSQL(DATABASE_DROP_CHAR);
             db.execSQL(DATABASE_DROP_CHARTAG);
             db.execSQL(DATABASE_DROP_CHAR_DETAILS);
@@ -325,12 +326,12 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
-    	initializePrivateTag(c,initialCharValues);
+    	initializePrivateTag(c, initialCharValues);
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
     		//if error
-    		Log.e(CHAR_TABLE, "cannot add new character to table "+CHAR_TABLE);
+    		Log.e(CHAR_TABLE, "cannot add new character to table " + CHAR_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
@@ -338,13 +339,19 @@ public class DbAdapter {
     	if (x != null) {
             x.moveToFirst();
         }
-    	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID)));
+    	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID))); // TODO RLi: is this not equal to the local variable id returned by mDb.insert?
+    	
+    	// To make the sort order the same as the ID, we need to update the row
+    	// after we get the ID, i.e. now.
+    	c.setSort(c.getId()); // sort value initialized to ID.
+        initialCharValues.put("sort", c.getSort());
+        mDb.update(CHAR_TABLE, initialCharValues, CHAR_ROWID + "=" + id, null);
     	
     	//add each stroke to CHAR_DETAILS_TABLE
     	List<Stroke> l = c.getStrokes();
     	//stroke ordering
     	int strokeNumber=0;
-    	for(Stroke s:l)
+    	for(Stroke s : l)
     	{
     		ContentValues strokeValues = new ContentValues();
     		strokeValues.put("CharId", id);
@@ -482,13 +489,51 @@ public class DbAdapter {
         c.setId(id);
         
         mCursor =
-                mDb.query(true, CHAR_TABLE, new String[] {"name"}, CHAR_ROWID + " = "+ id, null,
-                        null, null, null, null);
+                mDb.query(true, CHAR_TABLE, new String[] {"name", "sort"},
+                        CHAR_ROWID + " = "+ id, null, null, null, null, null);
         mCursor.moveToFirst();
         String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
         c.setPrivateTag(privateTag);
+        double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
+        c.setSort(sort);
         
         return c;
+    }
+    
+    /**
+     * Swap the display order of two characters.
+     * @param aId id of first character
+     * @param aSort sort value of first character
+     * @param bId id of second character
+     * @param bSort sort value of second character
+     * @return true if the transaction was successful, false otherwise
+     */
+    public boolean swapCharacters(long aId, double aSort, long bId, double bSort) {
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(CHAR_ROWID, aId);
+        bValues.put(CHAR_ROWID, bId);
+        aValues.put("sort", bSort);
+        bValues.put("sort", aSort);
+        Log.e("Swapping positions", aId + " and " + bId);
+        
+        int result;
+        result = mDb.update(CHAR_TABLE, aValues, CHAR_ROWID + "=" + aId, null);
+        if (result == -1) {
+            Log.e(CHAR_TABLE, "id " + aId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(CHAR_TABLE, bValues, CHAR_ROWID + "=" + bId, null);
+        if (result == -1) {
+            Log.e(CHAR_TABLE, "id " + bId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
     }
     
 
@@ -808,7 +853,8 @@ public class DbAdapter {
         initialValues.put(CHAR_ROWID, id);
         initialValues.put("name", tag);
         Log.e("Adding Private Tag",tag);
-        return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID+"="+id,null);
+        return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID + "=" + id, 
+                null);
     }
     
     /**
@@ -1058,7 +1104,7 @@ public class DbAdapter {
      */
     private void initializePrivateTag(LessonItem i, ContentValues v)
     {
-    	if(i.getPrivateTag()!=null)
+    	if(i.getPrivateTag() != null)
     		v.put("name",i.getPrivateTag());
     	else	
     		v.put("name","");

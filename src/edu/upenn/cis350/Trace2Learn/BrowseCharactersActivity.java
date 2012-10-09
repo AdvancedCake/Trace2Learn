@@ -1,6 +1,7 @@
 package edu.upenn.cis350.Trace2Learn;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import android.app.ListActivity;
@@ -25,8 +26,14 @@ public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
 	private ArrayList<LessonItem> items;
 	private LessonItemListAdapter adapter;
-	private static final String[] menuItems = {"Edit Tag","Delete"};
-	private static enum menuItemsInd { EditTag, Delete }
+	private static final String[] menuItems = {"Edit Tag",
+	                                           "Move Up",
+	                                           "Move Down",
+	                                           "Delete"};
+	private static enum menuItemsInd { EditTag,
+	                                   MoveUp,
+	                                   MoveDown,
+	                                   Delete }
 	private static enum requestCodeENUM { EditTag }; 
 	
 	//initialized list of all characters
@@ -37,14 +44,16 @@ public class BrowseCharactersActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open();
         
-        items = new ArrayList<LessonItem>();
         List<Long> ids = dba.getAllCharIds();
+        items = new ArrayList<LessonItem>(ids.size());
         for(long id : ids){
         	LessonItem character = dba.getCharacterById(id);
         	character.setTagList(dba.getCharacterTags(id));
         	items.add(character);
         }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        Collections.sort(items);
+        LayoutInflater vi = (LayoutInflater) getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonItemListAdapter(this, items, vi);
         setListAdapter(adapter);
         registerForContextMenu(getListView());
@@ -70,10 +79,10 @@ public class BrowseCharactersActivity extends ListActivity {
 	}
 	
 	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	    ContextMenuInfo menuInfo) {
+	public void onCreateContextMenu(ContextMenu menu, View v, 
+	                                ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    for (int i = 0; i<menuItems.length; i++) {
+	    for (int i = 0; i < menuItems.length; i++) {
 	      menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
 	}
@@ -86,8 +95,8 @@ public class BrowseCharactersActivity extends ListActivity {
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
-	  //edit tags
-	  if(menuItemIndex == menuItemsInd.EditTag.ordinal()){
+	  // edit tags
+	  if (menuItemIndex == menuItemsInd.EditTag.ordinal()) {
 		  Intent i = new Intent(this, TagActivity.class);
 		  i.putExtra("ID", lc.getId());
 		  i.putExtra("TYPE", "CHARACTER");
@@ -95,12 +104,12 @@ public class BrowseCharactersActivity extends ListActivity {
 		  return true;
 	  }
 	  
-	  //delete
-	  else if(menuItemIndex == menuItemsInd.Delete.ordinal()){
+	  // delete
+	  else if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
 		  long id = lc.getId();
 		  long result = dba.deleteCharacter(id);
-		  Log.e("Result",Long.toString(result));
-		  if(result<0){
+		  Log.e("Result", Long.toString(result));
+		  if(result < 0){
 			  showToast("Character is used by a phrase: cannot delete");
 			  return false;
 		  }
@@ -111,6 +120,49 @@ public class BrowseCharactersActivity extends ListActivity {
 			  return true;
 		  }
 	  }
+	  
+	  // move
+	  else if (menuItemIndex == menuItemsInd.MoveUp.ordinal() ||
+	           menuItemIndex == menuItemsInd.MoveDown.ordinal()) {
+	      // going to swap sort values with the item above or below
+	      
+	      // need to get other item
+	      int otherPos;
+	      if (menuItemIndex == menuItemsInd.MoveUp.ordinal()) {
+	          otherPos = info.position - 1;
+	      } else {
+	          otherPos = info.position + 1;
+	      }
+	      
+	      // check that item exists
+	      if (otherPos < 0) {
+	          showToast("Cannot move this character up");
+	          return false;
+	      } else if (otherPos >= items.size()) {
+              showToast("Cannot move this character down");
+              return false;
+	      }
+	      
+	      LessonCharacter other = (LessonCharacter) items.get(otherPos);
+	      boolean result = dba.swapCharacters(lc.getId(), lc.getSort(), 
+	                                          other.getId(), other.getSort());
+	      Log.e("Move result", Boolean.toString(result));
+	      if (result) {
+	          // success, so update the local copy
+	          double temp = lc.getSort();
+	          lc.setSort(other.getSort());
+	          other.setSort(temp);
+	          Collections.sort(items);
+	          adapter._items = items;
+              adapter.notifyDataSetChanged();
+              return true;
+	      }
+	      else {
+	          showToast("Move failed");
+	          return false;
+	      }
+	  }
+	  
 	  return false;
 	}
 	

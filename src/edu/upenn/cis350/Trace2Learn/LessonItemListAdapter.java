@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
-	private ArrayList<LessonItem> _items;
+	protected ArrayList<LessonItem> _items;
 	
 	private LayoutInflater _vi;
 	
@@ -30,6 +30,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		_items = new ArrayList<LessonItem>(objects);
 		_vi = vi;
 	}
+	
 	/**
 	 * Configures the view for the given item in the list
 	 * @param position - the index of the item in the list
@@ -64,5 +65,5 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		text2.setText(s);
 		return v;
 	}
-	
+		
 }

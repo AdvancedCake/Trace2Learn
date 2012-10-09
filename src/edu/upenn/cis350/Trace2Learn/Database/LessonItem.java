@@ -9,7 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 
 
-public abstract class LessonItem {
+public abstract class LessonItem implements Comparable<LessonItem> {
 	
 	/** The tag cache*/
 	protected List<String> _tags;
@@ -19,6 +19,9 @@ public abstract class LessonItem {
 	
 	/** The private tag cache of the item */
 	protected String private_tag;
+	
+	/** The sort order of the item */
+	protected Double _sort;
 	
 	/** Reference to the database in which the item is stored */
 	protected DbAdapter _db;
@@ -43,6 +46,14 @@ public abstract class LessonItem {
 		
 		_lastUpdate = new Date(0);
 	}
+	
+    /**
+     * Comparison used for determining the display order of the LessonItems in
+     * a list.
+     */
+    public int compareTo(LessonItem other) {
+        return Double.compare(this._sort, other._sort);
+    }
 	
 	/**
 	 * Synchs the LessonItem to match the database
@@ -106,6 +117,14 @@ public abstract class LessonItem {
 		_tags.addAll(tags);
 	}
 	
+    public void setSort(double sort) {
+        _sort = sort;
+    }
+    
+    public double getSort() {
+        return _sort;
+    }
+    
 	/**
 	 * Updates the LessonItem's contents to match those in the database
 	 */
