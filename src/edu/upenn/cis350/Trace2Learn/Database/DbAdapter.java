@@ -55,7 +55,8 @@ public class DbAdapter {
     
     private static final String DATABASE_CREATE_WORDS = 
     		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-    		"name TEXT);";
+    		"name TEXT, " +
+    		"sort DOUBLE);";
     
     private static final String DATABASE_CREATE_WORDS_DETAILS =
             "CREATE TABLE WordsDetails (_id INTEGER," +
@@ -72,7 +73,8 @@ public class DbAdapter {
 
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
-            "name TEXT);";
+            "name TEXT, " +
+            "sort DOUBLE);";
         
     private static final String DATABASE_CREATE_LESSONS_DETAILS =
             "CREATE TABLE LessonsDetails (" +
@@ -124,7 +126,7 @@ public class DbAdapter {
     private static final String LESSONTAG_TABLE = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 6;
 
     private final Context mCtx;
 
@@ -382,11 +384,20 @@ public class DbAdapter {
     	if(word_id == -1)
     	{
     		//if error
-    		Log.e(WORDS_TABLE, "cannot add new character to table "+WORDS_TABLE);
+    		Log.e(WORDS_TABLE, "cannot add new character to table " + 
+    		        WORDS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
-    	Cursor cur = mDb.query(WORDS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
+    	
+        // To make the sort order the same as the ID, we need to update the row
+        // after we get the ID, i.e. now.
+        initialWordValue.put("sort", word_id);
+        mDb.update(WORDS_TABLE, initialWordValue, WORDS_ROWID + "=" + word_id,
+                null);
+    	
+        // Add word details
+        Cursor cur = mDb.query(WORDS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
     	if (cur != null) {
             cur.moveToFirst();
         }
@@ -500,42 +511,7 @@ public class DbAdapter {
         return c;
     }
     
-    /**
-     * Swap the display order of two characters.
-     * @param aId id of first character
-     * @param aSort sort value of first character
-     * @param bId id of second character
-     * @param bSort sort value of second character
-     * @return true if the transaction was successful, false otherwise
-     */
-    public boolean swapCharacters(long aId, double aSort, long bId, double bSort) {
-        mDb.beginTransaction();
-        ContentValues aValues = new ContentValues();
-        ContentValues bValues = new ContentValues();
-        aValues.put(CHAR_ROWID, aId);
-        bValues.put(CHAR_ROWID, bId);
-        aValues.put("sort", bSort);
-        bValues.put("sort", aSort);
-        Log.e("Swapping positions", aId + " and " + bId);
-        
-        int result;
-        result = mDb.update(CHAR_TABLE, aValues, CHAR_ROWID + "=" + aId, null);
-        if (result == -1) {
-            Log.e(CHAR_TABLE, "id " + aId + ": write failed");
-            mDb.endTransaction();
-            return false;
-        }
-        result = mDb.update(CHAR_TABLE, bValues, CHAR_ROWID + "=" + bId, null);
-        if (result == -1) {
-            Log.e(CHAR_TABLE, "id " + bId + ": write failed");
-            mDb.endTransaction();
-            return false;
-        }
-        mDb.setTransactionSuccessful();
-        mDb.endTransaction();
-        return true;
-    }
-    
+
 
     /**
      * Get a LessonCharacter from the database
@@ -559,7 +535,6 @@ public class DbAdapter {
             mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID, "CharId", "WordOrder"}, WORDS_ROWID + "=" + id, null,
                     null, null, "WordOrder ASC", null);
         mCursor.moveToFirst();
-        Stroke s = new Stroke();
         do {
         	if(mCursor.getCount()==0){
         		break;
@@ -571,11 +546,13 @@ public class DbAdapter {
         w.setId(id);
         
         mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {"name"}, WORDS_ROWID + " = "+ id, null,
-                        null, null, null, null);
+                mDb.query(true, WORDS_TABLE, new String[] {"name","sort"},
+                        WORDS_ROWID + " = " + id, null, null, null, null, null);
         mCursor.moveToFirst();
         String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
         w.setPrivateTag(privateTag);
+        double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
+        w.setSort(sort);
         
         w.setDatabase(this);
         return w;
@@ -605,6 +582,12 @@ public class DbAdapter {
             x.moveToFirst();
         }
     	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
+    	
+        // To make the sort order the same as the ID, we need to update the row
+        // after we get the ID, i.e. now.
+        w.setSort(w.getId()); // sort value initialized to ID.
+        initialWordsValues.put("sort", w.getSort());
+        mDb.update(WORDS_TABLE, initialWordsValues, WORDS_ROWID + "=" + id, null);
     	
     	//add each character to WORDS_DETAILS_TABLE
     	List<Long> l = w.getCharacterIds();
@@ -1095,6 +1078,80 @@ public class DbAdapter {
     	le.setDatabase(this);
     	return le;
     }
+    
+    /**
+     * Swap the display order of two characters.
+     * @param aId id of first character
+     * @param aSort sort value of first character
+     * @param bId id of second character
+     * @param bSort sort value of second character
+     * @return true if the transaction was successful, false otherwise
+     */
+    public boolean swapCharacters(long aId, double aSort, long bId, double bSort) {
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(CHAR_ROWID, aId);
+        bValues.put(CHAR_ROWID, bId);
+        aValues.put("sort", bSort);
+        bValues.put("sort", aSort);
+        Log.e("Swapping positions", aId + " and " + bId);
+        
+        int result;
+        result = mDb.update(CHAR_TABLE, aValues, CHAR_ROWID + "=" + aId, null);
+        if (result == -1) {
+            Log.e(CHAR_TABLE, "id " + aId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(CHAR_TABLE, bValues, CHAR_ROWID + "=" + bId, null);
+        if (result == -1) {
+            Log.e(CHAR_TABLE, "id " + bId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
+    
+    
+    /**
+     * Swap the display order of two words.
+     * @param aId id of first word
+     * @param aSort sort value of first word
+     * @param bId id of second word
+     * @param bSort sort value of second word
+     * @return true if the transaction was successful, false otherwise
+     */
+    public boolean swapWords(long aId, double aSort, long bId, double bSort) {
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(WORDS_ROWID, aId);
+        bValues.put(WORDS_ROWID, bId);
+        aValues.put("sort", bSort);
+        bValues.put("sort", aSort);
+        Log.e("Swapping positions", aId + " and " + bId);
+        
+        int result;
+        result = mDb.update(WORDS_TABLE, aValues, WORDS_ROWID + "=" + aId, null);
+        if (result == -1) {
+            Log.e(WORDS_TABLE, "id " + aId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(WORDS_TABLE, bValues, WORDS_ROWID + "=" + bId, null);
+        if (result == -1) {
+            Log.e(WORDS_TABLE, "id " + bId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
+    
     
     /**
      * Initializes a private tag

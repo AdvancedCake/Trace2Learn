@@ -21,7 +21,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected String private_tag;
 	
 	/** The sort order of the item */
-	protected Double _sort;
+	protected double _sort;
 	
 	/** Reference to the database in which the item is stored */
 	protected DbAdapter _db;
