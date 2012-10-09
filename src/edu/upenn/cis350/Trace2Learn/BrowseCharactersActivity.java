@@ -26,11 +26,11 @@ public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
 	private ArrayList<LessonItem> items;
 	private LessonItemListAdapter adapter;
-	private static final String[] menuItems = {"Edit Tag",
+	private static final String[] menuItems = {"Edit Tags",
 	                                           "Move Up",
 	                                           "Move Down",
 	                                           "Delete"};
-	private static enum menuItemsInd { EditTag,
+	private static enum menuItemsInd { EditTags,
 	                                   MoveUp,
 	                                   MoveDown,
 	                                   Delete }
@@ -96,7 +96,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
 	  // edit tags
-	  if (menuItemIndex == menuItemsInd.EditTag.ordinal()) {
+	  if (menuItemIndex == menuItemsInd.EditTags.ordinal()) {
 		  Intent i = new Intent(this, TagActivity.class);
 		  i.putExtra("ID", lc.getId());
 		  i.putExtra("TYPE", "CHARACTER");

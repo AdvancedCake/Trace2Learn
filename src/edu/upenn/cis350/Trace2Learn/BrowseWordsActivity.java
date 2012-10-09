@@ -42,12 +42,12 @@ public class BrowseWordsActivity extends ListActivity {
     private LessonWord lw;
     private long id;
     private static final String[] menuItems = { "Add to Lesson",
-                                                "Edit Tag",
+                                                "Edit Tags",
                                                 "Move Up",
                                                 "Move Down",
                                                 "Delete" };
     private static enum menuItemsInd { Add2Lesson,
-                                       EditTag,
+                                       EditTags,
                                        MoveUp,
                                        MoveDown,
                                        Delete }
@@ -139,7 +139,7 @@ public class BrowseWordsActivity extends ListActivity {
             return true;
         }
 
-        else if(menuItemIndex == menuItemsInd.EditTag.ordinal()){
+        else if(menuItemIndex == menuItemsInd.EditTags.ordinal()){
             Intent i = new Intent(this, TagActivity.class);
             i.putExtra("ID", lw.getId());
             i.putExtra("TYPE", "WORD");
