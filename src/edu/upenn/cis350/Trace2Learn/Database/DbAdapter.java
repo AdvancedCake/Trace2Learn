@@ -699,10 +699,15 @@ public class DbAdapter {
      */
     public Cursor getChars(String tag) throws SQLException {
 
-        Cursor mCursor =
-
-            mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, CHARTAG_TAG + "='" + tag+"'", null,
+        Cursor mCursor;
+        if(tag.length()<=2){
+        	mCursor = mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, CHARTAG_TAG + " LIKE '" + tag + "'", null,
                     null, null, CHARTAG_ROWID + " ASC", null);
+        }
+        else{
+        	mCursor = mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, CHARTAG_TAG + " LIKE '" + tag + "%'", null,
+                    null, null, CHARTAG_ROWID + " ASC", null);
+        }
         if (mCursor != null) {
             mCursor.moveToFirst();
         }

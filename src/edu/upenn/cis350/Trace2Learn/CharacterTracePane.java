@@ -92,7 +92,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 		}
 	}
 	
-	protected void animate()
+	public void animate()
 	{
 		if(_template != null)
 		{

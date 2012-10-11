@@ -177,7 +177,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		return _currentStroke;
 	}
 	
-	protected void animate()
+	public void animate()
 	{
 		long ticks = System.currentTimeMillis() - _lastTick;
 		_elapsedTime += ticks/1000F;
