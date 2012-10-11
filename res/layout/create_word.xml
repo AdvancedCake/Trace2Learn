@@ -1,15 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <TextView android:id="@+id/instructions"
+    <RelativeLayout
+        android:id="@+id/RelativeLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" >
+
+        <TextView
+            android:id="@+id/searchLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Click on a character to add it to the word"
-            />
-    
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:text="@string/filter" />
+
+        <EditText
+            android:id="@+id/searchBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_toLeftOf="@+id/searchButton"
+            android:layout_toRightOf="@+id/searchLabel"
+            android:ems="10"
+            android:inputType="text" >
+
+            <requestFocus />
+        </EditText>
+
+        <Button
+            android:id="@+id/searchButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:onClick="onClickClear"
+            android:text="@string/clear" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click on a character to add it to the word" />
+
     <ListView
         android:id="@+id/charslist"
         android:layout_width="match_parent"
@@ -17,36 +53,35 @@
         android:layout_weight="1.0" >
     </ListView>
 
-    <Gallery xmlns:android="http://schemas.android.com/apk/res/android" 
-    android:id="@+id/gallery"
-    android:layout_width="fill_parent"
-    android:layout_height="wrap_content"
-	/>
-    
-    <TextView android:id="@+id/characters"
+    <Gallery
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/gallery"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:id="@+id/characters"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/save_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            />
-    
-    <LinearLayout
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content"
-	        android:orientation="horizontal">
-	        
-    		<Button
-		        android:id="@+id/save_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onSaveWordButtonClick"
-		        android:text="Save Word" />
-		    
-		    <Button
-		        android:id="@+id/tag_button"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:onClick="onAddTagButtonClick"
-		        android:text="Add Tag" />
-		    
-			</LinearLayout>
+            android:onClick="onSaveWordButtonClick"
+            android:text="Save Word" />
+
+        <Button
+            android:id="@+id/tag_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onAddTagButtonClick"
+            android:text="Add Tag" />
+    </LinearLayout>
 
 </LinearLayout>

@@ -691,7 +691,8 @@ public class DbAdapter {
     }
     
     /**
-     * Return a Cursor positioned at the character that matches the given tag
+     * Return a Cursor positioned at the character that matches the partial tag
+     * if the tag is more than 2 chars, or the entire tag for 1 or 2 chars.
      * 
      * @param tag text of tag to match
      * @return Cursor positioned to matching character, if found
@@ -700,19 +701,41 @@ public class DbAdapter {
     public Cursor getChars(String tag) throws SQLException {
 
         Cursor mCursor;
-        if(tag.length()<=2){
-        	mCursor = mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, CHARTAG_TAG + " LIKE '" + tag + "'", null,
-                    null, null, CHARTAG_ROWID + " ASC", null);
+        if(tag.length() <= 2){
+        	mCursor = mDb.query(true, CHARTAG_TABLE, 
+        	        new String[] {CHARTAG_ROWID},
+        	        CHARTAG_TAG + " LIKE '" + tag + "'", 
+        	        null, null, null, CHARTAG_ROWID + " ASC", null);
         }
         else{
-        	mCursor = mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_ROWID}, CHARTAG_TAG + " LIKE '" + tag + "%'", null,
-                    null, null, CHARTAG_ROWID + " ASC", null);
+        	mCursor = mDb.query(true, CHARTAG_TABLE, 
+        	        new String[] {CHARTAG_ROWID}, 
+        	        CHARTAG_TAG + " LIKE '" + tag + "%'", 
+        	        null, null, null, CHARTAG_ROWID + " ASC", null);
         }
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
         return mCursor;
 
+    }
+    
+    /**
+     * Returns a cursor with all chars that partially match tag
+     * @param tag a partial tag
+     * @return a Cursor
+     * @throws SQLException
+     */
+    public Cursor getAllChars(String tag) throws SQLException {
+        Cursor mCursor;
+        mCursor = mDb.query(true, CHARTAG_TABLE, 
+                new String[] {CHARTAG_ROWID}, 
+                CHARTAG_TAG + " LIKE '" + tag + "%'", 
+                null, null, null, CHARTAG_ROWID + " ASC", null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
     }
    
     /**

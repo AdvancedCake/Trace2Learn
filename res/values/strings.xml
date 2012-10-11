@@ -14,17 +14,16 @@
     <string name="edit">Edit</string>
     <string name="save">Save</string>
     <string name="clear">Clear</string>
+    <string name="tag_header">Edit Tags</string>
+    <string name="addtag_header">Add Tag</string>
+    <string name="add">Add</string>
+    <string name="word">Word/Character here as whatever object structure</string>
+    <string name="tag1">Tagged</string>
+    <string name="li_preview_description">Preview</string>
+    <string name="charplace">Placeholder</string>
+    <string name="practice">Practice</string>
+    <string name="animate">Playback</string>
+    <string name="apply">Apply</string>
+    <string name="filter">Filter: </string>
 
-	<string name="tag_header">Edit Tags</string>
-	<string name="addtag_header">Add Tag</string>
-	<string name="add">Add</string>
-	
-	<string name="word">Word/Character here as whatever object structure</string>
-	<string name="tag1">Tagged</string>
-	
-	<string name="li_preview_description">Preview</string>
-	<string name="charplace">Placeholder</string>
-	<string name="practice">Practice</string>
-	<string name="animate">Playback</string>
-	
 </resources>
