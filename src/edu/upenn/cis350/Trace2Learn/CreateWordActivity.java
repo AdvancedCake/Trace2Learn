@@ -5,23 +5,26 @@ import java.util.LinkedList;
 import java.util.List;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Gallery;
 import android.widget.ListView;
@@ -48,6 +51,7 @@ public class CreateWordActivity extends Activity {
     private PopupWindow window;
     private View layout;
     private boolean saved;
+    private boolean filtered;
     
     
     //initializes the list if all characters in the database
@@ -55,9 +59,11 @@ public class CreateWordActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         saved = false;
+        filtered = false;
         numChars = 0;
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
+        findViewById(R.id.filterStatus).setVisibility(View.GONE);
         dba = new DbAdapter(this);
         dba.open();
         
@@ -81,41 +87,8 @@ public class CreateWordActivity extends Activity {
                 Context.LAYOUT_INFLATER_SERVICE);
         charAdapter = new LessonItemListAdapter(this, items, vi);
         charList.setAdapter(charAdapter);
-        //dba.close();
-        
-        // adding a TextWatcher to detect when user inputs text
-        ((EditText) findViewById(R.id.searchBox)).addTextChangedListener(
-                new TextWatcher() {
-            public void afterTextChanged(Editable arg0) {
-                // not used
-            }
+        //dba.close();        
 
-            public void beforeTextChanged(CharSequence s, int start, int count,
-                    int after) {
-                // not used
-            }
-
-            public void onTextChanged(CharSequence s, int start, int before,
-                    int count) {
-                String search = s.toString();
-                if (search.equals("")) {
-                    // clear the filter
-                    onClickClear(null);
-                }
-                Cursor c = dba.getAllChars(search);
-                List<Long> ids = new LinkedList<Long>();
-                do {
-                    if (c.getCount() == 0) {
-                        Log.d(ACTIVITY_SERVICE, "zero rows");
-                        break;
-                    }
-                    ids.add(c.getLong(c.getColumnIndexOrThrow(
-                            DbAdapter.CHARTAG_ROWID)));
-                } while (c.moveToNext());
-                setCharList(ids);
-            }
-        });
-        
         //when a char is clicked, it is added to the new word and added to the gallery
         charList.setOnItemClickListener(new OnItemClickListener() {
     
@@ -220,20 +193,72 @@ public class CreateWordActivity extends Activity {
         startActivity(i);
     }
     
+    // depending on the state, shows the filter popup or clears the filter
+    public void onClickFilter(View view) {
+        if (filtered) {
+            clearFilter();
+        } else {
+            showFilterPopup();
+        }
+    }
+    
+    // displays the filter popup
+    public void showFilterPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Apply Filter");
+        
+        final EditText filterText = new EditText(this);
+        builder.setView(filterText);
+        
+        builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String search = filterText.getText().toString();
+                if (search.equals("")) {
+                    hideKeyboard(filterText);
+                    return;
+                }
+                Cursor c = dba.getChars(search);
+                List<Long> ids = new LinkedList<Long>();
+                do {
+                    if (c.getCount() == 0) {
+                        Log.d(ACTIVITY_SERVICE, "zero rows");
+                        break;
+                    }
+                    ids.add(c.getLong(c.getColumnIndexOrThrow(
+                            DbAdapter.CHARTAG_ROWID)));
+                } while (c.moveToNext());
+                setCharList(ids);
+                ((Button)findViewById(R.id.filter_button)).setText(R.string.clear);
+                filtered = true;
+                hideKeyboard(filterText);
+                TextView filterStatus = (TextView) findViewById(R.id.filterStatus);
+                filterStatus.setText("Current filter: " + search);
+                filterStatus.setVisibility(View.VISIBLE);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                hideKeyboard(filterText);
+            }
+        });
+        
+        AlertDialog dialog = builder.create();
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.show();
+
+    }
+    
+    // clears the filter
+    public void clearFilter() {
+        setCharList(dba.getAllCharIds());
+        ((Button)findViewById(R.id.filter_button)).setText(R.string.filter);
+        filtered = false;
+        findViewById(R.id.filterStatus).setVisibility(View.GONE);
+    }
+    
     //for testing purposes
     public LessonWord getWord(){
         return newWord;
-    }
-    
-    public void onClickClear(View view) {
-        setCharList(dba.getAllCharIds());
-        
-        if (view != null) {
-            // Hides the keyboard. Who knows...
-            InputMethodManager imm = (InputMethodManager)getSystemService(
-                    Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
     }
     
     private void setCharList(List<Long> ids) {
@@ -254,6 +279,12 @@ public class CreateWordActivity extends Activity {
                 Context.LAYOUT_INFLATER_SERVICE);
         charAdapter = new LessonItemListAdapter(this, items, vi);
         charList.setAdapter(charAdapter);
+    }
+    
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     
     public void showToast(String msg){
