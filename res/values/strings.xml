@@ -25,6 +25,7 @@
     <string name="animate">Playback</string>
     <string name="apply">Apply</string>
     <string name="filter">Filter</string>
+    <string name="clear_filter">Clear Filter</string>
     <string name="cancel">Cancel</string>
     <string name="instruction_create_word">Click on a character to add it to the word</string>
 

@@ -228,7 +228,7 @@ public class CreateWordActivity extends Activity {
                             DbAdapter.CHARTAG_ROWID)));
                 } while (c.moveToNext());
                 setCharList(ids);
-                ((Button)findViewById(R.id.filter_button)).setText(R.string.clear);
+                ((Button)findViewById(R.id.filter_button)).setText(R.string.clear_filter);
                 filtered = true;
                 hideKeyboard(filterText);
                 TextView filterStatus = (TextView) findViewById(R.id.filterStatus);
