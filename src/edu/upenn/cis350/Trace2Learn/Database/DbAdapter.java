@@ -342,6 +342,7 @@ public class DbAdapter {
             x.moveToFirst();
         }
     	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID))); // TODO RLi: is this not equal to the local variable id returned by mDb.insert?
+    	x.close();
     	
     	// To make the sort order the same as the ID, we need to update the row
     	// after we get the ID, i.e. now.
@@ -402,6 +403,7 @@ public class DbAdapter {
             cur.moveToFirst();
         }
     	word_id = cur.getInt(cur.getColumnIndexOrThrow("_id"));
+    	cur.close();
     	ContentValues wordValues = new ContentValues();
     	wordValues.put("_id", word_id);
     	wordValues.put("CharId", id);
@@ -429,15 +431,19 @@ public class DbAdapter {
     	 if (mCursor == null) {
              return -2;
          }
+         mCursor.close();
     	 
-    	 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId =" + id +" AND FlagUserCreated=1", null,
+    	 mCursor = mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId =" + id +" AND FlagUserCreated=1", null,
                  null, null, null, null);
     	 if(mCursor.getCount()>0){
     		 //Some word is using the character
+    	     mCursor.close();
     		 return -1;
     	 }
     	 else{
-    		 mDb.delete(CHAR_TABLE, CHAR_ROWID + "=" + id, null);
+    	     mCursor.close();
+
+    	     mDb.delete(CHAR_TABLE, CHAR_ROWID + "=" + id, null);
     		 mDb.delete(CHAR_DETAILS_TABLE, "CharId = " + id, null);
     		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID}, "CharId =" + id, null,
                      null, null, null, null);
@@ -453,7 +459,8 @@ public class DbAdapter {
     		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
     		 mDb.delete(CHARTAG_TABLE, CHAR_ROWID + "=" + id, null);
     	 }
-    	return id;
+    	 mCursor.close();
+    	 return id;
     }
     
     
@@ -472,6 +479,7 @@ public class DbAdapter {
         if (mCursor == null) {
             return null;
         }
+        mCursor.close();
         
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
@@ -498,6 +506,7 @@ public class DbAdapter {
         while(mCursor.moveToNext());
         c.addStroke(s);
         c.setId(id);
+        mCursor.close();
         
         mCursor =
                 mDb.query(true, CHAR_TABLE, new String[] {"name", "sort"},
@@ -507,6 +516,7 @@ public class DbAdapter {
         c.setPrivateTag(privateTag);
         double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
         c.setSort(sort);
+        mCursor.close();
         
         return c;
     }
@@ -528,6 +538,7 @@ public class DbAdapter {
         if (mCursor == null) {
             return null;
         }
+        mCursor.close();
         
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
@@ -544,6 +555,7 @@ public class DbAdapter {
         	w.addCharacter(charId);
         } while(mCursor.moveToNext());
         w.setId(id);
+        mCursor.close();
         
         mCursor =
                 mDb.query(true, WORDS_TABLE, new String[] {"name","sort"},
@@ -555,6 +567,9 @@ public class DbAdapter {
         w.setSort(sort);
         
         w.setDatabase(this);
+
+        mCursor.close();
+
         return w;
     }
      
@@ -582,6 +597,7 @@ public class DbAdapter {
             x.moveToFirst();
         }
     	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
+        x.close();
     	
         // To make the sort order the same as the ID, we need to update the row
         // after we get the ID, i.e. now.
@@ -630,7 +646,9 @@ public class DbAdapter {
 		 mDb.delete(WORDTAG_TABLE, "_id="+id, null);
 		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId="+id, null);
     	 
-    	return id;
+		 mCursor.close();
+
+		 return id;
     }
     
     public String getPrivateTag(long id, ItemType type)
@@ -656,7 +674,9 @@ public class DbAdapter {
     					null, null, null, null);
     	if (mCursor != null) {
     		mCursor.moveToFirst();
-        	return (mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+        	String ret = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+            mCursor.close();
+            return ret;
     	}
 
     	return "";
@@ -672,7 +692,6 @@ public class DbAdapter {
     public List<String> getCharacterTags(long charId) throws SQLException {
 
         Cursor mCursor =
-
             mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_TAG}, CHARTAG_ROWID + "=" + charId, null,
                     null, null, CHARTAG_TAG+" ASC", null);
         List<String> tags = new ArrayList<String>();
@@ -686,6 +705,8 @@ public class DbAdapter {
         	tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow(CHARTAG_TAG)));
         }
         while(mCursor.moveToNext());
+        mCursor.close();
+
         return tags;
 
     }
@@ -748,7 +769,6 @@ public class DbAdapter {
     public List<String> getLessonTags(long lessonId) throws SQLException {
 
         Cursor mCursor =
-
             mDb.query(true, LESSONTAG_TABLE, new String[] {"tag"}, "_id" + "=" + lessonId, null,
                     null, null, "tag"+" ASC", null);
         List<String> tags = new ArrayList<String>();
@@ -762,6 +782,8 @@ public class DbAdapter {
         	tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow("tag")));
         }
         while(mCursor.moveToNext());
+        mCursor.close();
+
         return tags;
 
     }
@@ -790,6 +812,8 @@ public class DbAdapter {
         	tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow(WORDTAG_TAG)));
         }
         while(mCursor.moveToNext());
+        mCursor.close();
+
         return tags;
 
     }
@@ -804,7 +828,6 @@ public class DbAdapter {
     public Cursor getWords(String tag) throws SQLException {
 
         Cursor mCursor =
-
             mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_ROWID}, WORDTAG_TAG + "='" + tag+"'", null,
                     null, null, WORDTAG_ROWID + " ASC", null);
         if (mCursor != null) {
@@ -820,21 +843,24 @@ public class DbAdapter {
      */
     public List<Long> getAllCharIds(){
     	 Cursor mCursor =
-
 	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
 	                    null, null, CHAR_ROWID+" ASC", null);
-	        List<Long> ids = new ArrayList<Long>();
-	        if (mCursor != null) {
-	            mCursor.moveToFirst();
-	        }
-	        do {
-	        	if(mCursor.getCount()==0){
-	        		break;
-	        	}
-	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ROWID)));
-	        }
-	        while(mCursor.moveToNext());
-	        return ids;
+    	 List<Long> ids = new ArrayList<Long>();
+    	 if (mCursor != null) {
+    	     mCursor.moveToFirst();
+    	 } else {
+    	     return null;
+    	 }
+    	 do {
+    	     if(mCursor.getCount()==0){
+    	         break;
+    	     }
+    	     ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(CHAR_ROWID)));
+    	 }
+    	 while(mCursor.moveToNext());
+         mCursor.close();
+
+    	 return ids;
     }
     
     /**
@@ -842,15 +868,14 @@ public class DbAdapter {
      * @return Cursor positioned to characters
      */
     public Cursor getAllCharIdsCursor(){
-   	 Cursor mCursor =
-
-	            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
-	                    null, null, CHAR_ROWID+" ASC", null);
-	        if (mCursor != null) {
-	            mCursor.moveToFirst();
-	        }
-	        return mCursor;
-   }
+        Cursor mCursor =
+                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, null, null,
+                        null, null, CHAR_ROWID+" ASC", null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
     
     /**
      * Updates a private tag for a character. 
@@ -888,41 +913,43 @@ public class DbAdapter {
      * @return ids list of all word ids
      */
     public List<Long> getAllWordIds() {
-    	 Cursor mCursor =
+        Cursor mCursor =
+                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, null, null,
+                        null, null, WORDS_ROWID+" ASC", null);
+        List<Long> ids = new ArrayList<Long>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+            if(mCursor.getCount()==0){
+                break;
+            }
+            ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
 
- 	            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, null, null,
- 	                    null, null, WORDS_ROWID+" ASC", null);
- 	        List<Long> ids = new ArrayList<Long>();
- 	        if (mCursor != null) {
- 	            mCursor.moveToFirst();
- 	        }
- 	        do {
- 	        	if(mCursor.getCount()==0){
- 	        		break;
- 	        	}
- 	        	ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
- 	        }
- 	        while(mCursor.moveToNext());
- 	        return ids;
+        return ids;
     }
     
     public List<String> getAllLessonNames(){
-    	 Cursor mCursor =
+        Cursor mCursor =
+                mDb.query(true, LESSONS_TABLE, new String[] {"name"}, null, null,
+                        null, null, "name ASC", null);
+        List<String> names = new ArrayList<String>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+            if(mCursor.getCount()==0){
+                break;
+            }
+            names.add(mCursor.getString((mCursor.getColumnIndexOrThrow("name"))));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
 
-  	            mDb.query(true, LESSONS_TABLE, new String[] {"name"}, null, null,
-  	                    null, null, "name ASC", null);
-  	        List<String> names = new ArrayList<String>();
-  	      if (mCursor != null) {
-	            mCursor.moveToFirst();
-	        }
-	        do {
-	        	if(mCursor.getCount()==0){
-	        		break;
-	        	}
-	        	names.add(mCursor.getString((mCursor.getColumnIndexOrThrow("name"))));
-	        }
-	        while(mCursor.moveToNext());
-	        return names;
+        return names;
     }
     
     public long addWordToLesson(String lessonName, long wordId){
@@ -935,7 +962,8 @@ public class DbAdapter {
     		return -1;
     	}
     	int lessonId = x.getInt(x.getColumnIndexOrThrow("_id"));
-    	
+        x.close();
+
     	x = mDb.query(LESSONS_DETAILS_TABLE, new String[]{"LessonOrder"}, null, null, null, null, "LessonOrder DESC", "1");
     	if (x != null) {
             x.moveToFirst();
@@ -944,6 +972,8 @@ public class DbAdapter {
     		return -1;
     	}
     	int lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
+        x.close();
+
     	ContentValues values = new ContentValues();
     	values.put("LessonId", lessonId);
     	values.put("WordId", wordId);
@@ -978,7 +1008,8 @@ public class DbAdapter {
             x.moveToFirst();
         }
     	les.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
-    	
+        x.close();
+
     	//add each word to LESSONS_DETAILS_TABLE
     	List<Long> l = les.getWordIds();
     	//word ordering
@@ -1020,8 +1051,9 @@ public class DbAdapter {
     		ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow("WordId")));
     	}
     	while(mCursor.moveToNext());
+        mCursor.close();
+
     	return ids;
-    	//return null;
     }
     
     /**
@@ -1029,21 +1061,23 @@ public class DbAdapter {
      * @return ids list of all lesson ids
      */
     public List<Long> getAllLessonIds() {
-    	Cursor mCursor =
-    			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, null, null,
-    					null, null, LESSONS_ROWID+" ASC", null);
-    	List<Long> ids = new ArrayList<Long>();
-    	if (mCursor != null) {
-    		mCursor.moveToFirst();
-    	}
-    	do {
-    		if(mCursor.getCount()==0){
-    			break;
-    		}
-    		ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(LESSONS_ROWID)));
-    	}
-    	while(mCursor.moveToNext());
-    	return ids;
+        Cursor mCursor =
+                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, null, null,
+                        null, null, LESSONS_ROWID+" ASC", null);
+        List<Long> ids = new ArrayList<Long>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+            if(mCursor.getCount()==0){
+                break;
+            }
+            ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(LESSONS_ROWID)));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
+
+        return ids;
     }
     
     /**
@@ -1052,22 +1086,24 @@ public class DbAdapter {
      * @return id if found, -1 if not
      */
     public long deleteLesson(long id){
-    	Cursor mCursor =
+        Cursor mCursor =
                 mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, LESSONS_ROWID + "=" + id, null,
                         null, null, null, null);
-    	int rowsDeleted=0;
-    	if (mCursor == null) {
-             return -1;
-         }
-    	 else{
-    		 rowsDeleted += mDb.delete(LESSONS_TABLE, LESSONS_ROWID + "=" + id, null);
-    		 rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = " + id, null);
-    		 rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ROWID + "=" + id, null);
-    	 }
-    	 if(rowsDeleted>0)
-    		 return id;
-    	 else
-    		 return -1;
+        int rowsDeleted=0;
+        if (mCursor == null) {
+            return -1;
+        }
+        else{
+            mCursor.close();
+
+            rowsDeleted += mDb.delete(LESSONS_TABLE, LESSONS_ROWID + "=" + id, null);
+            rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = " + id, null);
+            rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ROWID + "=" + id, null);
+        }
+        if(rowsDeleted>0)
+            return id;
+        else
+            return -1;
 
     }
     
@@ -1087,6 +1123,7 @@ public class DbAdapter {
     		mCursor.moveToFirst();
     		le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	}
+        mCursor.close();
 
     	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
     	// but it is for data consistency.
@@ -1102,8 +1139,11 @@ public class DbAdapter {
     		Log.i("LOAD", "Word: " + wordId);
     		le.addWord(wordId);
     	} while(mCursor.moveToNext());
+        mCursor.close();
+
     	le.setId(id);
     	le.setDatabase(this);
+    	
     	return le;
     }
     

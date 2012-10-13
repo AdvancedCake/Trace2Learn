@@ -227,10 +227,13 @@ public class CreateWordActivity extends Activity {
                     ids.add(c.getLong(c.getColumnIndexOrThrow(
                             DbAdapter.CHARTAG_ROWID)));
                 } while (c.moveToNext());
+                c.close();
                 setCharList(ids);
+                
                 ((Button)findViewById(R.id.filter_button)).setText(R.string.clear_filter);
                 filtered = true;
                 hideKeyboard(filterText);
+                
                 TextView filterStatus = (TextView) findViewById(R.id.filterStatus);
                 filterStatus.setText("Current filter: " + search);
                 filterStatus.setVisibility(View.VISIBLE);
