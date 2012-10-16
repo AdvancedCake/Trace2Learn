@@ -39,7 +39,7 @@ public class PhrasePracticeActivity extends Activity {
 	private ArrayList<SquareLayout> _displayLayouts;
 	private ArrayList<SquareLayout> _traceLayouts;
 	
-	private ArrayList<CharacterDisplayPane> _displayPanes;
+	private ArrayList<CharacterPlaybackPane> _playbackPanes;
 	private ArrayList<CharacterTracePane> _tracePanes;
 	
 	private ImageAdapter _imgAdapter;
@@ -67,7 +67,7 @@ public class PhrasePracticeActivity extends Activity {
 		_displayLayouts = new ArrayList<SquareLayout>();
 		_traceLayouts = new ArrayList<SquareLayout>();
 		
-		_displayPanes = new ArrayList<CharacterDisplayPane>();
+		_playbackPanes = new ArrayList<CharacterPlaybackPane>();
 		_tracePanes = new ArrayList<CharacterTracePane>();
 		
 		
@@ -132,7 +132,7 @@ public class PhrasePracticeActivity extends Activity {
 		_characters.clear();
 		_bitmaps.clear();
 		_tracePanes.clear();
-		_displayPanes.clear();
+		_playbackPanes.clear();
 		_traceLayouts.clear();
 		_displayLayouts.clear();
 		for(long id : ids)
@@ -142,12 +142,12 @@ public class PhrasePracticeActivity extends Activity {
 			this._characters.add(ch);
 			this._bitmaps.add(bmp);
 			SquareLayout disp = new SquareLayout(_animator.getContext());
-			CharacterDisplayPane dispPane = new CharacterDisplayPane(disp.getContext());
+			CharacterPlaybackPane dispPane = new CharacterPlaybackPane(disp.getContext(), false, 2);
 			dispPane.setCharacter(ch);
 			disp.addView(dispPane);
 			
 			this._displayLayouts.add(disp);
-			this._displayPanes.add(dispPane);
+			this._playbackPanes.add(dispPane);
 			
 			SquareLayout trace = new SquareLayout(_animator.getContext());
 			CharacterTracePane tracePane = new CharacterTracePane(disp.getContext());
@@ -166,6 +166,9 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setDisplayPane()
 	{
+		int child = _animator.getDisplayedChild();
+		_playbackPanes.get(child).setAnimated(true);
+		
 		if (_currentMode != Mode.DISPLAY) 
 		{
 			int curInd = _animator.getDisplayedChild();
