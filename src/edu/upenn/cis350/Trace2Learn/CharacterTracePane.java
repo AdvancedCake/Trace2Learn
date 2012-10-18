@@ -32,7 +32,8 @@ public class CharacterTracePane extends CharacterCreationPane {
 	
 	Thread _refreshTimer;
 	
-	protected Handler _handler;
+	protected Handler _handler; // what is this for???
+	private Handler moveToNext;
 	
 	public CharacterTracePane(Context context) {
 		super(context);
@@ -108,8 +109,11 @@ public class CharacterTracePane extends CharacterCreationPane {
 		if(_template != null)
 		{
 			int numStrokes = _template.getNumStrokes();
-			if(stroke < 0) stroke = 0;
-			if(stroke >= numStrokes) stroke = numStrokes;
+			if (stroke < 0) stroke = 0;
+			if (stroke >= numStrokes) {
+			    moveToNext.sendEmptyMessage(0);
+			    return;
+			}
 			float strokeLen = 1F/numStrokes;
 			_templateTime = stroke*strokeLen;
 			_timeLimit = (stroke+1)*strokeLen;
@@ -134,7 +138,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 	}
 	
 	protected void animateNextStroke() {
-		setCurrentTraceStroke(_curStroke+1);
+		setCurrentTraceStroke(_curStroke + 1);
 	}
 
 	
@@ -154,4 +158,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 		drawCharacter(canvas, _character);
 	}
 	
+	public void addMoveToNextHandler(Handler h) {
+	    moveToNext = h;
+	}
 }

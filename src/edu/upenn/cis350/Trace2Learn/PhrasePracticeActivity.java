@@ -3,25 +3,24 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.CharacterCreationActivity.Mode;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
-import edu.upenn.cis350.Trace2Learn.R.id;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Gallery;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
+import edu.upenn.cis350.Trace2Learn.R.id;
+import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class PhrasePracticeActivity extends Activity {
 		
@@ -164,6 +163,7 @@ public class PhrasePracticeActivity extends Activity {
 			SquareLayout trace = new SquareLayout(_animator.getContext());
 			CharacterTracePane tracePane = new CharacterTracePane(disp.getContext());
 			tracePane.setTemplate(ch);
+			tracePane.addMoveToNextHandler(moveToNext);
 			trace.addView(tracePane);
 			
 			this._traceLayouts.add(trace);
@@ -279,4 +279,14 @@ public class PhrasePracticeActivity extends Activity {
 		Toast toast = Toast.makeText(context, text, duration);
 		toast.show();
 	}
+	
+	Handler moveToNext = new Handler() {
+	    @Override
+	    public void handleMessage(Message m) {
+	        int index = _animator.getDisplayedChild();
+	        if (index + 1 < _characters.size()) {
+	            setSelectedCharacter(index + 1);
+	        }
+	    }
+	};
 }
