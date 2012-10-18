@@ -40,7 +40,7 @@ public class BrowseWordsActivity extends ListActivity {
     private View layout;
     private PopupWindow window;
     private LessonWord lw;
-    private long id;
+    private long lessonID;
     private static final String[] menuItems = { "Add to Lesson",
                                                 "Edit Tags",
                                                 "Move Up",
@@ -62,9 +62,9 @@ public class BrowseWordsActivity extends ListActivity {
 
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
-        id = this.getIntent().getLongExtra("ID", -1);
+        lessonID = this.getIntent().getLongExtra("ID", -1);
         //id=1;
-        if(id==-1){
+        if(lessonID==-1){
 
             List<Long> ids = dba.getAllWordIds();
             for(long id : ids){
@@ -74,14 +74,14 @@ public class BrowseWordsActivity extends ListActivity {
             }
         }
         else{
-            Lesson les = dba.getLessonById(id);
+            Lesson les = dba.getLessonById(lessonID);
             String name = les.getLessonName();
 
             TextView title = (TextView)findViewById(R.id.instructions);
             title.setText("Browsing " + name);
 
             items = new ArrayList<LessonItem>();
-            List<Long> ids = dba.getWordsFromLessonId(id);
+            List<Long> ids = dba.getWordsFromLessonId(lessonID);
             for(long id : ids){
                 LessonItem word = dba.getWordById(id);
                 word.setTagList(dba.getWordTags(id));
@@ -100,16 +100,19 @@ public class BrowseWordsActivity extends ListActivity {
     @Override  
     protected void onListItemClick(ListView l, View v, int position, long id) {  
         super.onListItemClick(l, v, position, id);  
-        clickOnItem(items.get(position));
+        clickOnItem(items.get(position), position);
     }  
 
     //when character is clicked, it starts the display mode for that char
-    public void clickOnItem(LessonItem li){
+    public void clickOnItem(LessonItem li, int position){
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
         bun.putString("mode", "display");
         bun.putLong("wordId", li.getId());
+        bun.putLong("lessonID", lessonID);
+        bun.putInt("index", position + 1);
+        bun.putInt("collectionSize", items.size());
 
         intent.setClass(this, PhrasePracticeActivity.class);
         intent.putExtras(bun);

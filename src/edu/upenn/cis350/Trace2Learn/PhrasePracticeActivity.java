@@ -26,10 +26,12 @@ import android.widget.ViewAnimator;
 public class PhrasePracticeActivity extends Activity {
 		
 	private TextView _tagText;
+	private TextView _phraseTitle;
 
 	private DbAdapter _dbHelper;
 
 	private Mode _currentMode = Mode.INVALID;
+	private long _lessonID = -1;
 
 	private long id_to_pass = -1;
 
@@ -85,6 +87,7 @@ public class PhrasePracticeActivity extends Activity {
 		});
 
 		_tagText = (TextView) this.findViewById(id.tag_list);
+		_phraseTitle = (TextView) this.findViewById(id.phraseTitle);
 
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
@@ -106,6 +109,15 @@ public class PhrasePracticeActivity extends Activity {
 			setDisplayPane();
 			id_to_pass = bun.getLong("wordId");
 			updateTags();
+			
+			_lessonID = bun.getLong("lessonID");
+			if (_lessonID == -1) {
+				_phraseTitle.setText("");
+			} else {
+				int wordIndex = bun.getInt("index");
+				int collectionSize = bun.getInt("collectionSize");
+				_phraseTitle.setText(wordIndex + " of " + collectionSize);
+			}
 		}
 		else
 		{

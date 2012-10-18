@@ -77,12 +77,12 @@ public class BrowseLessonsActivity extends ListActivity {
 	} 
 
 	//when character is clicked, it starts the display mode for that char
-		public void clickOnItem(LessonItem li){
-			Lesson le = ((Lesson)li);
-			Intent i = new Intent(this, BrowseWordsActivity.class);
-    		i.putExtra("ID", le.getId());
-    		startActivity(i);
-		}
+	public void clickOnItem(LessonItem li){
+		Lesson le = ((Lesson)li);
+		Intent i = new Intent(this, BrowseWordsActivity.class);
+		i.putExtra("ID", le.getId());
+		startActivity(i);
+	}
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
