@@ -1,5 +1,6 @@
 Table Character
 -id PK int "unique identifier"
+-sort double "sort order value"
 
 Table CharacterDetails
 -id PK int "unique stroke identifier"
@@ -15,6 +16,7 @@ Table CharacterTagDetails
 
 Table Words
 -id PK int "unique stroke identifier"
+-sort double "sort order value"
 -CharId FK to Character(id)
 -Order int "order in the word"
 -FlagUserCreated int "If the word was user created or auto generated"
@@ -26,6 +28,7 @@ Table WordTagDetails
 
 Table Lessons
 -id PK int "unique stroke identifier"
+-sort double "sort order value"
 
 
 Table LessonDetails
