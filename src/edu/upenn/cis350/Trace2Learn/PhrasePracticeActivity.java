@@ -5,6 +5,7 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -31,6 +32,8 @@ public class PhrasePracticeActivity extends Activity {
 
 	private Mode _currentMode = Mode.INVALID;
 	private long _lessonID = -1;
+	private int wordIndex;
+	private int collectionSize;
 
 	private long id_to_pass = -1;
 
@@ -105,7 +108,6 @@ public class PhrasePracticeActivity extends Activity {
 		if (bun != null && bun.containsKey("wordId")) 
 		{
 			setWord(_dbHelper.getWordById(bun.getLong("wordId")));
-			setDisplayPane();
 			id_to_pass = bun.getLong("wordId");
 			updateTags();
 			
@@ -113,9 +115,16 @@ public class PhrasePracticeActivity extends Activity {
 			if (_lessonID == -1) {
 				_phraseTitle.setText("");
 			} else {
-				int wordIndex = bun.getInt("index");
-				int collectionSize = bun.getInt("collectionSize");
+				wordIndex = bun.getInt("index");
+				collectionSize = bun.getInt("collectionSize");
 				_phraseTitle.setText(wordIndex + " of " + collectionSize);
+			}
+			
+			String mode = bun.getString("mode");
+			if (mode.equals("display")) {
+	            setDisplayPane();
+			} else if (mode.equals("trace")) {
+			    setCharacterTracePane();
 			}
 		}
 		else
@@ -286,6 +295,17 @@ public class PhrasePracticeActivity extends Activity {
 	        int index = _animator.getDisplayedChild();
 	        if (index + 1 < _characters.size()) {
 	            setSelectedCharacter(index + 1);
+	        } else {
+	            // this is the end of the word
+	            if (_lessonID != -1) {
+	                // shutdown and notify parent activity
+	                Bundle bundle = new Bundle();
+	                bundle.putInt("next", wordIndex);
+	                Intent intent = new Intent();
+	                intent.putExtras(bundle);
+	                setResult(RESULT_OK, intent);
+	                finish();
+	            }
 	        }
 	    }
 	};

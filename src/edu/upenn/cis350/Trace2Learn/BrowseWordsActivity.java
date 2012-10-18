@@ -33,7 +33,7 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class BrowseWordsActivity extends ListActivity {
-    private DbAdapter dba; 
+    private DbAdapter dba;
     private ListView lessonList; //list of words to display in listview
     private LessonItemListAdapter adapter;
     private ArrayList<LessonItem> items;
@@ -51,7 +51,7 @@ public class BrowseWordsActivity extends ListActivity {
                                        MoveUp,
                                        MoveDown,
                                        Delete }
-    private static enum requestCodeENUM { EditTag }; 
+    private static enum requestCodeENUM { EditTag, PhrasePractice }; 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -100,15 +100,15 @@ public class BrowseWordsActivity extends ListActivity {
     @Override  
     protected void onListItemClick(ListView l, View v, int position, long id) {  
         super.onListItemClick(l, v, position, id);  
-        clickOnItem(items.get(position), position);
+        clickOnItem(items.get(position), position, "display");
     }  
 
     //when character is clicked, it starts the display mode for that char
-    public void clickOnItem(LessonItem li, int position){
+    public void clickOnItem(LessonItem li, int position, String mode){
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
-        bun.putString("mode", "display");
+        bun.putString("mode", mode);
         bun.putLong("wordId", li.getId());
         bun.putLong("lessonID", lessonID);
         bun.putInt("index", position + 1);
@@ -116,7 +116,7 @@ public class BrowseWordsActivity extends ListActivity {
 
         intent.setClass(this, PhrasePracticeActivity.class);
         intent.putExtras(bun);
-        startActivity(intent);
+        startActivityForResult(intent, requestCodeENUM.PhrasePractice.ordinal());
     }
 
     @Override
@@ -289,6 +289,13 @@ public class BrowseWordsActivity extends ListActivity {
             // TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
             startActivity(getIntent());
             finish();
+        } else if (requestCode == requestCodeENUM.PhrasePractice.ordinal() && 
+                resultCode == RESULT_OK) {
+            int next = data.getExtras().getInt("next");
+            if (next < items.size()) {
+                clickOnItem(items.get(next), next, "trace");
+            }
         }
     }
+
 }
