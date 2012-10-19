@@ -110,7 +110,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 		{
 			int numStrokes = _template.getNumStrokes();
 			if (stroke < 0) stroke = 0;
-			if (stroke >= numStrokes) {
+			if (moveToNext != null && stroke >= numStrokes) {
 			    moveToNext.sendEmptyMessage(0);
 			    return;
 			}

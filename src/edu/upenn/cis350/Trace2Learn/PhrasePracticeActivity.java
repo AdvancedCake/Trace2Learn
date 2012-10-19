@@ -117,7 +117,8 @@ public class PhrasePracticeActivity extends Activity {
 			} else {
 				wordIndex = bun.getInt("index");
 				collectionSize = bun.getInt("collectionSize");
-				_phraseTitle.setText(wordIndex + " of " + collectionSize);
+				String lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
+				_phraseTitle.setText("<<" + lessonName + ">> " + wordIndex + " of " + collectionSize);
 			}
 			
 			String mode = bun.getString("mode");
