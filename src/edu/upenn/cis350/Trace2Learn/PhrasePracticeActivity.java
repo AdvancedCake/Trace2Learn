@@ -32,8 +32,9 @@ public class PhrasePracticeActivity extends Activity {
 
 	private Mode _currentMode = Mode.INVALID;
 	private long _lessonID = -1;
-	private int wordIndex;
-	private int collectionSize;
+	private int _wordIndex;
+	private int _collectionSize;
+	private String _lessonName;
 
 	private long id_to_pass = -1;
 
@@ -115,10 +116,10 @@ public class PhrasePracticeActivity extends Activity {
 			if (_lessonID == -1) {
 				_phraseTitle.setText("");
 			} else {
-				wordIndex = bun.getInt("index");
-				collectionSize = bun.getInt("collectionSize");
-				String lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
-				_phraseTitle.setText("<<" + lessonName + ">> " + wordIndex + " of " + collectionSize);
+				_wordIndex = bun.getInt("index");
+				_collectionSize = bun.getInt("collectionSize");
+				_lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
+				_phraseTitle.setText("<<" + _lessonName + ">> " + _wordIndex + " of " + _collectionSize);
 			}
 			
 			String mode = bun.getString("mode");
@@ -291,23 +292,28 @@ public class PhrasePracticeActivity extends Activity {
 	}
 	
 	Handler moveToNext = new Handler() {
-	    @Override
-	    public void handleMessage(Message m) {
-	        int index = _animator.getDisplayedChild();
-	        if (index + 1 < _characters.size()) {
-	            setSelectedCharacter(index + 1);
-	        } else {
-	            // this is the end of the word
-	            if (_lessonID != -1) {
-	                // shutdown and notify parent activity
-	                Bundle bundle = new Bundle();
-	                bundle.putInt("next", wordIndex);
-	                Intent intent = new Intent();
-	                intent.putExtras(bundle);
-	                setResult(RESULT_OK, intent);
-	                finish();
-	            }
-	        }
-	    }
+		@Override
+		public void handleMessage(Message m) {
+			int index = _animator.getDisplayedChild();
+			if (index + 1 < _characters.size()) {
+				setSelectedCharacter(index + 1);
+			} else {
+				// this is the end of the word
+				if (_lessonID != -1) {
+					if (_wordIndex < _collectionSize) {
+						// shutdown and notify parent activity
+						Bundle bundle = new Bundle();
+						bundle.putInt("next", _wordIndex);
+						Intent intent = new Intent();
+						intent.putExtras(bundle);
+						setResult(RESULT_OK, intent);
+						finish();
+					} else {
+						// the last word in the collection
+						showToast("Reached the last word in " + _lessonName);
+					}
+				}
+			}
+		}
 	};
 }
