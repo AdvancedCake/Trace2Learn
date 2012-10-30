@@ -66,4 +66,8 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		return v;
 	}
 		
+	public void add(LessonItem lessonItem) {
+		super.add(lessonItem);
+		_items.add(lessonItem);
+	}
 }

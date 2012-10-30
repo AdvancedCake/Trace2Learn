@@ -344,6 +344,15 @@ public class DbAdapter {
     	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID))); // TODO RLi: is this not equal to the local variable id returned by mDb.insert?
     	x.close();
     	
+    	// if the given character has tags, copy them
+    	for (String tag : c.getTags()) {
+    		if (-1 == createTags(id, tag)) {
+        		Log.e(CHAR_TABLE, "cannot add character's tag(" + tag + ") to table " + CHAR_TABLE);
+    			mDb.endTransaction();
+        		return false;
+    		}
+    	}
+    	
     	// To make the sort order the same as the ID, we need to update the row
     	// after we get the ID, i.e. now.
     	c.setSort(c.getId()); // sort value initialized to ID.
@@ -471,54 +480,62 @@ public class DbAdapter {
      */
     public LessonCharacter getCharacterById(long id)
     {
-        Cursor mCursor =
-            mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
-                    null, null, null, null);
-        LessonCharacter c = new LessonCharacter();
-        //if the character doesn't exists
-        if (mCursor == null) {
-            return null;
-        }
-        mCursor.close();
-        
-        //grab its details (step one might not be necessary and might cause slow downs
-        // but it is for data consistency.
-        mCursor =
-            mDb.query(true, CHAR_DETAILS_TABLE, new String[] {"CharId", "Stroke","PointX","PointY"}, "CharId = "+ id, null,
-                    null, null, "Stroke ASC, OrderPoint ASC", null);
-        mCursor.moveToFirst();
-        Stroke s = new Stroke();
-        int strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
-        do {
-        	if(mCursor.getCount()==0){
-        		c.addStroke(s);
-        		break;
-        	}
-        	if(strokeNumber != mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke")))
-        	{
-        		c.addStroke(s);
-        		strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
-        		s = new Stroke();
-        	}
-        	s.addPoint(mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointX")),
-        			mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointY")));
-        }
-        while(mCursor.moveToNext());
-        c.addStroke(s);
-        c.setId(id);
-        mCursor.close();
-        
-        mCursor =
-                mDb.query(true, CHAR_TABLE, new String[] {"name", "sort"},
-                        CHAR_ROWID + " = "+ id, null, null, null, null, null);
-        mCursor.moveToFirst();
-        String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
-        c.setPrivateTag(privateTag);
-        double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
-        c.setSort(sort);
-        mCursor.close();
-        
-        return c;
+    	Cursor mCursor =
+    			mDb.query(true, CHAR_TABLE, new String[] {CHAR_ROWID}, CHAR_ROWID + "=" + id, null,
+    					null, null, null, null);
+    	LessonCharacter c = new LessonCharacter();
+    	//if the character doesn't exists
+    	if (mCursor == null) {
+    		return null;
+    	}
+    	mCursor.close();
+
+    	//grab its details (step one might not be necessary and might cause slow downs
+    	// but it is for data consistency.
+    	mCursor =
+    			mDb.query(true, CHAR_DETAILS_TABLE, new String[] {"CharId", "Stroke","PointX","PointY"}, "CharId = "+ id, null,
+    					null, null, "Stroke ASC, OrderPoint ASC", null);
+    	mCursor.moveToFirst();
+    	Stroke s = new Stroke();
+    	if (mCursor.getCount() > 0) {
+    		int strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
+
+    		do {
+    			if(mCursor.getCount()==0){
+    				c.addStroke(s);
+    				break;
+    			}
+    			if(strokeNumber != mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke")))
+    			{
+    				c.addStroke(s);
+    				strokeNumber = mCursor.getInt(mCursor.getColumnIndexOrThrow("Stroke"));
+    				s = new Stroke();
+    			}
+    			s.addPoint(mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointX")),
+    					mCursor.getFloat(mCursor.getColumnIndexOrThrow("PointY")));
+    		}
+    		while(mCursor.moveToNext());
+    		c.addStroke(s);
+    	}
+    	c.setId(id);
+    	mCursor.close();
+
+    	mCursor =
+    			mDb.query(true, CHAR_TABLE, new String[] {"name", "sort"},
+    					CHAR_ROWID + " = "+ id, null, null, null, null, null);
+    	mCursor.moveToFirst();
+    	String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+    	c.setPrivateTag(privateTag);
+    	double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
+    	c.setSort(sort);
+    	mCursor.close();
+
+    	// get tags as well
+    	for (String tag : getCharacterTags(id)) {
+    		c.addTag(tag);
+    	}
+
+    	return c;
     }
     
 

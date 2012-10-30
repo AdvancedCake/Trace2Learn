@@ -1,14 +1,10 @@
 package edu.upenn.cis350.Trace2Learn.test;
 
 import android.test.AndroidTestCase;
-import android.test.ProviderTestCase2;
 import android.util.Log;
-import edu.upenn.cis350.Trace2Learn.BrowseCharactersActivity;
-import edu.upenn.cis350.Trace2Learn.CharacterCreationActivity;
 import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.Stroke;
-import junit.framework.TestCase;
 
 public class LessonCharacterTest extends AndroidTestCase {
 	
@@ -111,6 +107,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		db.addCharacter(c);
 		compareCharacters(c, db.getCharacterById(c.getId()));
 		c.addStroke(s2);
+		db.addCharacter(c);
 		compareCharacters(c, db.getCharacterById(c.getId()));
 	}
 	
@@ -181,7 +178,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		c.addTag("Tag1");
 		db.addCharacter(c);
 		LessonCharacter c1 = db.getCharacterById(c.getId());
-		compareCharacters(c1, c);
+		compareCharacters(c, c1);
 	}
 	
 }

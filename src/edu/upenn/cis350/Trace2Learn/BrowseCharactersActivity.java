@@ -48,7 +48,6 @@ public class BrowseCharactersActivity extends ListActivity {
         items = new ArrayList<LessonItem>(ids.size());
         for(long id : ids){
         	LessonItem character = dba.getCharacterById(id);
-        	character.setTagList(dba.getCharacterTags(id));
         	items.add(character);
         }
         Collections.sort(items);
