@@ -80,7 +80,7 @@ public class CreateWordActivity extends Activity {
         List<Long> ids = dba.getAllCharIds();
         for(long id : ids) {
             LessonItem character = dba.getCharacterById(id);
-            character.setTagList(dba.getCharacterTags(id));
+            //TODO: character.setTagList(dba.getCharacterTags(id)); 
             items.add(character);
         }
         LayoutInflater vi = (LayoutInflater) getSystemService(
@@ -275,7 +275,7 @@ public class CreateWordActivity extends Activity {
                 character = new LessonCharacter(id);
                 Log.d("SEARCH", "Character " + id + " not found in db");
             }
-            character.setTagList(dba.getCharacterTags(id));
+            //TODO: character.setTagList(dba.getCharacterTags(id));
             items.add(character);
         }
         LayoutInflater vi = (LayoutInflater) getSystemService(
