@@ -171,13 +171,15 @@ public class CharacterCreationActivity extends Activity {
 
 	private String tagsToString(List<String> tags)
 	{
-		StringBuffer buf = new StringBuffer();
+		if (tags == null || tags.size() == 0) { return ""; }
+	    
+	    StringBuffer buf = new StringBuffer();
 		for (String str : tags)
 		{
 			buf.append(str + ", ");
 		}
 
-		return buf.toString();
+		return buf.toString().substring(0, buf.length() - 2);
 	}
 
 	public void onCreateButtonClick(View view)
