@@ -4,7 +4,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -177,19 +176,19 @@ public class TagActivity extends Activity {
     {
 		if (view == addTagButton)
 		{
-			Editable input = editText.getText();
-			String input2 = input.toString(); //This is the string of the tag you typed in
+			String input = editText.getText().toString();
+			if (input.length() == 0) return;
 			
 			switch(type)
 	        {
 	        case CHARACTER:
-	        	mDbHelper.createTags(id, input2);
+	        	mDbHelper.createTags(id, input);
 	        	break;
 	        case WORD:
-	        	mDbHelper.createWordTags(id, input2);
+	        	mDbHelper.createWordTags(id, input);
 	        	break;
 	        case LESSON:
-	        	mDbHelper.createLessonTags(id, input2);
+	        	mDbHelper.createLessonTags(id, input);
 	        	break;
 	        default:
 	    		Log.e("Tag", "Unsupported Type");
@@ -197,7 +196,7 @@ public class TagActivity extends Activity {
 	        }
 			//update the listview --> update the entire view
 			//Refactor this, because refreshing the view is inefficient
-			currentTags.add(input2);
+			currentTags.add(input);
 			//currentTags.clear();
 			//currentTags = mDbHelper.getTags(id);
 	        arrAdapter.notifyDataSetChanged();
@@ -209,19 +208,20 @@ public class TagActivity extends Activity {
     }
 	
 	public void onAddPrivateTagButtonClick(View view){
-		Editable input = editPrivateText.getText();
-		String input2 = input.toString();
+		String input = editPrivateText.getText().toString();
+		if (input.length() == 0) return;		
+		
 		if (type == ItemType.CHARACTER)
 		{
-			mDbHelper.updatePrivateTag(id, input2); //added it to db
+			mDbHelper.updatePrivateTag(id, input); //added it to db
 		}
 		else if (type == ItemType.WORD)
 		{		
-			mDbHelper.updatePrivateWordTag(id, input2);	
+			mDbHelper.updatePrivateWordTag(id, input);	
 		}
 		if(currentTags.get(0).contains(PRIVATE_PREFIX))
 			currentTags.remove(0);
-		currentTags.add(0,PRIVATE_PREFIX+input2);
+		currentTags.add(0,PRIVATE_PREFIX+input);
 		arrAdapter.notifyDataSetChanged();
 		editPrivateText.setText("");
 		isChanged = true;
