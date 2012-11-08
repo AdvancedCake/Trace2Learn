@@ -1,4 +1,4 @@
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,10 +27,10 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.Database.Lesson;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;

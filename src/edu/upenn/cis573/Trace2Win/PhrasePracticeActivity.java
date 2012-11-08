@@ -1,4 +1,4 @@
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +19,10 @@ import android.widget.Gallery;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewAnimator;
-import edu.upenn.cis350.Trace2Learn.R.id;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.R.id;
 
 @SuppressLint("HandlerLeak")
 public class PhrasePracticeActivity extends Activity {

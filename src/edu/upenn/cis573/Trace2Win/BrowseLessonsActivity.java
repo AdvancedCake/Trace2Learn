@@ -1,13 +1,13 @@
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonItem;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.Database.Lesson;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;

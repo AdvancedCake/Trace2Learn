@@ -1,12 +1,12 @@
 /**
  * 
  */
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis573.Trace2Win;
 
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.Stroke;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.Stroke;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;

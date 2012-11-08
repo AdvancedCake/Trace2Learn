@@ -1,9 +1,9 @@
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import edu.upenn.cis350.Trace2Learn.Database.Lesson;
+import edu.upenn.cis573.Trace2Win.Database.Lesson;
 
 import android.content.Context;
 import android.view.LayoutInflater;

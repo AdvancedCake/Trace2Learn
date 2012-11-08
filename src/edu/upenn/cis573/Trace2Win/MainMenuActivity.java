@@ -1,4 +1,4 @@
-package edu.upenn.cis350.Trace2Learn;
+package edu.upenn.cis573.Trace2Win;
 
 import android.app.ListActivity;
 import android.content.Context;

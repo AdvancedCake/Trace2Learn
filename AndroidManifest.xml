@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.upenn.cis350.Trace2Learn"
+    package="edu.upenn.cis573.Trace2Win"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -36,7 +36,7 @@
         </activity>
         <activity android:name="BrowseLessonsActivity" >
         </activity>
-        <activity android:name="PhrasePracticeActivity" >
+        <activity android:name=".PhrasePracticeActivity" >
         </activity>
     </application>
 
