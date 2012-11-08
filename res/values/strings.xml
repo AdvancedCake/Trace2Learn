@@ -28,5 +28,8 @@
     <string name="clear_filter">Clear Filter</string>
     <string name="cancel">Cancel</string>
     <string name="instruction_create_word">Click on a character to add it to the word</string>
+    <string name="instruction_browse_chars">Click and hold on a character for more options</string>
+    <string name="filter_none">Filter: None</string>
+    <string name="save_word">Save Word</string>
 
 </resources>

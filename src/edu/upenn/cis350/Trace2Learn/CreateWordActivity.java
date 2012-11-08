@@ -109,8 +109,7 @@ public class CreateWordActivity extends Activity {
     
     private void initiatePopupWindow(){
         try {
-            Display display = getWindowManager().getDefaultDisplay(); 
-            int width = display.getWidth();  // deprecated
+            Display display = getWindowManager().getDefaultDisplay();
             int height = display.getHeight();  // deprecated
             //We need to get the instance of the LayoutInflater, use the context of this activity
             LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -217,6 +216,8 @@ public class CreateWordActivity extends Activity {
                     hideKeyboard(filterText);
                     return;
                 }
+                
+                // Filter action: query for chars and set char list
                 Cursor c = dba.getChars(search);
                 List<Long> ids = new LinkedList<Long>();
                 do {
@@ -230,6 +231,7 @@ public class CreateWordActivity extends Activity {
                 c.close();
                 setCharList(ids);
                 
+                // Set state to filtered
                 ((Button)findViewById(R.id.filter_button)).setText(R.string.clear_filter);
                 filtered = true;
                 hideKeyboard(filterText);
@@ -275,7 +277,6 @@ public class CreateWordActivity extends Activity {
                 character = new LessonCharacter(id);
                 Log.d("SEARCH", "Character " + id + " not found in db");
             }
-            //TODO: character.setTagList(dba.getCharacterTags(id));
             items.add(character);
         }
         LayoutInflater vi = (LayoutInflater) getSystemService(

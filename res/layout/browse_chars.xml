@@ -1,21 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
 
-    <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Click and hold on a character for more options"
-            />
-    
+    <TextView
+        android:id="@+id/headerText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/instruction_browse_chars" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1.0" >
+        android:layout_above="@+id/filterButton"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/headerText"
+        android:layout_marginBottom="8dp" >
     </ListView>
 
-    
+    <Button
+        android:id="@+id/filterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:onClick="onClickFilter"
+        android:text="@string/filter" />
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/filterStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/filterButton"
+        android:layout_alignBottom="@+id/filterButton"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/filterButton"
+        android:text="@string/filter_none" />
+
+</RelativeLayout>

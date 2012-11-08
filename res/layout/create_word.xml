@@ -18,7 +18,7 @@
     <ListView
         android:id="@+id/charslist"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dip"
         android:layout_weight="1.0" >
     </ListView>
 
@@ -43,21 +43,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onSaveWordButtonClick"
-            android:text="Save Word" />
+            android:text="@string/save_word" />
 
         <Button
             android:id="@+id/tag_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onAddTagButtonClick"
-            android:text="Add Tag" />
-
+            android:text="@string/addtag_header" />
+
         <Button
             android:id="@+id/filter_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="onClickFilter"
             android:text="@string/filter" />
+
     </LinearLayout>
 
 </LinearLayout>
