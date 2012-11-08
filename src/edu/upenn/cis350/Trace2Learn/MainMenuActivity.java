@@ -17,7 +17,6 @@ public class MainMenuActivity extends ListActivity {
 		{ 
 			"Create Character", 
 			"Create Word",
-			"Search Characters",
 			"Browse All Characters",
 			"Browse All Words",
 			"Browse All Lessons"
@@ -43,40 +42,30 @@ public class MainMenuActivity extends ListActivity {
 						long id) 
 				{
 					CharSequence clicked = ((TextView) view).getText();
-					if(clicked.equals(APPS[0]))
+					if(clicked.equals(APPS[0])) // "Create Character"
 					{
 						Intent i = new Intent().setClass(c, CharacterCreationActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[1]))
+					else if(clicked.equals(APPS[1])) // "Create Word"
 					{
 	
 						Intent i = new Intent(c, CreateWordActivity.class);
 						startActivity(i);
 					
 					}
-					/*else if(clicked.equals(APPS[2]))
+					else if(clicked.equals(APPS[2])) // "Browse All Characters"
 					{
-	
-						Intent i = new Intent(c, CreateLessonActivity.class);
-						startActivity(i);
-					
-					}*/
-					else if(clicked.equals(APPS[2]))
-					{
-						Intent i = new Intent(c, TestTagDbActivity.class);
-						startActivity(i);
-					
-					}
-					else if(clicked.equals(APPS[3])){
 						Intent i = new Intent(c, BrowseCharactersActivity.class);
 						startActivity(i);
 					}
-					else if(clicked.equals(APPS[4])){
+					else if(clicked.equals(APPS[3])) // "Browse All Words"
+					{
 						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
-					else{
+					else // "Browse All Lessons"
+					{
 						Intent i = new Intent(c, BrowseLessonsActivity.class);
 						startActivity(i);
 					}
