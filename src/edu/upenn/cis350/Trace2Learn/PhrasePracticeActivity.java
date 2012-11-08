@@ -3,6 +3,7 @@ package edu.upenn.cis350.Trace2Learn;
 import java.util.ArrayList;
 import java.util.List;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +24,7 @@ import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
 import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
+@SuppressLint("HandlerLeak")
 public class PhrasePracticeActivity extends Activity {
 		
 	private TextView _tagText;
@@ -36,7 +38,7 @@ public class PhrasePracticeActivity extends Activity {
 	private int _collectionSize;
 	private String _lessonName;
 
-	private long id_to_pass = -1;
+	private long id_to_pass = -1; // TODO what is this? please document
 
 	private ArrayList<LessonCharacter> _characters;
 	private ArrayList<Bitmap> _bitmaps;
@@ -64,7 +66,7 @@ public class PhrasePracticeActivity extends Activity {
 
 		setContentView(R.layout.practice_phrase);
 
-		_animator = (ViewAnimator)this.findViewById(R.id.view_slot);
+		_animator = (ViewAnimator) findViewById(R.id.view_slot);
 		
 		_characters = new ArrayList<LessonCharacter>();
 		_bitmaps = new ArrayList<Bitmap>();
@@ -77,7 +79,7 @@ public class PhrasePracticeActivity extends Activity {
 		
 		
 		_imgAdapter = new ImageAdapter(this,_bitmaps);
-        _gallery = (Gallery)findViewById(R.id.gallery);
+        _gallery = (Gallery) findViewById(R.id.gallery);
         _gallery.setSpacing(0);
         
         _gallery.setAdapter(_imgAdapter);
@@ -89,8 +91,8 @@ public class PhrasePracticeActivity extends Activity {
 			
 		});
 
-		_tagText = (TextView) this.findViewById(id.tag_list);
-		_phraseTitle = (TextView) this.findViewById(id.phraseTitle);
+		_tagText = (TextView) findViewById(id.tag_list);
+		_phraseTitle = (TextView) findViewById(id.phraseTitle);
 
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
@@ -266,16 +268,18 @@ public class PhrasePracticeActivity extends Activity {
 		updateTags();
 	}
 
-	private String tagsToString(List<String> tags)
-	{
-		StringBuffer buf = new StringBuffer();
-		for (String str : tags)
-		{
-			buf.append(str + ", ");
-		}
+    private String tagsToString(List<String> tags)
+    {
+        if (tags == null || tags.size() == 0) { return ""; }
+        
+        StringBuffer buf = new StringBuffer();
+        for (String str : tags)
+        {
+            buf.append(str + ", ");
+        }
 
-		return buf.toString();
-	}
+        return buf.toString().substring(0, buf.length() - 2);
+    }
 
 	public void onAnimateButtonClick(View view) 
 	{
