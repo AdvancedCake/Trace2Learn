@@ -1,10 +1,10 @@
-package edu.upenn.cis350.Trace2Learn.test;
+package edu.upenn.cis573.Trace2Win.test;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.Stroke;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.Stroke;
 
 public class LessonCharacterTest extends AndroidTestCase {
 	

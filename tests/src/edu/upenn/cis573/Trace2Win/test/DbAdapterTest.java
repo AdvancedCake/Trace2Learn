@@ -1,8 +1,8 @@
-package edu.upenn.cis350.Trace2Learn.test;
+package edu.upenn.cis573.Trace2Win.test;
 
 import junit.framework.TestCase;
-import edu.upenn.cis350.Trace2Learn.*;
-import edu.upenn.cis350.Trace2Learn.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.*;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import android.database.sqlite.SQLiteOpenHelper;
 
 public class DbAdapterTest extends TestCase {

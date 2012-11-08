@@ -1,8 +1,8 @@
-package edu.upenn.cis350.Trace2Learn.test;
+package edu.upenn.cis573.Trace2Win.test;
 
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
-import edu.upenn.cis350.Trace2Learn.Database.Stroke;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.Stroke;
 import junit.framework.TestCase;
 
 public class LessonWordTest extends TestCase {

@@ -1,18 +1,18 @@
-package edu.upenn.cis350.Trace2Learn.test;
+package edu.upenn.cis573.Trace2Win.test;
 
-import edu.upenn.cis350.Trace2Learn.MainMenuActivity;
-import edu.upenn.cis350.Trace2Learn.R;
+import edu.upenn.cis573.Trace2Win.MainMenuActivity;
+import edu.upenn.cis573.Trace2Win.R;
 import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 
 
 public class DatabaseActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity>{
 	
 	public DatabaseActivityTest(){
-		super("edu.upenn.cis350.Trace2Learn",MainMenuActivity.class);
+		super("edu.upenn.cis573.Trace2Win",MainMenuActivity.class);
 	}
 	
 	private Activity activity;

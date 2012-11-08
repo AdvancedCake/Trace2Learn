@@ -1,18 +1,18 @@
-package edu.upenn.cis350.Trace2Learn.test;
+package edu.upenn.cis573.Trace2Win.test;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
-import edu.upenn.cis350.Trace2Learn.CreateWordActivity;
-import edu.upenn.cis350.Trace2Learn.LessonItemListAdapter;
-import edu.upenn.cis350.Trace2Learn.R;
-import edu.upenn.cis350.Trace2Learn.Database.LessonCharacter;
-import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.CreateWordActivity;
+import edu.upenn.cis573.Trace2Win.LessonItemListAdapter;
+import edu.upenn.cis573.Trace2Win.R;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 
 
 public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<CreateWordActivity>{
 	
 	public CreateWordActivityTest(){
-		super("edu.upenn.cis350.Trace2Learn",CreateWordActivity.class);
+		super("edu.upenn.cis573.Trace2Win",CreateWordActivity.class);
 	}
 	
 	private CreateWordActivity activity;

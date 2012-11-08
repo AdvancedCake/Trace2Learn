@@ -1,12 +1,12 @@
-package edu.upenn.cis350.Trace2Learn.test;
+package edu.upenn.cis573.Trace2Win.test;
 
 import java.util.List;
 
 import android.graphics.PointF;
 import android.graphics.Path;
 import junit.framework.TestCase;
-import edu.upenn.cis350.Trace2Learn.Database.*;
-import edu.upenn.cis350.Trace2Learn.Database.Stroke;
+import edu.upenn.cis573.Trace2Win.Database.*;
+import edu.upenn.cis573.Trace2Win.Database.Stroke;
 
 public class StrokeTest extends TestCase {
 
