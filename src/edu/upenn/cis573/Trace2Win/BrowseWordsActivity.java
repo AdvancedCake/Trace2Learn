@@ -75,9 +75,12 @@ public class BrowseWordsActivity extends ListActivity {
         else{
             Lesson les = dba.getLessonById(lessonID);
             String name = les.getLessonName();
+            int size = les.length();
 
             TextView title = (TextView)findViewById(R.id.instructions);
-            title.setText("Browsing " + name);
+            //title.setText("Browsing " + name);
+            if (size == 0 || size == 1) {title.setText(name + ": " + size + " word");}
+            else {title.setText(name + ": " + size + " words");}
 
             items = new ArrayList<LessonItem>();
             List<Long> ids = dba.getWordsFromLessonId(lessonID);
