@@ -34,7 +34,6 @@ import edu.upenn.cis350.Trace2Learn.Database.LessonWord;
 
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;
-    private ListView lessonList; //list of words to display in listview
     private LessonItemListAdapter adapter;
     private ArrayList<LessonItem> items;
     private View layout;
@@ -235,7 +234,7 @@ public class BrowseWordsActivity extends ListActivity {
             // create a 300px width and 470px height PopupWindow
             List<String> allLessons = dba.getAllLessonNames();
             Log.e("numLessons",Integer.toString(allLessons.size()));
-            lessonList = (ListView)layout.findViewById(R.id.collectionlist);
+            final ListView lessonList = (ListView)layout.findViewById(R.id.collectionlist);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
             lessonList.setAdapter(adapter);
             window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
