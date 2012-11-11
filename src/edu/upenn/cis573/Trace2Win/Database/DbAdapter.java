@@ -115,16 +115,16 @@ public class DbAdapter {
     
     
     
-    private static final String DATABASE_NAME = "CharTags";
-    private static final String CHAR_TABLE = "Character";
-    private static final String CHAR_DETAILS_TABLE = "CharacterDetails";
-    private static final String CHARTAG_TABLE = "CharacterTag";
-    private static final String WORDTAG_TABLE = "WordsTag";
-    private static final String WORDS_TABLE = "Words";
-    private static final String WORDS_DETAILS_TABLE = "WordsDetails";
-    private static final String LESSONS_TABLE = "Lessons";
+    private static final String DATABASE_NAME         = "CharTags";
+    private static final String CHAR_TABLE            = "Character";
+    private static final String CHAR_DETAILS_TABLE    = "CharacterDetails";
+    private static final String CHARTAG_TABLE         = "CharacterTag";
+    private static final String WORDTAG_TABLE         = "WordsTag";
+    private static final String WORDS_TABLE           = "Words";
+    private static final String WORDS_DETAILS_TABLE   = "WordsDetails";
+    private static final String LESSONS_TABLE         = "Lessons";
     private static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
-    private static final String LESSONTAG_TABLE = "LessonTag";
+    private static final String LESSONTAG_TABLE       = "LessonTag";
     
     
     private static final int DATABASE_VERSION = 7;
@@ -1136,6 +1136,7 @@ public class DbAdapter {
     	Lesson le = new Lesson();
     	//if the Lesson doesn't exists
     	if (mCursor == null) {
+            mCursor.close();
     		return null;
     	}else{
     		mCursor.moveToFirst();
@@ -1237,8 +1238,8 @@ public class DbAdapter {
         mDb.endTransaction();
         return true;
     }
-    
-    
+
+
     /**
      * Initializes a private tag
      * 
@@ -1250,6 +1251,6 @@ public class DbAdapter {
     	if(i.getPrivateTag() != null)
     		v.put("name",i.getPrivateTag());
     	else	
-    		v.put("name","");
-    }
+		v.put("name","");
+}
 }

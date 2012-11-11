@@ -62,7 +62,6 @@ public class BrowseWordsActivity extends ListActivity {
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         lessonID = this.getIntent().getLongExtra("ID", -1);
-        //id=1;
         if(lessonID==-1){
 
             List<Long> ids = dba.getAllWordIds();
