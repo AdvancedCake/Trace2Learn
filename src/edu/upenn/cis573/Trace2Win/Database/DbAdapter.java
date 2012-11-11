@@ -42,6 +42,7 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_CHARTAG =
             "CREATE TABLE CharacterTag (_id INTEGER, " +
             "tag TEXT NOT NULL, " +
+            "sort DOUBLE, " +
             "FOREIGN KEY(_id) REFERENCES Character(_id));";
 
     private static final String DATABASE_CREATE_CHAR_DETAILS =
@@ -126,7 +127,7 @@ public class DbAdapter {
     private static final String LESSONTAG_TABLE = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
 
     private final Context mCtx;
 
