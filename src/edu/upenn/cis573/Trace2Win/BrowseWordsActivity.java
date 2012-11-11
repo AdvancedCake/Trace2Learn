@@ -35,7 +35,7 @@ import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;
     private LessonItemListAdapter adapter;
-    private ArrayList<LessonItem> items;
+    private List<LessonItem> items;
     private View layout;
     private PopupWindow window;
     private LessonWord lw;
@@ -77,17 +77,10 @@ public class BrowseWordsActivity extends ListActivity {
             int size = les.length();
 
             TextView title = (TextView)findViewById(R.id.instructions);
-            //title.setText("Browsing " + name);
-            if (size == 0 || size == 1) {title.setText(name + ": " + size + " word");}
-            else {title.setText(name + ": " + size + " words");}
+            if (size == 1) { title.setText(name + ": " + size + " word"); }
+            else { title.setText(name + ": " + size + " words"); }
 
-            items = new ArrayList<LessonItem>();
-            List<Long> ids = dba.getWordsFromLessonId(lessonID);
-            for(long id : ids){
-                LessonItem word = dba.getWordById(id);
-                word.setTagList(dba.getWordTags(id));
-                items.add(word);
-            }
+            items = les.getWords();
         }
         Collections.sort(items);
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);

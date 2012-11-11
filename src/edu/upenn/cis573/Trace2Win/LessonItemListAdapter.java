@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
-	protected ArrayList<LessonItem> _items;
+	protected List<LessonItem> _items;
 	
 	private LayoutInflater _vi;
 	

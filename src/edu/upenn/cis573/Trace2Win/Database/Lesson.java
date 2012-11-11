@@ -8,8 +8,8 @@ import android.graphics.Paint;
 
 public class Lesson extends LessonItem {
 	
-	private List<Long> _words;
-	private String name;
+	private List<Long> _words; // list of word IDs
+	private String name; // lesson name
 
 	public Lesson(){
 		_type = ItemType.LESSON;
@@ -40,12 +40,12 @@ public class Lesson extends LessonItem {
 	 * Get the list of items that compose this lesson
 	 * @return the list of characters that compose this word
 	 */
-	public synchronized List<LessonWord> getWords()
+	public synchronized List<LessonItem> getWords()
 	{
-		ArrayList<LessonWord> words = new ArrayList<LessonWord>(_words.size());
+		ArrayList<LessonItem> words = new ArrayList<LessonItem>(_words.size());
 		for(Long id : _words)
 		{
-			if(_db == null) 
+			if(_db == null)
 			{
 				words.add(new LessonWord());
 			}
