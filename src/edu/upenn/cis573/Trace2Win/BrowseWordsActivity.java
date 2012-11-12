@@ -78,10 +78,12 @@ public class BrowseWordsActivity extends ListActivity {
             String name = les.getLessonName();
             int size = les.length();
 
+            // set lesson title
             TextView title = (TextView)findViewById(R.id.instructions);
             if (size == 1) { title.setText(name + ": " + size + " word"); }
             else { title.setText(name + ": " + size + " words"); }
 
+            // populate words
             items = les.getWords();
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -94,8 +96,12 @@ public class BrowseWordsActivity extends ListActivity {
 
     @Override  
     protected void onListItemClick(ListView l, View v, int position, long id) {  
-        super.onListItemClick(l, v, position, id);  
-        clickOnItem(items.get(position), position, "display");
+        super.onListItemClick(l, v, position, id);
+        String mode = "display";
+        if (lessonID != -1) { // looking at a lesson - start in trace mode
+            mode = "trace";
+        }
+        clickOnItem(items.get(position), position, mode);
     }  
 
     //when character is clicked, it starts the display mode for that char
