@@ -52,6 +52,7 @@ public class Lesson extends LessonItem {
 			else
 			{
 				LessonWord word = _db.getWordById(id);
+                word.setTagList(_db.getWordTags(id));
 				words.add(word);
 			}
 
