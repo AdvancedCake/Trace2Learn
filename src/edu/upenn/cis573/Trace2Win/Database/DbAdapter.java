@@ -972,6 +972,7 @@ public class DbAdapter {
     
     public long addWordToLesson(String lessonName, long wordId){
     	mDb.beginTransaction();
+    	// Find the lesson
     	Cursor x = mDb.query(LESSONS_TABLE, new String[]{"_id"}, "name='"+lessonName+"'", null, null, null, null, null);
     	if (x != null) {
             x.moveToFirst();
@@ -982,7 +983,10 @@ public class DbAdapter {
     	int lessonId = x.getInt(x.getColumnIndexOrThrow("_id"));
         x.close();
 
-    	x = mDb.query(LESSONS_DETAILS_TABLE, new String[]{"LessonOrder"}, null, null, null, null, "LessonOrder DESC", "1");
+        // Find the next lessonOrder value
+        // TODO It seems like this finds the largest lessonOrder out of all 
+        //      lessons. Should really only search the current lesson.
+    	x = mDb.query(LESSONS_DETAILS_TABLE, new String[]{"LessonOrder"}, "LessonId=" + lessonId, null, null, null, "LessonOrder DESC", "1");
     	if (x != null) {
             x.moveToFirst();
         }
@@ -995,7 +999,7 @@ public class DbAdapter {
     	ContentValues values = new ContentValues();
     	values.put("LessonId", lessonId);
     	values.put("WordId", wordId);
-    	values.put("LessonOrder",lessonOrder);
+    	values.put("LessonOrder", lessonOrder + 1);
     	long ret = mDb.insert(LESSONS_DETAILS_TABLE, null, values);
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();

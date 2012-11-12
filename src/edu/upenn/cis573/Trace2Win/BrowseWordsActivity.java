@@ -70,6 +70,7 @@ public class BrowseWordsActivity extends ListActivity {
                 word.setTagList(dba.getWordTags(id));
                 items.add(word);
             }
+            Collections.sort(items);
         }
         else{
             Lesson les = dba.getLessonById(lessonID);
@@ -82,7 +83,6 @@ public class BrowseWordsActivity extends ListActivity {
 
             items = les.getWords();
         }
-        Collections.sort(items);
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonItemListAdapter(this, items, vi);
         setListAdapter(adapter);
