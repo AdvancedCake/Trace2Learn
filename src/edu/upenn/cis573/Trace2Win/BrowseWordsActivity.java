@@ -1,6 +1,7 @@
 package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -184,24 +185,43 @@ public class BrowseWordsActivity extends ListActivity {
             }
 
             LessonWord other = (LessonWord) items.get(otherPos);
-            boolean result = dba.swapWords(lw.getId(), lw.getSort(), 
-                                           other.getId(), other.getSort());
+            boolean result;
+            if (lessonID == -1) { // browsing all words
+                result = dba.swapWords(lw.getId(), lw.getSort(), 
+                                       other.getId(), other.getSort());
+                if (result) {
+                    // success, so update the local copy
+                    double temp = lw.getSort();
+                    lw.setSort(other.getSort());
+                    other.setSort(temp);
+                    Collections.sort(items);
+                    adapter._items = items;
+                    adapter.notifyDataSetChanged();
+                    return true;
+                }
+            } else { // viewing a specific lesson
+                result = dba.swapWordsInLesson(lessonID, lw.getId(), 
+                                               other.getId());
+                if (result) {
+                    // success, so update the local copy
+                    LessonItem[] arr = new LessonItem[items.size()];
+                    arr = items.toArray(arr);
+                    
+                    int lwIndex = items.indexOf(lw);
+                    int otherIndex = items.indexOf(other);
+                    LessonItem temp = arr[lwIndex];
+                    arr[lwIndex] = arr[otherIndex];
+                    arr[otherIndex] = temp;
+                    
+                    items = new ArrayList<LessonItem>(Arrays.asList(arr)); 
+                    adapter._items = items;
+                    adapter.notifyDataSetChanged();
+                    return true;
+                }
+            }
             Log.e("Move result", Boolean.toString(result));
-            if (result) {
-                // success, so update the local copy
-                System.out.println(lw.getSort() + " " + other.getSort());
-                double temp = lw.getSort();
-                lw.setSort(other.getSort());
-                other.setSort(temp);
-                Collections.sort(items);
-                adapter._items = items;
-                adapter.notifyDataSetChanged();
-                return true;
-            }
-            else {
-                showToast("Move failed");
-                return false;
-            }
+            showToast("Move failed");
+            return false;
         }
 
         return false;

@@ -1140,7 +1140,6 @@ public class DbAdapter {
     	Lesson le = new Lesson();
     	//if the Lesson doesn't exists
     	if (mCursor == null) {
-            mCursor.close();
     		return null;
     	}else{
     		mCursor.moveToFirst();
@@ -1190,13 +1189,13 @@ public class DbAdapter {
         
         int result;
         result = mDb.update(CHAR_TABLE, aValues, CHAR_ROWID + "=" + aId, null);
-        if (result == -1) {
+        if (result != 1) {
             Log.e(CHAR_TABLE, "id " + aId + ": write failed");
             mDb.endTransaction();
             return false;
         }
         result = mDb.update(CHAR_TABLE, bValues, CHAR_ROWID + "=" + bId, null);
-        if (result == -1) {
+        if (result != 1) {
             Log.e(CHAR_TABLE, "id " + bId + ": write failed");
             mDb.endTransaction();
             return false;
@@ -1227,17 +1226,79 @@ public class DbAdapter {
         
         int result;
         result = mDb.update(WORDS_TABLE, aValues, WORDS_ROWID + "=" + aId, null);
-        if (result == -1) {
+        if (result != 1) {
             Log.e(WORDS_TABLE, "id " + aId + ": write failed");
             mDb.endTransaction();
             return false;
         }
         result = mDb.update(WORDS_TABLE, bValues, WORDS_ROWID + "=" + bId, null);
-        if (result == -1) {
+        if (result != 1) {
             Log.e(WORDS_TABLE, "id " + bId + ": write failed");
             mDb.endTransaction();
             return false;
         }
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
+    
+    public boolean swapWordsInLesson(long lessonId, long aId, long bId) {
+        String wordCol  = "WordId";
+        String lesCol   = "LessonId";
+        String orderCol = "LessonOrder";
+        
+        // get LessonOrder values for a and b
+        int aSort = 0, bSort = 0;
+        Cursor cur = mDb.query(true, LESSONS_DETAILS_TABLE, 
+                               new String[] {wordCol, orderCol}, 
+                               lesCol + "=" + lessonId + " AND (" + wordCol + "=" + aId + " OR " + wordCol + "=" + bId + ")", 
+                               null, null, null, null, null);
+        cur.moveToFirst();
+        if (cur.getCount() != 2) {
+            Log.e("Swapping positions", "Could not find words in " + LESSONS_DETAILS_TABLE);
+            return false;
+        }
+        if (cur.getInt(cur.getColumnIndexOrThrow(wordCol)) == aId) {
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            cur.moveToNext();
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+        } else { // word B is first
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            cur.moveToNext();
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+        }
+        
+        // insert new values
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(lesCol, lessonId);
+        bValues.put(lesCol, lessonId);
+        aValues.put(wordCol, aId);
+        bValues.put(wordCol, bId);
+        aValues.put(orderCol, bSort);
+        bValues.put(orderCol, aSort);
+        Log.e("Swapping positions", aId + " and " + bId + " in lesson " + lessonId);
+        
+        // update database
+        int result;
+        result = mDb.update(LESSONS_DETAILS_TABLE, aValues, 
+                            lesCol + "=" + lessonId + " AND " + wordCol + "=" + aId, 
+                            null);
+        if (result != 1) {
+            Log.e(LESSONS_DETAILS_TABLE, "id " + aId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(LESSONS_DETAILS_TABLE, bValues, 
+                            lesCol + "=" + lessonId + " AND " + wordCol + "=" + bId, 
+                            null);
+        if (result != 1) {
+            Log.e(LESSONS_DETAILS_TABLE, "id " + bId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;
