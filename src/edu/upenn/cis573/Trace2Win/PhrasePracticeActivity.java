@@ -38,7 +38,7 @@ public class PhrasePracticeActivity extends Activity {
 	private int _collectionSize;
 	private String _lessonName;
 
-	private long id_to_pass = -1; // TODO what is this? please document
+	private long wordId = -1; // TODO what is this for? please document
 
 	private ArrayList<LessonCharacter> _characters;
 	private ArrayList<Bitmap> _bitmaps;
@@ -111,7 +111,7 @@ public class PhrasePracticeActivity extends Activity {
 		if (bun != null && bun.containsKey("wordId")) 
 		{
 			setWord(_dbHelper.getWordById(bun.getLong("wordId")));
-			id_to_pass = bun.getLong("wordId");
+			wordId = bun.getLong("wordId");
 			updateTags();
 			
 			_lessonID = bun.getLong("lessonID");
@@ -123,6 +123,8 @@ public class PhrasePracticeActivity extends Activity {
 				_lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
 				_phraseTitle.setText(_lessonName + " - " + _wordIndex + 
 				                     " of " + _collectionSize);
+				showToast(_lessonName + " - " + _wordIndex + 
+				          " of " + _collectionSize);
 			}
 			
 			String mode = bun.getString("mode");
@@ -305,7 +307,7 @@ public class PhrasePracticeActivity extends Activity {
 			} else {
 				// this is the end of the word
 				if (_lessonID != -1) {
-					if (_wordIndex < _collectionSize) {
+					if (_wordIndex < _collectionSize) { // still more words to come
 						// shutdown and notify parent activity
 						Bundle bundle = new Bundle();
 						bundle.putInt("next", _wordIndex);
