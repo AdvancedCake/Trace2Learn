@@ -25,6 +25,7 @@ public class DbAdapter {
     public static final String CHARTAG_TAG= "tag";
     public static final String CHARKEYVALUES_ROWID ="_id";
     public static final String CHARKEYVALUES_KEY = "key";
+    public static final String CHARKEYVALUES_VALUE = "value";
     public static final String WORDTAG_ROWID = "_id";
     public static final String WORDTAG_TAG= "tag";
 
@@ -306,6 +307,50 @@ public class DbAdapter {
 
         return mDb.insert(CHARTAG_TABLE, null, initialValues);
     }
+
+    /**
+     * Create a new (Key, Value) pair. If the pair is
+     * successfully created return the new rowId for that pair, otherwise return
+     * -1 to indicate failure.
+     * 
+     * @param id the row_id of the char
+     * @param tag the text of the tag
+     * @return rowId or -1 if failed
+     */
+    public long createCharKeyValue(long id, String key, String value) {
+        Cursor cur = mDb.query(CHARKEYVALUES_TABLE, new String[] {"sort"}, 
+                               "_id=" + id, null, null, null, "sort DESC", "1");
+        int sort = 1;
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                sort = cur.getInt(cur.getColumnIndexOrThrow("sort")) + 1;
+            }
+        }
+        else {
+            return -1;
+        }
+        cur.close();
+
+        
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(CHARKEYVALUES_ROWID, id);
+        initialValues.put(CHARKEYVALUES_KEY, key);
+        initialValues.put(CHARKEYVALUES_VALUE, value);
+        initialValues.put("sort", sort);
+
+        return mDb.insert(CHARKEYVALUES_TABLE, null, initialValues);
+    }        
+    
+    /**
+     * Delete the (Key, Value) pair with the given rowId and key
+     * 
+     * @param rowId id of pair to delete
+     * @param key text of key to delete
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteCharKeyValue(long rowId, String key) {
+        return mDb.delete(CHARKEYVALUES_TABLE, CHARKEYVALUES_ROWID + "=" + rowId + " AND " + CHARKEYVALUES_KEY+"="+key, null) > 0;
+    }    
     
     /**
      * Delete the tag with the given rowId and tag
@@ -527,6 +572,7 @@ public class DbAdapter {
  	         while(mCursor.moveToNext());
     		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
     		 mDb.delete(CHARTAG_TABLE, CHAR_ROWID + "=" + id, null);
+    		 mDb.delete(CHARKEYVALUES_TABLE, CHAR_ROWID + "=" + id, null);
     	 }
     	 mCursor.close();
     	 return id;
