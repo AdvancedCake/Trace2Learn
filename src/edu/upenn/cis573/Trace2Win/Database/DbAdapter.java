@@ -23,7 +23,8 @@ public class DbAdapter {
     
     public static final String CHARTAG_ROWID = "_id";
     public static final String CHARTAG_TAG= "tag";
-    
+    public static final String CHARKEYVALUES_ROWID ="_id";
+    public static final String CHARKEYVALUES_KEY = "key";
     public static final String WORDTAG_ROWID = "_id";
     public static final String WORDTAG_TAG= "tag";
 
@@ -45,6 +46,13 @@ public class DbAdapter {
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Character(_id));";
 
+    private static final String DATABASE_CREATE_CHARKEYVALUES =
+            "CREATE TABLE CharKeyValues (_id INTEGER, " +
+            "key TEXT NOT NULL, " +
+            "value TEXT NOT NULL, " +
+            "sort INTEGER, " +
+            "FOREIGN KEY(_id) REFERENCES Character(_id));";
+    
     private static final String DATABASE_CREATE_CHAR_DETAILS =
             "CREATE TABLE CharacterDetails (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "CharId INTEGER, " +
@@ -98,6 +106,8 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS Character";
     private static final String DATABASE_DROP_CHARTAG = 
     		"DROP TABLE IF EXISTS CharacterTag";
+    private static final String DATABASE_DROP_CHARKEYVALUES = 
+    		"DROP TABLE IF EXISTS CharKeyValues";
     private static final String DATABASE_DROP_CHAR_DETAILS = 
     		"DROP TABLE IF EXISTS CharacterDetails";
     private static final String DATABASE_DROP_WORDS = 
@@ -121,6 +131,7 @@ public class DbAdapter {
     public static final String CHAR_TABLE            = "Character";
     public static final String CHAR_DETAILS_TABLE    = "CharacterDetails";
     public static final String CHARTAG_TABLE         = "CharacterTag";
+    public static final String CHARKEYVALUES_TABLE   = "CharKeyValues";
     public static final String WORDTAG_TABLE         = "WordsTag";
     public static final String WORDS_TABLE           = "Words";
     public static final String WORDS_DETAILS_TABLE   = "WordsDetails";
@@ -129,7 +140,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     private final Context mCtx;
 
@@ -144,6 +155,7 @@ public class DbAdapter {
 
             db.execSQL(DATABASE_CREATE_CHAR);
             db.execSQL(DATABASE_CREATE_CHARTAG);
+            db.execSQL(DATABASE_CREATE_CHARKEYVALUES);
             db.execSQL(DATABASE_CREATE_CHAR_DETAILS);
             db.execSQL(DATABASE_CREATE_WORDS);
             db.execSQL(DATABASE_CREATE_WORDS_DETAILS);
@@ -159,6 +171,7 @@ public class DbAdapter {
                     + newVer + ", which will destroy all old data");
             db.execSQL(DATABASE_DROP_CHAR);
             db.execSQL(DATABASE_DROP_CHARTAG);
+            db.execSQL(DATABASE_DROP_CHARKEYVALUES);
             db.execSQL(DATABASE_DROP_CHAR_DETAILS);
             db.execSQL(DATABASE_DROP_WORDS);
             db.execSQL(DATABASE_DROP_WORDS_DETAILS);
