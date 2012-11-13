@@ -51,6 +51,7 @@ public class DbAdapter {
             "key TEXT NOT NULL, " +
             "value TEXT NOT NULL, " +
             "sort INTEGER, " +
+            "PRIMARY KEY (_id, key), " +
             "FOREIGN KEY(_id) REFERENCES Character(_id));";
     
     private static final String DATABASE_CREATE_CHAR_DETAILS =
