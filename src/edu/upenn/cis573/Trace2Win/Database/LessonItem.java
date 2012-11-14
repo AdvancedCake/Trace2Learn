@@ -2,7 +2,9 @@ package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -13,6 +15,9 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	
 	/** The tag cache*/
 	protected List<String> _tags;
+	
+	/** The (Key, Value) cache */
+	protected Map<String, String> _keyValues;
 	
 	/** The id of the item */
 	protected long _id;
@@ -43,6 +48,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	{
 		_id = -1;
 		_tags = new ArrayList<String>();
+		_keyValues = new HashMap<String, String>();
 		
 		_lastUpdate = new Date(0);
 	}
@@ -117,6 +123,10 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		_tags.addAll(tags);
 	}
 	
+	public void setKeyValues(Map<String, String> keyValues){
+		_keyValues.putAll(keyValues);
+	}	
+	
     public void setSort(double sort) {
         _sort = sort;
     }
@@ -147,8 +157,28 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 			_tags = db.getWordTags(_id);
 			break;
 		case LESSON:
+			_tags = db.getLessonTags(_id);
+			break;
+		}
+	}
+
+	/**
+	 * Updates the LessonItem's (key, value) pairs to represent those in the database
+	 */
+	protected synchronized void updateKeyValues(DbAdapter db)
+	{
+		switch(_type)
+		{
+		case CHARACTER:
+			_keyValues = db.getCharKeyValues(_id);
+			break;
+		case WORD:
+			// TODO uncomment when there is word support
+			//_keyValues = db.getWordKeyValues(_id);
+			break;
+		case LESSON:
 			// TODO uncomment when there is lesson support
-			//_tags = db.getLessonTags(_id);
+			//_keyValues = db.getLessonKeyValues(_id);
 			break;
 		}
 	}
@@ -167,6 +197,21 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	{
 		return new ArrayList<String>(_tags);
 	}
+	
+	public synchronized boolean hasKeyValue(String key, String value)
+	{
+		return _keyValues.containsKey(key) && _keyValues.containsValue(value);
+	}
+	
+	public synchronized void addKeyValue(String key, String value)
+	{
+		_keyValues.put(key, value);
+	}	
+	
+	public synchronized Map<String, String> getKeyValues()
+	{
+		return new HashMap<String, String>(_keyValues);
+	}	
 	
 	/** 
 	 * The ratio for determining how large a stroke should be given the size

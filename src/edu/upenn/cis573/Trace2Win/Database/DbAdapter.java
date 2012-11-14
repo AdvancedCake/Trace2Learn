@@ -1,9 +1,9 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
 import android.util.Log;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
 public class DbAdapter {
 	
@@ -315,7 +316,8 @@ public class DbAdapter {
      * -1 to indicate failure.
      * 
      * @param id the row_id of the char
-     * @param tag the text of the tag
+     * @param key the text of the key
+     * @param value the text of the value
      * @return rowId or -1 if failed
      */
     public long createCharKeyValue(long id, String key, String value) {
@@ -453,11 +455,25 @@ public class DbAdapter {
     	// if the given character has tags, copy them
     	for (String tag : c.getTags()) {
     		if (-1 == createTags(id, tag)) {
-        		Log.e(CHAR_TABLE, "cannot add character's tag(" + tag + ") to table " + CHAR_TABLE);
+        		Log.e(CHAR_TABLE, 
+        				"cannot add character's tag(" + tag + ") "
+        				+ "to table " + CHARTAG_TABLE);
     			mDb.endTransaction();
         		return false;
     		}
     	}
+    	
+    	// if the given character has keyValues, copy them
+    	for (Map.Entry<String, String> entry : c.getKeyValues().entrySet()) {
+    		if (-1 == createCharKeyValue(id, entry.getKey(), entry.getValue())) {
+        		Log.e(CHAR_TABLE, 
+        				"cannot add character's Key-Value pair(" 
+        				+ entry.getKey() + ", " + entry.getValue() + ") "
+        				+ "to table " + CHARKEYVALUES_TABLE);
+    			mDb.endTransaction();
+        		return false;
+    		}
+    	}    	
     	
     	// To make the sort order the same as the ID, we need to update the row
     	// after we get the ID, i.e. now.
@@ -638,10 +654,11 @@ public class DbAdapter {
     	mCursor.close();
 
     	// get tags as well
-    	for (String tag : getCharacterTags(id)) {
-    		c.addTag(tag);
-    	}
+    	c.setTagList(getCharacterTags(id));
 
+    	// get keyValues as well
+    	c.setKeyValues(getCharKeyValues(id));
+    	
     	return c;
     }
     
@@ -834,6 +851,34 @@ public class DbAdapter {
         return tags;
 
     }
+
+    /**
+     * Return a Map of (Key,Value) pairs that matches the given character's charId
+     * 
+     * @param charId id of character whose (Key,Value) pairs we want to retrieve
+     * @return Map of (Key,Value) pairs
+     * @throws SQLException if character could not be found/retrieved
+     */
+    public Map<String, String> getCharKeyValues(long charId) throws SQLException {
+        Cursor mCursor =
+            mDb.query(true, CHARKEYVALUES_TABLE, new String[] {CHARKEYVALUES_KEY, CHARKEYVALUES_VALUE}, CHARTAG_ROWID + "=" + charId, null,
+                    null, null, "sort ASC", null);
+        Map<String, String> keyValues = new HashMap<String, String>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+        	if(mCursor.getCount()==0){
+        		break;
+        	}
+        	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(CHARKEYVALUES_KEY)),
+        					mCursor.getString(mCursor.getColumnIndexOrThrow(CHARKEYVALUES_VALUE)));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
+
+        return keyValues;
+    }    
     
     /**
      * Return a Cursor positioned at the character that matches the partial tag
