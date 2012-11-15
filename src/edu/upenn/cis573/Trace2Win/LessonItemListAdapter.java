@@ -57,7 +57,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 			Map<String, String> keyValues = item.getKeyValues();
 			StringBuilder sb = new StringBuilder();
 	    	for (Map.Entry<String, String> entry : keyValues.entrySet()) {
-	    		sb.append(", " + "(" + entry.getKey() + ":" + entry.getValue() + ")");
+	    		sb.append(", " + entry.getKey() + ": " + entry.getValue());
 	    	}    	
 	    	String s = sb.length()>0 ? sb.substring(2) : "";
 	    	text.setText(s);
