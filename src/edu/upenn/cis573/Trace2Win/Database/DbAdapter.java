@@ -143,7 +143,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 9;
+    private static final int DATABASE_VERSION = 10;
 
     private final Context mCtx;
 

@@ -54,7 +54,7 @@ public class BrowseLessonsActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
-        list = (ListView)findViewById(R.id.list);
+        list = (ListView)findViewById(R.id.tag_list);
         
         items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();

@@ -3,6 +3,7 @@ package edu.upenn.cis573.Trace2Win;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 import android.app.Activity;
 import android.os.Bundle;
@@ -19,12 +20,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
-import edu.upenn.cis573.Trace2Win.Database.LessonItem;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
 public class TagActivity extends Activity {
 
-    private final String PRIVATE_PREFIX = "Private: ";
+    //private final String PRIVATE_PREFIX = "Private: ";
     private static final String[] menuItems = { "Move Up",
         "Move Down",
     "Delete"};
@@ -40,28 +40,40 @@ public class TagActivity extends Activity {
 
     //Controls
     private EditText tagEntry;
-    private EditText privateTagEntry;
-    private ListView lv;
+    //private EditText privateTagEntry;
+    private EditText keyEntry;
+    private EditText valueEntry;
+    private ListView id_lv;
+    private ListView tag_lv;
     private Button addTagButton;
+    private Button addIdButton;
 
     //Variables
     private long id; // item ID
+    private Map<String, String> keyValMap;
+    private List<String> currentKeyVals;
     private List<String> currentTags;
     private boolean isChanged;
 
     ItemType type;
-    ArrayAdapter<String> arrAdapter;
+    ArrayAdapter<String> tagArrAdapter;
+    ArrayAdapter<String> idArrAdapter;
+    
+    private final String logTag = "TagActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.d(logTag, "Beginning of onCreate");
 
         setContentView(R.layout.tag); //tag.xml
-
+        keyEntry = (EditText) findViewById(R.id.editkey);
+        valueEntry = (EditText) findViewById(R.id.editvalue);
         tagEntry = (EditText) findViewById(R.id.edittext);
-        privateTagEntry = (EditText) findViewById(R.id.editkey);
-        lv = (ListView) findViewById(R.id.list);
+        id_lv = (ListView) findViewById(R.id.id_list);
+        tag_lv = (ListView) findViewById(R.id.tag_list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
+        addIdButton = (Button) findViewById(R.id.add_key_value_pair_button);
 
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();
@@ -76,7 +88,20 @@ public class TagActivity extends Activity {
         switch(type)
         {
             case CHARACTER:
+            	Log.d(logTag, "Beginning of char");
                 currentTags = mDbHelper.getCharacterTags(id);
+                currentKeyVals = new ArrayList<String>();
+                keyValMap = mDbHelper.getCharKeyValues(id);
+                for(String key: keyValMap.keySet()){
+                	currentKeyVals.add(key + ": " + keyValMap.get(key));
+                }
+                idArrAdapter = new ArrayAdapter<String>(this, 
+                        android.R.layout.simple_list_item_1, currentKeyVals);
+                idArrAdapter.notifyDataSetChanged();
+                id_lv.setAdapter(idArrAdapter);
+                id_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+                registerForContextMenu(id_lv);
+            	Log.d(logTag, "End of char");
                 break;
             case WORD:
                 currentTags = mDbHelper.getWordTags(id);
@@ -89,19 +114,20 @@ public class TagActivity extends Activity {
         }
 
         //add private tag
-        currentTags.add(0, PRIVATE_PREFIX + mDbHelper.getPrivateTag(id, type));
+        //currentTags1.add(0, PRIVATE_PREFIX + mDbHelper.getPrivateTag(id, type));
 
         //Populate the ListView
-        arrAdapter = new ArrayAdapter<String>(this, 
+        tagArrAdapter = new ArrayAdapter<String>(this, 
                 android.R.layout.simple_list_item_1, currentTags);
-        arrAdapter.notifyDataSetChanged();
+        tagArrAdapter.notifyDataSetChanged();
+        tag_lv.setAdapter(tagArrAdapter);
 
-        lv.setAdapter(arrAdapter);
-
-        lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        registerForContextMenu(lv);
+        tag_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        registerForContextMenu(tag_lv);
 
         isChanged = false;
+
+        Log.d(logTag, "End of onCreate");
     }
 
     @Override
@@ -113,33 +139,34 @@ public class TagActivity extends Activity {
         }
     }	
 
+    //TODO deal with id's here
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
 
         if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
-            String selectedTag = (String)lv.getItemAtPosition(info.position);
-            boolean isPrivateTag = selectedTag.regionMatches(0, PRIVATE_PREFIX, 0, PRIVATE_PREFIX.length());	
+            String selectedTag = (String)tag_lv.getItemAtPosition(info.position);
+//            boolean isPrivateTag = selectedTag.regionMatches(0, PRIVATE_PREFIX, 0, PRIVATE_PREFIX.length());	
             boolean isSqlQuerySuccessful = false;
 
             switch(type)
             {
                 case CHARACTER:
-                    if (isPrivateTag) {
-                        isSqlQuerySuccessful = (mDbHelper.updatePrivateTag(id, "") > 0);
-                    }
-                    else {
+//                    if (isPrivateTag) {
+//                        isSqlQuerySuccessful = (mDbHelper.updatePrivateTag(id, "") > 0);
+//                    }
+//                    else {
                         isSqlQuerySuccessful = mDbHelper.deleteTag(id,'"' + selectedTag + '"');
-                    }
+//                    }
                     break;
                 case WORD:
-                    if (isPrivateTag) {
-                        isSqlQuerySuccessful = (mDbHelper.updatePrivateWordTag(id, "") > 0);
-                    }
-                    else {
+//                    if (isPrivateTag) {
+//                        isSqlQuerySuccessful = (mDbHelper.updatePrivateWordTag(id, "") > 0);
+//                    }
+//                    else {
                         isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedTag + '"');
-                    }
+//                    }
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");
@@ -149,12 +176,12 @@ public class TagActivity extends Activity {
             // show pop-up message and update ListView 
             if (isSqlQuerySuccessful) {
                 showToast(TagDeleteSuccessMsg);
-                if (isPrivateTag) {
-                    currentTags.set(0, PRIVATE_PREFIX);
-                } else {
+                //if (isPrivateTag) {
+                //    currentTags1.set(0, PRIVATE_PREFIX);
+                //} else {
                     currentTags.remove(info.position);
-                }
-                arrAdapter.notifyDataSetChanged();
+                //}
+                tagArrAdapter.notifyDataSetChanged();
             } else {
                 showToast(TagDeleteErrorMsg);
             }	
@@ -165,10 +192,10 @@ public class TagActivity extends Activity {
                 menuItemIndex == menuItemsInd.MoveDown.ordinal()) {
             // going to swap sort values with the item above or below
 
-            if (info.position == 0) { // this is the private tag
-                showToast("Cannot move the private tag");
-                return false;
-            }
+            //if (info.position == 0) { // this is the private tag
+            //    showToast("Cannot move the private tag");
+            //    return false;
+            //}
 
             // need to get other item
             int otherPos;
@@ -187,7 +214,7 @@ public class TagActivity extends Activity {
                 return false;
             }
 
-            String tag   = (String) lv.getItemAtPosition(info.position);
+            String tag   = (String) tag_lv.getItemAtPosition(info.position);
             String other = (String) currentTags.get(otherPos);
             String table = null;
 
@@ -225,9 +252,9 @@ public class TagActivity extends Activity {
             arr[otherIndex] = temp;
 
             currentTags = new ArrayList<String>(Arrays.asList(arr)); 
-            arrAdapter = new ArrayAdapter<String>(this, 
+            tagArrAdapter = new ArrayAdapter<String>(this, 
                     android.R.layout.simple_list_item_1, currentTags);
-            lv.setAdapter(arrAdapter);
+            tag_lv.setAdapter(tagArrAdapter);
             isChanged = true;
             return true;
         }
@@ -280,7 +307,7 @@ public class TagActivity extends Activity {
             //update the listview --> update the entire view
             //Refactor this, because refreshing the view is inefficient
             currentTags.add(input);
-            arrAdapter.notifyDataSetChanged();
+            tagArrAdapter.notifyDataSetChanged();
 
             //Set edit text back to nothing
             tagEntry.setText("");			
@@ -288,7 +315,7 @@ public class TagActivity extends Activity {
         }
     }
 
-    public void onAddPrivateTagButtonClick(View view){
+    /*public void onAddPrivateTagButtonClick(View view){
         String input = privateTagEntry.getText().toString();
         if (input.length() == 0) return;		
 
@@ -300,14 +327,40 @@ public class TagActivity extends Activity {
         {		
             mDbHelper.updatePrivateWordTag(id, input);	
         }
-        if(currentTags.get(0).contains(PRIVATE_PREFIX))
-            currentTags.remove(0);
-        currentTags.add(0,PRIVATE_PREFIX+input);
+        if(currentTags1.get(0).contains(PRIVATE_PREFIX))
+            currentTags1.remove(0);
+        currentTags1.add(0,PRIVATE_PREFIX+input);
         arrAdapter.notifyDataSetChanged();
         privateTagEntry.setText("");
         isChanged = true;
-    }
+    }*/
 
+    public void onAddKeyValuePairButtonClick(View view){
+    	if (view == addIdButton)
+    	{
+    		String keyInput = keyEntry.getText().toString(); 
+    		String valueInput = valueEntry.getText().toString();
+    		if (keyInput.length() == 0 || valueInput.length() == 0) return;		
+    		
+    		// check duplicate tag
+            if (keyValMap.get(keyInput)!=null) {
+                showToast("Tag already exists");
+                return;
+            }
+    		
+    		//what do we do about other types?
+    		if (type == ItemType.CHARACTER)
+    		{
+    			mDbHelper.createCharKeyValue(id, keyInput, valueInput); //added it to db
+    		}
+    		keyValMap.put(keyInput, valueInput);
+    		currentKeyVals.add(keyInput + ": " + valueInput);
+        	idArrAdapter.notifyDataSetChanged();
+        	keyEntry.setText("");			
+        	valueEntry.setText("");
+        	isChanged = true;
+    	}
+    }
     private final void showToast(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }	
