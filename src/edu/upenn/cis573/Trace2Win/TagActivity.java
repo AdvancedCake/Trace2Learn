@@ -59,7 +59,7 @@ public class TagActivity extends Activity {
         setContentView(R.layout.tag); //tag.xml
 
         tagEntry = (EditText) findViewById(R.id.edittext);
-        privateTagEntry = (EditText) findViewById(R.id.editprivate);
+        privateTagEntry = (EditText) findViewById(R.id.editkey);
         lv = (ListView) findViewById(R.id.list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
 

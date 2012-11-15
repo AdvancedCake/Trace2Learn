@@ -11,19 +11,44 @@
         android:textColor="#00ccff"
         android:textSize="25sp"
         android:textStyle="bold" />
-
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="323dp"
-        android:layout_weight="0.60" >
+        android:layout_height="162dp" >
 
     </ListView>
+    
+    <View 
+        android:background="#ffffff" 
+        android:layout_width = "fill_parent"
+        android:layout_height="1dip"
+        android:layout_centerVertical="true"/>
+    
 
-     <TextView
-        android:layout_width="wrap_content"
+    <ListView
+        android:id="@+id/ListView01"
+        android:layout_width="match_parent"
+        android:layout_height="162dp" >
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="Add Private Tag" />
+        android:layout_weight="1"
+        android:orientation="horizontal" >
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Key"
+            android:width="137sp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Add Value" />
+
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="fill_parent"
@@ -31,17 +56,25 @@
         android:orientation="horizontal" >
 
         <EditText
-            android:id="@+id/editprivate"
+            android:id="@+id/editkey"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" >
+
+        </EditText>
+        <EditText
+            android:id="@+id/editvalue"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1" />
 
         <Button
-            android:id="@+id/add_private_tag_button"
+            android:id="@+id/add_key_value_pair_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:onClick="onAddPrivateTagButtonClick"
+            android:onClick="onAddKeyValuePairButtonClick"
             android:text="@string/add" />
+
     </LinearLayout>
     
     <TextView
