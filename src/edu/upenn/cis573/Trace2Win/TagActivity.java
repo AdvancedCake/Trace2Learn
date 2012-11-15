@@ -40,7 +40,6 @@ public class TagActivity extends Activity {
 
     //Controls
     private EditText tagEntry;
-    //private EditText privateTagEntry;
     private EditText keyEntry;
     private EditText valueEntry;
     private ListView id_lv;
@@ -51,6 +50,7 @@ public class TagActivity extends Activity {
     //Variables
     private long id; // item ID
     private Map<String, String> keyValMap;
+    private List<String> currentKeys;
     private List<String> currentKeyVals;
     private List<String> currentTags;
     private boolean isChanged;
@@ -98,9 +98,11 @@ public class TagActivity extends Activity {
         {
             case CHARACTER:
                 currentTags = mDbHelper.getCharacterTags(id);
+                currentKeys = new ArrayList<String>();
                 currentKeyVals = new ArrayList<String>();
                 keyValMap = mDbHelper.getCharKeyValues(id);
                 for(String key: keyValMap.keySet()){
+                	currentKeys.add(key);
                 	currentKeyVals.add(key + ": " + keyValMap.get(key));
                 }
                 idArrAdapter = new ArrayAdapter<String>(this, 
@@ -119,9 +121,6 @@ public class TagActivity extends Activity {
             default:
                 Log.e("Tag", "Unsupported Type");
         }
-
-        //add private tag
-        //currentTags1.add(0, PRIVATE_PREFIX + mDbHelper.getPrivateTag(id, type));
 
         //Populate the ListView
         tagArrAdapter = new ArrayAdapter<String>(this, 
@@ -144,33 +143,34 @@ public class TagActivity extends Activity {
         }
     }	
 
-    //TODO deal with id's here
     @Override
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+        ListView view = (ListView)info.targetView.getParent();
+        Log.d("Tag", view.toString());
         int menuItemIndex = item.getItemId();
-
         if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
-            String selectedTag = (String)tag_lv.getItemAtPosition(info.position);
-//            boolean isPrivateTag = selectedTag.regionMatches(0, PRIVATE_PREFIX, 0, PRIVATE_PREFIX.length());	
+            String selectedItem = (String)view.getItemAtPosition(info.position);
+            boolean isID = view == id_lv;//selectedTag.regionMatches(0, PRIVATE_PREFIX, 0, PRIVATE_PREFIX.length())
+            
             boolean isSqlQuerySuccessful = false;
 
             switch(type)
             {
                 case CHARACTER:
-//                    if (isPrivateTag) {
-//                        isSqlQuerySuccessful = (mDbHelper.updatePrivateTag(id, "") > 0);
-//                    }
-//                    else {
-                        isSqlQuerySuccessful = mDbHelper.deleteTag(id,'"' + selectedTag + '"');
-//                    }
+                    if (isID) {
+                        isSqlQuerySuccessful = mDbHelper.deleteCharKeyValue(id,'"' + currentKeys.get(info.position) + '"');
+                    }
+                    else {
+                        isSqlQuerySuccessful = mDbHelper.deleteTag(id,'"' + selectedItem + '"');
+                    }
                     break;
                 case WORD:
 //                    if (isPrivateTag) {
 //                        isSqlQuerySuccessful = (mDbHelper.updatePrivateWordTag(id, "") > 0);
 //                    }
 //                    else {
-                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedTag + '"');
+                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedItem + '"');
 //                    }
                     break;
                 default:
@@ -181,12 +181,15 @@ public class TagActivity extends Activity {
             // show pop-up message and update ListView 
             if (isSqlQuerySuccessful) {
                 showToast(TagDeleteSuccessMsg);
-                //if (isPrivateTag) {
-                //    currentTags1.set(0, PRIVATE_PREFIX);
-                //} else {
+                if (isID) {
+                	keyValMap.remove(currentKeys.get(info.position));
+                	currentKeyVals.remove(info.position);
+                	currentKeys.remove(info.position);
+                    idArrAdapter.notifyDataSetChanged();
+                } else {
                     currentTags.remove(info.position);
-                //}
-                tagArrAdapter.notifyDataSetChanged();
+                    tagArrAdapter.notifyDataSetChanged();
+                }
             } else {
                 showToast(TagDeleteErrorMsg);
             }	
@@ -244,7 +247,7 @@ public class TagActivity extends Activity {
                 showToast("Move failed");
                 return false;
             }
-
+            //TODO add ids
             // update local copy
             // success, so update the local copy
             String[] arr = new String[currentTags.size()];
@@ -359,6 +362,7 @@ public class TagActivity extends Activity {
     			mDbHelper.createCharKeyValue(id, keyInput, valueInput); //added it to db
     		}
     		keyValMap.put(keyInput, valueInput);
+    		currentKeys.add(keyInput);
     		currentKeyVals.add(keyInput + ": " + valueInput);
         	idArrAdapter.notifyDataSetChanged();
         	keyEntry.setText("");			
