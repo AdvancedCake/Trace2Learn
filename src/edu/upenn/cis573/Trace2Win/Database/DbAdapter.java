@@ -1,9 +1,9 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
-
-import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
+import java.util.Map;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -13,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
 import android.util.Log;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
 public class DbAdapter {
 	
@@ -23,7 +24,9 @@ public class DbAdapter {
     
     public static final String CHARTAG_ROWID = "_id";
     public static final String CHARTAG_TAG= "tag";
-    
+    public static final String CHARKEYVALUES_ROWID ="_id";
+    public static final String CHARKEYVALUES_KEY = "key";
+    public static final String CHARKEYVALUES_VALUE = "value";
     public static final String WORDTAG_ROWID = "_id";
     public static final String WORDTAG_TAG= "tag";
 
@@ -45,6 +48,14 @@ public class DbAdapter {
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Character(_id));";
 
+    private static final String DATABASE_CREATE_CHARKEYVALUES =
+            "CREATE TABLE CharKeyValues (_id INTEGER, " +
+            "key TEXT NOT NULL, " +
+            "value TEXT NOT NULL, " +
+            "sort INTEGER, " +
+            "PRIMARY KEY (_id, key), " +
+            "FOREIGN KEY(_id) REFERENCES Character(_id));";
+    
     private static final String DATABASE_CREATE_CHAR_DETAILS =
             "CREATE TABLE CharacterDetails (_id INTEGER PRIMARY KEY AUTOINCREMENT, " +
             "CharId INTEGER, " +
@@ -98,6 +109,8 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS Character";
     private static final String DATABASE_DROP_CHARTAG = 
     		"DROP TABLE IF EXISTS CharacterTag";
+    private static final String DATABASE_DROP_CHARKEYVALUES = 
+    		"DROP TABLE IF EXISTS CharKeyValues";
     private static final String DATABASE_DROP_CHAR_DETAILS = 
     		"DROP TABLE IF EXISTS CharacterDetails";
     private static final String DATABASE_DROP_WORDS = 
@@ -121,6 +134,7 @@ public class DbAdapter {
     public static final String CHAR_TABLE            = "Character";
     public static final String CHAR_DETAILS_TABLE    = "CharacterDetails";
     public static final String CHARTAG_TABLE         = "CharacterTag";
+    public static final String CHARKEYVALUES_TABLE   = "CharKeyValues";
     public static final String WORDTAG_TABLE         = "WordsTag";
     public static final String WORDS_TABLE           = "Words";
     public static final String WORDS_DETAILS_TABLE   = "WordsDetails";
@@ -129,7 +143,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 9;
 
     private final Context mCtx;
 
@@ -144,6 +158,7 @@ public class DbAdapter {
 
             db.execSQL(DATABASE_CREATE_CHAR);
             db.execSQL(DATABASE_CREATE_CHARTAG);
+            db.execSQL(DATABASE_CREATE_CHARKEYVALUES);
             db.execSQL(DATABASE_CREATE_CHAR_DETAILS);
             db.execSQL(DATABASE_CREATE_WORDS);
             db.execSQL(DATABASE_CREATE_WORDS_DETAILS);
@@ -159,6 +174,7 @@ public class DbAdapter {
                     + newVer + ", which will destroy all old data");
             db.execSQL(DATABASE_DROP_CHAR);
             db.execSQL(DATABASE_DROP_CHARTAG);
+            db.execSQL(DATABASE_DROP_CHARKEYVALUES);
             db.execSQL(DATABASE_DROP_CHAR_DETAILS);
             db.execSQL(DATABASE_DROP_WORDS);
             db.execSQL(DATABASE_DROP_WORDS_DETAILS);
@@ -293,6 +309,51 @@ public class DbAdapter {
 
         return mDb.insert(CHARTAG_TABLE, null, initialValues);
     }
+
+    /**
+     * Create a new (Key, Value) pair. If the pair is
+     * successfully created return the new rowId for that pair, otherwise return
+     * -1 to indicate failure.
+     * 
+     * @param id the row_id of the char
+     * @param key the text of the key
+     * @param value the text of the value
+     * @return rowId or -1 if failed
+     */
+    public long createCharKeyValue(long id, String key, String value) {
+        Cursor cur = mDb.query(CHARKEYVALUES_TABLE, new String[] {"sort"}, 
+                               "_id=" + id, null, null, null, "sort DESC", "1");
+        int sort = 1;
+        if (cur != null) {
+            if (cur.moveToFirst()) {
+                sort = cur.getInt(cur.getColumnIndexOrThrow("sort")) + 1;
+            }
+        }
+        else {
+            return -1;
+        }
+        cur.close();
+
+        
+        ContentValues initialValues = new ContentValues();
+        initialValues.put(CHARKEYVALUES_ROWID, id);
+        initialValues.put(CHARKEYVALUES_KEY, key);
+        initialValues.put(CHARKEYVALUES_VALUE, value);
+        initialValues.put("sort", sort);
+
+        return mDb.insert(CHARKEYVALUES_TABLE, null, initialValues);
+    }        
+    
+    /**
+     * Delete the (Key, Value) pair with the given rowId and key
+     * 
+     * @param rowId id of pair to delete
+     * @param key text of key to delete
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteCharKeyValue(long rowId, String key) {
+        return mDb.delete(CHARKEYVALUES_TABLE, CHARKEYVALUES_ROWID + "=" + rowId + " AND " + CHARKEYVALUES_KEY+"="+key, null) > 0;
+    }    
     
     /**
      * Delete the tag with the given rowId and tag
@@ -394,11 +455,25 @@ public class DbAdapter {
     	// if the given character has tags, copy them
     	for (String tag : c.getTags()) {
     		if (-1 == createTags(id, tag)) {
-        		Log.e(CHAR_TABLE, "cannot add character's tag(" + tag + ") to table " + CHAR_TABLE);
+        		Log.e(CHAR_TABLE, 
+        				"cannot add character's tag(" + tag + ") "
+        				+ "to table " + CHARTAG_TABLE);
     			mDb.endTransaction();
         		return false;
     		}
     	}
+    	
+    	// if the given character has keyValues, copy them
+    	for (Map.Entry<String, String> entry : c.getKeyValues().entrySet()) {
+    		if (-1 == createCharKeyValue(id, entry.getKey(), entry.getValue())) {
+        		Log.e(CHAR_TABLE, 
+        				"cannot add character's Key-Value pair(" 
+        				+ entry.getKey() + ", " + entry.getValue() + ") "
+        				+ "to table " + CHARKEYVALUES_TABLE);
+    			mDb.endTransaction();
+        		return false;
+    		}
+    	}    	
     	
     	// To make the sort order the same as the ID, we need to update the row
     	// after we get the ID, i.e. now.
@@ -514,6 +589,7 @@ public class DbAdapter {
  	         while(mCursor.moveToNext());
     		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
     		 mDb.delete(CHARTAG_TABLE, CHAR_ROWID + "=" + id, null);
+    		 mDb.delete(CHARKEYVALUES_TABLE, CHAR_ROWID + "=" + id, null);
     	 }
     	 mCursor.close();
     	 return id;
@@ -578,10 +654,11 @@ public class DbAdapter {
     	mCursor.close();
 
     	// get tags as well
-    	for (String tag : getCharacterTags(id)) {
-    		c.addTag(tag);
-    	}
+    	c.setTagList(getCharacterTags(id));
 
+    	// get keyValues as well
+    	c.setKeyValues(getCharKeyValues(id));
+    	
     	return c;
     }
     
@@ -774,6 +851,34 @@ public class DbAdapter {
         return tags;
 
     }
+
+    /**
+     * Return a Map of (Key,Value) pairs that matches the given character's charId
+     * 
+     * @param charId id of character whose (Key,Value) pairs we want to retrieve
+     * @return Map of (Key,Value) pairs
+     * @throws SQLException if character could not be found/retrieved
+     */
+    public Map<String, String> getCharKeyValues(long charId) throws SQLException {
+        Cursor mCursor =
+            mDb.query(true, CHARKEYVALUES_TABLE, new String[] {CHARKEYVALUES_KEY, CHARKEYVALUES_VALUE}, CHARTAG_ROWID + "=" + charId, null,
+                    null, null, "sort ASC", null);
+        Map<String, String> keyValues = new HashMap<String, String>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+        	if(mCursor.getCount()==0){
+        		break;
+        	}
+        	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(CHARKEYVALUES_KEY)),
+        					mCursor.getString(mCursor.getColumnIndexOrThrow(CHARKEYVALUES_VALUE)));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
+
+        return keyValues;
+    }    
     
     /**
      * Return a Cursor positioned at the character that matches the partial tag

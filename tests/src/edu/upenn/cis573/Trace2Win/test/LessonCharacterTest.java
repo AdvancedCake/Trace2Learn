@@ -52,6 +52,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		assertEquals(expected.getNumStrokes(), actual.getNumStrokes());
 		assertEquals(expected.getItemType(), actual.getItemType());
 		assertEquals(expected.getTags(), actual.getTags());
+		assertEquals(expected.getKeyValues(), actual.getKeyValues());
 	}
 	
 	public void testNoStrokes()
@@ -181,4 +182,12 @@ public class LessonCharacterTest extends AndroidTestCase {
 		compareCharacters(c, c1);
 	}
 	
+	public void testSaveKeyValues()
+	{
+		LessonCharacter c = new LessonCharacter();
+		c.addKeyValue("key1", "value1");
+		db.addCharacter(c);
+		LessonCharacter c1 = db.getCharacterById(c.getId());
+		compareCharacters(c, c1);
+	}	
 }
