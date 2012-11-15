@@ -58,29 +58,38 @@ public class TagActivity extends Activity {
     ItemType type;
     ArrayAdapter<String> tagArrAdapter;
     ArrayAdapter<String> idArrAdapter;
-    
-    private final String logTag = "TagActivity";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d(logTag, "Beginning of onCreate");
-
-        setContentView(R.layout.tag); //tag.xml
-        keyEntry = (EditText) findViewById(R.id.editkey);
-        valueEntry = (EditText) findViewById(R.id.editvalue);
-        tagEntry = (EditText) findViewById(R.id.edittext);
-        id_lv = (ListView) findViewById(R.id.id_list);
-        tag_lv = (ListView) findViewById(R.id.tag_list);
-        addTagButton = (Button) findViewById(R.id.add_tag_button);
-        addIdButton = (Button) findViewById(R.id.add_key_value_pair_button);
-
-        mDbHelper = new DbAdapter(this);
-        mDbHelper.open();
-
+        
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
-        type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));
+        type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));        
+
+        // assign layout and cache views 
+        switch(type)
+        {
+        case CHARACTER:
+        	setContentView(R.layout.id_and_tag);
+        	id_lv = (ListView) findViewById(R.id.id_list);
+        	keyEntry = (EditText) findViewById(R.id.editkey);
+        	valueEntry = (EditText) findViewById(R.id.editvalue);
+        	addIdButton = (Button) findViewById(R.id.add_key_value_pair_button);
+        	break;
+        case WORD:
+        case LESSON:
+        	setContentView(R.layout.tag);
+        	break;
+        default:
+        	Log.e("Tag", "Unsupported Type");
+        }
+        tagEntry = (EditText) findViewById(R.id.edittext);
+        tag_lv = (ListView) findViewById(R.id.tag_list);
+        addTagButton = (Button) findViewById(R.id.add_tag_button);
+
+        mDbHelper = new DbAdapter(this);
+        mDbHelper.open();     
 
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
@@ -88,7 +97,6 @@ public class TagActivity extends Activity {
         switch(type)
         {
             case CHARACTER:
-            	Log.d(logTag, "Beginning of char");
                 currentTags = mDbHelper.getCharacterTags(id);
                 currentKeyVals = new ArrayList<String>();
                 keyValMap = mDbHelper.getCharKeyValues(id);
@@ -101,7 +109,6 @@ public class TagActivity extends Activity {
                 id_lv.setAdapter(idArrAdapter);
                 id_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
                 registerForContextMenu(id_lv);
-            	Log.d(logTag, "End of char");
                 break;
             case WORD:
                 currentTags = mDbHelper.getWordTags(id);
@@ -126,8 +133,6 @@ public class TagActivity extends Activity {
         registerForContextMenu(tag_lv);
 
         isChanged = false;
-
-        Log.d(logTag, "End of onCreate");
     }
 
     @Override
