@@ -2,8 +2,7 @@ package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import edu.upenn.cis573.Trace2Win.Database.LessonItem;
+import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -14,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem;
 
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
@@ -50,7 +50,25 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
 		image.setImageBitmap(bitmap);
 		
-		text.setText(item.getPrivateTag());
+		// text
+		switch (item.getItemType())
+		{
+		case CHARACTER:
+			Map<String, String> keyValues = item.getKeyValues();
+			StringBuilder sb = new StringBuilder();
+	    	for (Map.Entry<String, String> entry : keyValues.entrySet()) {
+	    		sb.append(", " + "(" + entry.getKey() + ":" + entry.getValue() + ")");
+	    	}    	
+	    	String s = sb.length()>0 ? sb.substring(2) : "";
+	    	text.setText(s);
+			break;
+		case WORD:
+		case LESSON:
+			text.setText(item.getPrivateTag());
+			break;		
+		}
+		
+		// text2
 		ArrayList<String> tags = new ArrayList<String>(item.getTags());
 		StringBuilder sb = new StringBuilder();
 		for(String tag : tags){
