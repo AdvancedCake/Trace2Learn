@@ -9,9 +9,12 @@ import java.util.Map;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.util.Log;
 
 
 public abstract class LessonItem implements Comparable<LessonItem> {
+	
+	private final String logTAG = "LessonItem";
 	
 	/** The tag cache*/
 	protected List<String> _tags;
@@ -170,15 +173,11 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		switch(_type)
 		{
 		case CHARACTER:
-			_keyValues = db.getCharKeyValues(_id);
-			break;
 		case WORD:
-			// TODO uncomment when there is word support
-			//_keyValues = db.getWordKeyValues(_id);
+			_keyValues = db.getKeyValues(_id, _type);
 			break;
 		case LESSON:
-			// TODO uncomment when there is lesson support
-			//_keyValues = db.getLessonKeyValues(_id);
+			Log.e(logTAG, "(Key, Value) pairs are NOT supported for LESSON");
 			break;
 		}
 	}

@@ -1,13 +1,24 @@
 package edu.upenn.cis573.Trace2Win.test;
 
+import android.test.AndroidTestCase;
+import android.util.Log;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
-import edu.upenn.cis573.Trace2Win.Database.Stroke;
-import junit.framework.TestCase;
 
-public class LessonWordTest extends TestCase {
+public class LessonWordTest extends AndroidTestCase {
 
 	LessonCharacter c1, c2, c3;
+	private DbAdapter db;
+	
+	public void compareWords(LessonWord expected, LessonWord actual)
+	{
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getItemType(), actual.getItemType());
+		assertEquals(expected.getCharacterIds(), actual.getCharacterIds());
+		assertEquals(expected.getTags(), actual.getTags());
+		assertEquals(expected.getKeyValues(), actual.getKeyValues());
+	}	
 	
 	protected void setUp() throws Exception {
 		super.setUp();
@@ -19,8 +30,26 @@ public class LessonWordTest extends TestCase {
 		c1.setId(1);
 		c2.setId(2);
 		c3.setId(3);
+		
+		db = new DbAdapter(this.getContext());
+		db.open();
 	}
-
+	
+	protected void dumpDBs()
+	{
+		for(String str : this.getContext().databaseList())
+		{
+			Log.i("DELETE", str);
+			this.getContext().deleteDatabase(str);
+		}
+	}
+	
+	protected void tearDown()
+	{
+		dumpDBs();
+		db.close();
+	}	
+	
 	public void testNoStrokes()
 	{
 		LessonWord w = new LessonWord();
@@ -67,4 +96,31 @@ public class LessonWordTest extends TestCase {
 		assertEquals(0,w.getCharacters().size());
 	}
 
+	public void testSaveTags()
+	{
+		LessonWord w = new LessonWord();
+		w.addTag("Tag1");
+		db.addWord(w);
+		LessonWord w1 = db.getWordById(w.getId());
+		compareWords(w, w1);
+	}
+	
+	public void testSaveKeyValues()
+	{
+		LessonWord w = new LessonWord();
+		w.addKeyValue("key1", "value1");
+		db.addWord(w);
+		LessonWord w1 = db.getWordById(w.getId());
+		compareWords(w, w1);
+	}	
+	
+	public void testCreateKeyValues()
+	{
+		LessonWord w = new LessonWord();
+		db.addWord(w);
+		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
+		w.addKeyValue("key1", "value1");
+		LessonWord w1 = db.getWordById(w.getId());
+		compareWords(w, w1);
+	}		
 }

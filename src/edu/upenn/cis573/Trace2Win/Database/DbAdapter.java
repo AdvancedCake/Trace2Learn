@@ -29,6 +29,9 @@ public class DbAdapter {
     public static final String CHARKEYVALUES_VALUE = "value";
     public static final String WORDTAG_ROWID = "_id";
     public static final String WORDTAG_TAG= "tag";
+    public static final String WORDKEYVALUES_ROWID ="_id";
+    public static final String WORDKEYVALUES_KEY = "key";
+    public static final String WORDKEYVALUES_VALUE = "value";
 
     private static final String TAG = "TagsDbAdapter";
     private DatabaseHelper mDbHelper;
@@ -83,6 +86,14 @@ public class DbAdapter {
             "tag TEXT NOT NULL, " +
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
+    
+    private static final String DATABASE_CREATE_WORDKEYVALUES =
+            "CREATE TABLE WordKeyValues (_id INTEGER, " +
+            "key TEXT NOT NULL, " +
+            "value TEXT NOT NULL, " +
+            "sort INTEGER, " +
+            "PRIMARY KEY (_id, key), " +
+            "FOREIGN KEY(_id) REFERENCES Words(_id));";    
 
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
@@ -115,6 +126,8 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS CharacterDetails";
     private static final String DATABASE_DROP_WORDS = 
     		"DROP TABLE IF EXISTS Words";
+    private static final String DATABASE_DROP_WORDKEYVALUES = 
+    		"DROP TABLE IF EXISTS WordKeyValues";
     private static final String DATABASE_DROP_WORDS_DETAILS = 
     		"DROP TABLE IF EXISTS WordsDetails";
     private static final String DATABASE_DROP_WORDSTAG = 
@@ -137,13 +150,14 @@ public class DbAdapter {
     public static final String CHARKEYVALUES_TABLE   = "CharKeyValues";
     public static final String WORDTAG_TABLE         = "WordsTag";
     public static final String WORDS_TABLE           = "Words";
+    public static final String WORDKEYVALUES_TABLE   = "WordKeyValues";
     public static final String WORDS_DETAILS_TABLE   = "WordsDetails";
     public static final String LESSONS_TABLE         = "Lessons";
     public static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 11;
 
     private final Context mCtx;
 
@@ -161,6 +175,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_CREATE_CHARKEYVALUES);
             db.execSQL(DATABASE_CREATE_CHAR_DETAILS);
             db.execSQL(DATABASE_CREATE_WORDS);
+            db.execSQL(DATABASE_CREATE_WORDKEYVALUES);
             db.execSQL(DATABASE_CREATE_WORDS_DETAILS);
             db.execSQL(DATABASE_CREATE_WORDSTAG);
             db.execSQL(DATABASE_CREATE_LESSONS);
@@ -177,6 +192,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_DROP_CHARKEYVALUES);
             db.execSQL(DATABASE_DROP_CHAR_DETAILS);
             db.execSQL(DATABASE_DROP_WORDS);
+            db.execSQL(DATABASE_DROP_WORDKEYVALUES);
             db.execSQL(DATABASE_DROP_WORDS_DETAILS);
             db.execSQL(DATABASE_DROP_WORDSTAG);
             db.execSQL(DATABASE_DROP_LESSONS);
@@ -216,7 +232,7 @@ public class DbAdapter {
     }
     
     /**
-     * Create a new character tag. If the character tag is
+     * Create a new word tag. If the word tag is
      * successfully created return the new rowId for that tag, otherwise return
      * a -1 to indicate failure.
      * 
@@ -279,7 +295,7 @@ public class DbAdapter {
     }
     
     /**
-     * Create a new word tag. If the tag is
+     * Create a new character tag. If the tag is
      * successfully created return the new rowId for that tag, otherwise return
      * a -1 to indicate failure.
      * 
@@ -311,17 +327,41 @@ public class DbAdapter {
     }
 
     /**
-     * Create a new (Key, Value) pair. If the pair is
+     * Create a new (Key, Value) pair for a character/word. If the pair is
      * successfully created return the new rowId for that pair, otherwise return
      * -1 to indicate failure.
      * 
-     * @param id the row_id of the char
+     * @param id the row_id of the item
      * @param key the text of the key
      * @param value the text of the value
      * @return rowId or -1 if failed
      */
-    public long createCharKeyValue(long id, String key, String value) {
-        Cursor cur = mDb.query(CHARKEYVALUES_TABLE, new String[] {"sort"}, 
+    public long createKeyValue(long id, LessonItem.ItemType itemType, 
+    								String key, String value) {
+    	String table = "";
+    	String rowId = "";
+    	String keyColumn = "";
+    	String valueColumn = "";
+    	switch (itemType)
+    	{
+    	case CHARACTER:
+    		table = CHARKEYVALUES_TABLE;
+    		keyColumn = CHARKEYVALUES_KEY;
+    		valueColumn = CHARKEYVALUES_VALUE;
+    		rowId = CHARTAG_ROWID;
+    		break;
+    	case WORD:
+    		table = WORDKEYVALUES_TABLE;
+    		keyColumn = WORDKEYVALUES_KEY;
+    		valueColumn = WORDKEYVALUES_VALUE;
+    		rowId = WORDTAG_ROWID;
+    		break;
+    	default:
+    		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
+    		return -1;
+    	}    	
+    	
+        Cursor cur = mDb.query(table, new String[] {"sort"}, 
                                "_id=" + id, null, null, null, "sort DESC", "1");
         int sort = 1;
         if (cur != null) {
@@ -336,25 +376,14 @@ public class DbAdapter {
 
         
         ContentValues initialValues = new ContentValues();
-        initialValues.put(CHARKEYVALUES_ROWID, id);
-        initialValues.put(CHARKEYVALUES_KEY, key);
-        initialValues.put(CHARKEYVALUES_VALUE, value);
+        initialValues.put(rowId, id);
+        initialValues.put(keyColumn, key);
+        initialValues.put(valueColumn, value);
         initialValues.put("sort", sort);
 
-        return mDb.insert(CHARKEYVALUES_TABLE, null, initialValues);
-    }        
-    
-    /**
-     * Delete the (Key, Value) pair with the given rowId and key
-     * 
-     * @param rowId id of pair to delete
-     * @param key text of key to delete
-     * @return true if deleted, false otherwise
-     */
-    public boolean deleteCharKeyValue(long rowId, String key) {
-        return mDb.delete(CHARKEYVALUES_TABLE, CHARKEYVALUES_ROWID + "=" + rowId + " AND " + CHARKEYVALUES_KEY+"="+key, null) > 0;
-    }    
-    
+        return mDb.insert(table, null, initialValues);
+    }          
+
     /**
      * Delete the tag with the given rowId and tag
      * 
@@ -377,6 +406,36 @@ public class DbAdapter {
         return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId + " AND " + WORDTAG_TAG+"="+tag, null) > 0;
     }
    
+    /**
+     * Delete the (Key, Value) pair for a character/word with the given rowId and key
+     * 
+     * @param rowId character/word id of pair to delete
+     * @param key text of key to delete
+     * @return true if deleted, false otherwise
+     */
+    public boolean deleteKeyValue(long itemId, LessonItem.ItemType itemType, String key) {
+    	String table = "";
+    	String rowId = "";
+    	String keyColumn = "";
+    	switch (itemType)
+    	{
+    	case CHARACTER:
+    		table = CHARKEYVALUES_TABLE;
+    		keyColumn = CHARKEYVALUES_KEY;
+    		rowId = CHARTAG_ROWID;
+    		break;
+    	case WORD:
+    		table = WORDKEYVALUES_TABLE;
+    		keyColumn = WORDKEYVALUES_KEY;
+    		rowId = WORDTAG_ROWID;
+    		break;
+    	default:
+    		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
+    		return false;
+    	}    	
+        return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn+"="+key, null) > 0;
+    }      
+
     /**
      * Modify a character already in the database
      * @param c character to be modified to the database
@@ -465,7 +524,7 @@ public class DbAdapter {
     	
     	// if the given character has keyValues, copy them
     	for (Map.Entry<String, String> entry : c.getKeyValues().entrySet()) {
-    		if (-1 == createCharKeyValue(id, entry.getKey(), entry.getValue())) {
+    		if (-1 == createKeyValue(id, c.getItemType(), entry.getKey(), entry.getValue())) {
         		Log.e(CHAR_TABLE, 
         				"cannot add character's Key-Value pair(" 
         				+ entry.getKey() + ", " + entry.getValue() + ") "
@@ -657,7 +716,7 @@ public class DbAdapter {
     	c.setTagList(getCharacterTags(id));
 
     	// get keyValues as well
-    	c.setKeyValues(getCharKeyValues(id));
+    	c.setKeyValues(getKeyValues(id, LessonItem.ItemType.CHARACTER));
     	
     	return c;
     }
@@ -710,6 +769,12 @@ public class DbAdapter {
         w.setDatabase(this);
 
         mCursor.close();
+        
+    	// get tags as well
+    	w.setTagList(getWordTags(id));
+
+    	// get keyValues as well
+    	w.setKeyValues(getKeyValues(id, LessonItem.ItemType.WORD));        
 
         return w;
     }
@@ -739,6 +804,29 @@ public class DbAdapter {
         }
     	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
         x.close();
+        
+    	// if the given word has tags, copy them
+    	for (String tag : w.getTags()) {
+    		if (-1 == createWordTags(id, tag)) {
+        		Log.e(CHAR_TABLE, 
+        				"cannot add word's tag(" + tag + ") "
+        				+ "to table " + WORDTAG_TABLE);
+    			mDb.endTransaction();
+        		return false;
+    		}
+    	}
+    	
+    	// if the given character has keyValues, copy them
+    	for (Map.Entry<String, String> entry : w.getKeyValues().entrySet()) {
+    		if (-1 == createKeyValue(id, w.getItemType(), entry.getKey(), entry.getValue())) {
+        		Log.e(CHAR_TABLE, 
+        				"cannot add word's Key-Value pair(" 
+        				+ entry.getKey() + ", " + entry.getValue() + ") "
+        				+ "to table " + WORDKEYVALUES_TABLE);
+    			mDb.endTransaction();
+        		return false;
+    		}
+    	}    	        
     	
         // To make the sort order the same as the ID, we need to update the row
         // after we get the ID, i.e. now.
@@ -786,6 +874,7 @@ public class DbAdapter {
 		 mDb.delete(WORDS_DETAILS_TABLE, "_id = " + id, null);
 		 mDb.delete(WORDTAG_TABLE, "_id="+id, null);
 		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId="+id, null);
+		 mDb.delete(WORDKEYVALUES_TABLE, WORDS_ROWID + "=" + id, null);
     	 
 		 mCursor.close();
 
@@ -831,7 +920,7 @@ public class DbAdapter {
      * @throws SQLException if character could not be found/retrieved
      */
     public List<String> getCharacterTags(long charId) throws SQLException {
-
+    	//TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
         Cursor mCursor =
             mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_TAG}, CHARTAG_ROWID + "=" + charId, null,
                     null, null, "sort ASC", null);
@@ -853,16 +942,42 @@ public class DbAdapter {
     }
 
     /**
-     * Return a Map of (Key,Value) pairs that matches the given character's charId
+     * Return a Map of (Key,Value) pairs that matches the given LessonItem's ID
      * 
-     * @param charId id of character whose (Key,Value) pairs we want to retrieve
-     * @return Map of (Key,Value) pairs
-     * @throws SQLException if character could not be found/retrieved
+     * @param itemId id of LessonItem whose (Key,Value) pairs we want to retrieve
+     * @param itemType type of LessonItem. 
+     * 		NOTE: (Key, Value) pairs are supported only for characters and words
+     * @return Map of (Key,Value) pairs, or null if the given item is not supported.
+     * @throws SQLException if the item could not be found/retrieved
      */
-    public Map<String, String> getCharKeyValues(long charId) throws SQLException {
+    public Map<String, String> getKeyValues(long itemId, LessonItem.ItemType itemType) throws SQLException {    	
+    	String table = ""; 
+    	String keyColumn = ""; 
+    	String valueColumn = ""; 
+    	String rowId = "";
+    	String orderBy = "sort ASC"; 
+    	switch (itemType)
+    	{
+    	case CHARACTER:
+    		table = CHARKEYVALUES_TABLE;
+    		keyColumn = CHARKEYVALUES_KEY;
+    		valueColumn = CHARKEYVALUES_VALUE;
+    		rowId = CHARTAG_ROWID;
+    		break;
+    	case WORD:
+    		table = WORDKEYVALUES_TABLE;
+    		keyColumn = WORDKEYVALUES_KEY;
+    		valueColumn = WORDKEYVALUES_VALUE;
+    		rowId = WORDTAG_ROWID;
+    		break;
+    	default:
+    		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
+    		return null;
+    	}
+    	
         Cursor mCursor =
-            mDb.query(true, CHARKEYVALUES_TABLE, new String[] {CHARKEYVALUES_KEY, CHARKEYVALUES_VALUE}, CHARTAG_ROWID + "=" + charId, null,
-                    null, null, "sort ASC", null);
+            mDb.query(true, table, new String[] {keyColumn, valueColumn}, rowId + "=" + itemId, null,
+                    null, null, orderBy, null);
         Map<String, String> keyValues = new HashMap<String, String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -871,8 +986,8 @@ public class DbAdapter {
         	if(mCursor.getCount()==0){
         		break;
         	}
-        	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(CHARKEYVALUES_KEY)),
-        					mCursor.getString(mCursor.getColumnIndexOrThrow(CHARKEYVALUES_VALUE)));
+        	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(keyColumn)),
+        					mCursor.getString(mCursor.getColumnIndexOrThrow(valueColumn)));
         }
         while(mCursor.moveToNext());
         mCursor.close();
@@ -936,7 +1051,7 @@ public class DbAdapter {
      * @throws SQLException if lesson could not be found/retrieved
      */
     public List<String> getLessonTags(long lessonId) throws SQLException {
-
+    	//TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
         Cursor mCursor =
             mDb.query(true, LESSONTAG_TABLE, new String[] {"tag"}, "_id" + "=" + lessonId, null,
                     null, null, "tag"+" ASC", null);
@@ -965,7 +1080,7 @@ public class DbAdapter {
      * @throws SQLException if word could not be found/retrieved
      */
     public List<String> getWordTags(long wordId) throws SQLException {
-
+    	//TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
         Cursor mCursor =
 
             mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_TAG}, WORDTAG_ROWID + "=" + wordId, null,

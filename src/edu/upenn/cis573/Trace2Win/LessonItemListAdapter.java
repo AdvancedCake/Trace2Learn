@@ -54,6 +54,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		switch (item.getItemType())
 		{
 		case CHARACTER:
+		case WORD:
 			Map<String, String> keyValues = item.getKeyValues();
 			StringBuilder sb = new StringBuilder();
 	    	for (Map.Entry<String, String> entry : keyValues.entrySet()) {
@@ -62,7 +63,6 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 	    	String s = sb.length()>0 ? sb.substring(2) : "";
 	    	text.setText(s);
 			break;
-		case WORD:
 		case LESSON:
 			text.setText(item.getPrivateTag());
 			break;		

@@ -71,13 +71,13 @@ public class TagActivity extends Activity {
         switch(type)
         {
         case CHARACTER:
+        case WORD:
         	setContentView(R.layout.id_and_tag);
         	id_lv = (ListView) findViewById(R.id.id_list);
         	keyEntry = (EditText) findViewById(R.id.editkey);
         	valueEntry = (EditText) findViewById(R.id.editvalue);
         	addIdButton = (Button) findViewById(R.id.add_key_value_pair_button);
         	break;
-        case WORD:
         case LESSON:
         	setContentView(R.layout.tag);
         	break;
@@ -98,19 +98,6 @@ public class TagActivity extends Activity {
         {
             case CHARACTER:
                 currentTags = mDbHelper.getCharacterTags(id);
-                currentKeys = new ArrayList<String>();
-                currentKeyVals = new ArrayList<String>();
-                keyValMap = mDbHelper.getCharKeyValues(id);
-                for(String key: keyValMap.keySet()){
-                	currentKeys.add(key);
-                	currentKeyVals.add(key + ": " + keyValMap.get(key));
-                }
-                idArrAdapter = new ArrayAdapter<String>(this, 
-                        android.R.layout.simple_list_item_1, currentKeyVals);
-                idArrAdapter.notifyDataSetChanged();
-                id_lv.setAdapter(idArrAdapter);
-                id_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-                registerForContextMenu(id_lv);
                 break;
             case WORD:
                 currentTags = mDbHelper.getWordTags(id);
@@ -120,6 +107,28 @@ public class TagActivity extends Activity {
                 break;
             default:
                 Log.e("Tag", "Unsupported Type");
+        }
+        
+        switch(type)
+        {
+        case CHARACTER:
+        case WORD:
+        	currentKeys = new ArrayList<String>();
+        	currentKeyVals = new ArrayList<String>();
+        	keyValMap = mDbHelper.getKeyValues(id, type);
+        	for(String key: keyValMap.keySet()){
+        		currentKeys.add(key);
+        		currentKeyVals.add(key + ": " + keyValMap.get(key));
+        	}
+        	idArrAdapter = new ArrayAdapter<String>(this, 
+        			android.R.layout.simple_list_item_1, currentKeyVals);
+        	idArrAdapter.notifyDataSetChanged();
+        	id_lv.setAdapter(idArrAdapter);
+        	id_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        	registerForContextMenu(id_lv);
+        	break;
+        default:
+        	break;
         }
 
         //Populate the ListView
@@ -159,19 +168,19 @@ public class TagActivity extends Activity {
             {
                 case CHARACTER:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteCharKeyValue(id,'"' + currentKeys.get(info.position) + '"');
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, type, '"' + currentKeys.get(info.position) + '"');
                     }
                     else {
                         isSqlQuerySuccessful = mDbHelper.deleteTag(id,'"' + selectedItem + '"');
                     }
                     break;
                 case WORD:
-//                    if (isPrivateTag) {
-//                        isSqlQuerySuccessful = (mDbHelper.updatePrivateWordTag(id, "") > 0);
-//                    }
-//                    else {
-                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedItem + '"');
-//                    }
+	                	if (isID) {
+	                		isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, type, '"' + currentKeys.get(info.position) + '"');
+	                	}
+	                	else {
+	                		isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedItem + '"');
+	                	}
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");
@@ -357,17 +366,18 @@ public class TagActivity extends Activity {
             }
     		
     		//what do we do about other types?
-    		if (type == ItemType.CHARACTER)
+    		if (type == ItemType.CHARACTER
+    			|| type == ItemType.WORD)
     		{
-    			mDbHelper.createCharKeyValue(id, keyInput, valueInput); //added it to db
+    			mDbHelper.createKeyValue(id, type, keyInput, valueInput); //added it to db
+        		keyValMap.put(keyInput, valueInput);
+        		currentKeys.add(keyInput);
+        		currentKeyVals.add(keyInput + ": " + valueInput);
+            	idArrAdapter.notifyDataSetChanged();
+            	keyEntry.setText("");			
+            	valueEntry.setText("");
+            	isChanged = true;
     		}
-    		keyValMap.put(keyInput, valueInput);
-    		currentKeys.add(keyInput);
-    		currentKeyVals.add(keyInput + ": " + valueInput);
-        	idArrAdapter.notifyDataSetChanged();
-        	keyEntry.setText("");			
-        	valueEntry.setText("");
-        	isChanged = true;
     	}
     }
     private final void showToast(String msg){

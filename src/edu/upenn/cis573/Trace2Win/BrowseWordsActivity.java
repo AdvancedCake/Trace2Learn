@@ -68,7 +68,6 @@ public class BrowseWordsActivity extends ListActivity {
             List<Long> ids = dba.getAllWordIds();
             for(long id : ids){
                 LessonItem word = dba.getWordById(id);
-                word.setTagList(dba.getWordTags(id));
                 items.add(word);
             }
             Collections.sort(items);
