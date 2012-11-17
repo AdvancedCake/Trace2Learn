@@ -3,7 +3,6 @@ package edu.upenn.cis573.Trace2Win;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 
 public class CharacterDisplayPane extends CharacterViewPane {
 

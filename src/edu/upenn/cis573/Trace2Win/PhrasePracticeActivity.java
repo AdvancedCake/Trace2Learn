@@ -110,8 +110,8 @@ public class PhrasePracticeActivity extends Activity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("wordId")) 
 		{
-			setWord(_dbHelper.getWordById(bun.getLong("wordId")));
 			wordId = bun.getLong("wordId");
+            setWord(_dbHelper.getWordById(wordId));
 			updateTags();
 			
 			_lessonID = bun.getLong("lessonID");

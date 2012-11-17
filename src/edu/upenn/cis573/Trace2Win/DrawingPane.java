@@ -2,7 +2,6 @@ package edu.upenn.cis573.Trace2Win;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 import android.graphics.Path;
 import android.view.MotionEvent;
 

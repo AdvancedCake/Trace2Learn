@@ -5,7 +5,6 @@ import edu.upenn.cis573.Trace2Win.Database.Stroke;
 
 import android.content.Context;
 import android.graphics.Canvas;
-import android.graphics.Paint;
 
 public class CharacterCreationPane extends DrawingPane {
 

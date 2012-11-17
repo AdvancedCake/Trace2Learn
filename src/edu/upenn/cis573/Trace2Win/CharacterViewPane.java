@@ -3,8 +3,6 @@
  */
 package edu.upenn.cis573.Trace2Win;
 
-import java.util.List;
-
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.Stroke;
 import android.content.Context;

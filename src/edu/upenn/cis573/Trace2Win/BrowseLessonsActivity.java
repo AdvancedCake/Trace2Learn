@@ -5,41 +5,24 @@ import java.util.List;
 
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
-import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
-import edu.upenn.cis573.Trace2Win.Database.LessonWord;
-import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
-import android.widget.Gallery;
 import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class BrowseLessonsActivity extends ListActivity {
-	private View layout;
-	private PopupWindow window;
-	private ListView list, lessonList; //list of words to display in listview
-
 	private Lesson le;
 	private DbAdapter dba; 
 	private ArrayList<Lesson> items;
@@ -53,8 +36,6 @@ public class BrowseLessonsActivity extends ListActivity {
         setContentView(R.layout.browse_lessons);
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
-        
-        list = (ListView)findViewById(R.id.tag_list);
         
         items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
         List<Long> ids = dba.getAllLessonIds();
@@ -87,11 +68,10 @@ public class BrowseLessonsActivity extends ListActivity {
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)menuInfo;
 	    menu.setHeaderTitle("Options");
 	    String[] menuItems = {"Delete"};
 	    for (int i = 0; i<menuItems.length; i++) {
-	      menu.add(Menu.NONE, i, i, menuItems[i]);
+	        menu.add(Menu.NONE, i, i, menuItems[i]);
 	    }
 	}
 

@@ -125,7 +125,7 @@ public class BrowseCharactersActivity extends ListActivity {
 		  long result = dba.deleteCharacter(id);
 		  Log.e("Result", Long.toString(result));
 		  if(result < 0){
-			  showToast("Character is used by a phrase: cannot delete");
+			  showToast("Character is used by a word: cannot delete");
 			  return false;
 		  }
 		  else{

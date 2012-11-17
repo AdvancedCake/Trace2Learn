@@ -2,11 +2,8 @@ package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;

@@ -1,7 +1,5 @@
 package edu.upenn.cis573.Trace2Win;
 
-import java.util.List;
-
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;

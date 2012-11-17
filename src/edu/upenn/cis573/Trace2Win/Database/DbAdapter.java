@@ -1,7 +1,6 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -952,7 +951,8 @@ public class DbAdapter {
      * @return Map of (Key,Value) pairs, or null if the given item is not supported.
      * @throws SQLException if the item could not be found/retrieved
      */
-    public Map<String, String> getKeyValues(long itemId, LessonItem.ItemType itemType) throws SQLException {
+    public LinkedHashMap<String, String> getKeyValues(long itemId, 
+            LessonItem.ItemType itemType) throws SQLException {
     	String table = ""; 
     	String keyColumn = ""; 
     	String valueColumn = ""; 
