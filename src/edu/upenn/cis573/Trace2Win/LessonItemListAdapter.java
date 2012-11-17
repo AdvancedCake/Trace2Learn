@@ -1,6 +1,7 @@
 package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -53,9 +54,9 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		// text
 		switch (item.getItemType())
 		{
-		case CHARACTER:
-		case WORD:
-			Map<String, String> keyValues = item.getKeyValues();
+                case CHARACTER:
+                case WORD:
+                        LinkedHashMap<String, String> keyValues = item.getKeyValues();
 			StringBuilder sb = new StringBuilder();
 	    	for (Map.Entry<String, String> entry : keyValues.entrySet()) {
 	    		sb.append(", " + entry.getKey() + ": " + entry.getValue());

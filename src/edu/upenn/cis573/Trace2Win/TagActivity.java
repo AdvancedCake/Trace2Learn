@@ -24,13 +24,12 @@ import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
 public class TagActivity extends Activity {
 
-    //private final String PRIVATE_PREFIX = "Private: ";
     private static final String[] menuItems = { "Move Up",
-        "Move Down",
-    "Delete"};
+                                                "Move Down",
+                                                "Delete"};
     private static enum menuItemsInd { MoveUp,
-        MoveDown,
-        Delete }
+                                       MoveDown,
+                                       Delete }
     private static final String TagDeleteSuccessMsg = "Deleted the tag successfully.";
     private static final String TagDeleteErrorMsg = "Failed to delete the tag.";
 
@@ -128,6 +127,7 @@ public class TagActivity extends Activity {
         	registerForContextMenu(id_lv);
         	break;
         default:
+                Log.e("Tag", "Unsupported Type");
         	break;
         }
 
@@ -158,9 +158,9 @@ public class TagActivity extends Activity {
         ListView view = (ListView)info.targetView.getParent();
         Log.d("Tag", view.toString());
         int menuItemIndex = item.getItemId();
+        boolean isID = view == id_lv; // true is ID, otherwise it's a tag
         if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
             String selectedItem = (String)view.getItemAtPosition(info.position);
-            boolean isID = view == id_lv;//selectedTag.regionMatches(0, PRIVATE_PREFIX, 0, PRIVATE_PREFIX.length())
             
             boolean isSqlQuerySuccessful = false;
 
@@ -175,12 +175,12 @@ public class TagActivity extends Activity {
                     }
                     break;
                 case WORD:
-	                	if (isID) {
-	                		isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, type, '"' + currentKeys.get(info.position) + '"');
-	                	}
-	                	else {
-	                		isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedItem + '"');
-	                	}
+                    if (isID) {
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, type, '"' + currentKeys.get(info.position) + '"');
+                    }
+                    else {
+                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedItem + '"');
+                    }
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");
@@ -209,11 +209,6 @@ public class TagActivity extends Activity {
                 menuItemIndex == menuItemsInd.MoveDown.ordinal()) {
             // going to swap sort values with the item above or below
 
-            //if (info.position == 0) { // this is the private tag
-            //    showToast("Cannot move the private tag");
-            //    return false;
-            //}
-
             // need to get other item
             int otherPos;
             if (menuItemIndex == menuItemsInd.MoveUp.ordinal()) {
@@ -222,25 +217,24 @@ public class TagActivity extends Activity {
                 otherPos = info.position + 1;
             }
 
-            // check that item exists
-            if (otherPos < 1) { // Private tag is item 0
-                showToast("Cannot move this tag up");
-                return false;
-            } else if (otherPos >= currentTags.size()) {
-                showToast("Cannot move this tag down");
-                return false;
-            }
-
-            String tag   = (String) tag_lv.getItemAtPosition(info.position);
-            String other = (String) currentTags.get(otherPos);
             String table = null;
 
             switch(type) {
                 case CHARACTER:
-                    table = DbAdapter.CHARTAG_TABLE;
+                    if (isID) {
+                        table = DbAdapter.CHARKEYVALUES_TABLE;
+                    } else { // it's a tag
+                        table = DbAdapter.CHARTAG_TABLE;
+                    }
                     break;
                 case WORD:
-                    table = DbAdapter.WORDTAG_TABLE;
+                    if (isID) {
+//                        table = DbAdapter.WORDKEYVALUES_TABLE;
+                        // TODO implement for words.
+                        return false;
+                    } else { // it's a tag
+                        table = DbAdapter.WORDTAG_TABLE;
+                    }
                     break;
                 case LESSON:
                     table = DbAdapter.LESSONTAG_TABLE;
@@ -250,28 +244,84 @@ public class TagActivity extends Activity {
                     return false;
             }
 
-            boolean result = mDbHelper.swapTags(table, id, tag, other);
-            Log.e("Move result", Boolean.toString(result));
-            if (!result) {
-                showToast("Move failed");
-                return false;
+            boolean result = false;
+            if (isID) {
+                // check that item exists
+                if (otherPos < 0) {
+                    showToast("Cannot move this ID up");
+                    return false;
+                } else if (otherPos >= currentKeys.size()) {
+                    showToast("Cannot move this ID down");
+                    return false;
+                }
+                
+                String key   = currentKeys.get(info.position);
+                String other = currentKeys.get(otherPos);
+                
+                result = mDbHelper.swapKeyValues(table, id, key, other);
+                
+                Log.e("Move result", Boolean.toString(result));
+                if (!result) {
+                    showToast("Move failed");
+                    return false;
+                }
+                
+                // success, so update the local copy
+                String[] kArr  = new String[currentKeys.size()];
+                String[] kvArr = new String[currentKeyVals.size()];
+                kArr  = currentKeys.toArray(kArr);
+                kvArr = currentKeyVals.toArray(kvArr);
+                
+                int keyIndex   = currentKeys.indexOf(key);
+                int otherIndex = currentKeys.indexOf(other);
+                String temp      = kArr[keyIndex];
+                kArr[keyIndex]   = kArr[otherIndex];
+                kArr[otherIndex] = temp;
+                temp              = kvArr[keyIndex];
+                kvArr[keyIndex]   = kvArr[otherIndex];
+                kvArr[otherIndex] = temp;
+                
+                currentKeys = new ArrayList<String>(Arrays.asList(kArr));
+                currentKeyVals = new ArrayList<String>(Arrays.asList(kvArr));
+                idArrAdapter = new ArrayAdapter<String>(this, 
+                        android.R.layout.simple_list_item_1, currentKeyVals);
+                id_lv.setAdapter(idArrAdapter);
+            } else {
+                // check that item exists
+                if (otherPos < 0) {
+                    showToast("Cannot move this tag up");
+                    return false;
+                } else if (otherPos >= currentTags.size()) {
+                    showToast("Cannot move this tag down");
+                    return false;
+                }
+                
+                String tag   = currentTags.get(info.position);
+                String other = currentTags.get(otherPos);
+                result = mDbHelper.swapTags(table, id, tag, other);
+                
+                Log.e("Move result", Boolean.toString(result));
+                if (!result) {
+                    showToast("Move failed");
+                    return false;
+                }
+                
+                // success, so update the local copy
+                String[] arr = new String[currentTags.size()];
+                arr = currentTags.toArray(arr);
+
+                int tagIndex = currentTags.indexOf(tag);
+                int otherIndex = currentTags.indexOf(other);
+                String temp = arr[tagIndex];
+                arr[tagIndex] = arr[otherIndex];
+                arr[otherIndex] = temp;
+
+                currentTags = new ArrayList<String>(Arrays.asList(arr)); 
+                tagArrAdapter = new ArrayAdapter<String>(this, 
+                        android.R.layout.simple_list_item_1, currentTags);
+                tag_lv.setAdapter(tagArrAdapter);
             }
-            //TODO add ids
-            // update local copy
-            // success, so update the local copy
-            String[] arr = new String[currentTags.size()];
-            arr = currentTags.toArray(arr);
-
-            int tagIndex = currentTags.indexOf(tag);
-            int otherIndex = currentTags.indexOf(other);
-            String temp = arr[tagIndex];
-            arr[tagIndex] = arr[otherIndex];
-            arr[otherIndex] = temp;
-
-            currentTags = new ArrayList<String>(Arrays.asList(arr)); 
-            tagArrAdapter = new ArrayAdapter<String>(this, 
-                    android.R.layout.simple_list_item_1, currentTags);
-            tag_lv.setAdapter(tagArrAdapter);
+            
             isChanged = true;
             return true;
         }
@@ -360,23 +410,24 @@ public class TagActivity extends Activity {
     		if (keyInput.length() == 0 || valueInput.length() == 0) return;		
     		
     		// check duplicate tag
-            if (keyValMap.get(keyInput)!=null) {
-                showToast("Tag already exists");
+            if (keyValMap.get(keyInput) != null) {
+                showToast("Key already exists");
                 return;
             }
     		
-    		//what do we do about other types?
+    		// what do we do about other types?
     		if (type == ItemType.CHARACTER
     			|| type == ItemType.WORD)
     		{
-    			mDbHelper.createKeyValue(id, type, keyInput, valueInput); //added it to db
+    			mDbHelper.createKeyValue(id, type, keyInput, valueInput);
+    			// added it to db
         		keyValMap.put(keyInput, valueInput);
         		currentKeys.add(keyInput);
         		currentKeyVals.add(keyInput + ": " + valueInput);
-            	idArrAdapter.notifyDataSetChanged();
-            	keyEntry.setText("");			
-            	valueEntry.setText("");
-            	isChanged = true;
+                        idArrAdapter.notifyDataSetChanged();
+                        keyEntry.setText("");			
+            	        valueEntry.setText("");
+            	        isChanged = true;
     		}
     	}
     }

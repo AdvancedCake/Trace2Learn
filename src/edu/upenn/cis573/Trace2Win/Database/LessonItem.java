@@ -3,6 +3,7 @@ package edu.upenn.cis573.Trace2Win.Database;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +21,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected List<String> _tags;
 	
 	/** The (Key, Value) cache */
-	protected Map<String, String> _keyValues;
+	protected LinkedHashMap<String, String> _keyValues;
 	
 	/** The id of the item */
 	protected long _id;
@@ -51,7 +52,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	{
 		_id = -1;
 		_tags = new ArrayList<String>();
-		_keyValues = new HashMap<String, String>();
+		_keyValues = new LinkedHashMap<String, String>();
 		
 		_lastUpdate = new Date(0);
 	}
@@ -126,7 +127,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		_tags.addAll(tags);
 	}
 	
-	public void setKeyValues(Map<String, String> keyValues){
+	public void setKeyValues(LinkedHashMap<String, String> keyValues){
 		_keyValues.putAll(keyValues);
 	}	
 	
@@ -207,9 +208,9 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		_keyValues.put(key, value);
 	}	
 	
-	public synchronized Map<String, String> getKeyValues()
+	public synchronized LinkedHashMap<String, String> getKeyValues()
 	{
-		return new HashMap<String, String>(_keyValues);
+		return new LinkedHashMap<String, String>(_keyValues);
 	}	
 	
 	/** 

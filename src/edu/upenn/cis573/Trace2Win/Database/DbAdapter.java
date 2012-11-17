@@ -2,6 +2,7 @@ package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -337,7 +338,7 @@ public class DbAdapter {
      * @return rowId or -1 if failed
      */
     public long createKeyValue(long id, LessonItem.ItemType itemType, 
-    								String key, String value) {
+                               String key, String value) {
     	String table = "";
     	String rowId = "";
     	String keyColumn = "";
@@ -359,8 +360,9 @@ public class DbAdapter {
     	default:
     		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
     		return -1;
-    	}    	
+    	}
     	
+    	// find new sort value
         Cursor cur = mDb.query(table, new String[] {"sort"}, 
                                "_id=" + id, null, null, null, "sort DESC", "1");
         int sort = 1;
@@ -382,7 +384,7 @@ public class DbAdapter {
         initialValues.put("sort", sort);
 
         return mDb.insert(table, null, initialValues);
-    }          
+    }
 
     /**
      * Delete the tag with the given rowId and tag
@@ -816,7 +818,7 @@ public class DbAdapter {
     		}
     	}
     	
-    	// if the given character has keyValues, copy them
+    	// if the given word has keyValues, copy them
     	for (Map.Entry<String, String> entry : w.getKeyValues().entrySet()) {
     		if (-1 == createKeyValue(id, w.getItemType(), entry.getKey(), entry.getValue())) {
         		Log.e(CHAR_TABLE, 
@@ -920,7 +922,7 @@ public class DbAdapter {
      * @throws SQLException if character could not be found/retrieved
      */
     public List<String> getCharacterTags(long charId) throws SQLException {
-    	//TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
+        //TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
         Cursor mCursor =
             mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_TAG}, CHARTAG_ROWID + "=" + charId, null,
                     null, null, "sort ASC", null);
@@ -950,7 +952,7 @@ public class DbAdapter {
      * @return Map of (Key,Value) pairs, or null if the given item is not supported.
      * @throws SQLException if the item could not be found/retrieved
      */
-    public Map<String, String> getKeyValues(long itemId, LessonItem.ItemType itemType) throws SQLException {    	
+    public Map<String, String> getKeyValues(long itemId, LessonItem.ItemType itemType) throws SQLException {
     	String table = ""; 
     	String keyColumn = ""; 
     	String valueColumn = ""; 
@@ -978,7 +980,7 @@ public class DbAdapter {
         Cursor mCursor =
             mDb.query(true, table, new String[] {keyColumn, valueColumn}, rowId + "=" + itemId, null,
                     null, null, orderBy, null);
-        Map<String, String> keyValues = new HashMap<String, String>();
+        LinkedHashMap<String, String> keyValues = new LinkedHashMap<String, String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -987,7 +989,7 @@ public class DbAdapter {
         		break;
         	}
         	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(keyColumn)),
-        					mCursor.getString(mCursor.getColumnIndexOrThrow(valueColumn)));
+                              mCursor.getString(mCursor.getColumnIndexOrThrow(valueColumn)));
         }
         while(mCursor.moveToNext());
         mCursor.close();
@@ -1580,14 +1582,14 @@ public class DbAdapter {
     /**
      * Swaps the display order of the two tags for the given item
      * @param table the table containing the tags
-     * @param id the id of the items associated with the tags
+     * @param id the id of the item associated with the tags
      * @param a the first tag
      * @param b the second tag
      * @return
      */
     public boolean swapTags(String table, long id, String a, String b) {
-        String idCol   = "_id";
-        String tagCol  = "tag";
+        String idCol    = "_id";
+        String tagCol   = "tag";
         String orderCol = "sort";
         
         // get sort values for a and b
@@ -1605,7 +1607,7 @@ public class DbAdapter {
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
             cur.moveToNext();
             bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
-        } else { // word B is first
+        } else { // tag B is first
             bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
             cur.moveToNext();
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
@@ -1646,6 +1648,84 @@ public class DbAdapter {
         mDb.endTransaction();
         return true;
     }
+    
+    /**
+     * Swaps the display order of the two IDs for the given item
+     * @param table the table containing the Key-Value pairs
+     * @param id the id of the item associated with the tags
+     * @param aKey the first key
+     * @param bKey the second key
+     * @return
+     */
+    public boolean swapKeyValues(String table, long id, String aKey,
+                                 String bKey) {
+        String idCol    = "_id";
+        String keyCol   = "key";
+        String valCol   = "value";
+        String orderCol = "sort";
+        
+        // get sorts and values for a and b
+        int aSort = 0, bSort = 0;
+        String aVal = "", bVal = "";
+        Cursor cur = mDb.query(true, table, new String[] {keyCol, valCol, orderCol},
+                               idCol + "=" + id + " AND (" + keyCol + "='" + aKey + "' OR " + keyCol + "='" + bKey + "')",
+                               null, null, null, null, null);
+        cur.moveToFirst();
+        if (cur.getCount() != 2) {
+            Log.e("Swapping positions", "Could not find keys in " + table);
+            return false;
+        }
+        if (cur.getString(cur.getColumnIndexOrThrow(keyCol)).equals(aKey)) {
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            aVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+            cur.moveToNext();
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            bVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+        } else { // key B is first
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            bVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+            cur.moveToNext();
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            aVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+        }
+        
+        // insert new values
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(idCol, id);
+        bValues.put(idCol, id);
+        aValues.put(keyCol, aKey);
+        bValues.put(keyCol, bKey);
+        aValues.put(valCol, aVal);
+        bValues.put(valCol, bVal);
+        aValues.put(orderCol, bSort);
+        bValues.put(orderCol, aSort);
+        Log.e("Swapping positions", aKey + " and " + bKey + " in table " + table + " item " + id);
+        
+        // update database
+        int result;
+        result = mDb.update(table,
+                            aValues, idCol + "=" + id + " AND " + keyCol + "='" + aKey + "'",
+                            null);
+        if (result != 1) {
+            Log.e(table, "id " + id + " key " + aKey + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(table,
+                            bValues, idCol + "=" + id + " AND " + keyCol + "='" + bKey + "'",
+                            null);
+        if (result != 1) {
+            Log.e(table, "id " + id + " key " + bKey + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
 
 
     /**
@@ -1660,5 +1740,5 @@ public class DbAdapter {
     		v.put("name",i.getPrivateTag());
     	else	
 		v.put("name","");
-}
+    }
 }
