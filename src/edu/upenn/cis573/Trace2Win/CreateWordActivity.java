@@ -35,6 +35,7 @@ import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 
 public class CreateWordActivity extends Activity {
@@ -218,7 +219,7 @@ public class CreateWordActivity extends Activity {
                 }
                 
                 // Filter action: query for chars and set char list
-                Cursor c = dba.getChars(search);
+                Cursor c = dba.browseByTag(ItemType.CHARACTER, search);
                 List<Long> ids = new LinkedList<Long>();
                 do {
                     if (c.getCount() == 0) {

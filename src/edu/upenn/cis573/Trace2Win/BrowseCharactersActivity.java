@@ -30,6 +30,7 @@ import android.widget.Toast;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
 public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
@@ -230,7 +231,7 @@ public class BrowseCharactersActivity extends ListActivity {
                 }
 
                 // Filter action: query for chars and set char list
-                Cursor c = dba.getChars(search);
+                Cursor c = dba.browseByTag(ItemType.CHARACTER, search);
                 List<Long> ids = new LinkedList<Long>();
                 do {
                     if (c.getCount() == 0) {

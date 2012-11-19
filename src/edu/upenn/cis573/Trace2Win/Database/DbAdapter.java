@@ -1005,24 +1005,47 @@ public class DbAdapter {
      * @return Cursor positioned to matching character, if found
      * @throws SQLException if character could not be found/retrieved
      */
-    public Cursor getChars(String tag) throws SQLException {
+    public Cursor browseByTag(ItemType type, String tag) throws SQLException {
 
         Cursor mCursor;
+        String tagsTable, tagsTableID, tagsTableTag, idTable, idTableID, idTableValue;
+        switch(type){
+        	case CHARACTER:
+        		tagsTable = CHARTAG_TABLE;
+        		tagsTableID = CHARTAG_ROWID;
+        		tagsTableTag = CHARTAG_TAG;
+        		idTable = CHARKEYVALUES_TABLE;
+        		idTableID = CHARKEYVALUES_ROWID;
+        		idTableValue = CHARKEYVALUES_VALUE;
+        		break;
+        	case WORD:
+        		tagsTable = WORDTAG_TABLE;
+        		tagsTableID = WORDTAG_ROWID;
+        		tagsTableTag = WORDTAG_TAG;
+        		idTable = WORDKEYVALUES_TABLE;
+        		idTableID = WORDKEYVALUES_ROWID;
+        		idTableValue = WORDKEYVALUES_VALUE;
+        		break;
+        	default:
+            	Log.e("Tag", "Unsupported Type");
+            	return null;
+        
+        }
         if(tag.length() < 2){
-        	mCursor = mDb.query(true, CHARTAG_TABLE + ", " + CHARKEYVALUES_TABLE, 
-        	        new String[] {CHARTAG_TABLE + "." + CHARTAG_ROWID},
-        	        CHARTAG_TABLE + "." + CHARTAG_ROWID + "=" + CHARKEYVALUES_TABLE + "." + CHARKEYVALUES_ROWID + " and (" +
-        	        CHARTAG_TAG + " LIKE '" + tag + "' or " +
-        	        CHARKEYVALUES_VALUE + " LIKE '" + tag + "')", 
-        	        null, null, null,CHARTAG_TABLE + "." + CHARTAG_ROWID + " ASC", null);
+        	mCursor = mDb.query(true, tagsTable + ", " + idTable, 
+        	        new String[] {tagsTable + "." + tagsTableID},
+        	        tagsTable + "." + tagsTableID + "=" + idTable + "." + idTableID + " and (" +
+        	        tagsTableTag + " LIKE '" + tag + "' or " +
+        	        idTableValue + " LIKE '" + tag + "')", 
+        	        null, null, null,tagsTable + "." + tagsTableID + " ASC", null);
         }
         else{
-        	mCursor = mDb.query(true, CHARTAG_TABLE + ", " + CHARKEYVALUES_TABLE, 
-        	        new String[] {CHARTAG_TABLE + "." + CHARTAG_ROWID}, 
-        	        CHARTAG_TABLE + "." + CHARTAG_ROWID + "=" + CHARKEYVALUES_TABLE + "." + CHARKEYVALUES_ROWID + " and (" +
-        	        CHARTAG_TAG + " LIKE '%" + tag + "%' or " +
-        	        CHARKEYVALUES_VALUE + " LIKE '%" + tag + "%')",
-        	        null, null, null, CHARTAG_TABLE + "." + CHARTAG_ROWID + " ASC", null);
+        	mCursor = mDb.query(true, tagsTable + ", " + idTable, 
+        	        new String[] {tagsTable + "." + tagsTableID}, 
+        	        tagsTable + "." + tagsTableID + "=" + idTable + "." + idTableID + " and (" +
+        	        tagsTableTag + " LIKE '%" + tag + "%' or " +
+        	        idTableValue + " LIKE '%" + tag + "%')",
+        	        null, null, null, tagsTable + "." + tagsTableID + " ASC", null);
         }
         if (mCursor != null) {
             mCursor.moveToFirst();
