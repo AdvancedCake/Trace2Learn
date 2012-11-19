@@ -1009,16 +1009,20 @@ public class DbAdapter {
 
         Cursor mCursor;
         if(tag.length() < 2){
-        	mCursor = mDb.query(true, CHARTAG_TABLE, 
-        	        new String[] {CHARTAG_ROWID},
-        	        CHARTAG_TAG + " LIKE '" + tag + "'", 
-        	        null, null, null, CHARTAG_ROWID + " ASC", null);
+        	mCursor = mDb.query(true, CHARTAG_TABLE + ", " + CHARKEYVALUES_TABLE, 
+        	        new String[] {CHARTAG_TABLE + "." + CHARTAG_ROWID},
+        	        CHARTAG_TABLE + "." + CHARTAG_ROWID + "=" + CHARKEYVALUES_TABLE + "." + CHARKEYVALUES_ROWID + " and (" +
+        	        CHARTAG_TAG + " LIKE '" + tag + "' or " +
+        	        CHARKEYVALUES_VALUE + " LIKE '" + tag + "')", 
+        	        null, null, null,CHARTAG_TABLE + "." + CHARTAG_ROWID + " ASC", null);
         }
         else{
-        	mCursor = mDb.query(true, CHARTAG_TABLE, 
-        	        new String[] {CHARTAG_ROWID}, 
-        	        CHARTAG_TAG + " LIKE '%" + tag + "%'", 
-        	        null, null, null, CHARTAG_ROWID + " ASC", null);
+        	mCursor = mDb.query(true, CHARTAG_TABLE + ", " + CHARKEYVALUES_TABLE, 
+        	        new String[] {CHARTAG_TABLE + "." + CHARTAG_ROWID}, 
+        	        CHARTAG_TABLE + "." + CHARTAG_ROWID + "=" + CHARKEYVALUES_TABLE + "." + CHARKEYVALUES_ROWID + " and (" +
+        	        CHARTAG_TAG + " LIKE '%" + tag + "%' or " +
+        	        CHARKEYVALUES_VALUE + " LIKE '%" + tag + "%')",
+        	        null, null, null, CHARTAG_TABLE + "." + CHARTAG_ROWID + " ASC", null);
         }
         if (mCursor != null) {
             mCursor.moveToFirst();
