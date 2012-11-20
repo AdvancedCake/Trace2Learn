@@ -30,35 +30,47 @@ Deleting or moving up/down one word in one lesson will delete or move up/down th
 
 GUI test instructions:
 
-TagActivity.onCreate(Bundle savedInstanceState): Entering the TagActivity
-TagActivity.onAddKeyValuePairButtonClick(View view): Fill in Key and Value, add Key Value, should add keyvalue to top half
-    of Screen, should clear Add Key and Add Value EditText
-TagActivity.onAddKeyValuePairButtonClick(View view): Leave at least Key or Value empty, press add (KeyValue), should not add anything to anywhere
-TagActivity.onAddTagButtonClick (View view): Fill in tag, press add button, should add tag to bottom half of Screen,
-    should clear Add Tag editText
-TagActivity.onAddTagButtonClick (View view): Leave Add Tag empty, press add button, should not add anything to anywhere
-TagActivity.onBackPressed(): Press Back button, should hide keyboard if soft keyboard is displayed, otherwise should go to previous activity
-TagActivity.onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo): Tap and hold on an ID, should display context menu with Move Up, Move Down, and Delete as options
-TagActivity.onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo): Tap and hold on an tag, should display context menu with Move Up, Move Down, and Delete as options
-TagActivity.onContextItemSelected(MenuItem item): Press Delete on context menu for ID, should remove the ID from the top list
-TagActivity.onContextItemSelected(MenuItem item): Press Delete on context menu for Tag, should remove the tag from the bottom list
-TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg): Press Move Up on context menu for ID, should swap the positions of the ID with the position
+TagActivity.onCreate(Bundle savedInstanceState)
+    Entering the TagActivity should be successful
+TagActivity.onCreate(Bundle savedInstanceState)
+    Click "edit tags" in CreaetCharacterActivityshould trigger the "edit tags" page. The page should contain some elements on the bottom, 
+    which are "add key" and "add value" checkboxes and an "add" button on the right of them, "add tags" checkbox and an "add" button on 
+    the right of it. The list should be seperated by a breakline, and the upper half should contain IDs, the lower half should contain tags.
+TagActivity.onAddKeyValuePairButtonClick(View view)
+    Fill in Key and Value, add Key Value, should add keyvalue to top half of Screen, should clear Add Key and Add Value EditText
+TagActivity.onAddKeyValuePairButtonClick(View view)
+    Leave at least Key or Value empty, press add (KeyValue), should not add anything to anywhere
+TagActivity.onAddTagButtonClick (View view)
+    Fill in tag, press add button, should add tag to bottom half of Screen, should clear Add Tag editText
+TagActivity.onAddTagButtonClick (View view)
+    Leave Add Tag empty, press add button, should not add anything to anywhere
+TagActivity.onBackPressed()
+    Press Back button, should hide keyboard if soft keyboard is displayed, otherwise should go to previous activity
+TagActivity.onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+    Tap and hold on an ID, should display context menu with Move Up, Move Down, and Delete as options
+TagActivity.onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+    Tap and hold on an tag, should display context menu with Move Up, Move Down, and Delete as options
+TagActivity.onContextItemSelected(MenuItem item)
+    Press Delete on context menu for ID, should remove the ID from the top list
+TagActivity.onContextItemSelected(MenuItem item)
+    Press Delete on context menu for Tag, should remove the tag from the bottom list
+TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg)
+    Press Move Up on context menu for ID, should swap the positions of the ID with the position
     of the ID above it, or, if it is the top-most tag, display toast saying you cannot move it
-TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg): Press Move Up on context menu for tag, should swap the positions of the ID with the position
+TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg)
+    Press Move Up on context menu for tag, should swap the positions of the ID with the position
     of the tag above it, or, if it is the top-most tag, do nothing.
-TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg): Press Move Down on context menu for ID, should swap the positions of the ID with the position
+TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg)
+    Press Move Down on context menu for ID, should swap the positions of the ID with the position
     of the ID below it, or, if it is the bottom-most tag, do nothing.
-TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg): Press Move Down on context menu for tag, should swap the positions of the ID with the position
+TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg)
+    Press Move Down on context menu for tag, should swap the positions of the ID with the position
     of the tag below it, or, if it is the bottom-most tag, do nothing.
-BrowseWordActivity.onClickFilter(View view)
-BrowseWordActivity.showFilterPopup()
+BrowseWordActivity.onClickFilter(View view), BrowseWordActivity.showFilterPopup()
     Click the filter button when browsing words, the program should pop up the checkbox for entering the filtering string.
-BrowseWordActivity.clearFilter()
-BrowseWordActivity.setWordList(List<Long> ids)
+BrowseWordActivity.clearFilter(), BrowseWordActivity.setWordList(List<Long> ids)
     After applying the searching string, the program should show the filtered list of words and the filter string and a "clear fliter" button. Click the clear filter button, the program should go back to the previous page and show all the words.
 BrowseWordActivity.hideKeyboard(View view)
     After applying the searching string, the keyboard should be hidden.
 BrowseCharacterActivity.showFilterPopup()
     Click the filter button when browsing characters, the program should pop up the checkbox for entering the filtering string.
-TagActivity.onCreate(Bundle savedInstanceState)
-    Click "edit tags" hould trigger the "edit tags" page. The page should contain some elements on the bottom, which are "add key" and "add value" checkboxes and an "add" button on the right of them, "add tags" checkbox and an "add" button on the right of it. The list should be seperated by a breakline, and the upper half shoud contain IDs, the lower half should contain tags.
