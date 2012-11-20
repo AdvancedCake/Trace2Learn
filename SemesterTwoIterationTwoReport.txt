@@ -8,10 +8,12 @@ Fix the "1 of N" behavior for viewing a char, and add the "Title: N words" label
 Filter button - Starts-with partial matches work, please also support contains, so 'ork' should match 'Worker'
 Filter button - Please match if search string length is 2, currently it needs to be 3 or longer
 Please add this Filter button to the Browse All Characters activity, and then you can remove the Search Characters activity
-Found small bug: in editing Tags, if I leave the field blank and hit 'Add' , a blank tag will be created & cannot be deleted, please add validation to prevent this.
-Please remove the <<>> from <<Lesson>> 1 of n, and please use a larger font - same larger font would be good across all the pages that have a 1-line label at the top.
-    -We increased the font size slightly (to maximum possible that still allows the text to fit on one line)
-Auto-proceed works great, but please add a 1/2 second delay after the last stroke, before moving to the next character.
+Found small bug: in editing Tags, added validation to prevent a blank
+tag from being added.
+removed the <<>> from <<Lesson>> 1 of n, and changed to a larger
+font - same larger font would be good across all the pages that have a
+1-line label at the top. (For the font, there is a little problem, I can only change the size to 15dp from the default 14 dp, otherwise the one line title will be too long)
+In auto-proceeding mode, added a 1/2 second delay after the last stroke, before moving to the next character.
 Deleting or moving up/down one word in one lesson will delete or move up/down the word in 'all words' and other lessons.
 2nd report and testing
 
