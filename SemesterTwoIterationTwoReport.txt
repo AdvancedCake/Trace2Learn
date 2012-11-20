@@ -1,0 +1,21 @@
+1) Angela Wu, Hansong Peng, Seunghoon Park, Robert Li
+2) Completed user stories:
+Change Private Tag --> IDs of type Key/Value pair
+Search by private tags (inc'l partial matching)
+Popup context menu for Delete/MoveUp/MoveDown (and explore list reordering interface)
+When displaying a char, center the public tags and remove the trailing comma
+Fix the "1 of N" behavior for viewing a char, and add the "Title: N words" label to the viewing a collection activity
+Filter button - Starts-with partial matches work, please also support contains, so 'ork' should match 'Worker'
+Filter button - Please match if search string length is 2, currently it needs to be 3 or longer
+Please add this Filter button to the Browse All Characters activity, and then you can remove the Search Characters activity
+Found small bug: in editing Tags, if I leave the field blank and hit 'Add' , a blank tag will be created & cannot be deleted, please add validation to prevent this.
+Please remove the <<>> from <<Lesson>> 1 of n, and please use a larger font - same larger font would be good across all the pages that have a 1-line label at the top.
+Auto-proceed works great, but please add a 1/2 second delay after the last stroke, before moving to the next character.
+Deleting or moving up/down one word in one lesson will delete or move up/down the word in 'all words' and other lessons.
+2nd report and testing
+
+3) Project Velocity:
+4)
+5) No known bugs
+6)
+7)
