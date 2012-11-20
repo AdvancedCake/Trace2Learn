@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
-
+import android.database.Cursor;
 import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 
 public class DbAdapterTest extends AndroidTestCase {
@@ -248,4 +249,43 @@ public class DbAdapterTest extends AndroidTestCase {
         LessonWord c1 = db.getWordById(c.getId());
         assertEquals(exp2, c1.getKeyValues());
     }	
+
+    public void testBrowseByTag(){
+    	LessonCharacter a = new LessonCharacter();
+    	LessonCharacter b = new LessonCharacter();
+    	a.addTag("A");
+    	b.addTag("B");
+    	a.addTag("English");
+    	a.addTag("Vowel");
+    	b.addTag("English");
+    	b.addTag("Consonant");
+    	a.addKeyValue("Pronunciation", "a");
+    	b.addKeyValue("Pronunciation", "batt");
+    	db.addCharacter(a);
+    	db.addCharacter(b);
+    	
+    	//Test Case: equivalence class: tag, 1 letter, character
+    	Cursor result = db.browseByTag(ItemType.CHARACTER, "A");
+    	assertEquals(1, result.getCount());
+    	assertEquals(a.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	
+    	//Test Case: equivalence class: tag, multiple character, character, case insensitive, partial match
+    	result = db.browseByTag(ItemType.CHARACTER, "SON");
+    	assertEquals(1, result.getCount());
+    	assertEquals(b.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	
+    	//Test Case: equivalence class: keyvalue, single character, character, case insensitive
+    	result = db.browseByTag(ItemType.CHARACTER, "A");
+    	assertEquals(1, result.getCount());
+    	assertEquals(a.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	
+    	//Test Case: equivalence class: keyvalue, multiple character, character, exact match
+    	result = db.browseByTag(ItemType.CHARACTER, "batt");
+    	assertEquals(1, result.getCount());
+    	assertEquals(b.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	
+    	//Need more tests for words
+    	result.close();
+    }
+
 }
