@@ -1,5 +1,7 @@
 package edu.upenn.cis573.Trace2Win.test;
 
+import java.util.HashMap;
+
 import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
@@ -18,6 +20,7 @@ public class LessonWordTest extends AndroidTestCase {
 		assertEquals(expected.getCharacterIds(), actual.getCharacterIds());
 		assertEquals(expected.getTags(), actual.getTags());
 		assertEquals(expected.getKeyValues(), actual.getKeyValues());
+		assertEquals(expected.getSort(), actual.getSort());
 	}	
 	
 	protected void setUp() throws Exception {
@@ -112,5 +115,24 @@ public class LessonWordTest extends AndroidTestCase {
 		db.addWord(w);
 		LessonWord w1 = db.getWordById(w.getId());
 		compareWords(w, w1);
+	}	
+	
+	public void testHasKeyValue()
+	{
+		LessonWord w = new LessonWord();
+		w.addKeyValue("key1", "value1");
+		db.addWord(w);
+		assertTrue(w.hasKeyValue("key1", "value1"));		
+	}	
+	
+	public void testGetKeyValues()
+	{
+		LessonWord w = new LessonWord();
+		w.addKeyValue("key1", "value1");		
+		HashMap<String, String> keyValues = w.getKeyValues();
+		
+		assertEquals(1, keyValues.size());
+		assertTrue(keyValues.containsKey("key1"));
+		assertTrue(keyValues.containsValue("value1"));
 	}	
 }

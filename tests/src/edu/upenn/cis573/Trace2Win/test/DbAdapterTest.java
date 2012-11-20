@@ -1,6 +1,7 @@
 package edu.upenn.cis573.Trace2Win.test;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -39,7 +40,7 @@ public class DbAdapterTest extends AndroidTestCase {
 
 
     // TESTS
-	public void testCreateKeyValues()
+	public void testCreateWordKeyValues()
 	{
 		LessonWord w = new LessonWord();
 		db.addWord(w);
@@ -47,7 +48,61 @@ public class DbAdapterTest extends AndroidTestCase {
 		w.addKeyValue("key1", "value1");
 		LessonWord w1 = db.getWordById(w.getId());
 		LessonWordTest.compareWords(w, w1);
-	}
+	}		
+
+	public void testCreateCharKeyValues()
+	{
+		LessonCharacter c = new LessonCharacter();
+		db.addCharacter(c);
+		db.createKeyValue(c.getId(), c.getItemType(), "key1", "value1");
+		c.addKeyValue("key1", "value1");
+		LessonCharacter c1 = db.getCharacterById(c.getId());
+		LessonCharacterTest.compareCharacters(c, c1);
+	}		
+	
+	public void testDeleteWordKeyValues()
+	{
+		LessonWord w = new LessonWord();
+		db.addWord(w);
+		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
+		db.deleteKeyValue(w.getId(), w.getItemType(), "key1");
+		LessonWord w1 = db.getWordById(w.getId());
+		LessonWordTest.compareWords(w, w1);
+	}		
+	
+	public void testDeleteCharKeyValues()
+	{
+		LessonCharacter c = new LessonCharacter();
+		db.addCharacter(c);
+		db.createKeyValue(c.getId(), c.getItemType(), "key1", "value1");
+		db.deleteKeyValue(c.getId(), c.getItemType(), "key1");
+		LessonCharacter c1 = db.getCharacterById(c.getId());
+		LessonCharacterTest.compareCharacters(c, c1);
+	}	
+	
+	public void testGetWordKeyValues()
+	{
+		LessonWord w = new LessonWord();
+		db.addWord(w);
+		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
+		HashMap<String, String> keyValues = db.getKeyValues(w.getId(), w.getItemType());
+		
+		assertEquals(1, keyValues.size());
+		assertTrue(keyValues.containsKey("key1"));
+		assertTrue(keyValues.containsValue("value1"));
+	}		
+	
+	public void testGetCharKeyValues()
+	{
+		LessonCharacter c = new LessonCharacter();
+		db.addCharacter(c);
+		db.createKeyValue(c.getId(), c.getItemType(), "key1", "value1");
+		HashMap<String, String> keyValues = db.getKeyValues(c.getId(), c.getItemType());
+		
+		assertEquals(1, keyValues.size());
+		assertTrue(keyValues.containsKey("key1"));
+		assertTrue(keyValues.containsValue("value1"));
+	}	
 
     public void testSwapCharacters() {
         LessonCharacter a = new LessonCharacter();
@@ -192,6 +247,5 @@ public class DbAdapterTest extends AndroidTestCase {
         
         LessonWord c1 = db.getWordById(c.getId());
         assertEquals(exp2, c1.getKeyValues());
-    }
-
+    }	
 }

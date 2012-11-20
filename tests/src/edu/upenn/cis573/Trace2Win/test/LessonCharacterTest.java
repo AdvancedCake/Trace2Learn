@@ -1,5 +1,7 @@
 package edu.upenn.cis573.Trace2Win.test;
 
+import java.util.HashMap;
+
 import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
@@ -191,4 +193,23 @@ public class LessonCharacterTest extends AndroidTestCase {
 		LessonCharacter c1 = db.getCharacterById(c.getId());
 		compareCharacters(c, c1);
 	}	
+	
+	public void testHasKeyValue()
+	{
+		LessonCharacter c = new LessonCharacter();
+		c.addKeyValue("key1", "value1");
+		db.addCharacter(c);
+		assertTrue(c.hasKeyValue("key1", "value1"));		
+	}
+
+	public void testGetKeyValues()
+	{
+		LessonCharacter c = new LessonCharacter();
+		c.addKeyValue("key1", "value1");		
+		HashMap<String, String> keyValues = c.getKeyValues();
+		
+		assertEquals(1, keyValues.size());
+		assertTrue(keyValues.containsKey("key1"));
+		assertTrue(keyValues.containsValue("value1"));
+	}		
 }

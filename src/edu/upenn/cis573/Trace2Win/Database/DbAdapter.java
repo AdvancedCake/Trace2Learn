@@ -434,7 +434,7 @@ public class DbAdapter {
     		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
     		return false;
     	}    	
-        return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn+"="+key, null) > 0;
+        return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn+"='"+key+"'", null) > 0;
     }      
 
     /**
