@@ -11,7 +11,7 @@ public class LessonWordTest extends AndroidTestCase {
 	LessonCharacter c1, c2, c3;
 	private DbAdapter db;
 	
-	public void compareWords(LessonWord expected, LessonWord actual)
+	static public void compareWords(LessonWord expected, LessonWord actual)
 	{
 		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.getItemType(), actual.getItemType());
@@ -113,14 +113,4 @@ public class LessonWordTest extends AndroidTestCase {
 		LessonWord w1 = db.getWordById(w.getId());
 		compareWords(w, w1);
 	}	
-	
-	public void testCreateKeyValues()
-	{
-		LessonWord w = new LessonWord();
-		db.addWord(w);
-		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
-		w.addKeyValue("key1", "value1");
-		LessonWord w1 = db.getWordById(w.getId());
-		compareWords(w, w1);
-	}		
 }

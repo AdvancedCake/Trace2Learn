@@ -46,13 +46,14 @@ public class LessonCharacterTest extends AndroidTestCase {
 		dumpDBs();
 	}
 	
-	public void compareCharacters(LessonCharacter expected, LessonCharacter actual)
+	static public void compareCharacters(LessonCharacter expected, LessonCharacter actual)
 	{
 		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.getNumStrokes(), actual.getNumStrokes());
 		assertEquals(expected.getItemType(), actual.getItemType());
 		assertEquals(expected.getTags(), actual.getTags());
 		assertEquals(expected.getKeyValues(), actual.getKeyValues());
+		assertEquals(expected.getSort(), actual.getSort());
 	}
 	
 	public void testNoStrokes()

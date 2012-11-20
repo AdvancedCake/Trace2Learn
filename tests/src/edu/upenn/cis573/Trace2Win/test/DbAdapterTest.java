@@ -4,6 +4,7 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 
 public class DbAdapterTest extends AndroidTestCase {
 
@@ -30,17 +31,16 @@ public class DbAdapterTest extends AndroidTestCase {
         }
     }
 
-    protected void compareCharacters(LessonCharacter expected, LessonCharacter actual)
-    {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getNumStrokes(), actual.getNumStrokes());
-        assertEquals(expected.getItemType(), actual.getItemType());
-        assertEquals(expected.getTags(), actual.getTags());
-        assertEquals(expected.getKeyValues(), actual.getKeyValues());
-    }
-
 
     // TESTS
-
+	public void testCreateKeyValues()
+	{
+		LessonWord w = new LessonWord();
+		db.addWord(w);
+		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
+		w.addKeyValue("key1", "value1");
+		LessonWord w1 = db.getWordById(w.getId());
+		LessonWordTest.compareWords(w, w1);
+	}		
 
 }
