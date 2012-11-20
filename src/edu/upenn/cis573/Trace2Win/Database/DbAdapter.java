@@ -496,7 +496,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
-    	//TODO remove this line initializePrivateTag(c, initialCharValues);
+    	initializePrivateTag(c, initialCharValues);
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
@@ -790,7 +790,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
-    	//TODO remove this line initializePrivateTag(w, initialWordsValues);
+    	initializePrivateTag(w, initialWordsValues);
     	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
     	if(id == -1)
     	{
@@ -881,7 +881,37 @@ public class DbAdapter {
 
 		 return id;
     }
+    
+    public String getPrivateTag(long id, ItemType type)
+    {
+    	String tableName;
+    	switch(type)
+    	{
+    	case CHARACTER:
+    		tableName=CHAR_TABLE;
+    		break;
+    	case WORD:
+    		tableName=WORDS_TABLE;
+    		break;
+    	case LESSON:
+    		tableName=LESSONS_TABLE;
+    		break;
+    	default:
+    		Log.e("Tag", "Unsupported Type");
+    		return "";
+    	}
+    	Cursor mCursor =
+    			mDb.query(true, tableName, new String[] {"_id","name"}, "_id=" + id, null,
+    					null, null, null, null);
+    	if (mCursor != null) {
+    		mCursor.moveToFirst();
+        	String ret = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+            mCursor.close();
+            return ret;
+    	}
 
+    	return "";
+    }
     
     /**
      * Return a List of tags that matches the given character's charId
@@ -1160,6 +1190,36 @@ public class DbAdapter {
         return mCursor;
     }
     
+    /**
+     * Updates a private tag for a character. 
+     * 
+     * @param id row id for a character
+     * @param tag the text of the tag to add
+     * @return number of rows that were affected, 0 on no rows affected
+     */
+    public long updatePrivateTag(long id, String tag){
+    	ContentValues initialValues = new ContentValues();
+        initialValues.put(CHAR_ROWID, id);
+        initialValues.put("name", tag);
+        Log.e("Adding Private Tag",tag);
+        return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID + "=" + id, 
+                null);
+    }
+    
+    /**
+     * Updates a private tag for a word. Returns row id on 
+     * 
+     * @param id row id for a word
+     * @param tag the text of the tag to add
+     * @return number of rows that were affected, 0 on no rows affected
+     */
+    public long updatePrivateWordTag(long id, String tag){
+    	ContentValues initialValues = new ContentValues();
+        //initialValues.put(CHAR_ROWID, id);
+        initialValues.put("name", tag);
+
+        return mDb.update(WORDS_TABLE, initialValues, "_id="+id,null);
+    }
     
     /**
      * Return a list of word ids from the database
@@ -1251,7 +1311,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialLessonValues = new ContentValues();
-    	//TODO remove this line initializePrivateTag(les,initialLessonValues);
+    	initializePrivateTag(les,initialLessonValues);
     	long id = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
     	if(id == -1)
     	{
@@ -1692,5 +1752,20 @@ public class DbAdapter {
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;
+    }
+
+
+    /**
+     * Initializes a private tag
+     * 
+     * @param i the LessonItem
+     * @param v ContentValues
+     */
+    private void initializePrivateTag(LessonItem i, ContentValues v)
+    {
+    	if(i.getPrivateTag() != null)
+    		v.put("name",i.getPrivateTag());
+    	else	
+		v.put("name","");
     }
 }
