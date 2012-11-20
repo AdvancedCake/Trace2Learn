@@ -27,3 +27,26 @@ Deleting or moving up/down one word in one lesson will delete or move up/down th
     PhrasePracticeActivity.setDisplayPane() : private method
     All other methods: unchanged or GUI based
 7)  none
+
+GUI test instructions:
+
+TagActivity
+Fill in Key and Value, add Key Value, should add keyvalue to top half
+    of Screen, should clear Add Key and Add Value EditText
+Leave at least Key or Value empty, press add (KeyValue), should not add anything to anywhere
+Fill in tag, press add button, should add tag to bottom half of Screen,
+    should clear Add Tag editText
+Leave Add Tag empty, press add button, should not add anything to anywhere
+Press Back button, should hide keyboard if soft keyboard is displayed, otherwise should go to previous activity
+Tap and hold on an ID, should display context menu with Move Up, Move Down, and Delete as options
+Tap and hold on an tag, should display context menu with Move Up, Move Down, and Delete as options
+Press Delete on context menu for ID, should remove the ID from the top list
+Press Delete on context menu for Tag, should remove the tag from the bottom list
+Press Move Up on context menu for ID, should swap the positions of the ID with the position
+    of the ID above it, or, if it is the top-most tag, do nothing.
+Press Move Up on context menu for tag, should swap the positions of the ID with the position
+    of the tag above it, or, if it is the top-most tag, do nothing.
+Press Move Down on context menu for ID, should swap the positions of the ID with the position
+    of the ID below it, or, if it is the bottom-most tag, do nothing.
+Press Move Down on context menu for tag, should swap the positions of the ID with the position
+    of the tag below it, or, if it is the bottom-most tag, do nothing.
