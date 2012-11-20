@@ -1542,7 +1542,7 @@ public class DbAdapter {
      * @param lessonId the lesson ID of the two words
      * @param aId the first word ID
      * @param bId the second word ID
-     * @return
+     * @return true if the transaction was successful, false otherwise
      */
     public boolean swapWordsInLesson(long lessonId, long aId, long bId) {
         String wordCol  = "WordId";

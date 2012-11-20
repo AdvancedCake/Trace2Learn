@@ -229,9 +229,7 @@ public class TagActivity extends Activity {
                     break;
                 case WORD:
                     if (isID) {
-//                        table = DbAdapter.WORDKEYVALUES_TABLE;
-                        // TODO implement for words.
-                        return false;
+                        table = DbAdapter.WORDKEYVALUES_TABLE;
                     } else { // it's a tag
                         table = DbAdapter.WORDTAG_TABLE;
                     }
