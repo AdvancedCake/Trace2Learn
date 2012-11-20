@@ -16,6 +16,6 @@ Deleting or moving up/down one word in one lesson will delete or move up/down th
 
 3) Project Velocity:
 4)
-5) No known bugs
+5) When updating characters' tags and ids, the word version of the character is not updated. We did not have time to fix this
 6)
 7)
