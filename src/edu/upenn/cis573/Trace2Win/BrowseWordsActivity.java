@@ -3,16 +3,21 @@ package edu.upenn.cis573.Trace2Win;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,9 +25,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
@@ -30,8 +37,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;
@@ -41,6 +50,10 @@ public class BrowseWordsActivity extends ListActivity {
     private PopupWindow window;
     private LessonWord lw;
     private long lessonID;
+    
+    private boolean filtered;
+	private TextView filterStatus;
+	
     private static final String[] menuItems = { "Add to Lesson",
                                                 "Edit Tags",
                                                 "Move Up",
@@ -90,6 +103,9 @@ public class BrowseWordsActivity extends ListActivity {
         setListAdapter(adapter);
 
         registerForContextMenu(getListView());
+        
+        filtered = false;
+        filterStatus = (TextView) findViewById(R.id.filterStatus);
     }
 
 
@@ -315,6 +331,102 @@ public class BrowseWordsActivity extends ListActivity {
                 clickOnItem(items.get(next), next, "trace");
             }
         }
+    }
+    
+    // FILTER METHODS
+	
+    // depending on the state, shows the filter pop up or clears the filter
+    public void onClickFilter(View view) {
+        if (filtered) {
+            clearFilter();
+        } else {
+            showFilterPopup();
+        }
+    }
+    
+    // displays the filter pop up
+    public void showFilterPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Apply Filter");
+        
+        final EditText filterText = new EditText(this);
+        builder.setView(filterText);
+        
+        builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String search = filterText.getText().toString();
+                if (search.equals("")) {
+                    hideKeyboard(filterText);
+                    return;
+                }
+
+                // Filter action: query for words and set word list
+                Cursor c = dba.browseByTag(ItemType.WORD, search);
+                List<Long> ids = new LinkedList<Long>();
+                do {
+                    if (c.getCount() == 0) {
+                        Log.d(ACTIVITY_SERVICE, "zero rows");
+                        break;
+                    }
+                    ids.add(c.getLong(c.getColumnIndexOrThrow(
+                            DbAdapter.WORDTAG_ROWID)));
+                } while (c.moveToNext());
+                c.close();
+                setWordList(ids);
+                
+                // Set state to filtered
+                ((Button)findViewById(R.id.filterButton)).setText(R.string.clear_filter);
+                filtered = true;
+                filterStatus.setText("Filter: " + search);
+                hideKeyboard(filterText);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                hideKeyboard(filterText);
+            }
+        });
+        
+        AlertDialog dialog = builder.create();
+        
+        // show the keyboard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.show();
+
+    }
+    
+    // clears the filter
+    public void clearFilter() {
+        setWordList(dba.getAllWordIds());
+        ((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
+        filtered = false;
+        filterStatus.setText(R.string.filter_none);
+    }
+    
+    // sets the list of items
+    private void setWordList(List<Long> ids) {
+        items = new ArrayList<LessonItem>();
+        for(long id : ids) {
+            Log.i("Found", "id: "+id);
+            LessonItem word;
+            try {
+                word = dba.getWordById(id);
+            } catch(Exception e) {
+                word = new LessonWord();
+                Log.d("SEARCH", "Word " + id + " not found in db");
+            }
+            items.add(word);
+        }
+        LayoutInflater vi = (LayoutInflater) getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        adapter = new LessonItemListAdapter(this, items, vi);
+        setListAdapter(adapter);
+    }
+    
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
 }
