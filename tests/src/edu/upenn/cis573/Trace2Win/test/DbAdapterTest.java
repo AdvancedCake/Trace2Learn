@@ -41,6 +41,19 @@ public class DbAdapterTest extends AndroidTestCase {
 
 
     // TESTS
+    
+    public void testAddCharacter() {
+        LessonCharacter c = new LessonCharacter();
+        db.addCharacter(c);
+        LessonCharacterTest.compareCharacters(c, db.getCharacterById(c.getId()));
+    }
+    
+    public void testAddWord() {
+        LessonWord c = new LessonWord();
+        db.addWord(c);
+        LessonWordTest.compareWords(c, db.getWordById(c.getId()));
+    }
+    
 	public void testCreateWordKeyValues()
 	{
 		LessonWord w = new LessonWord();

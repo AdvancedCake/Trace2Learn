@@ -14,8 +14,16 @@ Auto-proceed works great, but please add a 1/2 second delay after the last strok
 Deleting or moving up/down one word in one lesson will delete or move up/down the word in 'all words' and other lessons.
 2nd report and testing
 
-3) Project Velocity:
-4)
+3) Project Velocity: 14.5
+4) Exporting and importing was moved to the next iteration in order to make space for new client requests
 5) When updating characters' tags and ids, the word version of the character is not updated. We did not have time to fix this
-6)
-7)
+6) LessonItem.updateKeyValues(DbAdapter db) : protected method
+    PhrasePracticeActivity.tagsToString(List<String> tags) : private method
+    PhrasePracticeActivity.handleMessage(Message m) : cannot test handler
+    LessonItem.updateTags(DbAdapter db) : protected method
+    PhrasePracticeActivity.onCreate(Bundle savedInstanceState) : private method
+    PhrasePracticeActivity.initializeMode() : private method
+    PhrasePracticeActivity.setCharacterList(List<Long> ids) : private method
+    PhrasePracticeActivity.setDisplayPane() : private method
+    All other methods: unchanged or GUI based
+7)  none
