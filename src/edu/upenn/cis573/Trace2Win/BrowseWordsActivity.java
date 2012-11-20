@@ -397,8 +397,12 @@ public class BrowseWordsActivity extends ListActivity {
     
     // clears the filter
     public void clearFilter() {
-        setWordList(dba.getAllWordIds());
-        ((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
+    	if(lessonID == -1)
+    		setWordList(dba.getAllWordIds());
+    	else
+    		setWordList(dba.getWordsFromLessonId(lessonID));
+    	
+    	((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
     }
