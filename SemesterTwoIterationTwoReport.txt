@@ -50,3 +50,15 @@ TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String m
     of the ID below it, or, if it is the bottom-most tag, do nothing.
 TagActivity.onContextItemSelected(MenuItem item), TagActivity.showToast(String msg): Press Move Down on context menu for tag, should swap the positions of the ID with the position
     of the tag below it, or, if it is the bottom-most tag, do nothing.
+BrowseWordActivity.onClickFilter(View view)
+BrowseWordActivity.showFilterPopup()
+    Click the filter button when browsing words, the program should pop up the checkbox for entering the filtering string.
+BrowseWordActivity.clearFilter()
+BrowseWordActivity.setWordList(List<Long> ids)
+    After applying the searching string, the program should show the filtered list of words and the filter string and a "clear fliter" button. Click the clear filter button, the program should go back to the previous page and show all the words.
+BrowseWordActivity.hideKeyboard(View view)
+    After applying the searching string, the keyboard should be hidden.
+BrowseCharacterActivity.showFilterPopup()
+    Click the filter button when browsing characters, the program should pop up the checkbox for entering the filtering string.
+TagActivity.onCreate(Bundle savedInstanceState)
+    Click "edit tags" hould trigger the "edit tags" page. The page should contain some elements on the bottom, which are "add key" and "add value" checkboxes and an "add" button on the right of them, "add tags" checkbox and an "add" button on the right of it. The list should be seperated by a breakline, and the upper half shoud contain IDs, the lower half should contain tags.
