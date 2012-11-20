@@ -10,6 +10,7 @@ Filter button - Please match if search string length is 2, currently it needs to
 Please add this Filter button to the Browse All Characters activity, and then you can remove the Search Characters activity
 Found small bug: in editing Tags, if I leave the field blank and hit 'Add' , a blank tag will be created & cannot be deleted, please add validation to prevent this.
 Please remove the <<>> from <<Lesson>> 1 of n, and please use a larger font - same larger font would be good across all the pages that have a 1-line label at the top.
+    -We increased the font size slightly (to maximum possible that still allows the text to fit on one line)
 Auto-proceed works great, but please add a 1/2 second delay after the last stroke, before moving to the next character.
 Deleting or moving up/down one word in one lesson will delete or move up/down the word in 'all words' and other lessons.
 2nd report and testing
