@@ -25,6 +25,5 @@ Deleting or moving up/down one word in one lesson will delete or move up/down th
     PhrasePracticeActivity.initializeMode() : private method
     PhrasePracticeActivity.setCharacterList(List<Long> ids) : private method
     PhrasePracticeActivity.setDisplayPane() : private method
-    Lesson.getWords() : Not enough time
     All other methods: unchanged or GUI based
 7)  none
