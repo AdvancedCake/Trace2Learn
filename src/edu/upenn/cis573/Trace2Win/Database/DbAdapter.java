@@ -668,7 +668,7 @@ public class DbAdapter {
     					null, null, null, null);
     	LessonCharacter c = new LessonCharacter();
     	//if the character doesn't exists
-    	if (mCursor == null) {
+    	if (mCursor == null || mCursor.getCount() == 0) {
     		return null;
     	}
     	mCursor.close();
@@ -707,10 +707,12 @@ public class DbAdapter {
     			mDb.query(true, CHAR_TABLE, new String[] {"name", "sort"},
     					CHAR_ROWID + " = "+ id, null, null, null, null, null);
     	mCursor.moveToFirst();
-    	String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
-    	c.setPrivateTag(privateTag);
-    	double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
-    	c.setSort(sort);
+    	if (mCursor.getCount() > 0) {
+    		String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+    		c.setPrivateTag(privateTag);
+    		double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
+    		c.setSort(sort);
+    	}
     	mCursor.close();
 
     	// get tags as well
@@ -736,7 +738,7 @@ public class DbAdapter {
                     null, null, null, null);
         LessonWord w = new LessonWord();
         //if the character doesn't exists
-        if (mCursor == null) {
+        if (mCursor == null || mCursor.getCount() == 0) {
             return null;
         }
         mCursor.close();

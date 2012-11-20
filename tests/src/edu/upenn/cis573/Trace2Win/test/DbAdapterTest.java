@@ -287,5 +287,20 @@ public class DbAdapterTest extends AndroidTestCase {
     	//Need more tests for words
     	result.close();
     }
+    
+    public void testDeleteCharacter()
+    {
+    	LessonCharacter c = new LessonCharacter();
+    	db.addCharacter(c);
+    	db.deleteCharacter(c.getId());
+    	assertNull(db.getCharacterById(c.getId()));
+    }
 
+    public void testDeleteWord()
+    {
+    	LessonWord w = new LessonWord();
+    	db.addWord(w);
+    	db.deleteWord(w.getId());
+    	assertNull(db.getWordById(w.getId()));
+    }    
 }
