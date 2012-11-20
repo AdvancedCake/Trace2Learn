@@ -379,27 +379,7 @@ public class TagActivity extends Activity {
             isChanged = true;
         }
     }
-
-    /*public void onAddPrivateTagButtonClick(View view){
-        String input = privateTagEntry.getText().toString();
-        if (input.length() == 0) return;		
-
-        if (type == ItemType.CHARACTER)
-        {
-            mDbHelper.updatePrivateTag(id, input); //added it to db
-        }
-        else if (type == ItemType.WORD)
-        {		
-            mDbHelper.updatePrivateWordTag(id, input);	
-        }
-        if(currentTags1.get(0).contains(PRIVATE_PREFIX))
-            currentTags1.remove(0);
-        currentTags1.add(0,PRIVATE_PREFIX+input);
-        arrAdapter.notifyDataSetChanged();
-        privateTagEntry.setText("");
-        isChanged = true;
-    }*/
-
+    
     public void onAddKeyValuePairButtonClick(View view){
     	if (view == addIdButton)
     	{
