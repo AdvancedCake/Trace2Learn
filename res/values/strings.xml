@@ -32,5 +32,7 @@
     <string name="filter_none">Filter: None</string>
     <string name="save_word">Save Word</string>
     <string name="id_tag_header">Edit IDs and Tags</string>
+    <string name="add_key">Add Key</string>
+    <string name="add_value">Add Value</string>
 
 </resources>

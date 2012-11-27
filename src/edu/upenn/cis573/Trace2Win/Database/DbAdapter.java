@@ -393,7 +393,8 @@ public class DbAdapter {
      * @return true if deleted, false otherwise
      */
     public boolean deleteTag(long rowId, String tag) {
-        return mDb.delete(CHARTAG_TABLE, CHARTAG_ROWID + "=" + rowId + " AND " + CHARTAG_TAG+"="+tag, null) > 0;
+        return mDb.delete(CHARTAG_TABLE, CHARTAG_ROWID + "=" + rowId +
+                " AND " + CHARTAG_TAG + "='" + tag + "'", null) > 0;
     }
     
     /**
@@ -404,7 +405,8 @@ public class DbAdapter {
      * @return true if deleted, false otherwise
      */
     public boolean deleteWordTag(long rowId, String tag) {
-        return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId + " AND " + WORDTAG_TAG+"="+tag, null) > 0;
+        return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId +
+                " AND " + WORDTAG_TAG + "='" + tag + "'", null) > 0;
     }
    
     /**
@@ -434,7 +436,8 @@ public class DbAdapter {
     		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
     		return false;
     	}    	
-        return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn+"='"+key+"'", null) > 0;
+        return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn +
+                "='" + key + "'", null) > 0;
     }      
 
     /**

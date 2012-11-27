@@ -33,16 +33,13 @@ public class TagActivity extends Activity {
     private static final String TagDeleteSuccessMsg = "Deleted the tag successfully.";
     private static final String TagDeleteErrorMsg = "Failed to delete the tag.";
 
-    //Should be able to take BOTH character and word
-
     private DbAdapter mDbHelper;
 
     //Controls
     private EditText tagEntry;
     private EditText keyEntry;
     private EditText valueEntry;
-    private ListView id_lv;
-    private ListView tag_lv;
+    private ListView listView;
     private Button addTagButton;
     private Button addIdButton;
 
@@ -52,11 +49,11 @@ public class TagActivity extends Activity {
     private List<String> currentKeys;
     private List<String> currentKeyVals;
     private List<String> currentTags;
+    private List<String> viewSource; // backs the listview 
     private boolean isChanged;
 
-    ItemType type;
-    ArrayAdapter<String> tagArrAdapter;
-    ArrayAdapter<String> idArrAdapter;
+    private ItemType type;
+    private ArrayAdapter<String> adapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,7 +69,6 @@ public class TagActivity extends Activity {
         case CHARACTER:
         case WORD:
         	setContentView(R.layout.id_and_tag);
-        	id_lv = (ListView) findViewById(R.id.id_list);
         	keyEntry = (EditText) findViewById(R.id.editkey);
         	valueEntry = (EditText) findViewById(R.id.editvalue);
         	addIdButton = (Button) findViewById(R.id.add_key_value_pair_button);
@@ -84,15 +80,40 @@ public class TagActivity extends Activity {
         	Log.e("Tag", "Unsupported Type");
         }
         tagEntry = (EditText) findViewById(R.id.edittext);
-        tag_lv = (ListView) findViewById(R.id.tag_list);
         addTagButton = (Button) findViewById(R.id.add_tag_button);
+        listView = (ListView) findViewById(R.id.list);
 
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();     
 
         Log.e("ID",Long.toString(id));
         Log.e("TYPE",type.toString());
-
+        
+        
+        // Handle KeyValue pairs
+        viewSource = new ArrayList<String>();
+        switch(type)
+        {
+        case CHARACTER:
+        case WORD:
+            currentKeys = new ArrayList<String>();
+            currentKeyVals = new ArrayList<String>();
+            keyValMap = mDbHelper.getKeyValues(id, type);
+            for(Map.Entry<String, String> entry : keyValMap.entrySet()) {
+                String k = entry.getKey();
+                String v = entry.getValue();
+                currentKeys.add(k);
+                currentKeyVals.add(k + ": " + v);
+                
+                viewSource.add(k + ": " + v);
+            }
+            break;
+        default:
+            Log.e("Tag", "Unsupported Type");
+            break;
+        }
+        
+        // Handle Tags
         switch(type)
         {
             case CHARACTER:
@@ -107,38 +128,16 @@ public class TagActivity extends Activity {
             default:
                 Log.e("Tag", "Unsupported Type");
         }
-        
-        switch(type)
-        {
-        case CHARACTER:
-        case WORD:
-        	currentKeys = new ArrayList<String>();
-        	currentKeyVals = new ArrayList<String>();
-        	keyValMap = mDbHelper.getKeyValues(id, type);
-        	for(String key: keyValMap.keySet()){
-        		currentKeys.add(key);
-        		currentKeyVals.add(key + ": " + keyValMap.get(key));
-        	}
-        	idArrAdapter = new ArrayAdapter<String>(this, 
-        			android.R.layout.simple_list_item_1, currentKeyVals);
-        	idArrAdapter.notifyDataSetChanged();
-        	id_lv.setAdapter(idArrAdapter);
-        	id_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        	registerForContextMenu(id_lv);
-        	break;
-        default:
-                Log.e("Tag", "Unsupported Type");
-        	break;
+        for (String tag : currentTags) {
+            viewSource.add(tag);
         }
-
-        //Populate the ListView
-        tagArrAdapter = new ArrayAdapter<String>(this, 
-                android.R.layout.simple_list_item_1, currentTags);
-        tagArrAdapter.notifyDataSetChanged();
-        tag_lv.setAdapter(tagArrAdapter);
-
-        tag_lv.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-        registerForContextMenu(tag_lv);
+        
+        adapter = new ArrayAdapter<String>(this,
+                android.R.layout.simple_list_item_1, viewSource);
+        adapter.notifyDataSetChanged();
+        listView.setAdapter(adapter);
+        listView.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
+        registerForContextMenu(listView);
 
         isChanged = false;
     }
@@ -154,13 +153,17 @@ public class TagActivity extends Activity {
 
     @Override
     public boolean onContextItemSelected(MenuItem item) {
-        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        ListView view = (ListView)info.targetView.getParent();
-        Log.d("Tag", view.toString());
-        int menuItemIndex = item.getItemId();
-        boolean isID = view == id_lv; // true is ID, otherwise it's a tag
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        ListView view = (ListView) info.targetView.getParent();
+        int menuItemIndex = item.getItemId(); // the menu item that was selected
+        
+        int position = info.position; // position of the list item that was selected
+        boolean isID = position < currentKeyVals.size(); // true if it's an ID, otherwise it's a tag
+        
         if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
-            String selectedItem = (String)view.getItemAtPosition(info.position);
+            String selectedItem = (String) view.getItemAtPosition(position);
+            Log.d("Deleting", selectedItem);
+            Log.d("Deleting", " isID = " + isID);
             
             boolean isSqlQuerySuccessful = false;
 
@@ -168,18 +171,22 @@ public class TagActivity extends Activity {
             {
                 case CHARACTER:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, type, '"' + currentKeys.get(info.position) + '"');
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id,
+                                type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteTag(id,'"' + selectedItem + '"');
+                        isSqlQuerySuccessful = mDbHelper.deleteTag(id,
+                                selectedItem);
                     }
                     break;
                 case WORD:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, type, '"' + currentKeys.get(info.position) + '"');
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id,
+                                type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id, '"' + selectedItem + '"');
+                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id,
+                                selectedItem);
                     }
                     break;
                 default:
@@ -191,13 +198,15 @@ public class TagActivity extends Activity {
             if (isSqlQuerySuccessful) {
                 showToast(TagDeleteSuccessMsg);
                 if (isID) {
-                	keyValMap.remove(currentKeys.get(info.position));
-                	currentKeyVals.remove(info.position);
-                	currentKeys.remove(info.position);
-                    idArrAdapter.notifyDataSetChanged();
+                	keyValMap.remove(currentKeys.get(position));
+                	currentKeyVals.remove(position);
+                	currentKeys.remove(position);
+                	viewSource.remove(position);
+                    adapter.notifyDataSetChanged();
                 } else {
-                    currentTags.remove(info.position);
-                    tagArrAdapter.notifyDataSetChanged();
+                    currentTags.remove(position - currentKeyVals.size());
+                    viewSource.remove(position);
+                    adapter.notifyDataSetChanged();
                 }
             } else {
                 showToast(TagDeleteErrorMsg);
@@ -212,9 +221,9 @@ public class TagActivity extends Activity {
             // need to get other item
             int otherPos;
             if (menuItemIndex == menuItemsInd.MoveUp.ordinal()) {
-                otherPos = info.position - 1;
+                otherPos = position - 1;
             } else {
-                otherPos = info.position + 1;
+                otherPos = position + 1;
             }
 
             String table = null;
@@ -253,7 +262,7 @@ public class TagActivity extends Activity {
                     return false;
                 }
                 
-                String key   = currentKeys.get(info.position);
+                String key   = currentKeys.get(position);
                 String other = currentKeys.get(otherPos);
                 
                 result = mDbHelper.swapKeyValues(table, id, key, other);
@@ -267,24 +276,34 @@ public class TagActivity extends Activity {
                 // success, so update the local copy
                 String[] kArr  = new String[currentKeys.size()];
                 String[] kvArr = new String[currentKeyVals.size()];
+                String[] arr   = new String[currentKeyVals.size()];
                 kArr  = currentKeys.toArray(kArr);
                 kvArr = currentKeyVals.toArray(kvArr);
+                arr   = viewSource.toArray(arr);
                 
                 int keyIndex   = currentKeys.indexOf(key);
                 int otherIndex = currentKeys.indexOf(other);
                 String temp      = kArr[keyIndex];
                 kArr[keyIndex]   = kArr[otherIndex];
                 kArr[otherIndex] = temp;
+                
                 temp              = kvArr[keyIndex];
                 kvArr[keyIndex]   = kvArr[otherIndex];
                 kvArr[otherIndex] = temp;
                 
-                currentKeys = new ArrayList<String>(Arrays.asList(kArr));
+                temp            = arr[keyIndex];
+                arr[keyIndex]   = arr[otherIndex];
+                arr[otherIndex] = temp;
+                
+                currentKeys    = new ArrayList<String>(Arrays.asList(kArr));
                 currentKeyVals = new ArrayList<String>(Arrays.asList(kvArr));
-                idArrAdapter = new ArrayAdapter<String>(this, 
-                        android.R.layout.simple_list_item_1, currentKeyVals);
-                id_lv.setAdapter(idArrAdapter);
-            } else {
+                viewSource     = new ArrayList<String>(Arrays.asList(arr));
+                adapter = new ArrayAdapter<String>(this,
+                        android.R.layout.simple_list_item_1, viewSource);
+                listView.setAdapter(adapter);
+            } else { // it's a tag
+                position -= currentKeys.size();
+                otherPos -= currentKeys.size();
                 // check that item exists
                 if (otherPos < 0) {
                     showToast("Cannot move this tag up");
@@ -294,7 +313,7 @@ public class TagActivity extends Activity {
                     return false;
                 }
                 
-                String tag   = currentTags.get(info.position);
+                String tag   = currentTags.get(position);
                 String other = currentTags.get(otherPos);
                 result = mDbHelper.swapTags(table, id, tag, other);
                 
@@ -305,19 +324,28 @@ public class TagActivity extends Activity {
                 }
                 
                 // success, so update the local copy
+                String[] tArr = new String[currentTags.size()];
                 String[] arr = new String[currentTags.size()];
-                arr = currentTags.toArray(arr);
+                tArr = currentTags.toArray(tArr);
+                arr  = viewSource.toArray(arr);
 
                 int tagIndex = currentTags.indexOf(tag);
                 int otherIndex = currentTags.indexOf(other);
-                String temp = arr[tagIndex];
-                arr[tagIndex] = arr[otherIndex];
+                String temp      = tArr[tagIndex];
+                tArr[tagIndex]   = tArr[otherIndex];
+                tArr[otherIndex] = temp;
+
+                tagIndex   += currentKeys.size();
+                otherIndex += currentKeys.size();
+                temp            = arr[tagIndex];
+                arr[tagIndex]   = arr[otherIndex];
                 arr[otherIndex] = temp;
 
-                currentTags = new ArrayList<String>(Arrays.asList(arr)); 
-                tagArrAdapter = new ArrayAdapter<String>(this, 
-                        android.R.layout.simple_list_item_1, currentTags);
-                tag_lv.setAdapter(tagArrAdapter);
+                currentTags = new ArrayList<String>(Arrays.asList(tArr));
+                viewSource  = new ArrayList<String>(Arrays.asList(arr));
+                adapter = new ArrayAdapter<String>(this, 
+                        android.R.layout.simple_list_item_1, viewSource);
+                listView.setAdapter(adapter);
             }
             
             isChanged = true;
@@ -370,9 +398,9 @@ public class TagActivity extends Activity {
                     return;
             }
             //update the listview --> update the entire view
-            //Refactor this, because refreshing the view is inefficient
             currentTags.add(input);
-            tagArrAdapter.notifyDataSetChanged();
+            viewSource.add(input);
+            adapter.notifyDataSetChanged();
 
             //Set edit text back to nothing
             tagEntry.setText("");			
@@ -381,34 +409,36 @@ public class TagActivity extends Activity {
     }
     
     public void onAddKeyValuePairButtonClick(View view){
-    	if (view == addIdButton)
-    	{
-    		String keyInput = keyEntry.getText().toString(); 
-    		String valueInput = valueEntry.getText().toString();
-    		if (keyInput.length() == 0 || valueInput.length() == 0) return;		
-    		
-    		// check duplicate tag
+        if (view == addIdButton)
+        {
+            String keyInput = keyEntry.getText().toString(); 
+            String valueInput = valueEntry.getText().toString();
+            if (keyInput.length() == 0 || valueInput.length() == 0) return;		
+
+            // check duplicate tag
+            // TODO RLi: maybe we should prompt overwrite?
             if (keyValMap.get(keyInput) != null) {
                 showToast("Key already exists");
                 return;
             }
-    		
-    		// what do we do about other types?
-    		if (type == ItemType.CHARACTER
-    			|| type == ItemType.WORD)
-    		{
-    			mDbHelper.createKeyValue(id, type, keyInput, valueInput);
-    			// added it to db
-        		keyValMap.put(keyInput, valueInput);
-        		currentKeys.add(keyInput);
-        		currentKeyVals.add(keyInput + ": " + valueInput);
-                        idArrAdapter.notifyDataSetChanged();
-                        keyEntry.setText("");			
-            	        valueEntry.setText("");
-            	        isChanged = true;
-    		}
-    	}
+
+            if (type == ItemType.CHARACTER
+                    || type == ItemType.WORD)
+            {
+                mDbHelper.createKeyValue(id, type, keyInput, valueInput);
+                // added it to db
+                keyValMap.put(keyInput, valueInput);
+                currentKeys.add(keyInput);
+                currentKeyVals.add(keyInput + ": " + valueInput);
+                viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
+                adapter.notifyDataSetChanged();
+                keyEntry.setText("");			
+                valueEntry.setText("");
+                isChanged = true;
+            }
+        }
     }
+    
     private final void showToast(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }	
