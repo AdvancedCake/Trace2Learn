@@ -1,13 +1,10 @@
 package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,15 +51,9 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		// text
 		switch (item.getItemType())
 		{
-                case CHARACTER:
-                case WORD:
-                        LinkedHashMap<String, String> keyValues = item.getKeyValues();
-			StringBuilder sb = new StringBuilder();
-	    	for (Map.Entry<String, String> entry : keyValues.entrySet()) {
-	    		sb.append(", " + entry.getKey() + ": " + entry.getValue());
-	    	}    	
-	    	String s = sb.length()>0 ? sb.substring(2) : "";
-	    	text.setText(s);
+		case CHARACTER:
+		case WORD:
+			text.setText(item.getKeyValuesToString());
 			break;
 		case LESSON:
 			text.setText(item.getPrivateTag());
@@ -70,18 +61,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		}
 		
 		// text2
-		ArrayList<String> tags = new ArrayList<String>(item.getTags());
-		StringBuilder sb = new StringBuilder();
-		for(String tag : tags){
-			Log.e("Tag","Found");
-			sb.append(", "+tag);
-		}
-		String s = "";
-		if(sb.length()>0){
-			s = sb.substring(2);
-			Log.e("Printing Tags",s);
-		}
-		text2.setText(s);
+		text2.setText(item.getTagsToString());
 		return v;
 	}
 		
