@@ -571,46 +571,7 @@ public class DbAdapter {
         		pointNumber++;
     		}
     		strokeNumber++;
-    	}
-    	//need to add character as a word so that we can add them to lessons as not part of a word
-    	ContentValues initialWordValue = new ContentValues();
-    	initialWordValue.put("name", "");
-    	long word_id = mDb.insert(WORDS_TABLE, null, initialWordValue);
-    	if(word_id == -1)
-    	{
-    		//if error
-    		Log.e(WORDS_TABLE, "cannot add new character to table " + 
-    		        WORDS_TABLE);
-    		mDb.endTransaction();
-    		return false;
-    	}
-    	
-        // To make the sort order the same as the ID, we need to update the row
-        // after we get the ID, i.e. now.
-        initialWordValue.put("sort", word_id);
-        mDb.update(WORDS_TABLE, initialWordValue, WORDS_ROWID + "=" + word_id,
-                null);
-    	
-        // Add word details
-        Cursor cur = mDb.query(WORDS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
-    	if (cur != null) {
-            cur.moveToFirst();
-        }
-    	word_id = cur.getInt(cur.getColumnIndexOrThrow("_id"));
-    	cur.close();
-    	ContentValues wordValues = new ContentValues();
-    	wordValues.put("_id", word_id);
-    	wordValues.put("CharId", id);
-    	wordValues.put("WordOrder", 0);
-    	wordValues.put("FlagUserCreated", 0);
-    	long success = mDb.insert(WORDS_DETAILS_TABLE, null, wordValues);
-		if(success == -1)
-		{	
-			//if error
-			Log.e(WORDS_DETAILS_TABLE,"cannot add to table");
-			mDb.endTransaction();
-			return false;
-		}
+    	}    	 
     	
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
