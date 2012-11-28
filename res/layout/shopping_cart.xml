@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <Button
+        android:id="@+id/cartButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/cart" />
+
+    <Button
+        android:id="@+id/selectAllButton"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:text="@string/select_all" />
+
+    <Button
+        android:id="@+id/deselectAllButton"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="5dp"
+        android:layout_toRightOf="@+id/selectAllButton"
+        android:text="@string/deselect_all" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/filterButton"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/selectAllButton" >
+    </ListView>
+
+    <Button
+        android:id="@+id/filterButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/filter" />
+
+    <TextView
+        android:id="@+id/filterStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/filterButton"
+        android:layout_alignBottom="@+id/filterButton"
+        android:layout_marginLeft="20dp"
+        android:layout_toRightOf="@+id/filterButton"
+        android:text="@string/filter_none" />
+
+</RelativeLayout>
