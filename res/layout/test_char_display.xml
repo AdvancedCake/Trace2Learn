@@ -9,7 +9,7 @@
         android:id="@+id/view_slot"
         android:layout_width="match_parent"
         android:layout_height="0dip"
-        android:layout_above="@+id/tag_list"
+        android:layout_above="@+id/tag_list_scroll_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true" >
 
@@ -61,13 +61,22 @@
             android:text="@string/animate" />
     </LinearLayout>
 
-    <TextView
-        android:id="@+id/tag_list"
+    <HorizontalScrollView
+        android:id="@+id/tag_list_scroll_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/LinearLayout1"
-        android:layout_centerHorizontal="true"
-        android:text="@string/tag"
-        android:textSize="25sp" />
+        android:layout_centerHorizontal="true" >
+        
+	    <TextView
+	        android:id="@+id/tag_list"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:maxLines="1"
+	        android:scrollHorizontally="true"
+	        android:text="@string/tag"
+	        android:textSize="25sp" />
+
+    </HorizontalScrollView> 
 
 </RelativeLayout>
