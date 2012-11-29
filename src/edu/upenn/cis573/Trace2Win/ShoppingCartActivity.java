@@ -1,23 +1,31 @@
 package edu.upenn.cis573.Trace2Win;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -136,6 +144,9 @@ public class ShoppingCartActivity extends Activity {
         }
     }
 
+    /**
+     * Populate the list with characters
+     */
     private void getChars() {
         List<Long> ids = dba.getAllCharIds();
         source = new ArrayList<LessonItem>(ids.size());
@@ -145,6 +156,9 @@ public class ShoppingCartActivity extends Activity {
         }
     }
 
+    /**
+     * Populate the list with words
+     */
     private void getWords() {
         List<Long> ids = dba.getAllWordIds();
         source = new ArrayList<LessonItem>(ids.size());
@@ -154,6 +168,9 @@ public class ShoppingCartActivity extends Activity {
         }
     }
 
+    /**
+     * Populate the list with lessons
+     */
     private void getLessons() {
         List<Long> ids = dba.getAllLessonIds();
         source = new ArrayList<LessonItem>(ids.size());
@@ -164,50 +181,72 @@ public class ShoppingCartActivity extends Activity {
         }
     }
     
+    /**
+     * Click handler for "Cart"/"Back" button
+     * @param view The button
+     */
     public void onClickViewCart(View view) {
         if (viewingCart) { // go back to list view
-            viewingCart = false;
-            switch (type) {
-                case CHARACTER:
-                    title.setText(R.string.instruction_export_chars);
-                    break;
-                case WORD:
-                    title.setText(R.string.instruction_export_words);
-                    break;
-                case LESSON:
-                    title.setText(R.string.instruction_export_lessons);
-                    break;
-            }
-            cartButton.setText("Cart: " + cart.size());
-            exportButton.setVisibility(View.INVISIBLE);
-            filterButton.setVisibility(View.VISIBLE);
-            filterStatus.setVisibility(View.VISIBLE);
-            selectButton.setVisibility(View.VISIBLE);
-            deselectButton.setVisibility(View.VISIBLE);
-            
-            adapter = new ShoppingCartListAdapter(this, display, vi);
+            showList();
         } else { // go to cart view
-            viewingCart = true;
-            String t;
-            if (cart.size() == 1) {
-                t = " item in cart";
-            } else {
-                t = " items in cart";
-            }
-            title.setText(cart.size() + t);
-            cartButton.setText(R.string.back);
-            exportButton.setVisibility(View.VISIBLE);
-            filterButton.setVisibility(View.INVISIBLE);
-            filterStatus.setVisibility(View.INVISIBLE);
-            selectButton.setVisibility(View.INVISIBLE);
-            deselectButton.setVisibility(View.INVISIBLE);
-            
-            Collections.sort(cart);
-            adapter = new ShoppingCartListAdapter(this, cart, vi);
+            showCart();
         }
         list.setAdapter(adapter);
     }
+
+    /**
+     * Display the current cart
+     */
+    private void showCart() {
+        viewingCart = true;
+        String t;
+        if (cart.size() == 1) {
+            t = " item in cart";
+        } else {
+            t = " items in cart";
+        }
+        title.setText(cart.size() + t);
+        cartButton.setText(R.string.back);
+        exportButton.setVisibility(View.VISIBLE);
+        filterButton.setVisibility(View.INVISIBLE);
+        filterStatus.setVisibility(View.INVISIBLE);
+        selectButton.setVisibility(View.INVISIBLE);
+        deselectButton.setVisibility(View.INVISIBLE);
+        
+        Collections.sort(cart);
+        adapter = new ShoppingCartListAdapter(this, cart, vi);
+    }
+
+    /**
+     * Display the selection list of items
+     */
+    private void showList() {
+        viewingCart = false;
+        switch (type) {
+            case CHARACTER:
+                title.setText(R.string.instruction_export_chars);
+                break;
+            case WORD:
+                title.setText(R.string.instruction_export_words);
+                break;
+            case LESSON:
+                title.setText(R.string.instruction_export_lessons);
+                break;
+        }
+        cartButton.setText("Cart: " + cart.size());
+        exportButton.setVisibility(View.INVISIBLE);
+        filterButton.setVisibility(View.VISIBLE);
+        filterStatus.setVisibility(View.VISIBLE);
+        selectButton.setVisibility(View.VISIBLE);
+        deselectButton.setVisibility(View.VISIBLE);
+        
+        adapter = new ShoppingCartListAdapter(this, display, vi);
+    }
     
+    /**
+     * Click handler for "Select All" button
+     * @param view The button
+     */
     public void onClickSelectAll(View view) {
         for (LessonItem item : display) {
             if (!cart.contains(item)) {
@@ -218,6 +257,10 @@ public class ShoppingCartActivity extends Activity {
         cartButton.setText("Cart: " + cart.size());
     }
 
+    /**
+     * Click handler for "Deselect All" button
+     * @param view The button
+     */
     public void onClickDeselectAll(View view) {
         for (LessonItem item : display) {
             if (cart.contains(item)) {
@@ -228,14 +271,120 @@ public class ShoppingCartActivity extends Activity {
         cartButton.setText("Cart: " + cart.size());
     }
 
+    /**
+     * Click handler for "Filter" button
+     * @param view The button
+     */
     public void onClickFilter(View view) {
-        showToast("Filter!!");
+        if (filtered) { // clear the filter
+            clearFilter();
+        } else { // prompt and set new filter
+            showFilterPopup();
+        }
+    }
+    
+    /**
+     * Displays the filter popup and contains the code to filter 
+     */
+    public void showFilterPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Apply Filter");
+        
+        final EditText filterText = new EditText(this);
+        builder.setView(filterText);
+        
+        builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String search = filterText.getText().toString().toLowerCase();
+                if (search.equals("")) {
+                    hideKeyboard(filterText);
+                    return;
+                }
+
+                // Filter action: keep matching items from display list
+                // Note that it should be partial match for search terms 2
+                // characters or more.
+                List<LessonItem> newList = new ArrayList<LessonItem>();
+                topLoop: for (LessonItem item : display) {
+                    List<String> tags = item.getTags();
+                    for (String tag : tags) {
+                        if ((search.length() >= 2 && tag.toLowerCase().contains(search)) ||
+                                tag.equalsIgnoreCase(search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
+                    }
+                    Collection<String> values = item.getKeyValues().values();
+                    for (String value : values) {
+                        if ((search.length() >= 2 && value.toLowerCase().contains(search)) ||
+                                value.equalsIgnoreCase(search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
+                    }
+                }
+                display = newList;
+                adapter = new ShoppingCartListAdapter(
+                        ShoppingCartActivity.this, display, vi);
+                list.setAdapter(adapter);
+                
+                // Set state to filtered
+                filterButton.setText(R.string.clear_filter);
+                filtered = true;
+                filterStatus.setText("Filter: " + search);
+                hideKeyboard(filterText);
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                hideKeyboard(filterText);
+            }
+        });
+        
+        AlertDialog dialog = builder.create();
+        
+        // show the keyboard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.show();
+
+    }
+    
+    /**
+     * Clears the current filter
+     */
+    public void clearFilter() {
+        display = source;
+        adapter = new ShoppingCartListAdapter(
+                ShoppingCartActivity.this, display, vi);
+        list.setAdapter(adapter);
+        
+        filterButton.setText(R.string.filter);
+        filtered = false;
+        filterStatus.setText(R.string.filter_none);
+    }
+    
+    /**
+     * Hides the keyboard
+     * @param view The current view
+     */
+    private void hideKeyboard(View view) {
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    /**
+     * Click handler for "Export" button
+     * @param view The button
+     */
     public void onClickExport(View view) {
         showToast("Export!!");
     }
 
+    /**
+     * Display a toast message
+     * @param msg The message
+     */
     private final void showToast(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
