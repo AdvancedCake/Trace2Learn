@@ -169,10 +169,13 @@ public class ShoppingCartActivity extends Activity {
             switch (type) {
                 case CHARACTER:
                     title.setText(R.string.instruction_export_chars);
+                    break;
                 case WORD:
                     title.setText(R.string.instruction_export_words);
+                    break;
                 case LESSON:
                     title.setText(R.string.instruction_export_lessons);
+                    break;
             }
             cartButton.setText(R.string.cart);
             exportButton.setVisibility(View.INVISIBLE);
@@ -205,11 +208,21 @@ public class ShoppingCartActivity extends Activity {
     }
     
     public void onClickSelectAll(View view) {
-        showToast("SelectAll!!");
+        for (LessonItem item : display) {
+            if (!cart.contains(item)) {
+                cart.add(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public void onClickDeselectAll(View view) {
-        showToast("DeselectAll!!");
+        for (LessonItem item : display) {
+            if (cart.contains(item)) {
+                cart.remove(item);
+            }
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public void onClickFilter(View view) {
