@@ -2,7 +2,6 @@ package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
 
 import android.graphics.Matrix;
@@ -16,7 +15,7 @@ public class Stroke {
 	
 	public Stroke()
 	{
-		_points = new LinkedList<PointF>();
+		_points = new ArrayList<PointF>();
 	}
 	
 	/**
@@ -54,6 +53,10 @@ public class Stroke {
 			samples.add(p1);
 		}
 		return samples;
+	}
+	
+	public synchronized PointF getPoint(int i){
+		return _points.get(i);
 	}
 	
 	public synchronized void addPoint(float x, float y)

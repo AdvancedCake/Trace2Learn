@@ -1758,7 +1758,7 @@ public class DbAdapter {
     	
     	//key values table
     	result += "<table name=" + CHARKEYVALUES_TABLE + ">\n";
-    	HashMap<String, String> keyVals = getKeyValues(id, ItemType.CHARACTER);
+    	Map<String, String> keyVals = getKeyValues(id, ItemType.CHARACTER);
     	for(String key: keyVals.keySet()){
     		result += "<row>\n";
     		result += "<key>" + key + "</key>\n";
@@ -1768,8 +1768,22 @@ public class DbAdapter {
     	result += "</table>\n";
     	
     	//char details table
+    	LessonCharacter c = getCharacterById(id);
     	result +=  "<table name=" + CHAR_DETAILS_TABLE + ">\n";
-    	
+    	int numStrokes = c.getNumStrokes(); //pulled out of loop for performance (so we don't check it each time through the loop)
+    	for(int i=0; i<numStrokes; i++){
+    		Stroke stroke = c.getStroke(i);
+    		int numPoints = stroke.getNumSamples();
+    		for(int j=0; j<numPoints; j++){
+    			PointF point = stroke.getPoint(j); 
+    			result += "<row>\n";
+    			result += "<Stroke>" + i + "</Stroke>\n";
+    			result += "<PointX>" + point.x + "</PointX>\n";
+    			result += "<PointY>" + point.y + "</PointY>\n";
+    			result += "<OrderPoint>" + j + "</OrderPoint>\n";
+    			result += "</row>\n";
+    		}
+    	}
     	result += "</table>\n";
     	result += "</character>\n";
     	return result;
