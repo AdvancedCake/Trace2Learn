@@ -1,6 +1,7 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -1733,5 +1734,44 @@ public class DbAdapter {
     		v.put("name",i.getPrivateTag());
     	else	
 		v.put("name","");
+    }
+    
+    
+    public String createCharXml(long id){
+    	//Character table
+    	String result = "<character id=" + id + ">\n" +
+    						"<table name=" + CHAR_TABLE + ">\n" +
+    							"<row>\n" +
+    								"<name>" + getPrivateTag(id, ItemType.CHARACTER) + "</name>\n" +
+    								//"<sort>" + 
+    							"</row>\n" +
+    						"</table>\n";
+    	
+    	//tags table
+    	result +="<table name=" + CHARTAG_TABLE + ">\n";
+    	for(String tag: getCharacterTags(id)){
+    		result += "<row>\n";
+    		result += "<tag>" + tag + "</tag>\n";
+    		result += "</row>\n";
+    	}
+    	result += "</table>\n";
+    	
+    	//key values table
+    	result += "<table name=" + CHARKEYVALUES_TABLE + ">\n";
+    	HashMap<String, String> keyVals = getKeyValues(id, ItemType.CHARACTER);
+    	for(String key: keyVals.keySet()){
+    		result += "<row>\n";
+    		result += "<key>" + key + "</key>\n";
+    		result += "<value>" + keyVals.get(key) + "</value>\n";
+    		result += "</row>\n";
+    	}
+    	result += "</table>\n";
+    	
+    	//char details table
+    	result +=  "<table name=" + CHAR_DETAILS_TABLE + ">\n";
+    	
+    	result += "</table>\n";
+    	result += "</character>\n";
+    	return result;
     }
 }

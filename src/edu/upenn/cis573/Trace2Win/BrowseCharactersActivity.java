@@ -299,4 +299,13 @@ public class BrowseCharactersActivity extends ListActivity {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     
+    //Methods for exporting and importing temporarily put here, place wherever shopping cart functionality is later
+    public void exportCharSet(){
+    	
+    }
+    
+    public void importCharSet(){
+    
+    }
+    
 }
