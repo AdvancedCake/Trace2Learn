@@ -76,8 +76,7 @@ public class BrowseWordsActivity extends ListActivity {
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         lessonID = this.getIntent().getLongExtra("ID", -1);
-        if(lessonID==-1){
-
+        if(lessonID == -1){
             List<Long> ids = dba.getAllWordIds();
             for(long id : ids){
                 LessonItem word = dba.getWordById(id);
@@ -98,7 +97,8 @@ public class BrowseWordsActivity extends ListActivity {
             // populate words
             items = les.getWords();
         }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonItemListAdapter(this, items, vi);
         setListAdapter(adapter);
 

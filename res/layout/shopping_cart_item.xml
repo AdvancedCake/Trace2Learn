@@ -18,7 +18,7 @@
 
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/li_description"
+        android:id="@+id/idView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -28,7 +28,7 @@
 
     <TextView
         xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/li_description2"
+        android:id="@+id/tagView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
@@ -42,6 +42,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
+        android:clickable="false"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:text="@string/none" />
 
 </RelativeLayout>

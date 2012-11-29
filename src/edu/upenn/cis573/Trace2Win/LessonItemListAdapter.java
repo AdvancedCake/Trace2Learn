@@ -20,7 +20,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
 	protected List<LessonItem> _items;
 	
-	private LayoutInflater _vi;
+	protected LayoutInflater _vi;
 	
 	public LessonItemListAdapter(
 			Context context,

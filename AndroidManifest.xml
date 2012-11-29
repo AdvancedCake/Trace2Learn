@@ -38,6 +38,8 @@
         </activity>
         <activity android:name="PhrasePracticeActivity" >
         </activity>
+        <activity android:name="ShoppingCartActivity" >
+        </activity>
     </application>
 
 </manifest>

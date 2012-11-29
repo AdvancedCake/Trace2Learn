@@ -52,7 +52,17 @@
         android:layout_alignBaseline="@+id/filterButton"
         android:layout_alignBottom="@+id/filterButton"
         android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_toLeftOf="@+id/exportButton"
         android:layout_toRightOf="@+id/filterButton"
         android:text="@string/filter_none" />
+
+    <Button
+        android:id="@+id/exportButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="@string/export" />
 
 </RelativeLayout>

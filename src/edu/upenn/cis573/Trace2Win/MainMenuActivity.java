@@ -19,7 +19,8 @@ public class MainMenuActivity extends ListActivity {
 			"Create Word",
 			"Browse All Characters",
 			"Browse All Words",
-			"Browse All Lessons"
+			"Browse All Lessons",
+			"Export Characters"
 		};
 
 	@Override
@@ -30,16 +31,13 @@ public class MainMenuActivity extends ListActivity {
 
 		ListView listView = getListView();
 		listView.setTextFilterEnabled(true);
-		final Context c=this;
+		final Context c = this;
 		
 		listView.setOnItemClickListener(
 			new OnItemClickListener() 
 			{
-				public void onItemClick(
-						AdapterView<?> parent,
-						View view,
-						int position,
-						long id) 
+				public void onItemClick(AdapterView<?> parent, View view, 
+				        int position, long id) 
 				{
 					CharSequence clicked = ((TextView) view).getText();
 					if(clicked.equals(APPS[0])) // "Create Character"
@@ -64,11 +62,19 @@ public class MainMenuActivity extends ListActivity {
 						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
-					else // "Browse All Lessons"
-					{
-						Intent i = new Intent(c, BrowseLessonsActivity.class);
-						startActivity(i);
-					}
+                    else if (clicked.equals(APPS[4]))// "Browse All Lessons"
+                    {
+                        Intent i = new Intent(c, BrowseLessonsActivity.class);
+                        startActivity(i);
+                    }
+                    else if (clicked.equals(APPS[5]))// "Export Characters"
+                    {
+                        Intent intent = new Intent(c, ShoppingCartActivity.class);
+                        Bundle bun = new Bundle();
+                        bun.putString("type", "character");
+                        intent.putExtras(bun);
+                        startActivity(intent);
+                    }
 				}
 			}
 		);

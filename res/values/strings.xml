@@ -38,5 +38,6 @@
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
     <string name="none"></string>
+    <string name="export">Export</string>
 
 </resources>
