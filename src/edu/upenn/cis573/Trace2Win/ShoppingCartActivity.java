@@ -82,6 +82,7 @@ public class ShoppingCartActivity extends Activity {
                     }
                     adapter.notifyDataSetChanged();
                 }
+                cartButton.setText("Cart: " + cart.size());
             }
         });
         
@@ -177,7 +178,7 @@ public class ShoppingCartActivity extends Activity {
                     title.setText(R.string.instruction_export_lessons);
                     break;
             }
-            cartButton.setText(R.string.cart);
+            cartButton.setText("Cart: " + cart.size());
             exportButton.setVisibility(View.INVISIBLE);
             filterButton.setVisibility(View.VISIBLE);
             filterStatus.setVisibility(View.VISIBLE);
@@ -214,6 +215,7 @@ public class ShoppingCartActivity extends Activity {
             }
         }
         adapter.notifyDataSetChanged();
+        cartButton.setText("Cart: " + cart.size());
     }
 
     public void onClickDeselectAll(View view) {
@@ -223,6 +225,7 @@ public class ShoppingCartActivity extends Activity {
             }
         }
         adapter.notifyDataSetChanged();
+        cartButton.setText("Cart: " + cart.size());
     }
 
     public void onClickFilter(View view) {

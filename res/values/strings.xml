@@ -34,7 +34,7 @@
     <string name="id_tag_header">Edit IDs and Tags</string>
     <string name="add_key">Add Key</string>
     <string name="add_value">Add Value</string>
-    <string name="cart">Cart</string>
+    <string name="cart">Cart: 0</string>
     <string name="select_all">Select All</string>
     <string name="deselect_all">Deselect All</string>
     <string name="none"></string>
