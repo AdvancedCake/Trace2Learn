@@ -8,7 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/title"
+        android:onClick="onClickViewCart"
         android:text="@string/cart" />
 
     <Button
@@ -16,16 +17,18 @@
         android:layout_width="96dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/title"
+        android:onClick="onClickSelectAll"
         android:text="@string/select_all" />
 
     <Button
         android:id="@+id/deselectAllButton"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
+        android:layout_below="@+id/title"
         android:layout_marginLeft="5dp"
         android:layout_toRightOf="@+id/selectAllButton"
+        android:onClick="onClickDeselectAll"
         android:text="@string/deselect_all" />
 
     <ListView
@@ -43,6 +46,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
+        android:onClick="onClickFilter"
         android:text="@string/filter" />
 
     <TextView
@@ -53,16 +57,27 @@
         android:layout_alignBottom="@+id/filterButton"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:layout_toLeftOf="@+id/exportButton"
         android:layout_toRightOf="@+id/filterButton"
         android:text="@string/filter_none" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:text="@string/instruction_export"
+        android:textColor="#00ccff"
+        android:textSize="25sp"
+        android:textStyle="bold" />
 
     <Button
         android:id="@+id/exportButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/title"
+        android:onClick="onClickExport"
         android:text="@string/export" />
 
 </RelativeLayout>
