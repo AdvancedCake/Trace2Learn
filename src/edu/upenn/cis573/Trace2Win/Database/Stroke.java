@@ -11,6 +11,7 @@ import org.w3c.dom.NodeList;
 import android.graphics.Matrix;
 import android.graphics.Path;
 import android.graphics.PointF;
+import android.util.Log;
 
 public class Stroke {
 	
@@ -145,9 +146,13 @@ public class Stroke {
 		return toPath(1);
 	}
 	
+	/**
+	 * Creates an XML representation of this stroke.
+	 * @return an XML string
+	 */
 	public String toXml(int position) {
 	    String xml = "<stroke position=\"" + position + "\">\n";
-	    
+
 	    int numPoints = _points.size();
 	    for (int i = 0; i < numPoints; i++) {
 	        PointF point = _points.get(i);
@@ -160,18 +165,30 @@ public class Stroke {
 	    return xml;
 	}
 	
+    /**
+     * Converts a parsed XML element to a Stroke
+     * @param elem XML DOM element
+     * @return the Stroke represented by the XML element, or null if there was
+     * an error
+     */	
 	public static Stroke importFromXml(Element elem) {
-        NodeList points = elem.getElementsByTagName("point");
-        PointF[] pointArr = new PointF[points.getLength()];
-        for (int j = 0; j < points.getLength(); j++) {
-            Element pointElem = (Element) points.item(j);
-            int pointPosition = Integer.parseInt(pointElem.getAttribute("position"));
-            float x = Float.parseFloat(pointElem.getAttribute("x"));
-            float y = Float.parseFloat(pointElem.getAttribute("y"));
-            pointArr[pointPosition] = new PointF(x, y);
+        try {
+            NodeList points = elem.getElementsByTagName("point");
+            PointF[] pointArr = new PointF[points.getLength()];
+            for (int j = 0; j < points.getLength(); j++) {
+                Element pointElem = (Element) points.item(j);
+                int pointPosition = Integer.parseInt(
+                        pointElem.getAttribute("position"));
+                float x = Float.parseFloat(pointElem.getAttribute("x"));
+                float y = Float.parseFloat(pointElem.getAttribute("y"));
+                pointArr[pointPosition] = new PointF(x, y);
+            }
+            
+            return new Stroke(pointArr);
+        } catch (NumberFormatException e) {
+            Log.e("Import Stroke", e.getMessage());
+            return null;
         }
-        
-        return new Stroke(pointArr);
 	}
 	
 	@Override

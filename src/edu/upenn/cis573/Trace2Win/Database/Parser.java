@@ -14,6 +14,9 @@ import org.xml.sax.SAXException;
 
 import android.util.Log;
 
+/**
+ * Singleton XML parser
+ */
 public class Parser {
     public static DocumentBuilder builder = null;
     
@@ -22,7 +25,6 @@ public class Parser {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             try {
                 builder = dbFactory.newDocumentBuilder();
-                System.out.println("Created new XML document builder");
             } catch (ParserConfigurationException e) {
                 Log.e("XML Parser", e.getMessage());
             }

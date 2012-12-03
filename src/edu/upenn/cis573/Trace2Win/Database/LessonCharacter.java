@@ -208,6 +208,10 @@ public class LessonCharacter extends LessonItem {
 		}
 	}
 	
+	/**
+	 * Creates an XML representation of this character.
+	 * @return an XML string
+	 */
 	public String toXml() {
 	    String xml = "<character id=\"" + _id + "\">\n";
 	    
@@ -230,6 +234,12 @@ public class LessonCharacter extends LessonItem {
 	    return xml;
 	}
 	
+	/**
+	 * Converts a parsed XML element to a LessonCharacter
+	 * @param elem XML DOM element
+	 * @return the LessonCharacter represented by the XML element, or null if
+	 * there was an error
+	 */
 	public static LessonCharacter importFromXml(Element elem) {
         try {
             long id = Long.parseLong(elem.getAttribute("id"));
@@ -253,7 +263,8 @@ public class LessonCharacter extends LessonItem {
             Stroke[] strokeArr = new Stroke[strokes.getLength()];
             for (int i = 0; i < strokes.getLength(); i++) {
                 Element strokeElem = (Element) strokes.item(i);
-                int position = Integer.parseInt(strokeElem.getAttribute("position"));
+                int position = Integer.parseInt(
+                        strokeElem.getAttribute("position"));
                 strokeArr[position] = Stroke.importFromXml(strokeElem);
             }
             c._strokes = new ArrayList<Stroke>(Arrays.asList(strokeArr));
