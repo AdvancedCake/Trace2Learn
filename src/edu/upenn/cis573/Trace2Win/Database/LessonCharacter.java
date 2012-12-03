@@ -1,13 +1,18 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.graphics.PointF;
 import android.util.Log;
 
 public class LessonCharacter extends LessonItem {
@@ -223,6 +228,44 @@ public class LessonCharacter extends LessonItem {
 	    xml += "</character>\n";
 	    
 	    return xml;
+	}
+	
+	public static LessonCharacter importFromXml(String xml) {
+        try {
+            Document doc = Parser.parse(xml);
+            
+            Element root = doc.getDocumentElement();
+            long id = Long.parseLong(root.getAttribute("id"));
+            
+            LessonCharacter c = new LessonCharacter(id);
+            
+            NodeList tags = root.getElementsByTagName("tag");
+            for (int i = 0; i < tags.getLength(); i++) {
+                String tag = ((Element) tags.item(i)).getAttribute("tag");
+                c.addTag(tag);
+            }
+            
+            NodeList ids = root.getElementsByTagName("id");
+            for (int i = 0; i < ids.getLength(); i++) {
+                String key = ((Element) ids.item(i)).getAttribute("key");
+                String value = ((Element) ids.item(i)).getAttribute("value");
+                c.addKeyValue(key, value);
+            }
+            
+            NodeList strokes = root.getElementsByTagName("stroke");
+            Stroke[] strokeArr = new Stroke[strokes.getLength()];
+            for (int i = 0; i < strokes.getLength(); i++) {
+                Element strokeElem = (Element) strokes.item(i);
+                int position = Integer.parseInt(strokeElem.getAttribute("position"));
+                strokeArr[position] = Stroke.importFromXml(strokeElem);
+            }
+            c._strokes = new ArrayList<Stroke>(Arrays.asList(strokeArr));
+            
+            return c;
+        } catch (Exception e) {
+            Log.e("Import Char", e.getMessage());
+            return null;
+        }
 	}
 	
 }

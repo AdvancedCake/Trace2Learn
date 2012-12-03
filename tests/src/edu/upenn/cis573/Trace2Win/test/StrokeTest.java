@@ -1,12 +1,15 @@
 package edu.upenn.cis573.Trace2Win.test;
 
+import java.io.IOException;
 import java.util.List;
+
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import android.graphics.PointF;
 import android.graphics.Path;
 import junit.framework.TestCase;
 import edu.upenn.cis573.Trace2Win.Database.*;
-import edu.upenn.cis573.Trace2Win.Database.Stroke;
 
 public class StrokeTest extends TestCase {
 
@@ -22,7 +25,6 @@ public class StrokeTest extends TestCase {
 		List<PointF> points = s.getSamplePoints();
 		assertEquals("Number of samples in list is wrong",0,points.size());
 		
-		Path p = new Path();
 		assertTrue("Path should be empty from stroke with no points",s.toPath().isEmpty());
 	}
 	
@@ -72,7 +74,7 @@ public class StrokeTest extends TestCase {
 		s.toPath();
 	}
 	
-	public void testXml() {
+	public void testToXml() {
 	    Stroke s = new Stroke(1, 1);
         s.addPoint(2, 3);
         s.addPoint(4, 9);
@@ -84,6 +86,42 @@ public class StrokeTest extends TestCase {
         		"</stroke>\n";
         
         assertEquals(exp, s.toXml(3));
+	}
+	
+	public void testImportFromXml() throws SAXException, IOException {
+	    String xml = "<stroke position=\"3\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"3.0\" />\n" +
+                "<point position=\"2\" x=\"4.0\" y=\"9.0\" />\n" +
+                "</stroke>\n";
+	    Element elem = Parser.parse(xml).getDocumentElement();
+	    
+	    Stroke exp = new Stroke(1, 1);
+        exp.addPoint(2, 3);
+        exp.addPoint(4, 9);
+        
+	    assertEquals(exp, Stroke.importFromXml(elem));
+	}
+
+	public void testImportFromXmlOnePoint() throws SAXException, IOException {
+	    String xml = "<stroke position=\"3\">\n" +
+	            "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+	            "</stroke>\n";
+	    Element elem = Parser.parse(xml).getDocumentElement();
+
+	    Stroke exp = new Stroke(1, 1);
+
+	    assertEquals(exp, Stroke.importFromXml(elem));
+	}
+
+	public void testImportFromXmlNoPoints() throws SAXException, IOException {
+	    String xml = "<stroke position=\"3\">\n" +
+	            "</stroke>\n";
+	    Element elem = Parser.parse(xml).getDocumentElement();
+
+	    Stroke exp = new Stroke();
+
+	    assertEquals(exp, Stroke.importFromXml(elem));
 	}
 	
 }

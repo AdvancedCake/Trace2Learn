@@ -1,8 +1,12 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.graphics.Matrix;
 import android.graphics.Path;
@@ -35,6 +39,15 @@ public class Stroke {
 		this();
 		addPoint(startP);
 	}
+	
+    public Stroke(List<PointF> points) {
+        this();
+        _points = points;
+    }
+    
+    public Stroke(PointF[] points) {
+        this(new ArrayList<PointF>(Arrays.asList(points)));
+    }
 	
 	public synchronized int getNumSamples()
 	{
@@ -145,6 +158,36 @@ public class Stroke {
 	    xml += "</stroke>\n";
 	    
 	    return xml;
+	}
+	
+	public static Stroke importFromXml(Element elem) {
+        NodeList points = elem.getElementsByTagName("point");
+        PointF[] pointArr = new PointF[points.getLength()];
+        for (int j = 0; j < points.getLength(); j++) {
+            Element pointElem = (Element) points.item(j);
+            int pointPosition = Integer.parseInt(pointElem.getAttribute("position"));
+            float x = Float.parseFloat(pointElem.getAttribute("x"));
+            float y = Float.parseFloat(pointElem.getAttribute("y"));
+            pointArr[pointPosition] = new PointF(x, y);
+        }
+        
+        return new Stroke(pointArr);
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (!(other instanceof Stroke)) { return false; }
+	    
+	    List<PointF> otherPoints = ((Stroke) other)._points;
+	    if (_points.size() != otherPoints.size()) { return false; }
+	    
+	    for (int i = 0; i < _points.size(); i++) {
+	        PointF point = _points.get(i);
+	        PointF otherPoint = otherPoints.get(i);
+	        if (!point.equals(otherPoint.x, otherPoint.y)) { return false; }
+	    }
+	    
+	    return true;
 	}
 	
 }

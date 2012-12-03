@@ -56,6 +56,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		assertEquals(expected.getTags(), actual.getTags());
 		assertEquals(expected.getKeyValues(), actual.getKeyValues());
 		assertEquals(expected.getSort(), actual.getSort());
+		assertEquals(expected.getStrokes(), actual.getStrokes());
 	}
 	
 	public void testNoStrokes()
@@ -213,7 +214,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		assertTrue(keyValues.containsValue("value1"));
 	}
 	
-	public void testXml() {
+	public void testToXml() {
 	    LessonCharacter c = new LessonCharacter(100);
 	    c.addTag("tag!");
 	    c.addTag("another tag?");
@@ -247,4 +248,141 @@ public class LessonCharacterTest extends AndroidTestCase {
         
         assertEquals(exp, c.toXml());
 	}
+	
+    public void testImportFromXml() {
+        String xml = "<character id=\"100\">\n" +
+                "<tag tag=\"tag!\" />\n" +
+                "<tag tag=\"another tag?\" />\n" +
+                "<id key=\"k1\" value=\"v1\" />\n" +
+                "<id key=\"k2\" value=\"v2\" />\n" +
+                "<stroke position=\"0\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "<stroke position=\"1\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"10.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"20.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"30.0\" />\n" +
+                "</stroke>\n" +
+                "<stroke position=\"2\">\n" +
+                "<point position=\"0\" x=\"10.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"20.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "</character>\n";
+        
+        LessonCharacter exp = new LessonCharacter(100);
+        exp.addTag("tag!");
+        exp.addTag("another tag?");
+        exp.addKeyValue("k1", "v1");
+        exp.addKeyValue("k2", "v2");
+        exp.addStroke(s1);
+        exp.addStroke(s2);
+        exp.addStroke(s3);
+        
+        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+    }
+    
+    public void testImportFromXmlNoTags() {
+        String xml = "<character id=\"100\">\n" +
+                "<id key=\"k1\" value=\"v1\" />\n" +
+                "<id key=\"k2\" value=\"v2\" />\n" +
+                "<stroke position=\"0\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "<stroke position=\"1\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"10.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"20.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"30.0\" />\n" +
+                "</stroke>\n" +
+                "<stroke position=\"2\">\n" +
+                "<point position=\"0\" x=\"10.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"20.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "</character>\n";
+        
+        LessonCharacter exp = new LessonCharacter(100);
+        exp.addKeyValue("k1", "v1");
+        exp.addKeyValue("k2", "v2");
+        exp.addStroke(s1);
+        exp.addStroke(s2);
+        exp.addStroke(s3);
+        
+        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+    }
+    
+    public void testImportFromXmlNoIds() {
+        String xml = "<character id=\"100\">\n" +
+                "<tag tag=\"tag!\" />\n" +
+                "<tag tag=\"another tag?\" />\n" +
+                "<stroke position=\"0\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "<stroke position=\"1\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"10.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"20.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"30.0\" />\n" +
+                "</stroke>\n" +
+                "<stroke position=\"2\">\n" +
+                "<point position=\"0\" x=\"10.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"20.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "</character>\n";
+        
+        LessonCharacter exp = new LessonCharacter(100);
+        exp.addTag("tag!");
+        exp.addTag("another tag?");
+        exp.addStroke(s1);
+        exp.addStroke(s2);
+        exp.addStroke(s3);
+        
+        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+    }
+    
+    public void testImportFromXmlOneStroke() {
+        String xml = "<character id=\"100\">\n" +
+                "<tag tag=\"tag!\" />\n" +
+                "<tag tag=\"another tag?\" />\n" +
+                "<id key=\"k1\" value=\"v1\" />\n" +
+                "<id key=\"k2\" value=\"v2\" />\n" +
+                "<stroke position=\"0\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"3.0\" />\n" +
+                "</stroke>\n" +
+                "</character>\n";
+        
+        LessonCharacter exp = new LessonCharacter(100);
+        exp.addTag("tag!");
+        exp.addTag("another tag?");
+        exp.addKeyValue("k1", "v1");
+        exp.addKeyValue("k2", "v2");
+        exp.addStroke(s1);
+        
+        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+    }
+    
+    public void testImportFromXmlNoStrokes() {
+        String xml = "<character id=\"100\">\n" +
+                "<tag tag=\"tag!\" />\n" +
+                "<tag tag=\"another tag?\" />\n" +
+                "<id key=\"k1\" value=\"v1\" />\n" +
+                "<id key=\"k2\" value=\"v2\" />\n" +
+                "</character>\n";
+        
+        LessonCharacter exp = new LessonCharacter(100);
+        exp.addTag("tag!");
+        exp.addTag("another tag?");
+        exp.addKeyValue("k1", "v1");
+        exp.addKeyValue("k2", "v2");
+        
+        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+    }
 }
