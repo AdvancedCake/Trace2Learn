@@ -211,5 +211,40 @@ public class LessonCharacterTest extends AndroidTestCase {
 		assertEquals(1, keyValues.size());
 		assertTrue(keyValues.containsKey("key1"));
 		assertTrue(keyValues.containsValue("value1"));
-	}		
+	}
+	
+	public void testXml() {
+	    LessonCharacter c = new LessonCharacter(100);
+	    c.addTag("tag!");
+	    c.addTag("another tag?");
+        c.addKeyValue("k1", "v1");
+        c.addKeyValue("k2", "v2");
+        c.addStroke(s1);
+        c.addStroke(s2);
+        c.addStroke(s3);
+        
+        String exp = "<character id=\"100\">\n" +
+        		"<tag tag=\"tag!\" />\n" +
+        		"<tag tag=\"another tag?\" />\n" +
+        		"<id key=\"k1\" value=\"v1\" />\n" +
+        		"<id key=\"k2\" value=\"v2\" />\n" +
+        		"<stroke position=\"0\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"3.0\" />\n" +
+        		"</stroke>\n" +
+        		"<stroke position=\"1\">\n" +
+                "<point position=\"0\" x=\"1.0\" y=\"10.0\" />\n" +
+                "<point position=\"1\" x=\"2.0\" y=\"20.0\" />\n" +
+                "<point position=\"2\" x=\"3.0\" y=\"30.0\" />\n" +
+        		"</stroke>\n" +
+        		"<stroke position=\"2\">\n" +
+                "<point position=\"0\" x=\"10.0\" y=\"1.0\" />\n" +
+                "<point position=\"1\" x=\"20.0\" y=\"2.0\" />\n" +
+                "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
+        		"</stroke>\n" +
+        		"</character>\n";
+        
+        assertEquals(exp, c.toXml());
+	}
 }

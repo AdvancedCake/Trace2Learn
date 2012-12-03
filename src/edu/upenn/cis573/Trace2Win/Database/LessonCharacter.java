@@ -2,6 +2,7 @@ package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -200,6 +201,28 @@ public class LessonCharacter extends LessonItem {
 			canvas.drawPath(path, paint);
 			coveredTime += strokeTime;
 		}
+	}
+	
+	public String toXml() {
+	    String xml = "<character id=\"" + _id + "\">\n";
+	    
+	    for (String tag : _tags) {
+	        xml += "<tag tag=\"" + tag + "\" />\n";
+	    }
+	    
+	    for (Map.Entry<String, String> entry : _keyValues.entrySet()) {
+	        xml += "<id key=\"" + entry.getKey() + "\" value=\"" +
+	                entry.getValue() + "\" />\n";
+	    }
+	    
+	    int numStrokes = _strokes.size();
+	    for (int i = 0; i < numStrokes; i++) {
+	        xml += _strokes.get(i).toXml(i);
+	    }
+	    
+	    xml += "</character>\n";
+	    
+	    return xml;
 	}
 	
 }

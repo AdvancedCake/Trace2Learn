@@ -132,4 +132,19 @@ public class Stroke {
 		return toPath(1);
 	}
 	
+	public String toXml(int position) {
+	    String xml = "<stroke position=\"" + position + "\">\n";
+	    
+	    int numPoints = _points.size();
+	    for (int i = 0; i < numPoints; i++) {
+	        PointF point = _points.get(i);
+	        xml += "<point position=\"" + i + "\" x=\"" + point.x +
+	                "\" y=\"" + point.y + "\" />\n";
+	    }
+	    
+	    xml += "</stroke>\n";
+	    
+	    return xml;
+	}
+	
 }

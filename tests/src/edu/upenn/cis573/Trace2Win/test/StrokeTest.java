@@ -72,4 +72,18 @@ public class StrokeTest extends TestCase {
 		s.toPath();
 	}
 	
+	public void testXml() {
+	    Stroke s = new Stroke(1, 1);
+        s.addPoint(2, 3);
+        s.addPoint(4, 9);
+        
+        String exp = "<stroke position=\"3\">\n" +
+        		"<point position=\"0\" x=\"1.0\" y=\"1.0\" />\n" +
+        		"<point position=\"1\" x=\"2.0\" y=\"3.0\" />\n" +
+        		"<point position=\"2\" x=\"4.0\" y=\"9.0\" />\n" +
+        		"</stroke>\n";
+        
+        assertEquals(exp, s.toXml(3));
+	}
+	
 }
