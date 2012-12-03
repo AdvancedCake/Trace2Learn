@@ -1,6 +1,5 @@
 package edu.upenn.cis573.Trace2Win;
 
-import java.util.List;
 
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
@@ -141,9 +140,17 @@ public class CharacterCreationActivity extends Activity {
 	{
 		if (id_to_pass >= 0)
 		{
-			List<String> tags = _dbHelper.getCharacterTags(id_to_pass);
-			this._tagText.setText(tagsToString(tags));
-			setCharacter(_dbHelper.getCharacterById(id_to_pass));
+			LessonCharacter ch = _dbHelper.getCharacterById(id_to_pass);
+			
+			StringBuilder sb = new StringBuilder();
+			sb.append(ch.getKeyValuesToString());
+			if (ch.getKeyValues().size() > 0 && ch.getTags().size() > 0) {
+				sb.append(", ");
+			}
+			sb.append(ch.getTagsToString());
+			
+			_tagText.setText(sb.toString());
+			setCharacter(ch); // why here? doesn't match with the method name
 		}
 	}
 
@@ -164,19 +171,6 @@ public class CharacterCreationActivity extends Activity {
 	{
 		super.onRestart();
 		updateTags();
-	}
-
-	private String tagsToString(List<String> tags)
-	{
-		if (tags == null || tags.size() == 0) { return ""; }
-	    
-	    StringBuffer buf = new StringBuffer();
-		for (String str : tags)
-		{
-			buf.append(str + ", ");
-		}
-
-		return buf.toString().substring(0, buf.length() - 2);
 	}
 
 	public void onCreateButtonClick(View view)

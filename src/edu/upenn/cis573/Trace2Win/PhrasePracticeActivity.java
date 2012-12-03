@@ -38,7 +38,8 @@ public class PhrasePracticeActivity extends Activity {
 	private int _collectionSize;
 	private String _lessonName;
 
-	private long wordId = -1; // TODO what is this for? please document
+	private long _wordId = -1; // TODO what is this for? please document
+	private LessonWord _word;
 
 	private ArrayList<LessonCharacter> _characters;
 	private ArrayList<Bitmap> _bitmaps;
@@ -110,8 +111,9 @@ public class PhrasePracticeActivity extends Activity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("wordId")) 
 		{
-			wordId = bun.getLong("wordId");
-            setWord(_dbHelper.getWordById(wordId));
+			_wordId = bun.getLong("wordId");
+			_word = _dbHelper.getWordById(_wordId);
+            setWord(_word);
 			updateTags();
 			
 			_lessonID = bun.getLong("lessonID");
@@ -243,13 +245,16 @@ public class PhrasePracticeActivity extends Activity {
 
 	private void updateTags()
 	{
-		if (_characters.size() > 0)
-		{
-			int ind = _animator.getDisplayedChild();
-			List<String> tags = _dbHelper.getCharacterTags(_characters.get(ind).getId());
-			this._tagText.setText(tagsToString(tags));
-//			setCharacter(_dbHelper.getCharacterById(id_to_pass));
-		}
+		if (_word != null) {						
+			StringBuilder sb = new StringBuilder();
+			sb.append(_word.getKeyValuesToString());
+			if (_word.getKeyValues().size() > 0 && _word.getTags().size() > 0) {
+				sb.append(", ");
+			}
+			sb.append(_word.getTagsToString());
+			
+			_tagText.setText(sb.toString());
+		} 
 	}
 
 	public void onClearButtonClick(View view)
@@ -269,19 +274,6 @@ public class PhrasePracticeActivity extends Activity {
 		super.onRestart();
 		updateTags();
 	}
-
-    private String tagsToString(List<String> tags)
-    {
-        if (tags == null || tags.size() == 0) { return ""; }
-        
-        StringBuffer buf = new StringBuffer();
-        for (String str : tags)
-        {
-            buf.append(str + ", ");
-        }
-
-        return buf.toString().substring(0, buf.length() - 2);
-    }
 
 	public void onAnimateButtonClick(View view) 
 	{

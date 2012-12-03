@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -193,6 +195,15 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	public synchronized List<String> getTags()
 	{
 		return new ArrayList<String>(_tags);
+	}	
+	
+	public synchronized String getTagsToString()
+	{
+		StringBuilder sb = new StringBuilder();
+		for(String tag : _tags){
+			sb.append(", "+tag);
+		}
+		return new String(sb.length()>0 ? sb.substring(2) : "");
 	}
 	
 	public synchronized boolean hasKeyValue(String key, String value)
@@ -209,6 +220,15 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	{
 		return new LinkedHashMap<String, String>(_keyValues);
 	}	
+	
+	public synchronized String getKeyValuesToString()
+	{
+		StringBuilder sb = new StringBuilder();
+		for (Map.Entry<String, String> entry : _keyValues.entrySet()) {
+			sb.append(", " + entry.getKey() + ": " + entry.getValue());
+		}    	
+		return new String(sb.length()>0 ? sb.substring(2) : "");
+	}
 	
 	/** 
 	 * The ratio for determining how large a stroke should be given the size
