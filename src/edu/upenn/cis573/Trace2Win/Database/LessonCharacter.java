@@ -230,29 +230,26 @@ public class LessonCharacter extends LessonItem {
 	    return xml;
 	}
 	
-	public static LessonCharacter importFromXml(String xml) {
+	public static LessonCharacter importFromXml(Element elem) {
         try {
-            Document doc = Parser.parse(xml);
-            
-            Element root = doc.getDocumentElement();
-            long id = Long.parseLong(root.getAttribute("id"));
+            long id = Long.parseLong(elem.getAttribute("id"));
             
             LessonCharacter c = new LessonCharacter(id);
             
-            NodeList tags = root.getElementsByTagName("tag");
+            NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {
                 String tag = ((Element) tags.item(i)).getAttribute("tag");
                 c.addTag(tag);
             }
             
-            NodeList ids = root.getElementsByTagName("id");
+            NodeList ids = elem.getElementsByTagName("id");
             for (int i = 0; i < ids.getLength(); i++) {
                 String key = ((Element) ids.item(i)).getAttribute("key");
                 String value = ((Element) ids.item(i)).getAttribute("value");
                 c.addKeyValue(key, value);
             }
             
-            NodeList strokes = root.getElementsByTagName("stroke");
+            NodeList strokes = elem.getElementsByTagName("stroke");
             Stroke[] strokeArr = new Stroke[strokes.getLength()];
             for (int i = 0; i < strokes.getLength(); i++) {
                 Element strokeElem = (Element) strokes.item(i);

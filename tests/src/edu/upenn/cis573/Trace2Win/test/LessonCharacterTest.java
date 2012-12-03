@@ -1,11 +1,16 @@
 package edu.upenn.cis573.Trace2Win.test;
 
+import java.io.IOException;
 import java.util.HashMap;
+
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.Parser;
 import edu.upenn.cis573.Trace2Win.Database.Stroke;
 
 public class LessonCharacterTest extends AndroidTestCase {
@@ -249,7 +254,7 @@ public class LessonCharacterTest extends AndroidTestCase {
         assertEquals(exp, c.toXml());
 	}
 	
-    public void testImportFromXml() {
+    public void testImportFromXml() throws SAXException, IOException {
         String xml = "<character id=\"100\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
@@ -271,6 +276,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
                 "</stroke>\n" +
                 "</character>\n";
+        Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonCharacter exp = new LessonCharacter(100);
         exp.addTag("tag!");
@@ -281,10 +287,10 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addStroke(s2);
         exp.addStroke(s3);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+        compareCharacters(exp, LessonCharacter.importFromXml(elem));
     }
     
-    public void testImportFromXmlNoTags() {
+    public void testImportFromXmlNoTags() throws SAXException, IOException {
         String xml = "<character id=\"100\">\n" +
                 "<id key=\"k1\" value=\"v1\" />\n" +
                 "<id key=\"k2\" value=\"v2\" />\n" +
@@ -304,6 +310,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
                 "</stroke>\n" +
                 "</character>\n";
+        Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonCharacter exp = new LessonCharacter(100);
         exp.addKeyValue("k1", "v1");
@@ -312,10 +319,10 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addStroke(s2);
         exp.addStroke(s3);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+        compareCharacters(exp, LessonCharacter.importFromXml(elem));
     }
     
-    public void testImportFromXmlNoIds() {
+    public void testImportFromXmlNoIds() throws SAXException, IOException {
         String xml = "<character id=\"100\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
@@ -335,6 +342,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "<point position=\"2\" x=\"30.0\" y=\"3.0\" />\n" +
                 "</stroke>\n" +
                 "</character>\n";
+        Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonCharacter exp = new LessonCharacter(100);
         exp.addTag("tag!");
@@ -343,10 +351,10 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addStroke(s2);
         exp.addStroke(s3);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+        compareCharacters(exp, LessonCharacter.importFromXml(elem));
     }
     
-    public void testImportFromXmlOneStroke() {
+    public void testImportFromXmlOneStroke() throws SAXException, IOException {
         String xml = "<character id=\"100\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
@@ -358,6 +366,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "<point position=\"2\" x=\"3.0\" y=\"3.0\" />\n" +
                 "</stroke>\n" +
                 "</character>\n";
+        Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonCharacter exp = new LessonCharacter(100);
         exp.addTag("tag!");
@@ -366,16 +375,17 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addKeyValue("k2", "v2");
         exp.addStroke(s1);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+        compareCharacters(exp, LessonCharacter.importFromXml(elem));
     }
     
-    public void testImportFromXmlNoStrokes() {
+    public void testImportFromXmlNoStrokes() throws SAXException, IOException {
         String xml = "<character id=\"100\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
                 "<id key=\"k1\" value=\"v1\" />\n" +
                 "<id key=\"k2\" value=\"v2\" />\n" +
                 "</character>\n";
+        Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonCharacter exp = new LessonCharacter(100);
         exp.addTag("tag!");
@@ -383,6 +393,6 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
         
-        compareCharacters(exp, LessonCharacter.importFromXml(xml));
+        compareCharacters(exp, LessonCharacter.importFromXml(elem));
     }
 }
