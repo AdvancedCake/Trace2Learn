@@ -1251,7 +1251,7 @@ public class DbAdapter {
     	              null, null, null, "LessonOrder DESC", "1");
     	int lessonOrder;
     	if (x == null || x.getCount() == 0) {
-    	    lessonOrder = 0;
+    	    lessonOrder = -1;
         }
     	else {
             x.moveToFirst();
@@ -1298,7 +1298,7 @@ public class DbAdapter {
     	//add each word to LESSONS_DETAILS_TABLE
     	List<Long> l = les.getWordIds();
     	//word ordering
-    	int wordNumber=0;
+    	int wordNumber = 0;
     	for(Long wordId:l)
     	{
     		ContentValues lessonValues = new ContentValues();
