@@ -1249,13 +1249,14 @@ public class DbAdapter {
     	x = mDb.query(LESSONS_DETAILS_TABLE, new String[] {"LessonOrder"}, 
     	              "LessonId=" + lessonId, 
     	              null, null, null, "LessonOrder DESC", "1");
-    	if (x != null) {
-            x.moveToFirst();
+    	int lessonOrder;
+    	if (x == null || x.getCount() == 0) {
+    	    lessonOrder = 0;
         }
-    	else{
-    		return -1;
+    	else {
+            x.moveToFirst();
     	}
-    	int lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
+    	lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
         x.close();
 
     	ContentValues values = new ContentValues();
