@@ -43,8 +43,8 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		}
 		LessonItem item = _items.get(position);
 		ImageView image = (ImageView)v.findViewById(R.id.li_image);
-		TextView text = (TextView)v.findViewById(R.id.li_description);
-		TextView text2 = (TextView)v.findViewById(R.id.li_description2);
+		TextView text = (TextView)v.findViewById(R.id.idView);
+		TextView text2 = (TextView)v.findViewById(R.id.tagView);
 		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
 		image.setImageBitmap(bitmap);
 		
