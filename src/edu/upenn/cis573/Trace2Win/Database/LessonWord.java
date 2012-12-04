@@ -134,8 +134,12 @@ public class LessonWord extends LessonItem {
 	 * Creates an XML representation of this word.
 	 * @return an XML string
 	 */
-	public String toXml() {
-	    String xml = "<word id=\"" + _id + "\">\n";
+	public String toXml(int word_position) {
+		String xml = "";
+		if (word_position == -1)
+			xml = "<word id=\"" + _id + "\">\n";
+		else 
+			xml = "<word id=\"" + _id + "\" position=\"" + word_position + "\">\n";
 
 	    for (String tag : _tags) {
 	        xml += "<tag tag=\"" + tag + "\" />\n";
@@ -156,6 +160,11 @@ public class LessonWord extends LessonItem {
 	    return xml;
 	}
 	
+	public String toXml() {
+		return toXml(-1);
+	}
+	
+		
 	/**
 	 * Converts a parsed XML element to a LessonWord
 	 * @param elem XML DOM element
