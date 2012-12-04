@@ -148,8 +148,7 @@ public class LessonWord extends LessonItem {
 
 	    int numChars = _characters.size();
 	    for (int i = 0; i < numChars; i++) {
-	        xml += "<character id =\"" + _characters.get(i) + "\"";
-	    	xml += "position =\"" + i + "\">\n";
+	        xml += "<character id=\"" + _characters.get(i) + "\" position=\"" + i + "\" />\n";
 	    }
 
 	    xml += "</word>\n";
@@ -168,6 +167,7 @@ public class LessonWord extends LessonItem {
             long id = Long.parseLong(elem.getAttribute("id"));
             
             LessonWord w = new LessonWord();
+            w._id = id;
             
             NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {
