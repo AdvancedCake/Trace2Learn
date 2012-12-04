@@ -412,10 +412,36 @@ public class ShoppingCartActivity extends Activity {
                     return;
                 }
                 
-                String xml = "<ttw name=\"" + filename + "\">";
+                // to ensure that all character dependencies are met
+                List<LessonCharacter> dependencies = new ArrayList<LessonCharacter>();
+                
+                String xml = "<ttw name=\"" + filename + "\">\n";
                 for (LessonItem item : cart) {
                     xml += item.toXml();
+                    
+                    // if it's a lesson, we need to make sure dependencies are
+                    // met
+                    if (item instanceof Lesson) {
+                        Lesson lesson = (Lesson) item;
+                        List<LessonItem> words = lesson.getWords();
+                        
+                        for (LessonItem word : words) {
+                            List<LessonCharacter> characters = ((LessonWord) word).getCharacters();
+                            
+                            for (LessonCharacter character : characters) {
+                                if (!cart.contains(character) &&
+                                        !dependencies.contains(character)) {
+                                    dependencies.add(character);
+                                }
+                            }
+                        }
+                    }
                 }
+                
+                for (LessonCharacter character : dependencies) {
+                    xml += character.toXml();
+                }
+                
                 xml += "</ttw>";
                 System.out.println(xml);
                 writeStringToFile(xml, filename);
@@ -442,16 +468,15 @@ public class ShoppingCartActivity extends Activity {
      * @param filename the filename, ".ttw" will be automatically attached to the end
      */
     public void writeStringToFile(String xml, String filename) {
-    	if (filename == null) {
+    	if (filename == null || filename.length() == 0 || xml == null) {
     		return;
     	}
     	
     	String extFilesDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 "/data/" + getString(R.string.app_name);
 		// make sure that directory is created.
-    	new File(extFilesDir).mkdirs();
+    	(new File(extFilesDir)).mkdirs();
     	File outFile = new File(extFilesDir, filename + ".ttw");
-    	System.out.println(outFile.getAbsolutePath());
 
     	try {
     		FileWriter outFileWriter = new FileWriter(outFile, false);

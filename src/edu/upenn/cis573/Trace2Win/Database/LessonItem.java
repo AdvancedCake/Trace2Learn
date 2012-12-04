@@ -1,19 +1,14 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Element;
-
-import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 
 
@@ -28,7 +23,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected LinkedHashMap<String, String> _keyValues;
 	
 	/** The id of the item */
-	protected long _id;
+	protected long _id; // TODO remove this when string IDs are working.
 	
 	/** The stringid of the item */
 	protected String _stringid;

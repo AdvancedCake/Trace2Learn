@@ -14,6 +14,7 @@ public class Lesson extends LessonItem {
 	
 	private List<Long> _words; // list of word IDs
 	private String name; // lesson name
+	private List<LessonWord> wordObjects;
 
 	public Lesson(){
 		_type = ItemType.LESSON;
@@ -36,6 +37,10 @@ public class Lesson extends LessonItem {
 
 	public synchronized long getWordId(int i){
 		return _words.get(i).longValue();
+	}
+	
+	public synchronized List<LessonWord> getWordObjects() {
+	    return wordObjects;
 	}
 	
 	public String getLessonName(){
@@ -182,15 +187,22 @@ public class Lesson extends LessonItem {
         try {
             String id = elem.getAttribute("id");
             String name = elem.getAttribute("name");
+
+            Log.i("Import Lesson", "id: " + id);
+            Log.i("Import Lesson", "  name: " + name);
             
             Lesson lesson = new Lesson();
             lesson.setStringId(id);
             lesson.setName(name);
             
             NodeList words = elem.getElementsByTagName("word");
+            lesson.wordObjects = new ArrayList<LessonWord>(words.getLength());
             for (int i = 0; i < words.getLength(); i++) {
-                long word_id = Long.parseLong(((Element) words.item(i)).getAttribute("id"));
+                LessonWord word = LessonWord.importFromXml((Element) words.item(i));
+                long word_id = word.getId();
                 lesson.addWord(word_id);
+                lesson.wordObjects.add(word);
+                Log.i("Import Lesson", "  word: " + word_id);
             }
             
             return lesson;
@@ -198,5 +210,14 @@ public class Lesson extends LessonItem {
             Log.e("Import lesson", e.getMessage());
             return null;
         }
-	}	
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (!(other instanceof Lesson)) {
+	        return false;
+	    }
+
+	    return ((Lesson) other).getStringId().equals(_stringid);
+	}
 }

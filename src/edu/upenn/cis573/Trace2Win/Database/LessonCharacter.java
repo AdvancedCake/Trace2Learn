@@ -244,6 +244,7 @@ public class LessonCharacter extends LessonItem {
             if (!elem.getNodeName().equals("character")) { return null; }
             
             long id = Long.parseLong(elem.getAttribute("id"));
+            Log.i("Import Character", "id: " + id);
             
             LessonCharacter c = new LessonCharacter(id);
             
@@ -251,6 +252,7 @@ public class LessonCharacter extends LessonItem {
             for (int i = 0; i < tags.getLength(); i++) {
                 String tag = ((Element) tags.item(i)).getAttribute("tag");
                 c.addTag(tag);
+                Log.i("Import Character", "  tag: " + tag);
             }
             
             NodeList ids = elem.getElementsByTagName("id");
@@ -258,6 +260,7 @@ public class LessonCharacter extends LessonItem {
                 String key = ((Element) ids.item(i)).getAttribute("key");
                 String value = ((Element) ids.item(i)).getAttribute("value");
                 c.addKeyValue(key, value);
+                Log.i("Import Character", "  key: " + key + ", value: " + value);
             }
             
             NodeList strokes = elem.getElementsByTagName("stroke");
@@ -268,13 +271,22 @@ public class LessonCharacter extends LessonItem {
                         strokeElem.getAttribute("position"));
                 strokeArr[position] = Stroke.importFromXml(strokeElem);
             }
-            c._strokes = new ArrayList<Stroke>(Arrays.asList(strokeArr));
+            c._strokes = new ArrayList<Stroke>(Arrays.asList(strokeArr));            
             
             return c;
         } catch (Exception e) {
             Log.e("Import Char", e.getMessage());
             return null;
         }
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+	    if (!(other instanceof LessonCharacter)) {
+	        return false;
+	    }
+	    
+	    return ((LessonCharacter) other).getId() == _id;
 	}
 	
 }

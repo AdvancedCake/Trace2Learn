@@ -12,6 +12,7 @@ import org.w3c.dom.NodeList;
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,6 +20,7 @@ import android.widget.Toast;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
+import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 import edu.upenn.cis573.Trace2Win.Database.Parser;
 
 public class FilePickerActivity extends ListActivity {
@@ -86,6 +88,8 @@ public class FilePickerActivity extends ListActivity {
         } catch (Exception e) {
             showToast("This is not a valid " + getString(R.string.app_name) +
                     " file!");
+            Log.e("Import", e.getMessage());
+            e.printStackTrace();
         }
     }
     
@@ -98,9 +102,13 @@ public class FilePickerActivity extends ListActivity {
         NodeList characters = elem.getElementsByTagName("character");
         for (int i = 0; i < characters.getLength(); i++) {
             Element e = (Element) characters.item(i);
-            LessonCharacter character = LessonCharacter.importFromXml(e);
-            if (dba.getCharacterById(character.getId()) == null) {
-                dba.addCharacter(character);
+            
+            // only want direct children
+            if (e.getParentNode().getNodeName().equals("ttw")) {
+                LessonCharacter character = LessonCharacter.importFromXml(e);
+                if (dba.getCharacterById(character.getId()) == null) {
+                    dba.addCharacter(character);
+                }
             }
         }
     }
@@ -114,9 +122,23 @@ public class FilePickerActivity extends ListActivity {
         NodeList lessons = elem.getElementsByTagName("lesson");
         for (int i = 0; i < lessons.getLength(); i++) {
             Element e = (Element) lessons.item(i);
-            Lesson lesson = Lesson.importFromXml(e);
-            if (dba.getLessonById(lesson.getStringId()) == null) {
-                dba.addLesson(lesson);
+            
+            // only want direct children
+            if (e.getParentNode().getNodeName().equals("ttw")) {
+                Lesson lesson = Lesson.importFromXml(e);
+                
+                if (dba.getLessonById(lesson.getStringId()) == null) {
+                    // add all of the words
+                    List<LessonWord> words = lesson.getWordObjects();
+                    for (LessonWord word : words) {
+                        if (dba.getWordById(word.getId()) == null) {
+                            dba.addWord(word);
+                        }
+                    }
+                    
+                    // add the lesson
+                    dba.addLesson(lesson);
+                }
             }
         }
     }

@@ -3,7 +3,6 @@ package edu.upenn.cis573.Trace2Win.Database;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -393,7 +392,6 @@ public class DbAdapter {
 
     
     //TODO rename this method to deleteCharTag, or refactor so that words, lessons, and chars use the same method
-    //TODO get rid of the switch cases and use polymorphism. (code smell)
     /**
      * Delete the tag with the given rowId and tag
      * 
@@ -505,12 +503,20 @@ public class DbAdapter {
      */
     public boolean addCharacter(LessonCharacter c)
     {
-    	mDb.beginTransaction();
-    	//add to CHAR_TABLE
     	ContentValues initialCharValues = new ContentValues();
     	initializePrivateTag(c, initialCharValues);
+    	
+    	if (c.getId() != -1) { // id already initialized, keep it
+    	    initialCharValues.put(CHAR_ROWID, c.getId());
+            if (getCharacterById(c.getId()) != null) {
+                deleteCharacter(c.getId());
+            }
+    	}
+    	
     	//c.setId(c.getUniqueId(mCtx));
         //initializeUniqueId(c, initialCharValues);
+    	
+        mDb.beginTransaction();
     	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
     	if(id == -1)
     	{
@@ -519,12 +525,16 @@ public class DbAdapter {
     		mDb.endTransaction();
     		return false;
     	}
-    	Cursor x = mDb.query(CHAR_TABLE, new String[]{CHAR_ROWID}, null, null, null, null, CHAR_ROWID+" DESC", "1");
-    	if (x != null) {
-            x.moveToFirst();
+
+        if (c.getId() == -1) { // id not initialized
+            c.setId(id);
         }
-    	c.setId(x.getInt(x.getColumnIndexOrThrow(CHAR_ROWID))); // TODO RLi: is this not equal to the local variable id returned by mDb.insert?
-    	x.close();
+        
+        // To make the sort order the same as the ID, we need to update the row
+        // after we get the ID, i.e. now.
+        c.setSort(c.getId()); // sort value initialized to ID.
+        initialCharValues.put("sort", c.getSort());
+        mDb.update(CHAR_TABLE, initialCharValues, CHAR_ROWID + "=" + id, null);
     	
     	// if the given character has tags, copy them
     	for (String tag : c.getTags()) {
@@ -547,13 +557,7 @@ public class DbAdapter {
     			mDb.endTransaction();
         		return false;
     		}
-    	}    	
-    	
-    	// To make the sort order the same as the ID, we need to update the row
-    	// after we get the ID, i.e. now.
-    	c.setSort(c.getId()); // sort value initialized to ID.
-        initialCharValues.put("sort", c.getSort());
-        mDb.update(CHAR_TABLE, initialCharValues, CHAR_ROWID + "=" + id, null);
+    	}
     	
     	//add each stroke to CHAR_DETAILS_TABLE
     	List<Stroke> l = c.getStrokes();
@@ -767,22 +771,32 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
-    	if (w.getId() != -1) initialWordsValues.put("_id", w.getId());
+    	
+    	if (w.getId() != -1) { // id already initialized, keep it
+    	    initialWordsValues.put(WORDS_ROWID, w.getId());
+            if (getWordById(w.getId()) != null) {
+                deleteWord(w.getId());
+            }
+    	}
+    	
     	initializePrivateTag(w, initialWordsValues);
     	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
-    	if(id == -1)
-    	{
+    	if (id == -1) {
     		//if error
     		Log.e(WORDS_TABLE, "cannot add new character to table "+WORDS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
-    	Cursor x = mDb.query(WORDS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
-    	if (x != null) {
-            x.moveToFirst();
-        }
-    	w.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
-        x.close();
+    	
+    	if (w.getId() == -1) { // id not initialized, set it now
+    	    w.setId(id);
+    	}
+
+        // To make the sort order the same as the ID, we need to update the row
+        // after we get the ID, i.e. now.
+        w.setSort(w.getId()); // sort value initialized to ID.
+        initialWordsValues.put("sort", w.getSort());
+        mDb.update(WORDS_TABLE, initialWordsValues, WORDS_ROWID + "=" + id, null);
         
     	// if the given word has tags, copy them
     	for (String tag : w.getTags()) {
@@ -806,12 +820,6 @@ public class DbAdapter {
         		return false;
     		}
     	}    	        
-    	
-        // To make the sort order the same as the ID, we need to update the row
-        // after we get the ID, i.e. now.
-        w.setSort(w.getId()); // sort value initialized to ID.
-        initialWordsValues.put("sort", w.getSort());
-        mDb.update(WORDS_TABLE, initialWordsValues, WORDS_ROWID + "=" + id, null);
     	
     	//add each character to WORDS_DETAILS_TABLE
     	List<Long> l = w.getCharacterIds();
@@ -1278,7 +1286,7 @@ public class DbAdapter {
      * returns the rowid of the word in table LESSONS_DETAILS_TABLE after being inserted
      * perhaps the return value should be changed, artifact of once using rowids for all ids
      */
-    //TODO what if two lessons have the same name? lesson ID should be the name of the lesson instead
+    //TODO what if two lessons have the same name? should use lesson ID instead
     public long addWordToLesson(String lessonName, long wordId){
     	mDb.beginTransaction();
     	// Find the lesson
@@ -1326,11 +1334,17 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialLessonValues = new ContentValues();
-    	String id2 = "";
-    	if (les.getStringId() != null) id2 = les.getStringId();
-    	else id2 = makeUniqueId();
-    	initialLessonValues.put(LESSONS_ID, id2);
-    	initializePrivateTag(les,initialLessonValues);
+    	String id = "";
+    	if (les.getStringId() != null) { // id already initialized, keep it
+    	    id = les.getStringId();
+            if (getLessonById(les.getStringId()) != null) {
+                deleteLesson(les.getStringId());
+            }
+    	} else { // make new id
+    	    id = makeUniqueId();
+    	}
+    	initialLessonValues.put(LESSONS_ID, id);
+    	initialLessonValues.put("name", les.getLessonName());
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
     	if(rowid == -1)
     	{
@@ -1339,13 +1353,8 @@ public class DbAdapter {
     		mDb.endTransaction();
     		return false;
     	}
-    	Cursor x = mDb.query(LESSONS_TABLE, new String[]{LESSONS_ID}, LESSONS_ID + "='" + id2 + "'", null, null, null, null);
-
-    	if (x != null) {
-            x.moveToFirst();
-        }
-    	les.setStringId(x.getString(x.getColumnIndexOrThrow("_id")));
-        x.close();
+    	
+    	les.setStringId(id);
 
     	//add each word to LESSONS_DETAILS_TABLE
     	List<Long> l = les.getWordIds();
@@ -1354,7 +1363,7 @@ public class DbAdapter {
     	for(Long wordId:l)
     	{
     		ContentValues lessonValues = new ContentValues();
-    		lessonValues.put("LessonId", id2);
+    		lessonValues.put("LessonId", id);
     		lessonValues.put("WordId", wordId);
     		lessonValues.put("LessonOrder", wordNumber);
     		long success = mDb.insert(LESSONS_DETAILS_TABLE, null, lessonValues);
@@ -1452,13 +1461,16 @@ public class DbAdapter {
     	Cursor mCursor =
     			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID, "name"}, LESSONS_ID + "='" + id + "'", null,
     					null, null, null, null);
-    	Lesson le = new Lesson();
     	//if the Lesson doesn't exists
+        Lesson le = new Lesson();
     	if (mCursor == null) {
     		return null;
-    	}else{
+    	} else if (mCursor.getCount() == 0) {
+    	    mCursor.close();
+    	    return null;
+        } else {
     		mCursor.moveToFirst();
-    		le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+            le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	}
         mCursor.close();
 

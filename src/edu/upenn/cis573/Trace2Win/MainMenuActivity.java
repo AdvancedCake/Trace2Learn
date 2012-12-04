@@ -20,7 +20,8 @@ public class MainMenuActivity extends ListActivity {
 			"Browse All Characters",
 			"Browse All Words",
 			"Browse All Lessons",
-			"Export Characters",
+            "Export Characters",
+            "Export Lessons",
 			"Import From File"
 		};
 
@@ -76,7 +77,15 @@ public class MainMenuActivity extends ListActivity {
                         intent.putExtras(bun);
                         startActivity(intent);
                     }
-                    else if (clicked.equals(APPS[6])) // "Import From File"
+                    else if (clicked.equals(APPS[6]))// "Export Lessons"
+                    {
+                        Intent intent = new Intent(c, ShoppingCartActivity.class);
+                        Bundle bun = new Bundle();
+                        bun.putString("type", "lesson");
+                        intent.putExtras(bun);
+                        startActivity(intent);
+                    }
+                    else if (clicked.equals(APPS[7])) // "Import From File"
                     {
                         Intent intent = new Intent(c, FilePickerActivity.class);
                         startActivity(intent);

@@ -37,7 +37,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
-import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
@@ -79,7 +78,7 @@ public class BrowseWordsActivity extends ListActivity {
         if(lessonID == null){
             List<Long> ids = dba.getAllWordIds();
             for(long id : ids){
-                LessonItem word = dba.getWordById(id);
+                LessonWord word = dba.getWordById(id);
                 items.add(word);
             }
             Collections.sort(items);

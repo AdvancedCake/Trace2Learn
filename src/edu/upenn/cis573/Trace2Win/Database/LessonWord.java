@@ -201,17 +201,26 @@ public class LessonWord extends LessonItem {
             Long[] charArr = new Long[chars.getLength()];
             for (int i = 0; i < chars.getLength(); i++) {
                 Element charElem = (Element) chars.item(i);
-                int position = Integer.parseInt(
-                        charElem.getAttribute("position"));
-                charArr[position] = LessonCharacter.importFromXml(charElem)._id;
+                int position = Integer.parseInt(charElem.getAttribute("position"));
+                long charId = Integer.parseInt(charElem.getAttribute("id"));
+                charArr[position] = charId;
             }
             w._characters = new ArrayList<Long>(Arrays.asList(charArr));
-            
+
             return w;
         } catch (Exception e) {
             Log.e("Import Word", e.getMessage());
             return null;
         }
 	}
-	
+
+	@Override
+	public boolean equals(Object other) {
+	    if (!(other instanceof LessonWord)) {
+	        return false;
+	    }
+
+	    return ((LessonWord) other).getId() == _id;
+	}
+
 }
