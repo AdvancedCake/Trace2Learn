@@ -385,7 +385,8 @@ public class ShoppingCartActivity extends Activity {
     }
     
     /**
-     * Write the given String to the device's internal file system 
+     * Write the given String to the device's external file system
+     * location: external_root/data/"app_name", app_name from resource 
      * @param inputStr The string that you want to write to the device
      * @param filename the filename, ".ttw" will be automatically attached to the end
      */
@@ -404,7 +405,11 @@ public class ShoppingCartActivity extends Activity {
     		return;
     	}
 
-    	File outFile = new File(getFilesDir(), filename + ".ttw"); 
+    	
+    	String extFilesDir = getExternalFilesDir(null) + "/data/" + getString(R.string.app_name);
+		// make sure that directory is created.
+    	new File(extFilesDir).mkdirs();    	
+    	File outFile = new File(extFilesDir, filename + ".ttw"); 
 
     	try {
     		FileWriter outFileWriter = new FileWriter(outFile, false);
@@ -422,13 +427,15 @@ public class ShoppingCartActivity extends Activity {
     }   
     
     /**
-     * Read a String from the file whose name is given
+     * Read a String from the file whose name is given     * 
+     * location: external_root/data/"app_name", app_name from resource 
      * @param filename the filename including ".ttw". 
      *        assumed to be in the internal storage
      * @return String The string which is contained in the given file
      */
     public String readStringFromFile(String filename) {   	
-    	File outFile = new File(getFilesDir(), filename);
+    	String extFilesDir = getExternalFilesDir(null) + "/data/" + getString(R.string.app_name);
+    	File outFile = new File(extFilesDir, filename);
     	StringBuffer sb = new StringBuffer();
 
     	try {		   
