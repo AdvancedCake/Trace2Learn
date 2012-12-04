@@ -1,0 +1,58 @@
+<ttw name="English Colors">
+    <character id="123456">
+        <tag tag="English" />
+        <id key="Letter" value="A" />
+        <stroke position="0">
+            <point position="0" x="5" y="5" />
+            <point position="1" x="6" y="6" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="5" y="5" />
+            <point position="1" x="6" y="6" />
+        </stroke>
+    </character>
+    <character id="123457">
+        <tag tag="English" />
+        <id key="Letter" value="B" />
+        <stroke position="0">
+            <point position="0" x="5" y="5" />
+            <point position="1" x="6" y="6" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="5" y="5" />
+            <point position="1" x="6" y="6" />
+        </stroke>
+    </character>
+    <lesson id="666" name="Colors">
+        <word id="900" position="0">
+            <tag tag="English" />
+            <tag tag="Color" />
+            <id key="Word" value="Red" />
+            <character id="1234" position="0" />
+            <character id="1234" position="1" />
+        </word>
+        <word id="901" position="1">
+            <tag tag="English" />
+            <tag tag="Color" />
+            <id key="Word" value="Blue" />
+            <character id="1235" position="0" />
+            <character id="1234" position="1" />
+        </word>
+    </lesson>
+    <lesson id="667" name="Shapes">
+        <word id="800" position="0">
+            <tag tag="English" />
+            <tag tag="Shape" />
+            <id key="Word" value="Square" />
+            <character id="1234" position="0" />
+            <character id="1234" position="1" />
+        </word>
+        <word id="801" position="1">
+            <tag tag="English" />
+            <tag tag="Shape" />
+            <id key="Word" value="Circle" />
+            <character id="1235" position="0" />
+            <character id="1234" position="1" />
+        </word>
+    </lesson>
+</ttw>
