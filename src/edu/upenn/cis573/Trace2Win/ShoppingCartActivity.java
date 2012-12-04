@@ -386,7 +386,7 @@ public class ShoppingCartActivity extends Activity {
         }
         
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle("Filename");
+        builder.setTitle("Save as...");
         
         final EditText text = new EditText(this);
         builder.setView(text);
@@ -428,7 +428,11 @@ public class ShoppingCartActivity extends Activity {
             }
         });
         
-        builder.create().show();
+        AlertDialog dialog = builder.create();
+        
+        // show the keyboard
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        dialog.show();
     }
     
     /**
