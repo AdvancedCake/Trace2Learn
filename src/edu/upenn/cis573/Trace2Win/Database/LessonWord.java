@@ -21,6 +21,12 @@ public class LessonWord extends LessonItem {
 		_characters = new ArrayList<Long>();
 	}
 	
+	public LessonWord(long id)
+	{
+		this();
+		_id = id;
+	}		
+	
 	public void addCharacter(Long character){
 		_characters.add(character);
 	}

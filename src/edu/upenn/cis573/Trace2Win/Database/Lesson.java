@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 public class Lesson extends LessonItem {
 	
@@ -17,6 +19,12 @@ public class Lesson extends LessonItem {
 		_type = ItemType.LESSON;
 		_words = new ArrayList<Long>();
 	}
+	
+	public Lesson(long id)
+	{
+		this();
+		_id = id;
+	}	
 
 	public synchronized void addWord(Long word){
 		_words.add(word);
@@ -135,16 +143,59 @@ public class Lesson extends LessonItem {
 		}*/
 	}
 
-    @Override
-    public String toXml() {
-        // TODO delete me!
-        return null;
-    }
+	/**
+	 * Creates an XML representation of this Lesson.
+	 * @return an XML string
+	 */
+	public String toXml() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("<lesson id=\"").append(_stringid).append("\" ");
+		sb.append("name=\"").append(name).append("\">\n");
 
-    public static LessonItem importFromXml(Element elem) {
-        // TODO delete me!!
-        return null;
-    }
+		synchronized (_words) {
+			int word_position = 0;
+			for (long word_id : _words) {
+				if (_db == null) {
+					Log.d("Lesson.toXml()", "_db is null");
+					return null;
+				} 
+				LessonWord w = _db.getWordById(word_id);
+				Log.d("Lesson.toXml()", " " + word_id);
+				if (w == null) Log.d("Lesson.toXml()", "word is null");
+				else sb.append(w.toXml(word_position++));
+			}
+		}
 
+		sb.append("</lesson>\n");	    	    
 
+		return sb.toString();
+	}	
+	
+	
+	/**
+	 * Converts a parsed XML element to a Lesson
+	 * @param elem XML DOM element
+	 * @return the Lesson represented by the XML element, or null if
+	 * there was an error
+	 */
+	public static Lesson importFromXml(Element elem) {
+        try {
+            long id = Long.parseLong(elem.getAttribute("id"));
+            String name = elem.getAttribute("name");
+            
+            Lesson lesson = new Lesson(id);
+            lesson.setName(name);
+            
+            NodeList words = elem.getElementsByTagName("word");
+            for (int i = 0; i < words.getLength(); i++) {
+                long word_id = Long.parseLong(((Element) words.item(i)).getAttribute("id"));
+                lesson.addWord(word_id);
+            }
+            
+            return lesson;
+        } catch (Exception e) {
+            Log.e("Import lesson", e.getMessage());
+            return null;
+        }
+	}	
 }

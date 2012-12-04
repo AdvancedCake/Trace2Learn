@@ -767,6 +767,7 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
+    	if (w.getId() != -1) initialWordsValues.put("_id", w.getId());
     	initializePrivateTag(w, initialWordsValues);
     	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
     	if(id == -1)
@@ -1061,6 +1062,24 @@ public class DbAdapter {
         return mCursor;
 
     }
+    
+    /**
+     * Returns a cursor with all chars that partially match tag
+     * @param tag a partial tag
+     * @return a Cursor
+     * @throws SQLException
+     */
+    public Cursor getAllChars(String tag) throws SQLException {
+        Cursor mCursor;
+        mCursor = mDb.query(true, CHARTAG_TABLE, 
+                new String[] {CHARTAG_ROWID}, 
+                CHARTAG_TAG + " LIKE '" + tag + "%'", 
+                null, null, null, CHARTAG_ROWID + " ASC", null);
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        return mCursor;
+    }
    
     /**
      * Return a List of tags that matches the given Lesson's id
@@ -1307,7 +1326,9 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialLessonValues = new ContentValues();
-    	String id2 = makeUniqueId();
+    	String id2 = "";
+    	if (les.getStringId() != null) id2 = les.getStringId();
+    	else id2 = makeUniqueId();
     	initialLessonValues.put(LESSONS_ID, id2);
     	initializePrivateTag(les,initialLessonValues);
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
@@ -1346,6 +1367,8 @@ public class DbAdapter {
     		}
     		wordNumber++;
     	}
+    	
+    	les.setDatabase(this);
     	
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
