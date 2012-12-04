@@ -1,5 +1,10 @@
 package edu.upenn.cis573.Trace2Win;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -378,6 +383,71 @@ public class ShoppingCartActivity extends Activity {
     public void onClickExport(View view) {
         showToast("Export!!");
     }
+    
+    /**
+     * Write the given String to the device's internal file system 
+     * @param inputStr The string that you want to write to the device
+     * @param filename the filename, ".ttw" will be automatically attached to the end
+     */
+    public void writeStringToFile(String inputStr, String filename) {
+    	if (filename == null) {
+    		return;
+    	}
+
+    	if (filename.contains(" ")) {
+    		showToast("The export filename shoud NOT have a space.");
+    		return;
+    	}
+
+    	if (filename.contains(".")) {
+    		showToast("The export filename shoud NOT have a period.");
+    		return;
+    	}
+
+    	File outFile = new File(getFilesDir(), filename + ".ttw"); 
+
+    	try {
+    		FileWriter outFileWriter = new FileWriter(outFile, false);
+
+    		synchronized (inputStr) {
+    			outFileWriter.write(inputStr);
+    		}
+    		outFileWriter.flush();
+    		outFileWriter.close();    	
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		showToast("Error while writing a file to the device!");
+    		return;
+    	}    	
+    }   
+    
+    /**
+     * Read a String from the file whose name is given
+     * @param filename the filename including ".ttw". 
+     *        assumed to be in the internal storage
+     * @return String The string which is contained in the given file
+     */
+    public String readStringFromFile(String filename) {   	
+    	File outFile = new File(getFilesDir(), filename);
+    	StringBuffer sb = new StringBuffer();
+
+    	try {		   
+    		BufferedReader buf = new BufferedReader(new FileReader(outFile));
+
+    		String strTemp = buf.readLine();
+    		while (strTemp != null) {
+    			sb.append(strTemp);
+    			strTemp = buf.readLine();
+    		}
+
+    		buf.close();   
+    		return sb.toString();
+    	} catch (IOException e) {
+    		e.printStackTrace();
+    		showToast("Error while reading '" + filename + "' from the device!");
+    		return null;
+    	}    	
+    }       
 
     /**
      * Display a toast message
