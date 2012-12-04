@@ -3,6 +3,8 @@ package edu.upenn.cis573.Trace2Win.Database;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.w3c.dom.Element;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 
@@ -136,6 +138,11 @@ public class Lesson extends LessonItem {
     @Override
     public String toXml() {
         // TODO delete me!
+        return null;
+    }
+
+    public static LessonItem importFromXml(Element elem) {
+        // TODO delete me!!
         return null;
     }
 

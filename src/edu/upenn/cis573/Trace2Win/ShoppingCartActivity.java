@@ -458,6 +458,7 @@ public class ShoppingCartActivity extends Activity {
     		outFileWriter.flush();
     		outFileWriter.close();
 
+    		showToast("Exported " + filename + " successfully.");
     		finish();
     	} catch (IOException e) {
     		e.printStackTrace();
@@ -505,7 +506,7 @@ public class ShoppingCartActivity extends Activity {
                     for (Map.Entry<String, String> entry : keyValues.entrySet()) {
                         sb.append(", " + entry.getKey() + ": " + entry.getValue());
                     }       
-                    String s = sb.length()>0 ? sb.substring(2) : "";
+                    String s = sb.length() > 0 ? sb.substring(2) : "";
                     idView.setText(s);
                     break;
                 case LESSON:

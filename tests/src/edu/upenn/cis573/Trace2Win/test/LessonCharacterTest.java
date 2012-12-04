@@ -287,7 +287,7 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addStroke(s2);
         exp.addStroke(s3);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(elem));
+        compareCharacters(exp, (LessonCharacter) LessonCharacter.importFromXml(elem));
     }
     
     public void testImportFromXmlNoTags() throws SAXException, IOException {
@@ -319,7 +319,7 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addStroke(s2);
         exp.addStroke(s3);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(elem));
+        compareCharacters(exp, (LessonCharacter) LessonCharacter.importFromXml(elem));
     }
     
     public void testImportFromXmlNoIds() throws SAXException, IOException {
@@ -351,7 +351,7 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addStroke(s2);
         exp.addStroke(s3);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(elem));
+        compareCharacters(exp, (LessonCharacter) LessonCharacter.importFromXml(elem));
     }
     
     public void testImportFromXmlOneStroke() throws SAXException, IOException {
@@ -375,7 +375,7 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addKeyValue("k2", "v2");
         exp.addStroke(s1);
         
-        compareCharacters(exp, LessonCharacter.importFromXml(elem));
+        compareCharacters(exp, (LessonCharacter) LessonCharacter.importFromXml(elem));
     }
     
     public void testImportFromXmlNoStrokes() throws SAXException, IOException {
@@ -393,6 +393,6 @@ public class LessonCharacterTest extends AndroidTestCase {
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
         
-        compareCharacters(exp, LessonCharacter.importFromXml(elem));
+        compareCharacters(exp, (LessonCharacter) LessonCharacter.importFromXml(elem));
     }
 }

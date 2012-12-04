@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Element;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -383,4 +385,9 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time);
 	
 	public abstract String toXml();
+	
+	public static LessonItem importFromXml(Element elem) {
+	    // Method stub because static can't be abstract
+        return null;
+    }
 }
