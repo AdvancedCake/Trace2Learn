@@ -92,12 +92,13 @@ public class FilePickerActivity extends ListActivity {
     /**
      * Imports characters from the given file
      * @param elem Trace2Learn root element <ttw>
+     * @throws Exception indicates that the element was not a valid ttw file
      */
     private void importCharacters(Element elem) throws Exception {
         NodeList characters = elem.getElementsByTagName("character");
         for (int i = 0; i < characters.getLength(); i++) {
             Element e = (Element) characters.item(i);
-            LessonCharacter character = (LessonCharacter) LessonCharacter.importFromXml(e);
+            LessonCharacter character = LessonCharacter.importFromXml(e);
             if (dba.getCharacterById(character.getId()) == null) {
                 dba.addCharacter(character);
             }
@@ -107,12 +108,13 @@ public class FilePickerActivity extends ListActivity {
     /**
      * Imports words and lessons from the given file
      * @param elem Trace2Learn root element <ttw>
+     * @throws Exception indicates that the element was not a valid ttw file
      */
-    private void importLessons(Element elem) {
+    private void importLessons(Element elem) throws Exception {
         NodeList lessons = elem.getElementsByTagName("lesson");
         for (int i = 0; i < lessons.getLength(); i++) {
             Element e = (Element) lessons.item(i);
-            Lesson lesson = (Lesson) Lesson.importFromXml(e);
+            Lesson lesson = Lesson.importFromXml(e);
             if (dba.getLessonById(lesson.getStringId()) == null) {
                 dba.addLesson(lesson);
             }

@@ -239,7 +239,7 @@ public class LessonCharacter extends LessonItem {
 	 * @return the LessonCharacter represented by the XML element, or null if
 	 * there was an error
 	 */
-	public static LessonItem importFromXml(Element elem) {
+	public static LessonCharacter importFromXml(Element elem) {
         try {
             if (!elem.getNodeName().equals("character")) { return null; }
             
