@@ -441,7 +441,7 @@ public class TagActivity extends Activity {
     
     private final void showToast(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
-    }	
+    }
 
     @Override
     public void onBackPressed() {

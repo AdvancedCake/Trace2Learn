@@ -21,7 +21,7 @@ public class MainMenuActivity extends ListActivity {
 			"Browse All Words",
 			"Browse All Lessons",
 			"Export Characters",
-			"File Picker!!1"
+			"Import From File"
 		};
 
 	@Override
@@ -76,7 +76,7 @@ public class MainMenuActivity extends ListActivity {
                         intent.putExtras(bun);
                         startActivity(intent);
                     }
-                    else if (clicked.equals(APPS[6])) // "FILE PICKER TIEM"
+                    else if (clicked.equals(APPS[6])) // "Import From File"
                     {
                         Intent intent = new Intent(c, FilePickerActivity.class);
                         startActivity(intent);

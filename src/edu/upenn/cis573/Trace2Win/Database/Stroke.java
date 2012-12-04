@@ -167,12 +167,16 @@ public class Stroke {
 	
     /**
      * Converts a parsed XML element to a Stroke
-     * @param elem XML DOM element
+     * @param elem XML DOM element where the root element is <stroke>
      * @return the Stroke represented by the XML element, or null if there was
      * an error
      */	
 	public static Stroke importFromXml(Element elem) {
         try {
+            if (!elem.getNodeName().equals("stroke")) {
+                return null;
+            }
+            
             NodeList points = elem.getElementsByTagName("point");
             PointF[] pointArr = new PointF[points.getLength()];
             for (int j = 0; j < points.getLength(); j++) {

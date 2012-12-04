@@ -1,23 +1,25 @@
 package edu.upenn.cis573.Trace2Win;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Environment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -380,42 +382,81 @@ public class ShoppingCartActivity extends Activity {
      * Click handler for "Export" button
      * @param view The button
      */
-    public void onClickExport(View view) {
-        showToast("Export!!");
+    public void onClickExport(final View view) {
+        if (cart.size() == 0) {
+            showToast("Add items to your cart first!");
+            return;
+        }
+        
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Filename");
+        
+        final EditText text = new EditText(this);
+        builder.setView(text);
+        
+        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                String filename = text.getText().toString();
+                if (filename.equals("")) {
+                    showToast("Please enter a filename");
+                    onClickExport(view);
+                    return;
+                }
+                
+                if (filename.contains(" ")) {
+                    showToast("The export filename shoud NOT have a space.");
+                    onClickExport(view);
+                    return;
+                }
+
+                if (filename.contains(".")) {
+                    showToast("The export filename shoud NOT have a period.");
+                    onClickExport(view);
+                    return;
+                }
+                
+                String xml = "<ttw name=\"" + filename + "\">";
+                for (LessonItem item : cart) {
+                    xml += item.toXml();
+                }
+                xml += "</ttw>";
+                System.out.println(xml);
+                writeStringToFile(xml, filename);
+            }
+        });
+        
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                showToast("Not saved");
+            }
+        });
+        
+        builder.create().show();
     }
     
     /**
      * Write the given String to the device's external file system
      * location: external_root/data/"app_name", app_name from resource 
-     * @param inputStr The string that you want to write to the device
+     * @param xml The string that you want to write to the device
      * @param filename the filename, ".ttw" will be automatically attached to the end
      */
-    public void writeStringToFile(String inputStr, String filename) {
+    public void writeStringToFile(String xml, String filename) {
     	if (filename == null) {
     		return;
     	}
-
-    	if (filename.contains(" ")) {
-    		showToast("The export filename shoud NOT have a space.");
-    		return;
-    	}
-
-    	if (filename.contains(".")) {
-    		showToast("The export filename shoud NOT have a period.");
-    		return;
-    	}
-
     	
-    	String extFilesDir = getExternalFilesDir(null) + "/data/" + getString(R.string.app_name);
+    	String extFilesDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
+                "/data/" + getString(R.string.app_name);
 		// make sure that directory is created.
-    	new File(extFilesDir).mkdirs();    	
-    	File outFile = new File(extFilesDir, filename + ".ttw"); 
+    	new File(extFilesDir).mkdirs();
+    	File outFile = new File(extFilesDir, filename + ".ttw");
+    	System.out.println(outFile.getAbsolutePath());
 
     	try {
     		FileWriter outFileWriter = new FileWriter(outFile, false);
 
-    		synchronized (inputStr) {
-    			outFileWriter.write(inputStr);
+    		synchronized (xml) {
+    			outFileWriter.write(xml);
     		}
     		outFileWriter.flush();
     		outFileWriter.close();    	
@@ -423,38 +464,10 @@ public class ShoppingCartActivity extends Activity {
     		e.printStackTrace();
     		showToast("Error while writing a file to the device!");
     		return;
-    	}    	
-    }   
-    
-    /**
-     * Read a String from the file whose name is given     * 
-     * location: external_root/data/"app_name", app_name from resource 
-     * @param filename the filename including ".ttw". 
-     *        assumed to be in the internal storage
-     * @return String The string which is contained in the given file
-     */
-    public String readStringFromFile(String filename) {   	
-    	String extFilesDir = getExternalFilesDir(null) + "/data/" + getString(R.string.app_name);
-    	File outFile = new File(extFilesDir, filename);
-    	StringBuffer sb = new StringBuffer();
-
-    	try {		   
-    		BufferedReader buf = new BufferedReader(new FileReader(outFile));
-
-    		String strTemp = buf.readLine();
-    		while (strTemp != null) {
-    			sb.append(strTemp);
-    			strTemp = buf.readLine();
-    		}
-
-    		buf.close();   
-    		return sb.toString();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    		showToast("Error while reading '" + filename + "' from the device!");
-    		return null;
-    	}    	
-    }       
+    	}
+    	
+    	// TODO finish the activity
+    }
 
     /**
      * Display a toast message

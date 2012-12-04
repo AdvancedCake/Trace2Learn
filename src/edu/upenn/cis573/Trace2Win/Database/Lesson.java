@@ -133,5 +133,11 @@ public class Lesson extends LessonItem {
 		}*/
 	}
 
+    @Override
+    public String toXml() {
+        // TODO delete me!
+        return null;
+    }
+
 
 }

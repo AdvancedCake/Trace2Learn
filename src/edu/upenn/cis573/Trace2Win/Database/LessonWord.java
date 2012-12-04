@@ -129,6 +129,12 @@ public class LessonWord extends LessonItem {
 		// TODO Auto-generated method stub
 		return false;
 	}
+
+    @Override
+    public String toXml() {
+        // TODO delete me!!
+        return null;
+    }
 	
 	/**
 	 * Creates an XML representation of this word.

@@ -381,4 +381,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	 * @param time - the time in the animation from 0 to 1
 	 */
 	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time);
+	
+	public abstract String toXml();
 }

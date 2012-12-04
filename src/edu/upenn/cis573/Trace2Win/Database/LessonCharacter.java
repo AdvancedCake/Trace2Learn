@@ -5,14 +5,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PointF;
 import android.util.Log;
 
 public class LessonCharacter extends LessonItem {
@@ -236,12 +234,14 @@ public class LessonCharacter extends LessonItem {
 	
 	/**
 	 * Converts a parsed XML element to a LessonCharacter
-	 * @param elem XML DOM element
+	 * @param elem XML DOM element where the root node is <character>
 	 * @return the LessonCharacter represented by the XML element, or null if
 	 * there was an error
 	 */
 	public static LessonCharacter importFromXml(Element elem) {
         try {
+            if (!elem.getNodeName().equals("character")) { return null; }
+            
             long id = Long.parseLong(elem.getAttribute("id"));
             
             LessonCharacter c = new LessonCharacter(id);
