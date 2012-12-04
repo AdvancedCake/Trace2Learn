@@ -1,10 +1,16 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.util.Log;
 
 public class LessonWord extends LessonItem {
 	
@@ -124,5 +130,73 @@ public class LessonWord extends LessonItem {
 		return false;
 	}
 	
+	/**
+	 * Creates an XML representation of this word.
+	 * @return an XML string
+	 */
+	public String toXml() {
+	    String xml = "<word id=\"" + _id + "\">\n";
+
+	    for (String tag : _tags) {
+	        xml += "<tag tag=\"" + tag + "\" />\n";
+	    }
+
+	    for (Map.Entry<String, String> entry : _keyValues.entrySet()) {
+	        xml += "<id key=\"" + entry.getKey() + "\" value=\"" +
+	                entry.getValue() + "\" />\n";
+	    }
+
+	    int numChars = _characters.size();
+	    for (int i = 0; i < numChars; i++) {
+	        xml += "<character id =\"" + _characters.get(i) + "\"";
+	    	xml += "position =\"" + i + "\">\n";
+	    }
+
+	    xml += "</word>\n";
+
+	    return xml;
+	}
+	
+	/**
+	 * Converts a parsed XML element to a LessonWord
+	 * @param elem XML DOM element
+	 * @return the LessonWord represented by the XML element, or null if
+	 * there was an error
+	 */
+	public static LessonWord importFromXml(Element elem) {
+        try {
+            long id = Long.parseLong(elem.getAttribute("id"));
+            
+            LessonWord w = new LessonWord();
+            
+            NodeList tags = elem.getElementsByTagName("tag");
+            for (int i = 0; i < tags.getLength(); i++) {
+                String tag = ((Element) tags.item(i)).getAttribute("tag");
+                w.addTag(tag);
+            }
+            
+            NodeList ids = elem.getElementsByTagName("id");
+            for (int i = 0; i < ids.getLength(); i++) {
+                String key = ((Element) ids.item(i)).getAttribute("key");
+                String value = ((Element) ids.item(i)).getAttribute("value");
+                w.addKeyValue(key, value);
+            }
+            
+            NodeList chars = elem.getElementsByTagName("character");
+            Long[] charArr = new Long[chars.getLength()];
+            for (int i = 0; i < chars.getLength(); i++) {
+                Element charElem = (Element) chars.item(i);
+                int position = Integer.parseInt(
+                        charElem.getAttribute("position"));
+                charArr[position] = LessonCharacter.importFromXml(charElem)._id;
+            }
+            w._characters = new ArrayList<Long>(Arrays.asList(charArr));
+            
+            return w;
+        } catch (Exception e) {
+            Log.e("Import Word", e.getMessage());
+            return null;
+        }
+	}
 	
 }
