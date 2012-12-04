@@ -180,10 +180,11 @@ public class Lesson extends LessonItem {
 	 */
 	public static Lesson importFromXml(Element elem) {
         try {
-            long id = Long.parseLong(elem.getAttribute("id"));
+            String id = elem.getAttribute("id");
             String name = elem.getAttribute("name");
             
-            Lesson lesson = new Lesson(id);
+            Lesson lesson = new Lesson();
+            lesson.setStringId(id);
             lesson.setName(name);
             
             NodeList words = elem.getElementsByTagName("word");

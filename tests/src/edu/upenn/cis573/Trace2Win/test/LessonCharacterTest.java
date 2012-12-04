@@ -62,6 +62,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		assertEquals(expected.getKeyValues(), actual.getKeyValues());
 		assertEquals(expected.getSort(), actual.getSort());
 		assertEquals(expected.getStrokes(), actual.getStrokes());
+		assertEquals(expected.getStringId(), actual.getStringId());
 	}
 	
 	public void testNoStrokes()

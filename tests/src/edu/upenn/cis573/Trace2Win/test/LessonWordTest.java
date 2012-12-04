@@ -26,6 +26,7 @@ public class LessonWordTest extends AndroidTestCase {
 		assertEquals(expected.getTags(), actual.getTags());
 		assertEquals(expected.getKeyValues(), actual.getKeyValues());
 		assertEquals(expected.getSort(), actual.getSort());
+		assertEquals(expected.getStringId(), actual.getStringId());
 	}	
 	
 	protected void setUp() throws Exception {
