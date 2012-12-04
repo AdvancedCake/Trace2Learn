@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.Database.Lesson;
 import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.Parser;
 
@@ -58,7 +59,6 @@ public class FilePickerActivity extends ListActivity {
     
     private void onFileClick(FileItem item) {
         importFromFile(item.getPath());
-        // TODO finish activity
     }
     
     /**
@@ -76,9 +76,13 @@ public class FilePickerActivity extends ListActivity {
                         getString(R.string.app_name) + " file!");
                 return;
             }
+            String name = root.getAttribute("name");
             
             importCharacters(root);
             importLessons(root);
+
+            showToast("Imported " + name + " successfully");
+            finish();
         } catch (Exception e) {
             showToast("This is not a valid " + getString(R.string.app_name) +
                     " file!");
@@ -93,7 +97,7 @@ public class FilePickerActivity extends ListActivity {
         NodeList characters = elem.getElementsByTagName("character");
         for (int i = 0; i < characters.getLength(); i++) {
             Element e = (Element) characters.item(i);
-            LessonCharacter character = LessonCharacter.importFromXml(e);
+            LessonCharacter character = (LessonCharacter) LessonCharacter.importFromXml(e);
             if (dba.getCharacterById(character.getId()) == null) {
                 dba.addCharacter(character);
             }
@@ -105,7 +109,14 @@ public class FilePickerActivity extends ListActivity {
      * @param elem Trace2Learn root element <ttw>
      */
     private void importLessons(Element elem) {
-        
+        NodeList lessons = elem.getElementsByTagName("lesson");
+        for (int i = 0; i < lessons.getLength(); i++) {
+            Element e = (Element) lessons.item(i);
+            Lesson lesson = (Lesson) Lesson.importFromXml(e);
+            if (dba.getLessonById(lesson.getStringId()) == null) {
+                dba.addLesson(lesson);
+            }
+        }
     }
     
     private void fill(File f) {

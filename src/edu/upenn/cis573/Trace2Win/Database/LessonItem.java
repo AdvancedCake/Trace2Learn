@@ -7,6 +7,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.w3c.dom.Element;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -27,6 +29,9 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	
 	/** The id of the item */
 	protected long _id;
+	
+	/** The stringid of the item */
+	protected String _stringid;
 	
 	/** The private tag cache of the item */
 	protected String private_tag;
@@ -53,6 +58,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected LessonItem()
 	{
 		_id = -1;
+		_stringid = null;
 		_tags = new ArrayList<String>();
 		_keyValues = new LinkedHashMap<String, String>();
 		
@@ -106,7 +112,10 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	{
 		_id = id;
 	}
-	
+	public void setStringId(String id)
+	{
+		_stringid = id;
+	}
 	public void setDatabase(DbAdapter db)
 	{
 		_db = db;
@@ -117,22 +126,17 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		return _id;
 	}
 	
+	public String getStringId()
+	{
+		return _stringid;
+	}
+	
 	public void setPrivateTag(String tag){
 		private_tag = tag;
 	}
 	
 	public String getPrivateTag(){
 		return private_tag;
-	}
-	
-	public String getUniqueId(Context cxt){
-		TelephonyManager tMgr = (TelephonyManager) cxt.getSystemService(Context.TELEPHONY_SERVICE);
-		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
-		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmss");
-		String sDate = dtFmt.format(new Date());
-		Log.d("uniqueID", sIMEI + sDate); // testing + exceed the maximum of long int
-		
-		return sIMEI + sDate;
 	}
 	
 	public void setTagList(List<String> tags){
@@ -173,7 +177,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 			_tags = db.getWordTags(_id);
 			break;
 		case LESSON:
-			_tags = db.getLessonTags(_id);
+			_tags = db.getLessonTags(_stringid);
 			break;
 		}
 	}
@@ -383,4 +387,9 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	public abstract void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time);
 	
 	public abstract String toXml();
+	
+	public static LessonItem importFromXml(Element elem) {
+	    // Method stub because static can't be abstract
+        return null;
+    }
 }

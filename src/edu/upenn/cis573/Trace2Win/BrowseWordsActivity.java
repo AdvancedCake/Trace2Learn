@@ -49,7 +49,7 @@ public class BrowseWordsActivity extends ListActivity {
     private View layout;
     private PopupWindow window;
     private LessonWord lw;
-    private long lessonID;
+    private String lessonID;
     
     private boolean filtered;
 	private TextView filterStatus;
@@ -75,8 +75,8 @@ public class BrowseWordsActivity extends ListActivity {
 
         //Set up the ListView
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
-        lessonID = this.getIntent().getLongExtra("ID", -1);
-        if(lessonID == -1){
+        lessonID = this.getIntent().getStringExtra("ID");
+        if(lessonID == null){
             List<Long> ids = dba.getAllWordIds();
             for(long id : ids){
                 LessonItem word = dba.getWordById(id);
@@ -113,7 +113,7 @@ public class BrowseWordsActivity extends ListActivity {
     protected void onListItemClick(ListView l, View v, int position, long id) {  
         super.onListItemClick(l, v, position, id);
         String mode = "display";
-        if (lessonID != -1) { // looking at a lesson - start in trace mode
+        if (lessonID != null) { // looking at a lesson - start in trace mode
             mode = "trace";
         }
         clickOnItem(items.get(position), position, mode);
@@ -126,7 +126,7 @@ public class BrowseWordsActivity extends ListActivity {
 
         bun.putString("mode", mode);
         bun.putLong("wordId", li.getId());
-        bun.putLong("lessonID", lessonID);
+        bun.putString("lessonID", lessonID);
         bun.putInt("index", position + 1);
         bun.putInt("collectionSize", items.size());
 
@@ -207,7 +207,7 @@ public class BrowseWordsActivity extends ListActivity {
 
             LessonWord other = (LessonWord) items.get(otherPos);
             boolean result;
-            if (lessonID == -1) { // browsing all words
+            if (lessonID == null) { // browsing all words
                 result = dba.swapWords(lw.getId(), lw.getSort(), 
                                        other.getId(), other.getSort());
                 if (result) {
@@ -397,7 +397,7 @@ public class BrowseWordsActivity extends ListActivity {
     
     // clears the filter
     public void clearFilter() {
-    	if(lessonID == -1)
+    	if(lessonID == null)
     		setWordList(dba.getAllWordIds());
     	else
     		setWordList(dba.getWordsFromLessonId(lessonID));

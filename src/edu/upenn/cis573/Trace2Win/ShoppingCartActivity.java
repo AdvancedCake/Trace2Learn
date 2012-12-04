@@ -7,16 +7,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
@@ -177,9 +174,9 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with lessons
      */
     private void getLessons() {
-        List<Long> ids = dba.getAllLessonIds();
+        List<String> ids = dba.getAllLessonIds();
         source = new ArrayList<LessonItem>(ids.size());
-        for(long id : ids){
+        for(String id : ids){
             Lesson le = dba.getLessonById(id);
             le.setTagList(dba.getLessonTags(id));
             source.add(le);
@@ -459,14 +456,15 @@ public class ShoppingCartActivity extends Activity {
     			outFileWriter.write(xml);
     		}
     		outFileWriter.flush();
-    		outFileWriter.close();    	
+    		outFileWriter.close();
+
+    		showToast("Exported " + filename + " successfully.");
+    		finish();
     	} catch (IOException e) {
     		e.printStackTrace();
     		showToast("Error while writing a file to the device!");
     		return;
     	}
-    	
-    	// TODO finish the activity
     }
 
     /**
@@ -508,7 +506,7 @@ public class ShoppingCartActivity extends Activity {
                     for (Map.Entry<String, String> entry : keyValues.entrySet()) {
                         sb.append(", " + entry.getKey() + ": " + entry.getValue());
                     }       
-                    String s = sb.length()>0 ? sb.substring(2) : "";
+                    String s = sb.length() > 0 ? sb.substring(2) : "";
                     idView.setText(s);
                     break;
                 case LESSON:

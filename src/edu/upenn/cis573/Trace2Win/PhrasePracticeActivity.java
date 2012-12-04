@@ -33,7 +33,7 @@ public class PhrasePracticeActivity extends Activity {
 	private DbAdapter _dbHelper;
 
 	private Mode _currentMode = Mode.INVALID;
-	private long _lessonID = -1;
+	private String _lessonID = null;
 	private int _wordIndex;
 	private int _collectionSize;
 	private String _lessonName;
@@ -116,8 +116,8 @@ public class PhrasePracticeActivity extends Activity {
             setWord(_word);
 			updateTags();
 			
-			_lessonID = bun.getLong("lessonID");
-			if (_lessonID == -1) {
+			_lessonID = bun.getString("lessonID");
+			if (_lessonID == null) {
 				_phraseTitle.setText("");
 			} else {
 				_wordIndex = bun.getInt("index");
@@ -298,7 +298,7 @@ public class PhrasePracticeActivity extends Activity {
 				setSelectedCharacter(index + 1);
 			} else {
 				// this is the end of the word
-				if (_lessonID != -1) {
+				if (_lessonID != null) {
 					if (_wordIndex < _collectionSize) { // still more words to come
 						// shutdown and notify parent activity
 						Bundle bundle = new Bundle();

@@ -38,8 +38,8 @@ public class BrowseLessonsActivity extends ListActivity {
         dba.open(); //opening the connection to database        
         
         items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
-        List<Long> ids = dba.getAllLessonIds();
-        for(long id : ids){
+        List<String> ids = dba.getAllLessonIds();
+        for(String id : ids){
         	Lesson le = dba.getLessonById(id);
         	le.setTagList(dba.getLessonTags(id));
         	items.add(le);
@@ -61,7 +61,7 @@ public class BrowseLessonsActivity extends ListActivity {
 	public void clickOnItem(LessonItem li){
 		Lesson le = ((Lesson)li);
 		Intent i = new Intent(this, BrowseWordsActivity.class);
-		i.putExtra("ID", le.getId());
+		i.putExtra("ID", le.getStringId());
 		startActivity(i);
 	}
 
@@ -85,10 +85,10 @@ public class BrowseLessonsActivity extends ListActivity {
 
 	  //delete lesson
 	  if(menuItemIndex==0){
-		  long id = le.getId();
-		  long result = dba.deleteLesson(id);
-		  Log.e("Result",Long.toString(result));
-		  if(result < 0){
+		  String id = le.getStringId();
+		  String result = dba.deleteLesson(id);
+		  Log.e("Result", result);
+		  if(result == null){
 			  showToast("Could not delete the lesson");
 			  return false;
 		  }
