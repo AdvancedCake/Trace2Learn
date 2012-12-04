@@ -10,12 +10,12 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
-import edu.upenn.cis573.Trace2Win.Database.LessonWord;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.Parser;
 
 public class LessonWordTest extends AndroidTestCase {
 
-	LessonWord c1, c2, c3;
+	LessonCharacter c1, c2, c3;
 	private DbAdapter db;
 	
 	static public void compareWords(LessonWord expected, LessonWord actual)
@@ -31,9 +31,9 @@ public class LessonWordTest extends AndroidTestCase {
 	protected void setUp() throws Exception {
 		super.setUp();
 
-		c1 = new LessonWord();
-		c2 = new LessonWord();
-		c3 = new LessonWord();
+		c1 = new LessonCharacter();
+		c2 = new LessonCharacter();
+		c3 = new LessonCharacter();
 		
 		c1.setId(1);
 		c2.setId(2);
