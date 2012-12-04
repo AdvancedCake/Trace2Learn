@@ -1739,8 +1739,6 @@ public class DbAdapter {
 		v.put("name","");
     }
     
-<<<<<<< Updated upstream
-=======
     private void initializeUniqueId(LessonItem i, ContentValues v)
     {
     	if(i.getUniqueId(mCtx) != null) // TODO getUniqueId need modification
@@ -1749,57 +1747,4 @@ public class DbAdapter {
 	        v.put("_id","");
     }
     
-    
-    public String createCharXml(long id){
-    	//Character table
-    	String result = "<character id=" + id + ">\n" +
-    						"<table name=" + CHAR_TABLE + ">\n" +
-    							"<row>\n" +
-    								"<name>" + getPrivateTag(id, ItemType.CHARACTER) + "</name>\n" +
-    								//"<sort>" + 
-    							"</row>\n" +
-    						"</table>\n";
-    	
-    	//tags table
-    	result +="<table name=" + CHARTAG_TABLE + ">\n";
-    	for(String tag: getCharacterTags(id)){
-    		result += "<row>\n";
-    		result += "<tag>" + tag + "</tag>\n";
-    		result += "</row>\n";
-    	}
-    	result += "</table>\n";
-    	
-    	//key values table
-    	result += "<table name=" + CHARKEYVALUES_TABLE + ">\n";
-    	Map<String, String> keyVals = getKeyValues(id, ItemType.CHARACTER);
-    	for(String key: keyVals.keySet()){
-    		result += "<row>\n";
-    		result += "<key>" + key + "</key>\n";
-    		result += "<value>" + keyVals.get(key) + "</value>\n";
-    		result += "</row>\n";
-    	}
-    	result += "</table>\n";
-    	
-    	//char details table
-    	LessonCharacter c = getCharacterById(id);
-    	result +=  "<table name=" + CHAR_DETAILS_TABLE + ">\n";
-    	int numStrokes = c.getNumStrokes(); //pulled out of loop for performance (so we don't check it each time through the loop)
-    	for(int i=0; i<numStrokes; i++){
-    		Stroke stroke = c.getStroke(i);
-    		int numPoints = stroke.getNumSamples();
-    		for(int j=0; j<numPoints; j++){
-    			PointF point = stroke.getPoint(j); 
-    			result += "<row>\n";
-    			result += "<Stroke>" + i + "</Stroke>\n";
-    			result += "<PointX>" + point.x + "</PointX>\n";
-    			result += "<PointY>" + point.y + "</PointY>\n";
-    			result += "<OrderPoint>" + j + "</OrderPoint>\n";
-    			result += "</row>\n";
-    		}
-    	}
-    	result += "</table>\n";
-    	result += "</character>\n";
-    	return result;
-    }
->>>>>>> Stashed changes
 }
