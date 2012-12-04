@@ -315,5 +315,9 @@ public class DbAdapterTest extends AndroidTestCase {
     	db.addWord(w);
     	db.deleteWord(w.getId());
     	assertNull(db.getWordById(w.getId()));
-    }    
+    }
+    
+    public void testPrintingAttributes() {
+		System.out.println(db.createCharXml(1));
+	}
 }

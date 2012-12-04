@@ -1,14 +1,17 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 
 
@@ -120,6 +123,16 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	
 	public String getPrivateTag(){
 		return private_tag;
+	}
+	
+	public String getUniqueId(Context cxt){
+		TelephonyManager tMgr = (TelephonyManager) cxt.getSystemService(Context.TELEPHONY_SERVICE);
+		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
+		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmss");
+		String sDate = dtFmt.format(new Date());
+		Log.d("uniqueID", sIMEI + sDate); // testing + exceed the maximum of long int
+		
+		return sIMEI + sDate;
 	}
 	
 	public void setTagList(List<String> tags){
