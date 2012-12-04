@@ -58,7 +58,6 @@ public class FilePickerActivity extends ListActivity {
     
     private void onFileClick(FileItem item) {
         importFromFile(item.getPath());
-        // TODO finish activity
     }
     
     /**
@@ -79,6 +78,8 @@ public class FilePickerActivity extends ListActivity {
             
             importCharacters(root);
             importLessons(root);
+
+            finish();
         } catch (Exception e) {
             showToast("This is not a valid " + getString(R.string.app_name) +
                     " file!");

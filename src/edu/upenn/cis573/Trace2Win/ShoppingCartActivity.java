@@ -7,16 +7,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
@@ -459,14 +456,14 @@ public class ShoppingCartActivity extends Activity {
     			outFileWriter.write(xml);
     		}
     		outFileWriter.flush();
-    		outFileWriter.close();    	
+    		outFileWriter.close();
+
+    		finish();
     	} catch (IOException e) {
     		e.printStackTrace();
     		showToast("Error while writing a file to the device!");
     		return;
     	}
-    	
-    	// TODO finish the activity
     }
 
     /**
