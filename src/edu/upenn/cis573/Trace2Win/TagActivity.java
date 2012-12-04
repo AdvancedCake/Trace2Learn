@@ -45,6 +45,7 @@ public class TagActivity extends Activity {
 
     //Variables
     private long id; // item ID
+    private String stringid; //stringID
     private Map<String, String> keyValMap;
     private List<String> currentKeys;
     private List<String> currentKeyVals;
@@ -61,6 +62,7 @@ public class TagActivity extends Activity {
         
         //Grab the intent/extras. This should be called from CharacterCreation
         id = this.getIntent().getLongExtra("ID", -1); 
+        stringid = this.getIntent().getStringExtra("ID");
         type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));        
 
         // assign layout and cache views 
@@ -123,7 +125,7 @@ public class TagActivity extends Activity {
                 currentTags = mDbHelper.getWordTags(id);
                 break;
             case LESSON:
-                currentTags = mDbHelper.getLessonTags(id);
+                currentTags = mDbHelper.getLessonTags(stringid);
                 break;
             default:
                 Log.e("Tag", "Unsupported Type");
@@ -315,7 +317,18 @@ public class TagActivity extends Activity {
                 
                 String tag   = currentTags.get(position);
                 String other = currentTags.get(otherPos);
-                result = mDbHelper.swapTags(table, id, tag, other);
+                switch(type){
+                	case CHARACTER:
+                	case WORD:
+                		result = mDbHelper.swapTags(table, id, tag, other);
+                		break;
+                	case LESSON:
+                		result = mDbHelper.swapTags(table, stringid, tag, other);
+                		break;
+                	default:
+                		Log.e("Tag", "Unsupported Type");
+                		return false;
+                }
                 
                 Log.e("Move result", Boolean.toString(result));
                 if (!result) {
@@ -391,7 +404,7 @@ public class TagActivity extends Activity {
                     mDbHelper.createWordTags(id, input);
                     break;
                 case LESSON:
-                    mDbHelper.createLessonTags(id, input);
+                    mDbHelper.createLessonTags(stringid, input);
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");

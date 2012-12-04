@@ -113,7 +113,7 @@ public class FilePickerActivity extends ListActivity {
         for (int i = 0; i < lessons.getLength(); i++) {
             Element e = (Element) lessons.item(i);
             Lesson lesson = (Lesson) Lesson.importFromXml(e);
-            if (dba.getLessonById(lesson.getId()) == null) {
+            if (dba.getLessonById(lesson.getStringId()) == null) {
                 dba.addLesson(lesson);
             }
         }

@@ -1,6 +1,8 @@
 package edu.upenn.cis573.Trace2Win.Database;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -13,6 +15,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
+import android.telephony.TelephonyManager;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 
@@ -20,8 +23,8 @@ public class DbAdapter {
 	
     public static final String CHAR_ROWID = "_id";
     public static final String WORDS_ROWID = "_id";
-    public static final String LESSONS_ROWID = "_id";
-    public static final String LESSONTAG_ROWID = "_id";
+    public static final String LESSONS_ID = "_id";
+    public static final String LESSONTAG_ID = "_id";
     
     public static final String CHARTAG_ROWID = "_id";
     public static final String CHARTAG_TAG= "tag";
@@ -97,20 +100,20 @@ public class DbAdapter {
             "FOREIGN KEY(_id) REFERENCES Words(_id));";    
 
     private static final String DATABASE_CREATE_LESSONS=
-            "CREATE TABLE Lessons (_id INTEGER PRIMARY KEY AUTOINCREMENT,"+
+            "CREATE TABLE Lessons (_id TEXT PRIMARY KEY,"+
             "name TEXT, " +
             "sort INTEGER);";
         
     private static final String DATABASE_CREATE_LESSONS_DETAILS =
             "CREATE TABLE LessonsDetails (" +
-            "LessonId INTEGER, " +
+            "LessonId TEXT, " +
             "WordId INTEGER," +
             "LessonOrder INTEGER NOT NULL, " +
             "FOREIGN KEY(LessonId) REFERENCES Lessons(_id)," +
             "FOREIGN KEY(WordId) REFERENCES Words(_id));";
     
     private static final String DATABASE_CREATE_LESSONTAG =
-            "CREATE TABLE LessonTag (_id INTEGER, " +
+            "CREATE TABLE LessonTag (_id TEXT, " +
             "tag TEXT NOT NULL, " +
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Lessons(_id));";
@@ -268,13 +271,13 @@ public class DbAdapter {
      * successfully created return the new rowId for that tag, otherwise sreturn
      * a -1 to indicate failure.
      * 
-     * @param id the row_id of the tag
+     * @param id the id of the Lesson the tag belongs to
      * @param tag the text of the tag
-     * @return rowId or -1 if failed
+     * @return  the id of the Lesson the tag belongs to, or null if failed
      */
-    public long createLessonTags(long id, String tag) {
+    public String createLessonTags(String id, String tag) {
         Cursor cur = mDb.query(LESSONTAG_TABLE, new String[] {"sort"}, 
-                               "_id=" + id, null, null, null, "sort DESC", "1");
+                               "_id='" + id + "'", null, null, null, "sort DESC", "1");
         int sort = 1;
         if (cur != null) {
             if (cur.moveToFirst()) {
@@ -282,17 +285,19 @@ public class DbAdapter {
             }
         }
         else {
-            return -1;
+            return null;
         }
         cur.close();
 
 
         ContentValues initialValues = new ContentValues();
-        initialValues.put(LESSONTAG_ROWID, id);
+        initialValues.put(LESSONTAG_ID, id);
         initialValues.put("tag", tag);
         initialValues.put("sort", sort);
 
-        return mDb.insert(LESSONTAG_TABLE, null, initialValues);
+        long rowid = mDb.insert(LESSONTAG_TABLE, null, initialValues);
+        if(rowid==-1) return null;
+        else return id;
     }
     
     /**
@@ -386,6 +391,9 @@ public class DbAdapter {
         return mDb.insert(table, null, initialValues);
     }
 
+    
+    //TODO rename this method to deleteCharTag, or refactor so that words, lessons, and chars use the same method
+    //TODO get rid of the switch cases and use polymorphism. (code smell)
     /**
      * Delete the tag with the given rowId and tag
      * 
@@ -882,6 +890,37 @@ public class DbAdapter {
     	return "";
     }
     
+    public String getPrivateTag(String id, ItemType type)
+    {
+    	String tableName;
+    	switch(type)
+    	{
+    	case CHARACTER:
+    		tableName=CHAR_TABLE;
+    		break;
+    	case WORD:
+    		tableName=WORDS_TABLE;
+    		break;
+    	case LESSON:
+    		tableName=LESSONS_TABLE;
+    		break;
+    	default:
+    		Log.e("Tag", "Unsupported Type");
+    		return "";
+    	}
+    	Cursor mCursor =
+    			mDb.query(true, tableName, new String[] {"_id","name"}, "_id='" + id + "'", null,
+    					null, null, null, null);
+    	if (mCursor != null) {
+    		mCursor.moveToFirst();
+        	String ret = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
+            mCursor.close();
+            return ret;
+    	}
+
+    	return "";
+    }
+    
     /**
      * Return a List of tags that matches the given character's charId
      * 
@@ -1022,24 +1061,6 @@ public class DbAdapter {
         return mCursor;
 
     }
-    
-    /**
-     * Returns a cursor with all chars that partially match tag
-     * @param tag a partial tag
-     * @return a Cursor
-     * @throws SQLException
-     */
-    public Cursor getAllChars(String tag) throws SQLException {
-        Cursor mCursor;
-        mCursor = mDb.query(true, CHARTAG_TABLE, 
-                new String[] {CHARTAG_ROWID}, 
-                CHARTAG_TAG + " LIKE '" + tag + "%'", 
-                null, null, null, CHARTAG_ROWID + " ASC", null);
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        return mCursor;
-    }
    
     /**
      * Return a List of tags that matches the given Lesson's id
@@ -1048,10 +1069,10 @@ public class DbAdapter {
      * @return List of tags
      * @throws SQLException if lesson could not be found/retrieved
      */
-    public List<String> getLessonTags(long lessonId) throws SQLException {
+    public List<String> getLessonTags(String lessonId) throws SQLException {
     	//TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
         Cursor mCursor =
-            mDb.query(true, LESSONTAG_TABLE, new String[] {"tag"}, "_id" + "=" + lessonId, null,
+            mDb.query(true, LESSONTAG_TABLE, new String[] {"tag"}, "_id" + "= '" + lessonId + "'", null,
                     null, null, "tag"+" ASC", null);
         List<String> tags = new ArrayList<String>();
         if (mCursor != null) {
@@ -1234,6 +1255,11 @@ public class DbAdapter {
         return names;
     }
     
+    /*
+     * returns the rowid of the word in table LESSONS_DETAILS_TABLE after being inserted
+     * perhaps the return value should be changed, artifact of once using rowids for all ids
+     */
+    //TODO what if two lessons have the same name? lesson ID should be the name of the lesson instead
     public long addWordToLesson(String lessonName, long wordId){
     	mDb.beginTransaction();
     	// Find the lesson
@@ -1244,16 +1270,16 @@ public class DbAdapter {
     	else{
     		return -1;
     	}
-    	int lessonId = x.getInt(x.getColumnIndexOrThrow("_id"));
+    	String lessonId = x.getString(x.getColumnIndexOrThrow("_id"));
         x.close();
 
         // Find the next lessonOrder value
     	x = mDb.query(LESSONS_DETAILS_TABLE, new String[] {"LessonOrder"}, 
-    	              "LessonId=" + lessonId, 
+    	              "LessonId='" + lessonId + "'", 
     	              null, null, null, "LessonOrder DESC", "1");
     	int lessonOrder;
     	if (x == null || x.getCount() == 0) {
-    	    lessonOrder = -1;
+    	    lessonOrder = -1; //TODO wth is this doing...it gets overwritten no matter what 5 lines down
         }
     	else {
             x.moveToFirst();
@@ -1262,7 +1288,7 @@ public class DbAdapter {
         x.close();
 
     	ContentValues values = new ContentValues();
-    	values.put("LessonId", lessonId);
+    	values.put("LessonID", lessonId);
     	values.put("WordId", wordId);
     	values.put("LessonOrder", lessonOrder + 1);
     	long ret = mDb.insert(LESSONS_DETAILS_TABLE, null, values);
@@ -1281,20 +1307,23 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialLessonValues = new ContentValues();
+    	String id2 = makeUniqueId();
+    	initialLessonValues.put(LESSONS_ID, id2);
     	initializePrivateTag(les,initialLessonValues);
-    	long id = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
-    	if(id == -1)
+    	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
+    	if(rowid == -1)
     	{
     		//if error
     		Log.e(LESSONS_TABLE, "cannot add new character to table "+LESSONS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
-    	Cursor x = mDb.query(LESSONS_TABLE, new String[]{"_id"}, null, null, null, null, "_id DESC", "1");
+    	Cursor x = mDb.query(LESSONS_TABLE, new String[]{LESSONS_ID}, LESSONS_ID + "='" + id2 + "'", null, null, null, null);
+
     	if (x != null) {
             x.moveToFirst();
         }
-    	les.setId(x.getInt(x.getColumnIndexOrThrow("_id")));
+    	les.setStringId(x.getString(x.getColumnIndexOrThrow("_id")));
         x.close();
 
     	//add each word to LESSONS_DETAILS_TABLE
@@ -1304,7 +1333,7 @@ public class DbAdapter {
     	for(Long wordId:l)
     	{
     		ContentValues lessonValues = new ContentValues();
-    		lessonValues.put("LessonId", id);
+    		lessonValues.put("LessonId", id2);
     		lessonValues.put("WordId", wordId);
     		lessonValues.put("LessonOrder", wordNumber);
     		long success = mDb.insert(LESSONS_DETAILS_TABLE, null, lessonValues);
@@ -1323,9 +1352,9 @@ public class DbAdapter {
     	return true;
     }
     
-    public List<Long> getWordsFromLessonId(long id){
+    public List<Long> getWordsFromLessonId(String id){
     	Cursor mCursor =
-    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId="+id, null,
+    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId='" + id + "'", null,
     					null, null, "LessonOrder ASC", null);
     	List<Long> ids = new ArrayList<Long>();
     	if (mCursor != null) {
@@ -1347,11 +1376,11 @@ public class DbAdapter {
      * Return a list of lesson ids from the database
      * @return ids list of all lesson ids
      */
-    public List<Long> getAllLessonIds() {
+    public List<String> getAllLessonIds() {
         Cursor mCursor =
-                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, null, null,
-                        null, null, LESSONS_ROWID+" ASC", null);
-        List<Long> ids = new ArrayList<Long>();
+                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID}, null, null,
+                        null, null, LESSONS_ID + " ASC", null);
+        List<String> ids = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -1359,7 +1388,7 @@ public class DbAdapter {
             if(mCursor.getCount()==0){
                 break;
             }
-            ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(LESSONS_ROWID)));
+            ids.add(mCursor.getString(mCursor.getColumnIndexOrThrow(LESSONS_ID)));
         }
         while(mCursor.moveToNext());
         mCursor.close();
@@ -1370,37 +1399,35 @@ public class DbAdapter {
     /**
      * Deletes the lesson by lesson id
      * @param id 
-     * @return id if found, -1 if not
+     * @return id if found, null if not
      */
-    public long deleteLesson(long id){
+    public String deleteLesson(String id){
         Cursor mCursor =
-                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID}, LESSONS_ROWID + "=" + id, null,
-                        null, null, null, null);
+                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID}, LESSONS_ID + "='" + id + "'", null, null, null, null, null);
         int rowsDeleted=0;
         if (mCursor == null) {
-            return -1;
+            return null;
         }
         else{
             mCursor.close();
 
-            rowsDeleted += mDb.delete(LESSONS_TABLE, LESSONS_ROWID + "=" + id, null);
-            rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = " + id, null);
-            rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ROWID + "=" + id, null);
+            rowsDeleted += mDb.delete(LESSONS_TABLE, LESSONS_ID + "='" + id + "'", null);
+            rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = '" + id + "'", null);
+            rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ID + "=" + id + "'", null);
         }
         if(rowsDeleted>0)
             return id;
         else
-            return -1;
-
+            return null;
     }
     
     /**
      * @param id
      * @return
      */
-    public Lesson getLessonById(long id) {
+    public Lesson getLessonById(String id) {
     	Cursor mCursor =
-    			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ROWID, "name"}, LESSONS_ROWID + "=" + id, null,
+    			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID, "name"}, LESSONS_ID + "='" + id + "'", null,
     					null, null, null, null);
     	Lesson le = new Lesson();
     	//if the Lesson doesn't exists
@@ -1415,7 +1442,7 @@ public class DbAdapter {
     	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
     	// but it is for data consistency.
     	mCursor =
-    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] { "LessonId", "WordId", "LessonOrder"}, "LessonId" + "=" + id, null,
+    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] { "LessonId", "WordId", "LessonOrder"}, "LessonId" + "='" + id + "'", null,
     					null, null, "LessonOrder ASC", null);
     	mCursor.moveToFirst();
     	do {
@@ -1428,7 +1455,7 @@ public class DbAdapter {
     	} while(mCursor.moveToNext());
         mCursor.close();
 
-    	le.setId(id);
+    	le.setStringId(id);
     	le.setDatabase(this);
     	
     	return le;
@@ -1514,7 +1541,7 @@ public class DbAdapter {
      * @param bId the second word ID
      * @return true if the transaction was successful, false otherwise
      */
-    public boolean swapWordsInLesson(long lessonId, long aId, long bId) {
+    public boolean swapWordsInLesson(String lessonId, long aId, long bId) {
         String wordCol  = "WordId";
         String lesCol   = "LessonId";
         String orderCol = "LessonOrder";
@@ -1523,7 +1550,7 @@ public class DbAdapter {
         int aSort = 0, bSort = 0;
         Cursor cur = mDb.query(true, LESSONS_DETAILS_TABLE, 
                                new String[] {wordCol, orderCol}, 
-                               lesCol + "=" + lessonId + " AND (" + wordCol + "=" + aId + " OR " + wordCol + "=" + bId + ")", 
+                               lesCol + "='" + lessonId + "' AND (" + wordCol + "=" + aId + " OR " + wordCol + "=" + bId + ")", 
                                null, null, null, null, null);
         cur.moveToFirst();
         if (cur.getCount() != 2) {
@@ -1555,7 +1582,7 @@ public class DbAdapter {
         // update database
         int result;
         result = mDb.update(LESSONS_DETAILS_TABLE, aValues, 
-                            lesCol + "=" + lessonId + " AND " + wordCol + "=" + aId, 
+                            lesCol + "='" + lessonId + "' AND " + wordCol + "=" + aId, 
                             null);
         if (result != 1) {
             Log.e(LESSONS_DETAILS_TABLE, "id " + aId + ": write failed");
@@ -1563,7 +1590,7 @@ public class DbAdapter {
             return false;
         }
         result = mDb.update(LESSONS_DETAILS_TABLE, bValues, 
-                            lesCol + "=" + lessonId + " AND " + wordCol + "=" + bId, 
+                            lesCol + "='" + lessonId + "' AND " + wordCol + "=" + bId, 
                             null);
         if (result != 1) {
             Log.e(LESSONS_DETAILS_TABLE, "id " + bId + ": write failed");
@@ -1646,6 +1673,77 @@ public class DbAdapter {
         return true;
     }
     
+    /**
+     * Swaps the display order of the two tags for the given item
+     * @param table the table containing the tags
+     * @param id the id of the item associated with the tags
+     * @param a the first tag
+     * @param b the second tag
+     * @return
+     */
+    public boolean swapTags(String table, String id, String a, String b) {
+        String idCol    = "_id";
+        String tagCol   = "tag";
+        String orderCol = "sort";
+        
+        // get sort values for a and b
+        int aSort = 0, bSort = 0;
+        Cursor cur = mDb.query(true, table, 
+                               new String[] {tagCol, orderCol}, 
+                               idCol + "='" + id + "' AND (" + tagCol + "='" + a + "' OR " + tagCol + "='" + b + "')", 
+                               null, null, null, null, null);
+        cur.moveToFirst();
+        if (cur.getCount() != 2) {
+            Log.e("Swapping positions", "Could not find tags in " + table);
+            return false;
+        }
+        if (cur.getString(cur.getColumnIndexOrThrow(tagCol)).equals(a)) {
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            cur.moveToNext();
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+        } else { // tag B is first
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            cur.moveToNext();
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+        }
+        
+        // insert new values
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(idCol, id);
+        bValues.put(idCol, id);
+        aValues.put(tagCol, a);
+        bValues.put(tagCol, b);
+        aValues.put(orderCol, bSort);
+        bValues.put(orderCol, aSort);
+        Log.e("Swapping positions", a + " and " + b + " in table " + table + " item " + id);
+        
+        // update database
+        int result;
+        result = mDb.update(table, aValues, 
+                            idCol + "='" + id + "' AND " + tagCol + "='" + a + "'", 
+                            null);
+        if (result != 1) {
+            Log.e(table, "id " + id + " tag " + a + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(table, bValues, 
+                            idCol + "='" + id + "' AND " + tagCol + "='" + b + "'", 
+                            null);
+        if (result != 1) {
+            Log.e(table, "id " + id + " tag " + b + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
+    
+    //TODO turn IDs into String ids
     /**
      * Swaps the display order of the two IDs for the given item
      * @param table the table containing the Key-Value pairs
@@ -1739,12 +1837,21 @@ public class DbAdapter {
 		v.put("name","");
     }
     
-    private void initializeUniqueId(LessonItem i, ContentValues v)
+    /*private void initializeUniqueId(LessonItem i, ContentValues v)
     {
     	if(i.getUniqueId(mCtx) != null) // TODO getUniqueId need modification
 		    v.put("_id",i.getUniqueId(mCtx));
 	    else	
 	        v.put("_id","");
-    }
+    }*/
     
+	public String makeUniqueId(){
+		TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
+		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
+		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmss");
+		String sDate = dtFmt.format(new Date());
+		Log.d("uniqueID", sIMEI + "_" + sDate); // testing + exceed the maximum of long int
+		
+		return sIMEI + "_" + sDate;
+	}
 }

@@ -174,9 +174,9 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with lessons
      */
     private void getLessons() {
-        List<Long> ids = dba.getAllLessonIds();
+        List<String> ids = dba.getAllLessonIds();
         source = new ArrayList<LessonItem>(ids.size());
-        for(long id : ids){
+        for(String id : ids){
             Lesson le = dba.getLessonById(id);
             le.setTagList(dba.getLessonTags(id));
             source.add(le);

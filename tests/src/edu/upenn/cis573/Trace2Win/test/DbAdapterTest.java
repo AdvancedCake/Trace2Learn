@@ -171,15 +171,15 @@ public class DbAdapterTest extends AndroidTestCase {
         db.addLesson(lesson);
         
         List<Long> exp1 = Arrays.asList(new Long[] {a.getId(), b.getId()});
-        assertEquals(exp1, db.getWordsFromLessonId(lesson.getId()));
+        assertEquals(exp1, db.getWordsFromLessonId(lesson.getStringId()));
         assertEquals(exp1, lesson.getWordIds());
         
-        db.swapWordsInLesson(lesson.getId(), a.getId(), b.getId());
+        db.swapWordsInLesson(lesson.getStringId(), a.getId(), b.getId());
         
         List<Long> exp2 = Arrays.asList(new Long[] {b.getId(), a.getId()});
-        assertEquals(exp2, db.getWordsFromLessonId(lesson.getId()));
+        assertEquals(exp2, db.getWordsFromLessonId(lesson.getStringId()));
         
-        Lesson lesson2 = db.getLessonById(lesson.getId());
+        Lesson lesson2 = db.getLessonById(lesson.getStringId());
         assertEquals(exp2, lesson2.getWordIds());
     }
     
@@ -316,5 +316,4 @@ public class DbAdapterTest extends AndroidTestCase {
     	db.deleteWord(w.getId());
     	assertNull(db.getWordById(w.getId()));
     }
-    
 }
