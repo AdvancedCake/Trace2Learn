@@ -20,7 +20,8 @@ public class MainMenuActivity extends ListActivity {
 			"Browse All Characters",
 			"Browse All Words",
 			"Browse All Lessons",
-			"Export Characters"
+			"Export Characters",
+			"File Picker!!1"
 		};
 
 	@Override
@@ -73,6 +74,11 @@ public class MainMenuActivity extends ListActivity {
                         Bundle bun = new Bundle();
                         bun.putString("type", "character");
                         intent.putExtras(bun);
+                        startActivity(intent);
+                    }
+                    else if (clicked.equals(APPS[6])) // "FILE PICKER TIEM"
+                    {
+                        Intent intent = new Intent(c, FilePickerActivity.class);
                         startActivity(intent);
                     }
 				}
