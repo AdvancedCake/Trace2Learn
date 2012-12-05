@@ -143,6 +143,12 @@ public class TagActivity extends Activity {
 
         isChanged = false;
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mDbHelper.close();
+    };
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,

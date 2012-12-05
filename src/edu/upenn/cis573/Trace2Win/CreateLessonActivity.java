@@ -79,6 +79,12 @@ public class CreateLessonActivity extends Activity {
             }
         });
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
+    };
 	
 	/*public void onSaveLessonButtonClick(View view){
 		if(dba.addLesson(newLesson)){

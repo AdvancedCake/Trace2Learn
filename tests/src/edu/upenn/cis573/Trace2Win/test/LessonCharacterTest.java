@@ -50,7 +50,8 @@ public class LessonCharacterTest extends AndroidTestCase {
 
 	protected void tearDown()
 	{
-		dumpDBs();
+        db.close();
+        dumpDBs();
 	}
 	
 	static public void compareCharacters(LessonCharacter expected, LessonCharacter actual)

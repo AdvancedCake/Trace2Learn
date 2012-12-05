@@ -107,6 +107,12 @@ public class ShoppingCartActivity extends Activity {
         viewingCart = false;
         exportButton.setVisibility(View.INVISIBLE);
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
+    };
 
     /**
      * Initializes the type field based on the bundle passed with it, then

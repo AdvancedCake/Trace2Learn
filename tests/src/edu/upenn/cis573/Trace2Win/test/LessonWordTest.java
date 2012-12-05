@@ -55,8 +55,8 @@ public class LessonWordTest extends AndroidTestCase {
 	
 	protected void tearDown()
 	{
+        db.close();
 		dumpDBs();
-		db.close();
 	}	
 	
 	public void testNoStrokes()
