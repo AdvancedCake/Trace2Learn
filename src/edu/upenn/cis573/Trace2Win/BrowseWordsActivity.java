@@ -106,6 +106,12 @@ public class BrowseWordsActivity extends ListActivity {
         filtered = false;
         filterStatus = (TextView) findViewById(R.id.filterStatus);
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
+    };
 
 
     @Override  

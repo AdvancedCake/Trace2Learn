@@ -108,6 +108,12 @@ public class CreateWordActivity extends Activity {
         
     }
     
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
+    };
+    
     private void initiatePopupWindow(){
         try {
             Display display = getWindowManager().getDefaultDisplay();

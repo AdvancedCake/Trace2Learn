@@ -27,6 +27,7 @@ public class DbAdapterTest extends AndroidTestCase {
 
     protected void tearDown()
     {
+        db.close();
         dumpDBs();
     }
 

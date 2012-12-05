@@ -45,6 +45,12 @@ public class FilePickerActivity extends ListActivity {
         currentDir.mkdirs();
         fill(currentDir);
     }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
+    };
 
     @Override
     protected void onListItemClick(ListView l, View v, int position, long id) {

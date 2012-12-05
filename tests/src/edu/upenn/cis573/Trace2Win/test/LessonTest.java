@@ -58,6 +58,7 @@ public class LessonTest extends AndroidTestCase {
 
 	protected void tearDown()
 	{
+        db.close();
 		dumpDBs();
 	}
 

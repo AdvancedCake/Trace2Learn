@@ -644,8 +644,11 @@ public class DbAdapter {
     					null, null, null, null);
     	LessonCharacter c = new LessonCharacter();
     	//if the character doesn't exists
-    	if (mCursor == null || mCursor.getCount() == 0) {
+    	if (mCursor == null) {
     		return null;
+    	} else if (mCursor.getCount() == 0) {
+    	    mCursor.close();
+    	    return null;
     	}
     	mCursor.close();
 
@@ -712,7 +715,10 @@ public class DbAdapter {
                     null, null, null, null);
         LessonWord w = new LessonWord();
         //if the character doesn't exists
-        if (mCursor == null || mCursor.getCount() == 0) {
+        if (mCursor == null) {
+            return null;
+        } else if (mCursor.getCount() == 0) {
+            mCursor.close();
             return null;
         }
         mCursor.close();
@@ -1204,14 +1210,16 @@ public class DbAdapter {
     	              "LessonId='" + lessonId + "'", 
     	              null, null, null, "LessonOrder DESC", "1");
     	int lessonOrder;
-    	if (x == null || x.getCount() == 0) {
-    	    lessonOrder = -1; //TODO wth is this doing...it gets overwritten no matter what 5 lines down
-        }
-    	else {
+    	if (x == null) {
+    	    lessonOrder = -1;
+        } else if (x.getCount() == 0) {
+            x.close();
+            lessonOrder = -1;
+        } else {
+            x.close();
             x.moveToFirst();
+            lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
     	}
-    	lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
-        x.close();
 
     	ContentValues values = new ContentValues();
     	values.put("LessonID", lessonId);

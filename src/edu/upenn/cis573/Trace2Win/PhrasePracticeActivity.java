@@ -101,6 +101,12 @@ public class PhrasePracticeActivity extends Activity {
 		initializeMode();
 
 	}
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        _dbHelper.close();
+    };
 
 	/**
 	 * Initialize the display mode, if the activity was started with intent to

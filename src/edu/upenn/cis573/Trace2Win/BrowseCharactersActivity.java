@@ -75,6 +75,12 @@ public class BrowseCharactersActivity extends ListActivity {
         filterStatus = (TextView) findViewById(R.id.filterStatus);
 	}
 	
+	@Override
+	protected void onDestroy() {
+        super.onDestroy();
+	    dba.close();
+	};
+	
 	@Override  
 	protected void onListItemClick(ListView l, View v, int position, long id) {  
 	  super.onListItemClick(l, v, position, id);  
