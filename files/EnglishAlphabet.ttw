@@ -1,0 +1,915 @@
+<ttw name="EnglishAlphabet">
+    <character id="1">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="A" />
+        <stroke position="0">
+            <point position="0" x="0.48541668" y="0.25625" />
+            <point position="1" x="0.47708333" y="0.275" />
+            <point position="2" x="0.44166666" y="0.36458334" />
+            <point position="3" x="0.38333333" y="0.4875" />
+            <point position="4" x="0.35416666" y="0.55833334" />
+            <point position="5" x="0.325" y="0.62708336" />
+            <point position="6" x="0.30625" y="0.68541664" />
+            <point position="7" x="0.29166666" y="0.7416666" />
+            <point position="8" x="0.28333333" y="0.775" />
+            <point position="9" x="0.27083334" y="0.81875" />
+            <point position="10" x="0.27291667" y="0.81666666" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.49375" y="0.27916667" />
+            <point position="1" x="0.49583334" y="0.2875" />
+            <point position="2" x="0.53333336" y="0.38125" />
+            <point position="3" x="0.56458336" y="0.43958333" />
+            <point position="4" x="0.59375" y="0.5" />
+            <point position="5" x="0.6166667" y="0.56041664" />
+            <point position="6" x="0.6645833" y="0.6666667" />
+            <point position="7" x="0.68333334" y="0.70624995" />
+            <point position="8" x="0.6958333" y="0.75208336" />
+            <point position="9" x="0.7" y="0.7708333" />
+            <point position="10" x="0.70208335" y="0.77916664" />
+            <point position="11" x="0.70416665" y="0.7875" />
+        </stroke>
+        <stroke position="2">
+            <point position="0" x="0.35416666" y="0.58124995" />
+            <point position="1" x="0.36458334" y="0.5791667" />
+            <point position="2" x="0.4125" y="0.575" />
+            <point position="3" x="0.5104167" y="0.56041664" />
+            <point position="4" x="0.54375" y="0.55625" />
+            <point position="5" x="0.56875" y="0.54791665" />
+            <point position="6" x="0.5854167" y="0.55" />
+        </stroke>
+    </character>
+    <character id="2">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="B" />
+        <stroke position="0">
+            <point position="0" x="0.33333334" y="0.3625" />
+            <point position="1" x="0.36458334" y="0.50208336" />
+            <point position="2" x="0.36875" y="0.5729166" />
+            <point position="3" x="0.37708333" y="0.68750006" />
+            <point position="4" x="0.375" y="0.7375" />
+            <point position="5" x="0.37916666" y="0.76874995" />
+            <point position="6" x="0.38125" y="0.77916664" />
+            <point position="7" x="0.38541666" y="0.7916667" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.32708332" y="0.37083334" />
+            <point position="1" x="0.35625" y="0.3375" />
+            <point position="2" x="0.42083332" y="0.2875" />
+            <point position="3" x="0.46041667" y="0.275" />
+            <point position="4" x="0.50208336" y="0.27291667" />
+            <point position="5" x="0.53541666" y="0.27916667" />
+            <point position="6" x="0.55625" y="0.3" />
+            <point position="7" x="0.56458336" y="0.31666666" />
+            <point position="8" x="0.56041664" y="0.34166667" />
+            <point position="9" x="0.5375" y="0.4" />
+            <point position="10" x="0.5083333" y="0.425" />
+            <point position="11" x="0.44583333" y="0.47708333" />
+            <point position="12" x="0.4375" y="0.48125" />
+            <point position="13" x="0.425" y="0.49166667" />
+            <point position="14" x="0.4375" y="0.50208336" />
+            <point position="15" x="0.55625" y="0.51458335" />
+            <point position="16" x="0.62291664" y="0.53333336" />
+            <point position="17" x="0.7" y="0.61041665" />
+            <point position="18" x="0.70416665" y="0.64374995" />
+            <point position="19" x="0.7" y="0.65833336" />
+            <point position="20" x="0.6479167" y="0.7395833" />
+            <point position="21" x="0.6041667" y="0.76874995" />
+            <point position="22" x="0.5541667" y="0.7895833" />
+            <point position="23" x="0.5" y="0.8020833" />
+            <point position="24" x="0.44166666" y="0.80625" />
+            <point position="25" x="0.39166668" y="0.8" />
+            <point position="26" x="0.36041668" y="0.7875" />
+            <point position="27" x="0.36041668" y="0.78125" />
+        </stroke>
+    </character>
+    <character id="3">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="C" />
+        <stroke position="0">
+            <point position="0" x="0.62291664" y="0.275" />
+            <point position="1" x="0.5833333" y="0.25625" />
+            <point position="2" x="0.50625" y="0.22916664" />
+            <point position="3" x="0.45833334" y="0.23333336" />
+            <point position="4" x="0.40833333" y="0.24375" />
+            <point position="5" x="0.36666667" y="0.25833333" />
+            <point position="6" x="0.31666666" y="0.32291666" />
+            <point position="7" x="0.30208334" y="0.36458334" />
+            <point position="8" x="0.28541666" y="0.41666666" />
+            <point position="9" x="0.28541666" y="0.47916666" />
+            <point position="10" x="0.28958333" y="0.5375" />
+            <point position="11" x="0.34166667" y="0.65625" />
+            <point position="12" x="0.3875" y="0.69166666" />
+            <point position="13" x="0.44166666" y="0.72083336" />
+            <point position="14" x="0.5" y="0.7291667" />
+            <point position="15" x="0.54583335" y="0.7270833" />
+            <point position="16" x="0.625" y="0.68750006" />
+            <point position="17" x="0.6666667" y="0.6604167" />
+            <point position="18" x="0.69166666" y="0.6354166" />
+            <point position="19" x="0.7083333" y="0.62083334" />
+            <point position="20" x="0.71666664" y="0.6166666" />
+        </stroke>
+    </character>
+    <character id="4">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="D" />
+        <stroke position="0">
+            <point position="0" x="0.39166668" y="0.275" />
+            <point position="1" x="0.39166668" y="0.33333334" />
+            <point position="2" x="0.39791667" y="0.44375" />
+            <point position="3" x="0.39583334" y="0.50625" />
+            <point position="4" x="0.39583334" y="0.575" />
+            <point position="5" x="0.39166668" y="0.62708336" />
+            <point position="6" x="0.39166668" y="0.68333334" />
+            <point position="7" x="0.39375" y="0.69166666" />
+            <point position="8" x="0.39791667" y="0.69166666" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.28958333" y="0.26458332" />
+            <point position="1" x="0.36041668" y="0.26458332" />
+            <point position="2" x="0.49583334" y="0.27708334" />
+            <point position="3" x="0.5625" y="0.28958333" />
+            <point position="4" x="0.62291664" y="0.31666666" />
+            <point position="5" x="0.6666667" y="0.34791666" />
+            <point position="6" x="0.71458334" y="0.41458333" />
+            <point position="7" x="0.71875" y="0.44583333" />
+            <point position="8" x="0.70625" y="0.48958334" />
+            <point position="9" x="0.67291665" y="0.5229167" />
+            <point position="10" x="0.63125" y="0.57708335" />
+            <point position="11" x="0.5395833" y="0.65833336" />
+            <point position="12" x="0.49583334" y="0.68125" />
+            <point position="13" x="0.46041667" y="0.7041667" />
+            <point position="14" x="0.43333334" y="0.7229167" />
+            <point position="15" x="0.40833333" y="0.73125005" />
+            <point position="16" x="0.39375" y="0.73125005" />
+        </stroke>
+    </character>
+    <character id="5">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="E" />
+        <stroke position="0">
+            <point position="0" x="0.32291666" y="0.28958333" />
+            <point position="1" x="0.6145833" y="0.23333336" />
+            <point position="2" x="0.625" y="0.23125" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.31458333" y="0.32916668" />
+            <point position="1" x="0.31875" y="0.38541666" />
+            <point position="2" x="0.32083333" y="0.48333332" />
+            <point position="3" x="0.32083333" y="0.54791665" />
+            <point position="4" x="0.33541667" y="0.6083333" />
+            <point position="5" x="0.34791666" y="0.6666667" />
+            <point position="6" x="0.40416667" y="0.72083336" />
+            <point position="7" x="0.43541667" y="0.7333333" />
+            <point position="8" x="0.475" y="0.72499996" />
+            <point position="9" x="0.5270833" y="0.7083333" />
+            <point position="10" x="0.58125" y="0.68125" />
+            <point position="11" x="0.6479167" y="0.63958335" />
+            <point position="12" x="0.66041666" y="0.6375" />
+        </stroke>
+        <stroke position="2">
+            <point position="0" x="0.35208333" y="0.5416667" />
+            <point position="1" x="0.575" y="0.45833334" />
+            <point position="2" x="0.6020833" y="0.45" />
+            <point position="3" x="0.625" y="0.43958333" />
+        </stroke>
+    </character>
+    <character id="6">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="F" />
+        <stroke position="0">
+            <point position="0" x="0.32708332" y="0.27916667" />
+            <point position="1" x="0.33541667" y="0.3" />
+            <point position="2" x="0.3625" y="0.41458333" />
+            <point position="3" x="0.35833332" y="0.5729166" />
+            <point position="4" x="0.35625" y="0.65" />
+            <point position="5" x="0.35416666" y="0.7083333" />
+            <point position="6" x="0.36041668" y="0.7604166" />
+            <point position="7" x="0.36875" y="0.7895833" />
+            <point position="8" x="0.375" y="0.81041664" />
+            <point position="9" x="0.38333333" y="0.80833334" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.36458334" y="0.29583332" />
+            <point position="1" x="0.39166668" y="0.29375" />
+            <point position="2" x="0.51666665" y="0.27291667" />
+            <point position="3" x="0.56666666" y="0.27291667" />
+            <point position="4" x="0.6125" y="0.2625" />
+            <point position="5" x="0.6375" y="0.26041666" />
+            <point position="6" x="0.65208334" y="0.26041666" />
+            <point position="7" x="0.6666667" y="0.2625" />
+        </stroke>
+        <stroke position="2">
+            <point position="0" x="0.37291667" y="0.5395833" />
+            <point position="1" x="0.39791667" y="0.53333336" />
+            <point position="2" x="0.50625" y="0.5125" />
+            <point position="3" x="0.5375" y="0.50625" />
+            <point position="4" x="0.55" y="0.50625" />
+            <point position="5" x="0.56666666" y="0.50416666" />
+            <point position="6" x="0.5833333" y="0.50208336" />
+        </stroke>
+    </character>
+    <character id="7">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="G" />
+        <stroke position="0">
+            <point position="0" x="0.6041667" y="0.38125" />
+            <point position="1" x="0.6" y="0.37083334" />
+            <point position="2" x="0.5729167" y="0.28958333" />
+            <point position="3" x="0.53333336" y="0.2416667" />
+            <point position="4" x="0.5208333" y="0.23750003" />
+            <point position="5" x="0.49791667" y="0.23541667" />
+            <point position="6" x="0.44375" y="0.23958333" />
+            <point position="7" x="0.4" y="0.2625" />
+            <point position="8" x="0.36041668" y="0.29166666" />
+            <point position="9" x="0.30625" y="0.3875" />
+            <point position="10" x="0.2875" y="0.4375" />
+            <point position="11" x="0.2875" y="0.49583334" />
+            <point position="12" x="0.30833334" y="0.54791665" />
+            <point position="13" x="0.32916668" y="0.59583336" />
+            <point position="14" x="0.39166668" y="0.68333334" />
+            <point position="15" x="0.42916667" y="0.71666664" />
+            <point position="16" x="0.46666667" y="0.7333333" />
+            <point position="17" x="0.50625" y="0.73541665" />
+            <point position="18" x="0.5416667" y="0.7333333" />
+            <point position="19" x="0.6166667" y="0.69166666" />
+            <point position="20" x="0.6458333" y="0.6708333" />
+            <point position="21" x="0.65416664" y="0.6625" />
+            <point position="22" x="0.66041666" y="0.6479167" />
+            <point position="23" x="0.66875" y="0.63125" />
+            <point position="24" x="0.67291665" y="0.61041665" />
+            <point position="25" x="0.675" y="0.6020833" />
+            <point position="26" x="0.675" y="0.59375" />
+            <point position="27" x="0.675" y="0.57708335" />
+            <point position="28" x="0.65625" y="0.5708334" />
+            <point position="29" x="0.625" y="0.56249994" />
+            <point position="30" x="0.5208333" y="0.55625" />
+            <point position="31" x="0.475" y="0.56041664" />
+            <point position="32" x="0.46041667" y="0.56458336" />
+            <point position="33" x="0.44375" y="0.5708334" />
+            <point position="34" x="0.42916667" y="0.5791667" />
+        </stroke>
+    </character>
+    <character id="8">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="H" />
+        <stroke position="0">
+            <point position="0" x="0.33541667" y="0.26041666" />
+            <point position="1" x="0.35833332" y="0.55833334" />
+            <point position="2" x="0.35416666" y="0.62083334" />
+            <point position="3" x="0.35416666" y="0.71666664" />
+            <point position="4" x="0.35833332" y="0.74583334" />
+            <point position="5" x="0.36666667" y="0.74791664" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.62083334" y="0.25208333" />
+            <point position="1" x="0.62083334" y="0.2625" />
+            <point position="2" x="0.62916666" y="0.39583334" />
+            <point position="3" x="0.6333333" y="0.45625" />
+            <point position="4" x="0.63125" y="0.5208333" />
+            <point position="5" x="0.62916666" y="0.58124995" />
+            <point position="6" x="0.62291664" y="0.6625" />
+            <point position="7" x="0.61875" y="0.68125" />
+        </stroke>
+        <stroke position="2">
+            <point position="0" x="0.37291667" y="0.48125" />
+            <point position="1" x="0.38333333" y="0.48125" />
+            <point position="2" x="0.43958333" y="0.48125" />
+            <point position="3" x="0.54791665" y="0.48125" />
+            <point position="4" x="0.59375" y="0.47083333" />
+            <point position="5" x="0.62291664" y="0.47291666" />
+            <point position="6" x="0.6375" y="0.47083333" />
+        </stroke>
+    </character>
+    <character id="9">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="I" />
+        <stroke position="0">
+            <point position="0" x="0.38541666" y="0.27083334" />
+            <point position="1" x="0.40833333" y="0.26666668" />
+            <point position="2" x="0.5" y="0.25833333" />
+            <point position="3" x="0.53333336" y="0.25208333" />
+            <point position="4" x="0.55" y="0.25208333" />
+            <point position="5" x="0.5708333" y="0.25208333" />
+            <point position="6" x="0.58958334" y="0.25208333" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.5104167" y="0.2875" />
+            <point position="1" x="0.5125" y="0.33958334" />
+            <point position="2" x="0.5104167" y="0.42916667" />
+            <point position="3" x="0.5125" y="0.47291666" />
+            <point position="4" x="0.51666665" y="0.51666665" />
+            <point position="5" x="0.5208333" y="0.58124995" />
+            <point position="6" x="0.5208333" y="0.6041667" />
+            <point position="7" x="0.5208333" y="0.62500006" />
+            <point position="8" x="0.5208333" y="0.6458333" />
+            <point position="9" x="0.51666665" y="0.6666667" />
+        </stroke>
+        <stroke position="2">
+            <point position="0" x="0.40416667" y="0.675" />
+            <point position="1" x="0.43333334" y="0.67291665" />
+            <point position="2" x="0.54583335" y="0.66875005" />
+            <point position="3" x="0.58125" y="0.6604167" />
+            <point position="4" x="0.59375" y="0.65833336" />
+            <point position="5" x="0.60625" y="0.6604167" />
+            <point position="6" x="0.6145833" y="0.65833336" />
+        </stroke>
+    </character>
+    <character id="10">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="J" />
+        <stroke position="0">
+            <point position="0" x="0.3625" y="0.275" />
+            <point position="1" x="0.3875" y="0.27291667" />
+            <point position="2" x="0.48958334" y="0.26666668" />
+            <point position="3" x="0.5208333" y="0.25416666" />
+            <point position="4" x="0.53124994" y="0.25208333" />
+            <point position="5" x="0.54583335" y="0.24791667" />
+            <point position="6" x="0.58958334" y="0.2416667" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.51666665" y="0.26875" />
+            <point position="1" x="0.5208333" y="0.27708334" />
+            <point position="2" x="0.52916664" y="0.31041667" />
+            <point position="3" x="0.5416667" y="0.38541666" />
+            <point position="4" x="0.54583335" y="0.42708334" />
+            <point position="5" x="0.54791665" y="0.44791666" />
+            <point position="6" x="0.54375" y="0.55625" />
+            <point position="7" x="0.5395833" y="0.5979167" />
+            <point position="8" x="0.53541666" y="0.6145834" />
+            <point position="9" x="0.5229166" y="0.6666667" />
+            <point position="10" x="0.51666665" y="0.675" />
+            <point position="11" x="0.4875" y="0.6979166" />
+            <point position="12" x="0.4375" y="0.71666664" />
+            <point position="13" x="0.4" y="0.71666664" />
+            <point position="14" x="0.34791666" y="0.7083333" />
+            <point position="15" x="0.26666668" y="0.6770833" />
+            <point position="16" x="0.25833333" y="0.66875005" />
+            <point position="17" x="0.23333333" y="0.6354166" />
+            <point position="18" x="0.23125" y="0.62083334" />
+            <point position="19" x="0.22916667" y="0.56249994" />
+            <point position="20" x="0.23125" y="0.5416667" />
+        </stroke>
+    </character>
+    <character id="11">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="K" />
+        <stroke position="0">
+            <point position="0" x="0.36041668" y="0.21666667" />
+            <point position="1" x="0.35416666" y="0.3625" />
+            <point position="2" x="0.35" y="0.42708334" />
+            <point position="3" x="0.33958334" y="0.5708334" />
+            <point position="4" x="0.32708332" y="0.6354166" />
+            <point position="5" x="0.32916668" y="0.68541664" />
+            <point position="6" x="0.32916668" y="0.7291667" />
+            <point position="7" x="0.325" y="0.75416666" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.59375" y="0.27708334" />
+            <point position="1" x="0.46666667" y="0.39583334" />
+            <point position="2" x="0.43541667" y="0.425" />
+            <point position="3" x="0.39375" y="0.45625" />
+            <point position="4" x="0.36041668" y="0.47916666" />
+            <point position="5" x="0.34583333" y="0.48958334" />
+            <point position="6" x="0.35833332" y="0.525" />
+            <point position="7" x="0.41666666" y="0.59166664" />
+            <point position="8" x="0.51874995" y="0.68541664" />
+            <point position="9" x="0.5708333" y="0.72499996" />
+            <point position="10" x="0.61875" y="0.7666667" />
+            <point position="11" x="0.66875" y="0.78333336" />
+            <point position="12" x="0.70208335" y="0.7895833" />
+            <point position="13" x="0.7375" y="0.78541666" />
+        </stroke>
+    </character>
+    <character id="12">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="L" />
+        <stroke position="0">
+            <point position="0" x="0.325" y="0.16666664" />
+            <point position="1" x="0.33125" y="0.38333333" />
+            <point position="2" x="0.33125" y="0.45208332" />
+            <point position="3" x="0.33958334" y="0.59375" />
+            <point position="4" x="0.34166667" y="0.65416664" />
+            <point position="5" x="0.34583333" y="0.69375" />
+            <point position="6" x="0.35" y="0.7270833" />
+            <point position="7" x="0.3625" y="0.7375" />
+            <point position="8" x="0.48541668" y="0.73125005" />
+            <point position="9" x="0.5395833" y="0.72499996" />
+            <point position="10" x="0.60625" y="0.71666664" />
+            <point position="11" x="0.71666664" y="0.69375" />
+            <point position="12" x="0.75" y="0.69166666" />
+            <point position="13" x="0.7604167" y="0.68958336" />
+            <point position="14" x="0.76875" y="0.68958336" />
+        </stroke>
+    </character>
+    <character id="13">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="M" />
+        <stroke position="0">
+            <point position="0" x="0.28541666" y="0.31666666" />
+            <point position="1" x="0.28541666" y="0.54375" />
+            <point position="2" x="0.2875" y="0.6" />
+            <point position="3" x="0.29375" y="0.68125" />
+            <point position="4" x="0.29375" y="0.69375" />
+            <point position="5" x="0.29583332" y="0.7104167" />
+            <point position="6" x="0.29375" y="0.7291667" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.26666668" y="0.32291666" />
+            <point position="1" x="0.36875" y="0.3875" />
+            <point position="2" x="0.40208334" y="0.41666666" />
+            <point position="3" x="0.4375" y="0.44166666" />
+            <point position="4" x="0.46666667" y="0.47291666" />
+            <point position="5" x="0.49583334" y="0.49791667" />
+            <point position="6" x="0.5145833" y="0.50625" />
+            <point position="7" x="0.5229166" y="0.5104167" />
+            <point position="8" x="0.5520833" y="0.48333332" />
+            <point position="9" x="0.62291664" y="0.41666666" />
+            <point position="10" x="0.675" y="0.37083334" />
+            <point position="11" x="0.7291667" y="0.31875" />
+            <point position="12" x="0.7375" y="0.30833334" />
+            <point position="13" x="0.74375" y="0.32291666" />
+            <point position="14" x="0.7375" y="0.42708334" />
+            <point position="15" x="0.7270833" y="0.49375" />
+            <point position="16" x="0.7125" y="0.55625" />
+            <point position="17" x="0.70208335" y="0.6625" />
+            <point position="18" x="0.70208335" y="0.68750006" />
+            <point position="19" x="0.70416665" y="0.70208335" />
+            <point position="20" x="0.70416665" y="0.71875" />
+            <point position="21" x="0.7083333" y="0.7291667" />
+        </stroke>
+    </character>
+    <character id="14">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="N" />
+        <stroke position="0">
+            <point position="0" x="0.34583333" y="0.2875" />
+            <point position="1" x="0.34791666" y="0.29791668" />
+            <point position="2" x="0.36041668" y="0.40416667" />
+            <point position="3" x="0.3625" y="0.50625" />
+            <point position="4" x="0.3625" y="0.58124995" />
+            <point position="5" x="0.3625" y="0.6333334" />
+            <point position="6" x="0.36458334" y="0.68125" />
+            <point position="7" x="0.36666667" y="0.72499996" />
+            <point position="8" x="0.36875" y="0.7395833" />
+            <point position="9" x="0.37291667" y="0.75000006" />
+            <point position="10" x="0.37708333" y="0.75000006" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.36458334" y="0.28958333" />
+            <point position="1" x="0.3875" y="0.32916668" />
+            <point position="2" x="0.43958333" y="0.39791667" />
+            <point position="3" x="0.46041667" y="0.42708334" />
+            <point position="4" x="0.49375" y="0.46875" />
+            <point position="5" x="0.525" y="0.50416666" />
+            <point position="6" x="0.575" y="0.5895833" />
+            <point position="7" x="0.6" y="0.6145834" />
+            <point position="8" x="0.61875" y="0.6354166" />
+            <point position="9" x="0.63125" y="0.65833336" />
+            <point position="10" x="0.64375" y="0.66875005" />
+        </stroke>
+        <stroke position="2">
+            <point position="0" x="0.64375" y="0.27083334" />
+            <point position="1" x="0.6333333" y="0.39583334" />
+            <point position="2" x="0.6333333" y="0.43958333" />
+            <point position="3" x="0.6333333" y="0.49583334" />
+            <point position="4" x="0.6354167" y="0.55" />
+            <point position="5" x="0.6354167" y="0.59166664" />
+            <point position="6" x="0.6354167" y="0.6083333" />
+            <point position="7" x="0.64166665" y="0.6479167" />
+            <point position="8" x="0.6479167" y="0.6604167" />
+            <point position="9" x="0.65833336" y="0.6666667" />
+        </stroke>
+    </character>
+    <character id="15">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="O" />
+        <stroke position="0">
+            <point position="0" x="0.5416667" y="0.30208334" />
+            <point position="1" x="0.53124994" y="0.30416667" />
+            <point position="2" x="0.5145833" y="0.30416667" />
+            <point position="3" x="0.43125" y="0.30833334" />
+            <point position="4" x="0.3875" y="0.31666666" />
+            <point position="5" x="0.37291667" y="0.32291666" />
+            <point position="6" x="0.32708332" y="0.35833332" />
+            <point position="7" x="0.3" y="0.39375" />
+            <point position="8" x="0.29375" y="0.40416667" />
+            <point position="9" x="0.2875" y="0.42291668" />
+            <point position="10" x="0.28333333" y="0.47916666" />
+            <point position="11" x="0.3" y="0.54583335" />
+            <point position="12" x="0.31458333" y="0.5854167" />
+            <point position="13" x="0.3375" y="0.61875" />
+            <point position="14" x="0.35833332" y="0.65625" />
+            <point position="15" x="0.38541666" y="0.6791666" />
+            <point position="16" x="0.45" y="0.7104167" />
+            <point position="17" x="0.5395833" y="0.6979166" />
+            <point position="18" x="0.5729167" y="0.6770833" />
+            <point position="19" x="0.6020833" y="0.65" />
+            <point position="20" x="0.61041665" y="0.63958335" />
+            <point position="21" x="0.62916666" y="0.5979167" />
+            <point position="22" x="0.6354167" y="0.58124995" />
+            <point position="23" x="0.6458333" y="0.5125" />
+            <point position="24" x="0.6479167" y="0.48958334" />
+            <point position="25" x="0.64375" y="0.43333334" />
+            <point position="26" x="0.64166665" y="0.42291668" />
+            <point position="27" x="0.6333333" y="0.40833333" />
+            <point position="28" x="0.56875" y="0.34583333" />
+            <point position="29" x="0.55833334" y="0.33958334" />
+            <point position="30" x="0.54791665" y="0.33333334" />
+            <point position="31" x="0.53541666" y="0.325" />
+            <point position="32" x="0.51666665" y="0.32083333" />
+            <point position="33" x="0.49375" y="0.32291666" />
+        </stroke>
+    </character>
+    <character id="16">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="P" />
+        <stroke position="0">
+            <point position="0" x="0.39375" y="0.27708334" />
+            <point position="1" x="0.38333333" y="0.49375" />
+            <point position="2" x="0.37708333" y="0.62708336" />
+            <point position="3" x="0.375" y="0.68125" />
+            <point position="4" x="0.375" y="0.72499996" />
+            <point position="5" x="0.37916666" y="0.7583334" />
+            <point position="6" x="0.38125" y="0.7666667" />
+            <point position="7" x="0.38333333" y="0.7729167" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.36875" y="0.31666666" />
+            <point position="1" x="0.46458334" y="0.27708334" />
+            <point position="2" x="0.5270833" y="0.26666668" />
+            <point position="3" x="0.5833333" y="0.27708334" />
+            <point position="4" x="0.6333333" y="0.29166666" />
+            <point position="5" x="0.67291665" y="0.30833334" />
+            <point position="6" x="0.71458334" y="0.35208333" />
+            <point position="7" x="0.71458334" y="0.36458334" />
+            <point position="8" x="0.7125" y="0.38333333" />
+            <point position="9" x="0.6791667" y="0.43125" />
+            <point position="10" x="0.6479167" y="0.46458334" />
+            <point position="11" x="0.56458336" y="0.5104167" />
+            <point position="12" x="0.5125" y="0.5208333" />
+            <point position="13" x="0.46041667" y="0.52708334" />
+            <point position="14" x="0.41666666" y="0.5375" />
+            <point position="15" x="0.39166668" y="0.54375" />
+            <point position="16" x="0.37916666" y="0.54583335" />
+            <point position="17" x="0.37708333" y="0.54375" />
+        </stroke>
+    </character>
+    <character id="17">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="Q" />
+        <stroke position="0">
+            <point position="0" x="0.5833333" y="0.30833334" />
+            <point position="1" x="0.56041664" y="0.30416667" />
+            <point position="2" x="0.47916666" y="0.3" />
+            <point position="3" x="0.46458334" y="0.30416667" />
+            <point position="4" x="0.44375" y="0.31041667" />
+            <point position="5" x="0.38958332" y="0.33125" />
+            <point position="6" x="0.34583333" y="0.37708333" />
+            <point position="7" x="0.3375" y="0.38958332" />
+            <point position="8" x="0.3125" y="0.44375" />
+            <point position="9" x="0.30208334" y="0.47291666" />
+            <point position="10" x="0.29166666" y="0.5125" />
+            <point position="11" x="0.30833334" y="0.59583336" />
+            <point position="12" x="0.325" y="0.63125" />
+            <point position="13" x="0.35416666" y="0.6666667" />
+            <point position="14" x="0.38333333" y="0.68333334" />
+            <point position="15" x="0.45625" y="0.7125" />
+            <point position="16" x="0.47708333" y="0.7104167" />
+            <point position="17" x="0.53333336" y="0.69166666" />
+            <point position="18" x="0.575" y="0.67291665" />
+            <point position="19" x="0.6125" y="0.6458333" />
+            <point position="20" x="0.65833336" y="0.5979167" />
+            <point position="21" x="0.675" y="0.56875" />
+            <point position="22" x="0.6770833" y="0.5541666" />
+            <point position="23" x="0.68125" y="0.5" />
+            <point position="24" x="0.68125" y="0.48125" />
+            <point position="25" x="0.67083335" y="0.44166666" />
+            <point position="26" x="0.6458333" y="0.40208334" />
+            <point position="27" x="0.62083334" y="0.375" />
+            <point position="28" x="0.5833333" y="0.36041668" />
+            <point position="29" x="0.54791665" y="0.3375" />
+            <point position="30" x="0.525" y="0.33125" />
+            <point position="31" x="0.5229166" y="0.32916668" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.5145833" y="0.53541666" />
+            <point position="1" x="0.5875" y="0.60625005" />
+            <point position="2" x="0.61875" y="0.63125" />
+            <point position="3" x="0.64375" y="0.6666667" />
+            <point position="4" x="0.6666667" y="0.68541664" />
+            <point position="5" x="0.6875" y="0.7083333" />
+            <point position="6" x="0.70208335" y="0.71875" />
+            <point position="7" x="0.72083336" y="0.72499996" />
+        </stroke>
+    </character>
+    <character id="18">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="R" />
+        <stroke position="0">
+            <point position="0" x="0.35208333" y="0.28125" />
+            <point position="1" x="0.34791666" y="0.44166666" />
+            <point position="2" x="0.34166667" y="0.56875" />
+            <point position="3" x="0.34166667" y="0.62291664" />
+            <point position="4" x="0.34375" y="0.67291665" />
+            <point position="5" x="0.34375" y="0.70208335" />
+            <point position="6" x="0.34375" y="0.7145833" />
+            <point position="7" x="0.34166667" y="0.73125005" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.31666666" y="0.27916667" />
+            <point position="1" x="0.33333334" y="0.26875" />
+            <point position="2" x="0.44583333" y="0.23125" />
+            <point position="3" x="0.5" y="0.21666667" />
+            <point position="4" x="0.54375" y="0.22291666" />
+            <point position="5" x="0.57916665" y="0.22499996" />
+            <point position="6" x="0.64375" y="0.25625" />
+            <point position="7" x="0.65416664" y="0.26666668" />
+            <point position="8" x="0.6625" y="0.28125" />
+            <point position="9" x="0.66041666" y="0.30416667" />
+            <point position="10" x="0.64166665" y="0.35625" />
+            <point position="11" x="0.58958334" y="0.425" />
+            <point position="12" x="0.55833334" y="0.45" />
+            <point position="13" x="0.5270833" y="0.46875" />
+            <point position="14" x="0.48541668" y="0.48125" />
+            <point position="15" x="0.44375" y="0.49166667" />
+            <point position="16" x="0.38125" y="0.49166667" />
+            <point position="17" x="0.3625" y="0.48958334" />
+            <point position="18" x="0.35" y="0.48333332" />
+            <point position="19" x="0.37708333" y="0.49375" />
+            <point position="20" x="0.45208332" y="0.525" />
+            <point position="21" x="0.49791667" y="0.5520834" />
+            <point position="22" x="0.53333336" y="0.5895833" />
+            <point position="23" x="0.62083334" y="0.6479167" />
+            <point position="24" x="0.6666667" y="0.6708333" />
+            <point position="25" x="0.70208335" y="0.68541664" />
+            <point position="26" x="0.7395833" y="0.6979166" />
+            <point position="27" x="0.78333336" y="0.70624995" />
+        </stroke>
+    </character>
+    <character id="19">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="S" />
+        <stroke position="0">
+            <point position="0" x="0.62291664" y="0.27708334" />
+            <point position="1" x="0.61041665" y="0.2625" />
+            <point position="2" x="0.55625" y="0.2104167" />
+            <point position="3" x="0.52916664" y="0.18958333" />
+            <point position="4" x="0.5104167" y="0.1875" />
+            <point position="5" x="0.44583333" y="0.17500003" />
+            <point position="6" x="0.36041668" y="0.20208336" />
+            <point position="7" x="0.3375" y="0.21875" />
+            <point position="8" x="0.32916668" y="0.22708334" />
+            <point position="9" x="0.31875" y="0.24375" />
+            <point position="10" x="0.31458333" y="0.26458332" />
+            <point position="11" x="0.34583333" y="0.33125" />
+            <point position="12" x="0.37083334" y="0.36041668" />
+            <point position="13" x="0.41041666" y="0.38125" />
+            <point position="14" x="0.44791666" y="0.4" />
+            <point position="15" x="0.49583334" y="0.41041666" />
+            <point position="16" x="0.5875" y="0.44166666" />
+            <point position="17" x="0.62083334" y="0.46458334" />
+            <point position="18" x="0.6375" y="0.48958334" />
+            <point position="19" x="0.64375" y="0.5" />
+            <point position="20" x="0.6479167" y="0.51875" />
+            <point position="21" x="0.65416664" y="0.5875" />
+            <point position="22" x="0.65" y="0.60625005" />
+            <point position="23" x="0.62916666" y="0.6604167" />
+            <point position="24" x="0.62083334" y="0.6708333" />
+            <point position="25" x="0.59375" y="0.70624995" />
+            <point position="26" x="0.5375" y="0.7395833" />
+            <point position="27" x="0.50208336" y="0.7375" />
+            <point position="28" x="0.48125" y="0.73541665" />
+            <point position="29" x="0.42291668" y="0.71875" />
+            <point position="30" x="0.34583333" y="0.675" />
+            <point position="31" x="0.32291666" y="0.6479167" />
+            <point position="32" x="0.32083333" y="0.6375" />
+            <point position="33" x="0.325" y="0.6166666" />
+            <point position="34" x="0.3375" y="0.56875" />
+        </stroke>
+    </character>
+    <character id="20">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="T" />
+        <stroke position="0">
+            <point position="0" x="0.26041666" y="0.30416667" />
+            <point position="1" x="0.39166668" y="0.29791668" />
+            <point position="2" x="0.50625" y="0.29583332" />
+            <point position="3" x="0.55833334" y="0.30208334" />
+            <point position="4" x="0.61041665" y="0.3" />
+            <point position="5" x="0.62291664" y="0.3" />
+            <point position="6" x="0.63958335" y="0.29791668" />
+            <point position="7" x="0.6645833" y="0.30208334" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.47083333" y="0.31666666" />
+            <point position="1" x="0.49166667" y="0.50416666" />
+            <point position="2" x="0.49375" y="0.54791665" />
+            <point position="3" x="0.48958334" y="0.59583336" />
+            <point position="4" x="0.49166667" y="0.61041665" />
+            <point position="5" x="0.49375" y="0.63125" />
+            <point position="6" x="0.49583334" y="0.65" />
+            <point position="7" x="0.49791667" y="0.67291665" />
+        </stroke>
+    </character>
+    <character id="21">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="U" />
+        <stroke position="0">
+            <point position="0" x="0.34166667" y="0.23958333" />
+            <point position="1" x="0.3375" y="0.2625" />
+            <point position="2" x="0.325" y="0.35" />
+            <point position="3" x="0.32708332" y="0.43333334" />
+            <point position="4" x="0.32916668" y="0.47291666" />
+            <point position="5" x="0.34166667" y="0.5125" />
+            <point position="6" x="0.35" y="0.56458336" />
+            <point position="7" x="0.3625" y="0.6" />
+            <point position="8" x="0.3875" y="0.6416667" />
+            <point position="9" x="0.43958333" y="0.6958334" />
+            <point position="10" x="0.46458334" y="0.7125" />
+            <point position="11" x="0.47916666" y="0.7145833" />
+            <point position="12" x="0.49375" y="0.71666664" />
+            <point position="13" x="0.5125" y="0.7083333" />
+            <point position="14" x="0.5833333" y="0.65416664" />
+            <point position="15" x="0.60625" y="0.62291664" />
+            <point position="16" x="0.61875" y="0.5895833" />
+            <point position="17" x="0.62708336" y="0.5375" />
+            <point position="18" x="0.6354167" y="0.44791666" />
+            <point position="19" x="0.6354167" y="0.43333334" />
+            <point position="20" x="0.6354167" y="0.41041666" />
+            <point position="21" x="0.6354167" y="0.35" />
+            <point position="22" x="0.6354167" y="0.3375" />
+            <point position="23" x="0.64166665" y="0.31875" />
+            <point position="24" x="0.65416664" y="0.30208334" />
+        </stroke>
+    </character>
+    <character id="22">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="V" />
+        <stroke position="0">
+            <point position="0" x="0.31041667" y="0.3" />
+            <point position="1" x="0.38125" y="0.45833334" />
+            <point position="2" x="0.40625" y="0.50416666" />
+            <point position="3" x="0.44375" y="0.6041667" />
+            <point position="4" x="0.45833334" y="0.65416664" />
+            <point position="5" x="0.46875" y="0.68958336" />
+            <point position="6" x="0.47916666" y="0.71875" />
+            <point position="7" x="0.48541668" y="0.7291667" />
+            <point position="8" x="0.48958334" y="0.74375" />
+            <point position="9" x="0.49166667" y="0.75208336" />
+            <point position="10" x="0.50416666" y="0.74791664" />
+            <point position="11" x="0.55625" y="0.59583336" />
+            <point position="12" x="0.58125" y="0.5395833" />
+            <point position="13" x="0.58958334" y="0.47291666" />
+            <point position="14" x="0.60625" y="0.42083332" />
+            <point position="15" x="0.62083334" y="0.37083334" />
+            <point position="16" x="0.64375" y="0.31458333" />
+            <point position="17" x="0.65625" y="0.3" />
+            <point position="18" x="0.6645833" y="0.28958333" />
+            <point position="19" x="0.6770833" y="0.28125" />
+        </stroke>
+    </character>
+    <character id="23">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="W" />
+        <stroke position="0">
+            <point position="0" x="0.25" y="0.31458333" />
+            <point position="1" x="0.25833333" y="0.3625" />
+            <point position="2" x="0.275" y="0.44583333" />
+            <point position="3" x="0.30208334" y="0.55625" />
+            <point position="4" x="0.31666666" y="0.6125" />
+            <point position="5" x="0.3375" y="0.65625" />
+            <point position="6" x="0.35208333" y="0.68541664" />
+            <point position="7" x="0.36458334" y="0.7125" />
+            <point position="8" x="0.41041666" y="0.6416667" />
+            <point position="9" x="0.43958333" y="0.6" />
+            <point position="10" x="0.47916666" y="0.52708334" />
+            <point position="11" x="0.5104167" y="0.51875" />
+            <point position="12" x="0.52916664" y="0.5416667" />
+            <point position="13" x="0.5625" y="0.59375" />
+            <point position="14" x="0.5833333" y="0.62916666" />
+            <point position="15" x="0.6" y="0.65833336" />
+            <point position="16" x="0.61875" y="0.6958334" />
+            <point position="17" x="0.625" y="0.7041667" />
+            <point position="18" x="0.6354167" y="0.69375" />
+            <point position="19" x="0.6479167" y="0.6" />
+            <point position="20" x="0.6645833" y="0.5375" />
+            <point position="21" x="0.68125" y="0.47291666" />
+            <point position="22" x="0.7125" y="0.37916666" />
+            <point position="23" x="0.71666664" y="0.34583333" />
+            <point position="24" x="0.7270833" y="0.32916668" />
+        </stroke>
+    </character>
+    <character id="24">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="X" />
+        <stroke position="0">
+            <point position="0" x="0.31666666" y="0.2875" />
+            <point position="1" x="0.40208334" y="0.4" />
+            <point position="2" x="0.44375" y="0.44583333" />
+            <point position="3" x="0.525" y="0.55" />
+            <point position="4" x="0.55833334" y="0.5979167" />
+            <point position="5" x="0.59583336" y="0.6416667" />
+            <point position="6" x="0.62083334" y="0.675" />
+            <point position="7" x="0.64166665" y="0.70624995" />
+            <point position="8" x="0.66041666" y="0.7291667" />
+            <point position="9" x="0.67291665" y="0.75416666" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.66875" y="0.29583332" />
+            <point position="1" x="0.65416664" y="0.30833334" />
+            <point position="2" x="0.56666666" y="0.38958332" />
+            <point position="3" x="0.51874995" y="0.4375" />
+            <point position="4" x="0.41875" y="0.56041664" />
+            <point position="5" x="0.38125" y="0.6145834" />
+            <point position="6" x="0.35416666" y="0.6666667" />
+            <point position="7" x="0.34166667" y="0.6958334" />
+            <point position="8" x="0.32083333" y="0.72499996" />
+            <point position="9" x="0.29791668" y="0.78125" />
+        </stroke>
+    </character>
+    <character id="25">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="Y" />
+        <stroke position="0">
+            <point position="0" x="0.33541667" y="0.25416666" />
+            <point position="1" x="0.34791666" y="0.27083334" />
+            <point position="2" x="0.39791667" y="0.325" />
+            <point position="3" x="0.42708334" y="0.35208333" />
+            <point position="4" x="0.45" y="0.3875" />
+            <point position="5" x="0.47083333" y="0.42083332" />
+            <point position="6" x="0.5083333" y="0.4875" />
+            <point position="7" x="0.5145833" y="0.49791667" />
+            <point position="8" x="0.5208333" y="0.5083333" />
+            <point position="9" x="0.53333336" y="0.5083333" />
+            <point position="10" x="0.58125" y="0.4375" />
+            <point position="11" x="0.6145833" y="0.38333333" />
+            <point position="12" x="0.65833336" y="0.3" />
+            <point position="13" x="0.675" y="0.27291667" />
+            <point position="14" x="0.6875" y="0.25416666" />
+            <point position="15" x="0.6979167" y="0.2416667" />
+        </stroke>
+        <stroke position="1">
+            <point position="0" x="0.52916664" y="0.50416666" />
+            <point position="1" x="0.5270833" y="0.55833334" />
+            <point position="2" x="0.5145833" y="0.65833336" />
+            <point position="3" x="0.50625" y="0.7145833" />
+            <point position="4" x="0.5104167" y="0.75416666" />
+            <point position="5" x="0.5083333" y="0.78541666" />
+            <point position="6" x="0.5083333" y="0.8" />
+            <point position="7" x="0.5083333" y="0.80833334" />
+        </stroke>
+    </character>
+    <character id="27">
+        <tag tag="English" />
+        <tag tag="Capital" />
+        <id key="Letter" value="Z" />
+        <stroke position="0">
+            <point position="0" x="0.30833334" y="0.2875" />
+            <point position="1" x="0.33333334" y="0.2875" />
+            <point position="2" x="0.475" y="0.2875" />
+            <point position="3" x="0.54375" y="0.28125" />
+            <point position="4" x="0.59375" y="0.28125" />
+            <point position="5" x="0.62291664" y="0.28333333" />
+            <point position="6" x="0.6333333" y="0.2875" />
+            <point position="7" x="0.5520833" y="0.375" />
+            <point position="8" x="0.50625" y="0.4125" />
+            <point position="9" x="0.45208332" y="0.45208332" />
+            <point position="10" x="0.39791667" y="0.50208336" />
+            <point position="11" x="0.35" y="0.55" />
+            <point position="12" x="0.28541666" y="0.62500006" />
+            <point position="13" x="0.27291667" y="0.6458333" />
+            <point position="14" x="0.26875" y="0.65625" />
+            <point position="15" x="0.30833334" y="0.6604167" />
+            <point position="16" x="0.41458333" y="0.6416667" />
+            <point position="17" x="0.5" y="0.62708336" />
+            <point position="18" x="0.73541665" y="0.59375" />
+            <point position="19" x="0.75208336" y="0.5979167" />
+        </stroke>
+    </character>
+</ttw>
