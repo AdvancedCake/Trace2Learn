@@ -307,7 +307,7 @@ public class BrowseWordsActivity extends ListActivity {
             return;
         }
         Lesson lesson = new Lesson();
-        lesson.setPrivateTag(name);
+        lesson.setName(name);
         lesson.addWord(lw.getId());
         dba.addLesson(lesson);
         showToast("Successfully Created");

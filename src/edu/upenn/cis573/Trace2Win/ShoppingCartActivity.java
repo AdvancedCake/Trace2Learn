@@ -539,7 +539,7 @@ public class ShoppingCartActivity extends Activity {
                     idView.setText(s);
                     break;
                 case LESSON:
-                    idView.setText(item.getPrivateTag());
+                    idView.setText(((Lesson)item).getLessonName());
                     break;      
             }
 

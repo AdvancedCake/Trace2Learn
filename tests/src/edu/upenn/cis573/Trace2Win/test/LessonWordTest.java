@@ -20,13 +20,8 @@ public class LessonWordTest extends AndroidTestCase {
 	
 	static public void compareWords(LessonWord expected, LessonWord actual)
 	{
-		assertEquals(expected.getId(), actual.getId());
-		assertEquals(expected.getItemType(), actual.getItemType());
+		LessonItemTest.compareLessonItem(expected, actual);
 		assertEquals(expected.getCharacterIds(), actual.getCharacterIds());
-		assertEquals(expected.getTags(), actual.getTags());
-		assertEquals(expected.getKeyValues(), actual.getKeyValues());
-		assertEquals(expected.getSort(), actual.getSort());
-		assertEquals(expected.getStringId(), actual.getStringId());
 	}	
 	
 	protected void setUp() throws Exception {

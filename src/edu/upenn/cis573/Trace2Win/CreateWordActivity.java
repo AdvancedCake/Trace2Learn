@@ -162,7 +162,7 @@ public class CreateWordActivity extends Activity {
             return;
         }
         Lesson lesson = new Lesson();
-        lesson.setPrivateTag(name);
+        lesson.setName(name);
         lesson.addWord(newWord.getId());
         dba.addLesson(lesson);
         window.dismiss();

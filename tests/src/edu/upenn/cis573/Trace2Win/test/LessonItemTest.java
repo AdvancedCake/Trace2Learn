@@ -8,6 +8,16 @@ import edu.upenn.cis573.Trace2Win.Database.LessonItem;
 
 public class LessonItemTest extends AndroidTestCase {
 
+	static public void compareLessonItem(LessonItem expected, LessonItem actual)
+	{
+		assertEquals(expected.getId(), actual.getId());
+		assertEquals(expected.getKeyValues(), actual.getKeyValues());
+		assertEquals(expected.getSort(), actual.getSort());
+		assertEquals(expected.getStringId(), actual.getStringId());
+		assertEquals(expected.getTags(), actual.getTags());		
+		assertEquals(expected.getItemType(), actual.getItemType());
+	}		
+	
     public void testCompareTo() {
         LessonItem a = new LessonCharacter();
         LessonItem b = new LessonCharacter();

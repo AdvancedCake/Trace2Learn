@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+import edu.upenn.cis573.Trace2Win.Database.Lesson;
 import edu.upenn.cis573.Trace2Win.Database.LessonItem;
 
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
@@ -56,7 +57,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 			text.setText(item.getKeyValuesToString());
 			break;
 		case LESSON:
-			text.setText(item.getPrivateTag());
+			text.setText(((Lesson)item).getLessonName());
 			break;		
 		}
 		
