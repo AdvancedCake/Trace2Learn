@@ -34,12 +34,18 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {	
 		View v = convertView;
+		
 		if (v == null) {
-			v = _vi.inflate(R.layout.main_menu, null);
+			v = _vi.inflate(R.layout.lesson_desc, null);
 		}
+		
 		Lesson item = _items.get(position);
-		TextView text = (TextView)v.findViewById(R.id.main_text);
-		text.setText(item.getLessonName());
+		TextView nameView = (TextView) v.findViewById(R.id.nameView);
+		TextView sizeView = (TextView) v.findViewById(R.id.sizeView);
+		
+		int count = item.getNumWords();
+        nameView.setText(item.getLessonName());
+        sizeView.setText(count + (count == 1 ? " word" : " words"));
 		
 		return v;
 	}

@@ -534,15 +534,16 @@ public class ShoppingCartActivity extends Activity {
             }
 
             // character and word views
-            ImageView  image    = (ImageView) v.findViewById(R.id.li_image);
-            TextView   idView   = (TextView) v.findViewById(R.id.idView);
-            TextView   tagView  = (TextView) v.findViewById(R.id.tagView);
+            ImageView image   = (ImageView) v.findViewById(R.id.li_image);
+            TextView  idView  = (TextView)  v.findViewById(R.id.idView);
+            TextView  tagView = (TextView)  v.findViewById(R.id.tagView);
             
             // lesson views
             TextView nameView = (TextView) v.findViewById(R.id.nameView);
             TextView sizeView = (TextView) v.findViewById(R.id.sizeView);
             
-            CheckBox   checkbox = (CheckBox) v.findViewById(R.id.checkbox);
+            // both
+            CheckBox checkbox = (CheckBox) v.findViewById(R.id.checkbox);
 
             // ids
             switch (item.getItemType())
