@@ -519,49 +519,66 @@ public class ShoppingCartActivity extends Activity {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
+            LessonItem item = _items.get(position);
             View v = convertView;
             if (v == null) {
-                v = _vi.inflate(R.layout.shopping_cart_item, null);
+                switch (item.getItemType()) {
+                    case CHARACTER:
+                    case WORD:
+                        v = _vi.inflate(R.layout.shopping_cart_item, null);
+                        break;
+                    case LESSON:
+                        v = _vi.inflate(R.layout.shopping_cart_lesson, null);
+                        break;
+                }
             }
-            LessonItem item     = _items.get(position);
+
+            // character and word views
             ImageView  image    = (ImageView) v.findViewById(R.id.li_image);
             TextView   idView   = (TextView) v.findViewById(R.id.idView);
             TextView   tagView  = (TextView) v.findViewById(R.id.tagView);
+            
+            // lesson views
+            TextView nameView = (TextView) v.findViewById(R.id.nameView);
+            TextView sizeView = (TextView) v.findViewById(R.id.sizeView);
+            
             CheckBox   checkbox = (CheckBox) v.findViewById(R.id.checkbox);
-            Bitmap     bitmap   = BitmapFactory.buildBitmap(item, 64);
-            image.setImageBitmap(bitmap);
 
             // ids
             switch (item.getItemType())
             {
                 case CHARACTER:
                 case WORD:
+                    // image
+                    Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
+                    image.setImageBitmap(bitmap);
+                    
+                    // ids
                     LinkedHashMap<String, String> keyValues = item.getKeyValues();
                     StringBuilder sb = new StringBuilder();
                     for (Map.Entry<String, String> entry : keyValues.entrySet()) {
                         sb.append(", " + entry.getKey() + ": " + entry.getValue());
-                    }       
+                    }
                     String s = sb.length() > 0 ? sb.substring(2) : "";
                     idView.setText(s);
+                    
+                    // tags
+                    ArrayList<String> tags = new ArrayList<String>(item.getTags());
+                    sb = new StringBuilder();
+                    for (String tag : tags) {
+                        sb.append(", "+tag);
+                    }
+                    s = sb.length() > 0 ? sb.substring(2) : "";
+                    tagView.setText(s);
+
                     break;
                 case LESSON:
-                    idView.setText(item.getPrivateTag());
-                    break;      
+                    Lesson lesson = (Lesson) item;
+                    int count = lesson.getNumWords();
+                    nameView.setText(lesson.getLessonName());
+                    sizeView.setText(count + (count == 1 ? " word" : " words"));
+                    break;
             }
-
-            // tags
-            ArrayList<String> tags = new ArrayList<String>(item.getTags());
-            StringBuilder sb = new StringBuilder();
-            for(String tag : tags){
-                Log.e("Tag","Found");
-                sb.append(", "+tag);
-            }
-            String s = "";
-            if(sb.length()>0){
-                s = sb.substring(2);
-                Log.e("Printing Tags",s);
-            }
-            tagView.setText(s);
             
             // checkbox
             checkbox.setChecked(cart.contains(item));

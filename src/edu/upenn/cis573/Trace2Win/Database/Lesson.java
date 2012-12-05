@@ -39,6 +39,10 @@ public class Lesson extends LessonItem {
 		return _words.get(i).longValue();
 	}
 	
+	public synchronized int getNumWords() {
+	    return _words.size();
+	}
+	
 	public synchronized List<LessonWord> getWordObjects() {
 	    return wordObjects;
 	}
