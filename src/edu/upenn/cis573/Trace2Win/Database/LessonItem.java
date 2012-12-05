@@ -28,9 +28,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	/** The stringid of the item */
 	protected String _stringid;
 	
-	/** The private tag cache of the item */
-	protected String private_tag;
-	
 	/** The sort order of the item */
 	protected double _sort;
 	
@@ -127,14 +124,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	public String getStringId()
 	{
 		return _stringid;
-	}
-	
-	public void setPrivateTag(String tag){
-		private_tag = tag;
-	}
-	
-	public String getPrivateTag(){
-		return private_tag;
 	}
 	
 	public void setTagList(List<String> tags){

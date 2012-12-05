@@ -9,6 +9,7 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
 import edu.upenn.cis573.Trace2Win.Database.Lesson;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 import edu.upenn.cis573.Trace2Win.Database.Parser;
 
@@ -16,13 +17,8 @@ public class LessonTest extends AndroidTestCase {
 	
 	static public void compareLessons(Lesson expected, Lesson actual)
 	{
-		assertEquals(expected.getId(), actual.getId());
-		assertEquals(expected.getItemType(), actual.getItemType());
+		LessonItemTest.compareLessonItem(expected, actual);
 		assertEquals(expected.getLessonName(), actual.getLessonName());
-		assertEquals(expected.getTags(), actual.getTags());
-		assertEquals(expected.getKeyValues(), actual.getKeyValues());
-		assertEquals(expected.getSort(), actual.getSort());
-		assertEquals(expected.getStringId(), actual.getStringId());
 		assertEquals(expected.getWordIds(), actual.getWordIds());
 	}	
 
@@ -35,12 +31,29 @@ public class LessonTest extends AndroidTestCase {
 		}
 	}
 	
-	DbAdapter db;
+	private LessonCharacter c1, c2;	
+	private LessonWord w1, w2;
+	private DbAdapter db;
 	protected void setUp() throws Exception {
 		super.setUp();
 		dumpDBs();
+		
 		db = new DbAdapter(this.getContext());
 		db.open();
+		
+		c1 = new LessonCharacter();
+		c1.setId(1);
+		db.addCharacter(c1);
+		c2 = new LessonCharacter();
+		c2.setId(2);		
+		db.addCharacter(c2);
+		
+		w1 = new LessonWord();
+		w1.setId(10);
+		db.addWord(w1);
+		w2 = new LessonWord();
+		w2.setId(20);
+		db.addWord(w2);
 	}
 
 	protected void tearDown()
@@ -49,6 +62,20 @@ public class LessonTest extends AndroidTestCase {
 		dumpDBs();
 	}
 
+	public void testTwoWords()
+	{
+		Lesson exp = new Lesson();
+		exp.setStringId("lesson_unique_id");
+		exp.setName("lesson_name");
+		exp.addWord(w1.getId());
+		exp.addWord(w2.getId());
+		
+		db.addLesson(exp);
+		Lesson lesson = db.getLessonById("lesson_unique_id");
+		
+		compareLessons(exp, lesson);
+	}
+	
 	
 	public void testToXml() {
 		LessonWord word1 = new LessonWord(900);

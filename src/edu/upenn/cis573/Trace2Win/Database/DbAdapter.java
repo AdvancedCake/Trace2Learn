@@ -45,7 +45,6 @@ public class DbAdapter {
      */
     private static final String DATABASE_CREATE_CHAR =
     		"CREATE TABLE Character (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-    		"name TEXT, " +
     		"sort INTEGER);";
     
     private static final String DATABASE_CREATE_CHARTAG =
@@ -73,7 +72,6 @@ public class DbAdapter {
     
     private static final String DATABASE_CREATE_WORDS = 
     		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
-    		"name TEXT, " +
     		"sort INTEGER);";
     
     private static final String DATABASE_CREATE_WORDS_DETAILS =
@@ -504,7 +502,6 @@ public class DbAdapter {
     public boolean addCharacter(LessonCharacter c)
     {
     	ContentValues initialCharValues = new ContentValues();
-    	initializePrivateTag(c, initialCharValues);
     	
     	if (c.getId() != -1) { // id already initialized, keep it
     	    initialCharValues.put(CHAR_ROWID, c.getId());
@@ -517,7 +514,7 @@ public class DbAdapter {
         //initializeUniqueId(c, initialCharValues);
     	
         mDb.beginTransaction();
-    	long id = mDb.insert(CHAR_TABLE, null, initialCharValues);
+    	long id = mDb.insert(CHAR_TABLE, "sort", initialCharValues);
     	if(id == -1)
     	{
     		//if error
@@ -686,12 +683,10 @@ public class DbAdapter {
     	mCursor.close();
 
     	mCursor =
-    			mDb.query(true, CHAR_TABLE, new String[] {"name", "sort"},
+    			mDb.query(true, CHAR_TABLE, new String[] {"sort"},
     					CHAR_ROWID + " = "+ id, null, null, null, null, null);
     	mCursor.moveToFirst();
     	if (mCursor.getCount() > 0) {
-    		String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
-    		c.setPrivateTag(privateTag);
     		double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
     		c.setSort(sort);
     	}
@@ -746,11 +741,9 @@ public class DbAdapter {
         mCursor.close();
         
         mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {"name","sort"},
+                mDb.query(true, WORDS_TABLE, new String[] {"sort"},
                         WORDS_ROWID + " = " + id, null, null, null, null, null);
         mCursor.moveToFirst();
-        String privateTag = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
-        w.setPrivateTag(privateTag);
         double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
         w.setSort(sort);
         
@@ -779,14 +772,13 @@ public class DbAdapter {
     	ContentValues initialWordsValues = new ContentValues();
     	
     	if (w.getId() != -1) { // id already initialized, keep it
-    	    initialWordsValues.put(WORDS_ROWID, w.getId());
+        	initialWordsValues.put(WORDS_ROWID, w.getId());    	
             if (getWordById(w.getId()) != null) {
                 deleteWord(w.getId());
             }
     	}
     	
-    	initializePrivateTag(w, initialWordsValues);
-    	long id = mDb.insert(WORDS_TABLE, null, initialWordsValues);
+    	long id = mDb.insert(WORDS_TABLE, "sort", initialWordsValues);
     	if (id == -1) {
     		//if error
     		Log.e(WORDS_TABLE, "cannot add new character to table "+WORDS_TABLE);
@@ -872,69 +864,7 @@ public class DbAdapter {
 		 mCursor.close();
 
 		 return id;
-    }
-    
-    public String getPrivateTag(long id, ItemType type)
-    {
-    	String tableName;
-    	switch(type)
-    	{
-    	case CHARACTER:
-    		tableName=CHAR_TABLE;
-    		break;
-    	case WORD:
-    		tableName=WORDS_TABLE;
-    		break;
-    	case LESSON:
-    		tableName=LESSONS_TABLE;
-    		break;
-    	default:
-    		Log.e("Tag", "Unsupported Type");
-    		return "";
-    	}
-    	Cursor mCursor =
-    			mDb.query(true, tableName, new String[] {"_id","name"}, "_id=" + id, null,
-    					null, null, null, null);
-    	if (mCursor != null) {
-    		mCursor.moveToFirst();
-        	String ret = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
-            mCursor.close();
-            return ret;
-    	}
-
-    	return "";
-    }
-    
-    public String getPrivateTag(String id, ItemType type)
-    {
-    	String tableName;
-    	switch(type)
-    	{
-    	case CHARACTER:
-    		tableName=CHAR_TABLE;
-    		break;
-    	case WORD:
-    		tableName=WORDS_TABLE;
-    		break;
-    	case LESSON:
-    		tableName=LESSONS_TABLE;
-    		break;
-    	default:
-    		Log.e("Tag", "Unsupported Type");
-    		return "";
-    	}
-    	Cursor mCursor =
-    			mDb.query(true, tableName, new String[] {"_id","name"}, "_id='" + id + "'", null,
-    					null, null, null, null);
-    	if (mCursor != null) {
-    		mCursor.moveToFirst();
-        	String ret = mCursor.getString(mCursor.getColumnIndexOrThrow("name"));
-            mCursor.close();
-            return ret;
-    	}
-
-    	return "";
-    }
+    }       
     
     /**
      * Return a List of tags that matches the given character's charId
@@ -1211,38 +1141,7 @@ public class DbAdapter {
             mCursor.moveToFirst();
         }
         return mCursor;
-    }
-    
-    /**
-     * Updates a private tag for a character. 
-     * 
-     * @param id row id for a character
-     * @param tag the text of the tag to add
-     * @return number of rows that were affected, 0 on no rows affected
-     */
-    public long updatePrivateTag(long id, String tag){
-    	ContentValues initialValues = new ContentValues();
-        initialValues.put(CHAR_ROWID, id);
-        initialValues.put("name", tag);
-        Log.e("Adding Private Tag",tag);
-        return mDb.update(CHAR_TABLE, initialValues, CHAR_ROWID + "=" + id, 
-                null);
-    }
-    
-    /**
-     * Updates a private tag for a word. Returns row id on 
-     * 
-     * @param id row id for a word
-     * @param tag the text of the tag to add
-     * @return number of rows that were affected, 0 on no rows affected
-     */
-    public long updatePrivateWordTag(long id, String tag){
-    	ContentValues initialValues = new ContentValues();
-        //initialValues.put(CHAR_ROWID, id);
-        initialValues.put("name", tag);
-
-        return mDb.update(WORDS_TABLE, initialValues, "_id="+id,null);
-    }
+    }    
     
     /**
      * Return a list of word ids from the database
@@ -1865,21 +1764,7 @@ public class DbAdapter {
         return true;
     }
 
-
-    /**
-     * Initializes a private tag
-     * 
-     * @param i the LessonItem
-     * @param v ContentValues
-     */
-    private void initializePrivateTag(LessonItem i, ContentValues v)
-    {
-    	if(i.getPrivateTag() != null)
-    		v.put("name",i.getPrivateTag());
-    	else	
-		v.put("name","");
-    }
-    
+   
     /*private void initializeUniqueId(LessonItem i, ContentValues v)
     {
     	if(i.getUniqueId(mCtx) != null) // TODO getUniqueId need modification
