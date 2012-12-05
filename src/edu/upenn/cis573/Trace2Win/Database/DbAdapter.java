@@ -1317,9 +1317,9 @@ public class DbAdapter {
             x.close();
             lessonOrder = -1;
         } else {
-            x.close();
             x.moveToFirst();
             lessonOrder = x.getInt(x.getColumnIndexOrThrow("LessonOrder"));
+            x.close();
     	}
 
     	ContentValues values = new ContentValues();
