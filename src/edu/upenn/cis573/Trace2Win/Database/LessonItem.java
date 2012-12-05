@@ -65,6 +65,9 @@ public abstract class LessonItem implements Comparable<LessonItem> {
      * a list.
      */
     public int compareTo(LessonItem other) {
+        if (this._type != other._type) {
+            return other._type.ordinal() - this._type.ordinal();
+        }
         return Double.compare(this._sort, other._sort);
     }
 	

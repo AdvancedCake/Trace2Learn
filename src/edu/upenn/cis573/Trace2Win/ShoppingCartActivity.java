@@ -17,7 +17,6 @@ import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Environment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +55,7 @@ public class ShoppingCartActivity extends Activity {
     private Button filterButton;
     private Button selectButton;
     private Button deselectButton;
+    private Button typeButton;
     private TextView filterStatus;
 
     private DbAdapter dba;
@@ -73,6 +73,7 @@ public class ShoppingCartActivity extends Activity {
         filterButton   = (Button)   findViewById(R.id.filterButton);
         selectButton   = (Button)   findViewById(R.id.selectAllButton);
         deselectButton = (Button)   findViewById(R.id.deselectAllButton);
+        typeButton     = (Button)   findViewById(R.id.typeButton);
         filterStatus   = (TextView) findViewById(R.id.filterStatus);
 
         list.setOnItemClickListener(new OnItemClickListener() {
@@ -220,6 +221,7 @@ public class ShoppingCartActivity extends Activity {
         filterStatus.setVisibility(View.INVISIBLE);
         selectButton.setVisibility(View.INVISIBLE);
         deselectButton.setVisibility(View.INVISIBLE);
+        typeButton.setVisibility(View.INVISIBLE);
         
         Collections.sort(cart);
         adapter = new ShoppingCartListAdapter(this, cart, vi);
@@ -247,6 +249,7 @@ public class ShoppingCartActivity extends Activity {
         filterStatus.setVisibility(View.VISIBLE);
         selectButton.setVisibility(View.VISIBLE);
         deselectButton.setVisibility(View.VISIBLE);
+        typeButton.setVisibility(View.VISIBLE);
         
         adapter = new ShoppingCartListAdapter(this, display, vi);
     }
@@ -382,6 +385,30 @@ public class ShoppingCartActivity extends Activity {
     }
 
     /**
+     * Click handler for "Type" button
+     * @param view
+     */
+    public void onClickType(View view) {
+        switch (type) {
+            case CHARACTER:
+                type = ItemType.LESSON;
+                title.setText(R.string.instruction_export_lessons);
+                getLessons();
+                break;
+            case WORD:
+            case LESSON:
+                type = ItemType.CHARACTER;
+                title.setText(R.string.instruction_export_chars);
+                getChars();
+                break;
+        }
+        Collections.sort(source);
+        display = source;
+        adapter = new ShoppingCartListAdapter(this, display, vi);
+        list.setAdapter(adapter);
+    }
+    
+    /**
      * Click handler for "Export" button
      * @param view The button
      */
@@ -515,6 +542,16 @@ public class ShoppingCartActivity extends Activity {
         public ShoppingCartListAdapter(Context context,
                 List<LessonItem> objects, LayoutInflater vi) {
             super(context, objects, vi);
+        }
+        
+        @Override
+        public int getViewTypeCount() {
+            return 3;
+        }
+        
+        @Override
+        public int getItemViewType(int position) {
+            return _items.get(position).getItemType().ordinal();
         }
 
         @Override

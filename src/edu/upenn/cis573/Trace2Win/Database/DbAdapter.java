@@ -1453,7 +1453,7 @@ public class DbAdapter {
 
             rowsDeleted += mDb.delete(LESSONS_TABLE, LESSONS_ID + "='" + id + "'", null);
             rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = '" + id + "'", null);
-            rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ID + "=" + id + "'", null);
+            rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ID + "='" + id + "'", null);
         }
         if(rowsDeleted>0)
             return id;

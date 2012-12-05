@@ -46,5 +46,6 @@
     <string name="shopping_cart">Viewing cart</string>
     <string name="back">Back</string>
     <string name="file_header">Import from file</string>
+    <string name="type">Type</string>
 
 </resources>

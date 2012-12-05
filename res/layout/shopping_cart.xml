@@ -80,4 +80,13 @@
         android:onClick="onClickExport"
         android:text="@string/export" />
 
+    <Button
+        android:id="@+id/typeButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:onClick="onClickType"
+        android:text="@string/type" />
+
 </RelativeLayout>
