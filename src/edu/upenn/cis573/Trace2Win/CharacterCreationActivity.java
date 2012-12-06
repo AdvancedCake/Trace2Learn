@@ -1,18 +1,19 @@
 package edu.upenn.cis573.Trace2Win;
 
 
-import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
-import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
-import edu.upenn.cis573.Trace2Win.R.id;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+import edu.upenn.cis573.Trace2Win.R.id;
+import edu.upenn.cis573.Trace2Win.Database.DbAdapter;
+import edu.upenn.cis573.Trace2Win.Database.LessonCharacter;
 
 public class CharacterCreationActivity extends Activity {
 
@@ -20,6 +21,10 @@ public class CharacterCreationActivity extends Activity {
 	private CharacterCreationPane _creationPane;
 	private CharacterPlaybackPane _playbackPane;	
 	private CharacterTracePane _tracePane;
+	private Button left1;
+	private Button left2;
+	private Button right1;
+	private Button right2;
 	
 	private TextView _tagText;
 
@@ -38,12 +43,17 @@ public class CharacterCreationActivity extends Activity {
 	{
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.test_char_display);
+		setContentView(R.layout.display_char);
 
-		_characterViewSlot =(LinearLayout)findViewById(id.character_view_slot);
+		_characterViewSlot = (LinearLayout) findViewById(R.id.character_view_slot);
 		_creationPane = new CharacterCreationPane(this);
 		_playbackPane = new CharacterPlaybackPane(this, false, 2);
 		_tracePane = new CharacterTracePane(this);
+		
+        left1  = (Button) findViewById(R.id.left1Button);
+        left2  = (Button) findViewById(R.id.left2Button);
+        right1 = (Button) findViewById(R.id.right1Button);
+        right2 = (Button) findViewById(R.id.right2Button);
 
 		setCharacter(new LessonCharacter());
 
@@ -95,6 +105,12 @@ public class CharacterCreationActivity extends Activity {
 			_currentMode = Mode.CREATION;
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_creationPane);
+            left1.setVisibility(View.VISIBLE);
+            left2.setVisibility(View.INVISIBLE);
+            right2.setVisibility(View.INVISIBLE);
+            right1.setVisibility(View.VISIBLE);
+			left1.setText(R.string.clear);
+			right1.setText(R.string.save);
 		}
 	}
 
@@ -111,6 +127,13 @@ public class CharacterCreationActivity extends Activity {
 			_currentMode = Mode.DISPLAY;
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_playbackPane);
+            left1.setVisibility(View.VISIBLE);
+            left2.setVisibility(View.INVISIBLE);
+            right2.setVisibility(View.VISIBLE);
+            right1.setVisibility(View.VISIBLE);
+            left1.setText(R.string.edit);
+            right2.setText(R.string.practice);
+            right1.setText(R.string.animate);
 		}
 	}
 
@@ -127,6 +150,13 @@ public class CharacterCreationActivity extends Activity {
 			_currentMode = Mode.TRACE;
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_tracePane);
+            left1.setVisibility(View.VISIBLE);
+            left2.setVisibility(View.INVISIBLE);
+            right2.setVisibility(View.VISIBLE);
+            right1.setVisibility(View.VISIBLE);
+            left1.setText(R.string.edit);
+            right2.setText(R.string.practice);
+            right1.setText(R.string.animate);
 		}
 	}
 	
@@ -167,7 +197,7 @@ public class CharacterCreationActivity extends Activity {
 		_playbackPane.clearPane();
 	}
 	
-	public void onTraceButtonClick(View view)
+	public void onRight2ButtonClick(View view)
 	{
 		setCharacterTracePane();
 	}
@@ -179,12 +209,12 @@ public class CharacterCreationActivity extends Activity {
 		updateTags();
 	}
 
-	public void onCreateButtonClick(View view)
+	public void onLeft1ButtonClick(View view)
 	{
 		setCharacterCreationPane();
 	}
 
-	public void onSaveButtonClick(View view)
+	public void onLeft2ButtonClick(View view)
 	{
 		LessonCharacter character = _creationPane.getCharacter();
 		if(character.getNumStrokes()==0){
@@ -224,7 +254,7 @@ public class CharacterCreationActivity extends Activity {
 
 	}
 
-	public void onAnimateButtonClick(View view) 
+	public void onRight1ButtonClick(View view) 
 	{
 		Log.i("CLICK", "DISPLAY");
 		setCharacterDisplayPane();
