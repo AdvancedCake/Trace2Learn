@@ -424,6 +424,10 @@ public class ShoppingCartActivity extends Activity {
      * @param view The button
      */
     public void onClickExport(final View view) {
+        export("");
+    }
+    
+    private void export(String defaultText) {
         if (cart.size() == 0) {
             showToast("Add items to your cart first!");
             return;
@@ -433,6 +437,7 @@ public class ShoppingCartActivity extends Activity {
         builder.setTitle("Save as...");
 
         final EditText text = new EditText(this);
+        text.setText(defaultText);
         builder.setView(text);
 
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
@@ -440,19 +445,13 @@ public class ShoppingCartActivity extends Activity {
                 String filename = text.getText().toString();
                 if (filename.equals("")) {
                     showToast("Please enter a filename");
-                    onClickExport(view);
+                    export("");
                     return;
                 }
 
-                if (filename.contains(" ")) {
-                    showToast("The export filename shoud NOT have a space.");
-                    onClickExport(view);
-                    return;
-                }
-
-                if (filename.contains(".")) {
-                    showToast("The export filename shoud NOT have a period.");
-                    onClickExport(view);
+                if (filename.contains(" ") || filename.contains(".")) {
+                    showToast("Spaces and periods are not allowed");
+                    export(filename.replaceAll("[\\. ]", "_"));
                     return;
                 }
 
@@ -486,8 +485,7 @@ public class ShoppingCartActivity extends Activity {
                     xml += character.toXml();
                 }
 
-                xml += "</ttw>";
-                System.out.println(xml);
+                xml += "</ttw>\n";
                 writeStringToFile(xml, filename);
             }
         });
@@ -503,6 +501,7 @@ public class ShoppingCartActivity extends Activity {
         // show the keyboard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
+
     }
 
     /**
@@ -531,7 +530,7 @@ public class ShoppingCartActivity extends Activity {
             outFileWriter.flush();
             outFileWriter.close();
 
-            showToast("Exported " + filename + " successfully.");
+            showToast("Exported " + extFilesDir + "/" + filename + ".ttw successfully.");
             finish();
         } catch (IOException e) {
             e.printStackTrace();
