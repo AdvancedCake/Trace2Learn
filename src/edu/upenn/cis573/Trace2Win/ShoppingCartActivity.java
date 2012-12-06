@@ -365,8 +365,7 @@ public class ShoppingCartActivity extends Activity {
      */
     public void clearFilter() {
         display = source;
-        adapter = new ShoppingCartListAdapter(
-                ShoppingCartActivity.this, display, vi);
+        adapter = new ShoppingCartListAdapter(this, display, vi);
         list.setAdapter(adapter);
         
         filterButton.setText(R.string.filter);
@@ -403,9 +402,7 @@ public class ShoppingCartActivity extends Activity {
                 break;
         }
         Collections.sort(source);
-        display = source;
-        adapter = new ShoppingCartListAdapter(this, display, vi);
-        list.setAdapter(adapter);
+        clearFilter(); // this method also refreshes the display
     }
     
     /**
