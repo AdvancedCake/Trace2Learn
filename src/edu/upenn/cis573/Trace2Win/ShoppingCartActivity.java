@@ -39,7 +39,7 @@ import edu.upenn.cis573.Trace2Win.Database.LessonItem.ItemType;
 import edu.upenn.cis573.Trace2Win.Database.LessonWord;
 
 public class ShoppingCartActivity extends Activity {
-    
+
     private ItemType type; // determines the type of items being displayed
     private List<LessonItem> source; // all items of the specified type
     private List<LessonItem> display; // items to be displayed
@@ -96,7 +96,7 @@ public class ShoppingCartActivity extends Activity {
                 cartButton.setText("Cart: " + cart.size());
             }
         });
-        
+
         dba = new DbAdapter(this);
         dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -108,7 +108,7 @@ public class ShoppingCartActivity extends Activity {
         viewingCart = false;
         exportButton.setVisibility(View.INVISIBLE);
     }
-    
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -189,7 +189,7 @@ public class ShoppingCartActivity extends Activity {
             source.add(le);
         }
     }
-    
+
     /**
      * Click handler for "Cart"/"Back" button
      * @param view The button
@@ -222,7 +222,7 @@ public class ShoppingCartActivity extends Activity {
         selectButton.setVisibility(View.INVISIBLE);
         deselectButton.setVisibility(View.INVISIBLE);
         typeButton.setVisibility(View.INVISIBLE);
-        
+
         Collections.sort(cart);
         adapter = new ShoppingCartListAdapter(this, cart, vi);
     }
@@ -250,10 +250,10 @@ public class ShoppingCartActivity extends Activity {
         selectButton.setVisibility(View.VISIBLE);
         deselectButton.setVisibility(View.VISIBLE);
         typeButton.setVisibility(View.VISIBLE);
-        
+
         adapter = new ShoppingCartListAdapter(this, display, vi);
     }
-    
+
     /**
      * Click handler for "Select All" button
      * @param view The button
@@ -293,17 +293,17 @@ public class ShoppingCartActivity extends Activity {
             showFilterPopup();
         }
     }
-    
+
     /**
      * Displays the filter popup and contains the code to filter 
      */
     public void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
-        
+
         final EditText filterText = new EditText(this);
         builder.setView(filterText);
-        
+
         builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 String search = filterText.getText().toString().toLowerCase();
@@ -316,29 +316,43 @@ public class ShoppingCartActivity extends Activity {
                 // Note that it should be partial match for search terms 2
                 // characters or more.
                 List<LessonItem> newList = new ArrayList<LessonItem>();
-                topLoop: for (LessonItem item : display) {
-                    List<String> tags = item.getTags();
-                    for (String tag : tags) {
-                        if ((search.length() >= 2 && tag.toLowerCase().contains(search)) ||
-                                tag.equalsIgnoreCase(search)) {
-                            newList.add(item);
-                            continue topLoop;
+                switch (type) {
+                    case CHARACTER:
+                    case WORD:
+                        topLoop: for (LessonItem item : display) {
+                            List<String> tags = item.getTags();
+                            for (String tag : tags) {
+                                if ((search.length() >= 2 && tag.toLowerCase().contains(search)) ||
+                                        tag.equalsIgnoreCase(search)) {
+                                    newList.add(item);
+                                    continue topLoop;
+                                }
+                            }
+                            Collection<String> values = item.getKeyValues().values();
+                            for (String value : values) {
+                                if ((search.length() >= 2 && value.toLowerCase().contains(search)) ||
+                                        value.equalsIgnoreCase(search)) {
+                                    newList.add(item);
+                                    continue topLoop;
+                                }
+                            }
                         }
-                    }
-                    Collection<String> values = item.getKeyValues().values();
-                    for (String value : values) {
-                        if ((search.length() >= 2 && value.toLowerCase().contains(search)) ||
-                                value.equalsIgnoreCase(search)) {
-                            newList.add(item);
-                            continue topLoop;
+                        break;
+                    case LESSON:
+                        for (LessonItem item : display) {
+                            String name = ((Lesson) item).getLessonName();
+                            if ((search.length() >= 2 && name.toLowerCase().contains(search)) ||
+                                    name.equalsIgnoreCase(search)) {
+                                newList.add(item);
+                            }
                         }
-                    }
+                        break;
                 }
                 display = newList;
                 adapter = new ShoppingCartListAdapter(
                         ShoppingCartActivity.this, display, vi);
                 list.setAdapter(adapter);
-                
+
                 // Set state to filtered
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
@@ -351,15 +365,15 @@ public class ShoppingCartActivity extends Activity {
                 hideKeyboard(filterText);
             }
         });
-        
+
         AlertDialog dialog = builder.create();
-        
+
         // show the keyboard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
 
     }
-    
+
     /**
      * Clears the current filter
      */
@@ -367,12 +381,12 @@ public class ShoppingCartActivity extends Activity {
         display = source;
         adapter = new ShoppingCartListAdapter(this, display, vi);
         list.setAdapter(adapter);
-        
+
         filterButton.setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
     }
-    
+
     /**
      * Hides the keyboard
      * @param view The current view
@@ -404,7 +418,7 @@ public class ShoppingCartActivity extends Activity {
         Collections.sort(source);
         clearFilter(); // this method also refreshes the display
     }
-    
+
     /**
      * Click handler for "Export" button
      * @param view The button
@@ -414,13 +428,13 @@ public class ShoppingCartActivity extends Activity {
             showToast("Add items to your cart first!");
             return;
         }
-        
+
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Save as...");
-        
+
         final EditText text = new EditText(this);
         builder.setView(text);
-        
+
         builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 String filename = text.getText().toString();
@@ -429,7 +443,7 @@ public class ShoppingCartActivity extends Activity {
                     onClickExport(view);
                     return;
                 }
-                
+
                 if (filename.contains(" ")) {
                     showToast("The export filename shoud NOT have a space.");
                     onClickExport(view);
@@ -441,23 +455,23 @@ public class ShoppingCartActivity extends Activity {
                     onClickExport(view);
                     return;
                 }
-                
+
                 // to ensure that all character dependencies are met
                 List<LessonCharacter> dependencies = new ArrayList<LessonCharacter>();
-                
+
                 String xml = "<ttw name=\"" + filename + "\">\n";
                 for (LessonItem item : cart) {
                     xml += item.toXml();
-                    
+
                     // if it's a lesson, we need to make sure dependencies are
                     // met
                     if (item instanceof Lesson) {
                         Lesson lesson = (Lesson) item;
                         List<LessonItem> words = lesson.getWords();
-                        
+
                         for (LessonItem word : words) {
                             List<LessonCharacter> characters = ((LessonWord) word).getCharacters();
-                            
+
                             for (LessonCharacter character : characters) {
                                 if (!cart.contains(character) &&
                                         !dependencies.contains(character)) {
@@ -467,30 +481,30 @@ public class ShoppingCartActivity extends Activity {
                         }
                     }
                 }
-                
+
                 for (LessonCharacter character : dependencies) {
                     xml += character.toXml();
                 }
-                
+
                 xml += "</ttw>";
                 System.out.println(xml);
                 writeStringToFile(xml, filename);
             }
         });
-        
+
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 showToast("Not saved");
             }
         });
-        
+
         AlertDialog dialog = builder.create();
-        
+
         // show the keyboard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
     }
-    
+
     /**
      * Write the given String to the device's external file system
      * location: external_root/data/"app_name", app_name from resource 
@@ -498,32 +512,32 @@ public class ShoppingCartActivity extends Activity {
      * @param filename the filename, ".ttw" will be automatically attached to the end
      */
     public void writeStringToFile(String xml, String filename) {
-    	if (filename == null || filename.length() == 0 || xml == null) {
-    		return;
-    	}
-    	
-    	String extFilesDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
+        if (filename == null || filename.length() == 0 || xml == null) {
+            return;
+        }
+
+        String extFilesDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 "/data/" + getString(R.string.app_name);
-		// make sure that directory is created.
-    	(new File(extFilesDir)).mkdirs();
-    	File outFile = new File(extFilesDir, filename + ".ttw");
+        // make sure that directory is created.
+        (new File(extFilesDir)).mkdirs();
+        File outFile = new File(extFilesDir, filename + ".ttw");
 
-    	try {
-    		FileWriter outFileWriter = new FileWriter(outFile, false);
+        try {
+            FileWriter outFileWriter = new FileWriter(outFile, false);
 
-    		synchronized (xml) {
-    			outFileWriter.write(xml);
-    		}
-    		outFileWriter.flush();
-    		outFileWriter.close();
+            synchronized (xml) {
+                outFileWriter.write(xml);
+            }
+            outFileWriter.flush();
+            outFileWriter.close();
 
-    		showToast("Exported " + filename + " successfully.");
-    		finish();
-    	} catch (IOException e) {
-    		e.printStackTrace();
-    		showToast("Error while writing a file to the device!");
-    		return;
-    	}
+            showToast("Exported " + filename + " successfully.");
+            finish();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showToast("Error while writing a file to the device!");
+            return;
+        }
     }
 
     /**
@@ -533,19 +547,19 @@ public class ShoppingCartActivity extends Activity {
     private final void showToast(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
-    
+
     private class ShoppingCartListAdapter extends LessonItemListAdapter {
 
         public ShoppingCartListAdapter(Context context,
                 List<LessonItem> objects, LayoutInflater vi) {
             super(context, objects, vi);
         }
-        
+
         @Override
         public int getViewTypeCount() {
             return 3;
         }
-        
+
         @Override
         public int getItemViewType(int position) {
             return _items.get(position).getItemType().ordinal();
@@ -571,11 +585,11 @@ public class ShoppingCartActivity extends Activity {
             ImageView image   = (ImageView) v.findViewById(R.id.li_image);
             TextView  idView  = (TextView)  v.findViewById(R.id.idView);
             TextView  tagView = (TextView)  v.findViewById(R.id.tagView);
-            
+
             // lesson views
             TextView nameView = (TextView) v.findViewById(R.id.nameView);
             TextView sizeView = (TextView) v.findViewById(R.id.sizeView);
-            
+
             // both
             CheckBox checkbox = (CheckBox) v.findViewById(R.id.checkbox);
 
@@ -587,7 +601,7 @@ public class ShoppingCartActivity extends Activity {
                     // image
                     Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
                     image.setImageBitmap(bitmap);
-                    
+
                     // ids
                     LinkedHashMap<String, String> keyValues = item.getKeyValues();
                     StringBuilder sb = new StringBuilder();
@@ -596,7 +610,7 @@ public class ShoppingCartActivity extends Activity {
                     }
                     String s = sb.length() > 0 ? sb.substring(2) : "";
                     idView.setText(s);
-                    
+
                     // tags
                     ArrayList<String> tags = new ArrayList<String>(item.getTags());
                     sb = new StringBuilder();
@@ -614,10 +628,10 @@ public class ShoppingCartActivity extends Activity {
                     sizeView.setText(count + (count == 1 ? " word" : " words"));
                     break;
             }
-            
+
             // checkbox
             checkbox.setChecked(cart.contains(item));
-            
+
             return v;
         }
     }
