@@ -48,7 +48,8 @@ public class BrowseCharactersActivity extends ListActivity {
 	                                   MoveUp,
 	                                   MoveDown,
 	                                   Delete }
-	private static enum requestCodeENUM { EditTag }; 
+	private static enum requestCodeENUM { EditTag,
+	                                      ViewCharacter };
 	
 	//initialized list of all characters
 	@Override
@@ -97,7 +98,7 @@ public class BrowseCharactersActivity extends ListActivity {
 
 		intent.setClass(this, ViewCharacterActivity.class);
 		intent.putExtras(bun);
-		startActivity(intent);
+		startActivityForResult(intent, requestCodeENUM.ViewCharacter.ordinal());
 	}
 	
 	@Override
@@ -199,16 +200,20 @@ public class BrowseCharactersActivity extends ListActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-		if (requestCode == requestCodeENUM.EditTag.ordinal() 
-				&& resultCode == RESULT_OK) {
-			// re-launch the current activity to reflect the changes of tags
-			// we could use recreate() instead, but note that it is supported since API 11.
-			// TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
-			startActivity(getIntent());
-			finish();
-		}
+	    if (requestCode == requestCodeENUM.EditTag.ordinal() &&
+	            resultCode == RESULT_OK) {
+	        // re-launch the current activity to reflect the changes of tags
+	        // we could use recreate() instead, but note that it is supported since API 11.
+	        // TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
+	        startActivity(getIntent());
+            finish();
+        } else if (requestCode == requestCodeENUM.ViewCharacter.ordinal() &&
+                resultCode == RESULT_OK) {
+            startActivity(getIntent());
+            finish();
+	    }
 	}
-	
+
 	// FILTER METHODS
 	
     // depending on the state, shows the filter pop up or clears the filter

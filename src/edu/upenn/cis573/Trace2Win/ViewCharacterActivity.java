@@ -33,11 +33,16 @@ public class ViewCharacterActivity extends Activity {
 	private Mode _currentMode = Mode.INVALID;
 
 	private long id_to_pass = -1;
+	
+	private boolean isChanged = false;
 
 	public enum Mode {
 		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
 
+	private static enum requestCodeENUM { EditTag };
+
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) 
 	{
@@ -239,7 +244,7 @@ public class ViewCharacterActivity extends Activity {
                 }
                 saveChar(character);
                 createTags();
-                finish();
+                isChanged = true;
                 break;
             case DISPLAY:
             case TRACE:
@@ -271,12 +276,35 @@ public class ViewCharacterActivity extends Activity {
 			i.putExtra("ID", id_to_pass);
 			i.putExtra("TYPE", character.getItemType().toString());
 
-			startActivity(i);
+			startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
 		} else
 		{
 			_tagText.setText("Error: Save the character before adding tags");
 		}
 
+	}
+
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    if (requestCode == requestCodeENUM.EditTag.ordinal() 
+	            && resultCode == RESULT_OK) {
+	        isChanged = true;
+	    }
+	    close();
+	}
+	
+	@Override
+	public void onBackPressed() {
+	    close();
+	}
+	
+	private void close() {
+	    if (isChanged) {
+            setResult(RESULT_OK);
+	    } else {
+	        setResult(RESULT_CANCELED);
+	    }
+	    finish();
 	}
 	
 	public void showToast(String msg){
