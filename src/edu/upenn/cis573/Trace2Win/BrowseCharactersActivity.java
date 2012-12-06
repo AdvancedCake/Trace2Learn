@@ -98,8 +98,6 @@ public class BrowseCharactersActivity extends ListActivity {
 		intent.setClass(this, CharacterCreationActivity.class);
 		intent.putExtras(bun);
 		startActivity(intent);
-		
-		//Log.d("xml", dba.createCharXml(1));  //for manuallly testing the exporting to xml
 	}
 	
 	@Override
