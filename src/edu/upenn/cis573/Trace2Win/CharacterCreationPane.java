@@ -5,11 +5,13 @@ import edu.upenn.cis573.Trace2Win.Database.Stroke;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 
 public class CharacterCreationPane extends DrawingPane {
 
 	protected LessonCharacter _character;
 	private Stroke _currentStroke;
+	private int _bg = Color.DKGRAY;
 	
 	public CharacterCreationPane(Context c) {
 		super(c);
@@ -56,7 +58,7 @@ public class CharacterCreationPane extends DrawingPane {
 	@Override
 	protected void onDraw(Canvas canvas)
 	{
-		canvas.drawColor(_backgroundColor);
+		canvas.drawColor(_bg);
 
 		// Consider using a bitmap buffer so only new strokes are drawn.
 		drawCharacter(canvas, _character);
