@@ -22,7 +22,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name="CharacterCreationActivity" >
+        <activity android:name=".ViewCharacterActivity" >
         </activity>
         <activity
             android:name="CreateWordActivity"

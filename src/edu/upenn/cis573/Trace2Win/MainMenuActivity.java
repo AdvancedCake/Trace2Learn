@@ -43,7 +43,7 @@ public class MainMenuActivity extends ListActivity {
 					CharSequence clicked = ((TextView) view).getText();
 					if(clicked.equals(APPS[0])) // "Create Character"
 					{
-						Intent i = new Intent().setClass(c, CharacterCreationActivity.class);
+						Intent i = new Intent().setClass(c, ViewCharacterActivity.class);
 						startActivity(i);
 					}
 					else if(clicked.equals(APPS[1])) // "Create Word"

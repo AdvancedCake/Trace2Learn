@@ -83,7 +83,7 @@ public class CharacterCreationPane extends DrawingPane {
 	
 	public void clearPane()
 	{
-		_character = new LessonCharacter();
+		_character.clearStrokes();
 		invalidate();
 	}
 	

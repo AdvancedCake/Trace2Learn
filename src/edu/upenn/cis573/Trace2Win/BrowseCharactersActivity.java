@@ -95,7 +95,7 @@ public class BrowseCharactersActivity extends ListActivity {
 		bun.putString("mode", "display");
 		bun.putLong("charId", li.getId());
 
-		intent.setClass(this, CharacterCreationActivity.class);
+		intent.setClass(this, ViewCharacterActivity.class);
 		intent.putExtras(bun);
 		startActivity(intent);
 	}
