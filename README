@@ -8,7 +8,7 @@ Contents
 Trace2Win : the main app
 Trace2Win/tests : android test project for the main app
 TraceLibrary : the core library
-TraceThis : the simplified app(just for importing/iewing)
+TraceThis : the simplified app(just for importing/viewing)
 
 
 -------------------------------------------------------------
