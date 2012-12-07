@@ -506,7 +506,7 @@ public class ShoppingCartActivity extends Activity {
 
     /**
      * Write the given String to the device's external file system
-     * location: external_root/data/"app_name", app_name from resource 
+     * location: external_root/data/"file_dir_name", file_dir_name from resource 
      * @param xml The string that you want to write to the device
      * @param filename the filename, ".ttw" will be automatically attached to the end
      */
@@ -516,7 +516,7 @@ public class ShoppingCartActivity extends Activity {
         }
 
         String extFilesDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                "/data/" + getString(R.string.app_name);
+                "/data/" + getString(R.string.file_dir_name);
         // make sure that directory is created.
         (new File(extFilesDir)).mkdirs();
         File outFile = new File(extFilesDir, filename + ".ttw");

@@ -40,7 +40,7 @@ public class FilePickerActivity extends ListActivity {
         dba.open();
         
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() +
-                "/data/" + getString(R.string.app_name);
+                "/data/" + getString(R.string.file_dir_name);
         currentDir = new File(path);
         currentDir.mkdirs();
         fill(currentDir);
