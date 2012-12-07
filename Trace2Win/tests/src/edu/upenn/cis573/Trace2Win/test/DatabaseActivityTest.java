@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
 import edu.upenn.cis573.Trace2Win.MainMenuActivity;
-import edu.upenn.cis573.Trace2Win.R;
 
 
 public class DatabaseActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity>{

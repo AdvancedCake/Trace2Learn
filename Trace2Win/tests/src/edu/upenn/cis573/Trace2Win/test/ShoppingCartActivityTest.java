@@ -8,7 +8,6 @@ import java.io.IOException;
 import android.os.Environment;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Toast;
-import edu.upenn.cis573.Trace2Win.R;
 import edu.upenn.cis573.Trace2Win.library.ShoppingCartActivity;
 
 

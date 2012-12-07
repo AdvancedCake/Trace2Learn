@@ -2,7 +2,6 @@ package edu.upenn.cis573.Trace2Win.test;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
-import edu.upenn.cis573.Trace2Win.R;
 import edu.upenn.cis573.Trace2Win.library.CreateWordActivity;
 import edu.upenn.cis573.Trace2Win.library.LessonItemListAdapter;
 import edu.upenn.cis573.Trace2Win.library.Database.LessonCharacter;
