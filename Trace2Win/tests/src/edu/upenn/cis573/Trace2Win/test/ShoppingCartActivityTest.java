@@ -14,7 +14,7 @@ import edu.upenn.cis573.Trace2Win.library.ShoppingCartActivity;
 public class ShoppingCartActivityTest extends ActivityInstrumentationTestCase2<ShoppingCartActivity>{
 	
 	public ShoppingCartActivityTest(){
-		super("edu.upenn.cis573.Trace2Win",ShoppingCartActivity.class);
+		super("edu.upenn.cis573.Trace2Win.library",ShoppingCartActivity.class);
 	}
 	
 	private ShoppingCartActivity activity;
@@ -35,14 +35,14 @@ public class ShoppingCartActivityTest extends ActivityInstrumentationTestCase2<S
 
 	/** helper function for testing
 	 * Read a String from the file whose name is given     * 
-	 * location: external_root/data/"app_name", app_name from resource 
+	 * location: external_root/data/"file_dir_name", file_dir_name from resource 
 	 * @param filename the filename including ".ttw". 
 	 *        assumed to be in the internal storage
 	 * @return String The string which is contained in the given file
 	 */
 	public String readStringFromFile(String filename) { 
 		String extFilesDir = Environment.getExternalStorageDirectory().getAbsolutePath() +
-				"/data/" + activity.getString(R.string.app_name);
+				"/data/" + activity.getString(R.string.file_dir_name);
 		File outFile = new File(extFilesDir, filename);
 		StringBuffer sb = new StringBuffer();
 

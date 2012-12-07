@@ -11,7 +11,7 @@ import edu.upenn.cis573.Trace2Win.library.Database.LessonWord;
 public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<CreateWordActivity>{
 	
 	public CreateWordActivityTest(){
-		super("edu.upenn.cis573.Trace2Win",CreateWordActivity.class);
+		super("edu.upenn.cis573.Trace2Win.library",CreateWordActivity.class);
 	}
 	
 	private CreateWordActivity activity;

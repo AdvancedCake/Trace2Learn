@@ -9,7 +9,7 @@ import edu.upenn.cis573.Trace2Win.MainMenuActivity;
 public class DatabaseActivityTest extends ActivityInstrumentationTestCase2<MainMenuActivity>{
 	
 	public DatabaseActivityTest(){
-		super("edu.upenn.cis573.Trace2Win",MainMenuActivity.class);
+		super("edu.upenn.cis573.Trace2Win.library",MainMenuActivity.class);
 	}
 	
 	private Activity activity;
