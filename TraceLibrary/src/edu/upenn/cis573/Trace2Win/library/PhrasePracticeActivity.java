@@ -11,10 +11,12 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -55,6 +57,9 @@ public class PhrasePracticeActivity extends Activity {
 	
 	private ViewAnimator _animator;
 	
+	private Button playButton;
+	private Button traceButton;
+	
 	private enum Mode {
 		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
 	}
@@ -91,8 +96,11 @@ public class PhrasePracticeActivity extends Activity {
 			
 		});
 
-		_tagText = (TextView) findViewById(R.id.tag_list);
+		_tagText     = (TextView) findViewById(R.id.tag_list);
 		_phraseTitle = (TextView) findViewById(R.id.phraseTitle);
+		
+		playButton  = (Button) findViewById(R.id.animate_button);
+		traceButton = (Button) findViewById(R.id.trace_button);
 
 		_dbHelper = new DbAdapter(this);
 		_dbHelper.open();
@@ -213,8 +221,10 @@ public class PhrasePracticeActivity extends Activity {
 				_animator.addView(disp);
 			}
 			_animator.setDisplayedChild(curInd);
-			//setCharacter(this._characters.get(curInd));
 			_currentMode = Mode.DISPLAY;
+            playButton.setText(Html.fromHtml("<b>" +
+                    getString(R.string.animate) + "</b>"));
+            traceButton.setText(getString(R.string.practice));
 		}
 	}
 
@@ -232,8 +242,10 @@ public class PhrasePracticeActivity extends Activity {
 				_animator.addView(trace);
 			}
 			_animator.setDisplayedChild(curInd);
-			//setCharacter(this._characters.get(curInd));
 			_currentMode = Mode.TRACE;
+            traceButton.setText(Html.fromHtml("<b>" +
+                    getString(R.string.practice) + "</b>"));
+            playButton.setText(getString(R.string.animate));
 		}
 	}
 	
