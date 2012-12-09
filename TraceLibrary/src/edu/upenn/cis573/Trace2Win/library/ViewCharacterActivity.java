@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -137,7 +138,8 @@ public class ViewCharacterActivity extends Activity {
             right1.setVisibility(View.VISIBLE);
             left1.setText(R.string.edit);
             right2.setText(R.string.practice);
-            right1.setText(R.string.animate);
+            right1.setText(Html.fromHtml("<b>" + getString(R.string.animate) +
+                    "</b>"));
 		}
 	}
 
@@ -159,7 +161,8 @@ public class ViewCharacterActivity extends Activity {
             right2.setVisibility(View.VISIBLE);
             right1.setVisibility(View.VISIBLE);
             left1.setText(R.string.edit);
-            right2.setText(R.string.practice);
+            right2.setText(Html.fromHtml("<b>" + getString(R.string.practice) +
+                    "</b>"));
             right1.setText(R.string.animate);
 		}
 	}
