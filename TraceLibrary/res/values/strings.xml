@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Hello World, Trace2LearnActivity!</string>
+    <string name="app_name">Trace2Win</string>
+    <string name="file_dir_name">Trace2Win</string> <!-- we have two different apps. -->
+    <string name="insert_tag">Insert a new tag</string>
+    <string name="character">Character</string>
+    <string name="tag">Tag</string>
+    <string name="submit">Submit</string>
+    <string name="search_char">Search a character</string>
+    <string name="search">Search</string>
+    <string name="search_tag">Search a tag</string>
+    <string name="results">Results displayed here</string>
+    <string name="edit">Edit</string>
+    <string name="save">Save</string>
+    <string name="clear">Clear</string>
+    <string name="tag_header">Edit Tags</string>
+    <string name="addtag_header">Add Tag</string>
+    <string name="add">Add</string>
+    <string name="word">Word/Character here as whatever object structure</string>
+    <string name="tag1">Tagged</string>
+    <string name="li_preview_description">Preview</string>
+    <string name="charplace">Placeholder</string>
+    <string name="practice">Practice</string>
+    <string name="animate">Playback</string>
+    <string name="apply">Apply</string>
+    <string name="filter">Filter</string>
+    <string name="clear_filter">Clear Filter</string>
+    <string name="cancel">Cancel</string>
+    <string name="instruction_create_word">Click on a character to add it to the word</string>
+    <string name="instruction_browse_chars">Click and hold on a character for more options</string>
+    <string name="filter_none">Filter: None</string>
+    <string name="save_word">Save Word</string>
+    <string name="id_tag_header">Edit IDs and Tags</string>
+    <string name="add_key">Add Key</string>
+    <string name="add_value">Add Value</string>
+    <string name="cart">Cart: 0</string>
+    <string name="select_all">Select All</string>
+    <string name="deselect_all">Deselect All</string>
+    <string name="none"></string>
+    <string name="export">Export</string>
+    <string name="instruction_export">Add items to cart</string>
+    <string name="instruction_export_chars">Add characters to cart</string>
+    <string name="instruction_export_words">Add words to cart</string>
+    <string name="instruction_export_lessons">Add lessons to cart</string>
+    <string name="shopping_cart">Viewing cart</string>
+    <string name="back">Back</string>
+    <string name="file_header">Import from file</string>
+    <string name="type">Type</string>
+
+</resources>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="edu.upenn.cis573.Trace2Win.library"
+    android:versionCode="2"
+    android:versionName="2.0" >
+
+    <uses-sdk android:minSdkVersion="8" />
+
+    <application>
+        <activity android:name="ViewCharacterActivity" >
+        </activity>
+        <activity
+            android:name="CreateWordActivity"
+            android:windowSoftInputMode="stateHidden" >
+        </activity>
+        <activity android:name="CreateLessonActivity" >
+        </activity>
+        <activity android:name="TagActivity" >
+        </activity>
+        <activity android:name="TestTagDbActivity" >
+        </activity>
+        <activity android:name="BrowseCharactersActivity" >
+        </activity>
+        <activity android:name="BrowseWordsActivity" >
+        </activity>
+        <activity android:name="BrowseLessonsActivity" >
+        </activity>
+        <activity android:name="PhrasePracticeActivity" >
+        </activity>
+        <activity android:name="ShoppingCartActivity" >
+        </activity>
+        <activity android:name="FilePickerActivity" >
+        </activity>
+    </application>
+
+</manifest>
