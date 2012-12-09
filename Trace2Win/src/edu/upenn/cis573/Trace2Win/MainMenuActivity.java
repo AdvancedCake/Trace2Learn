@@ -79,7 +79,7 @@ public class MainMenuActivity extends ListActivity {
                     {
                         Intent intent = new Intent(c, ShoppingCartActivity.class);
                         Bundle bun = new Bundle();
-                        bun.putString("type", "character");
+                        bun.putString("type", "lesson");
                         intent.putExtras(bun);
                         startActivity(intent);
                     }
