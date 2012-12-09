@@ -478,6 +478,7 @@ public class TagActivity extends Activity {
     private void close() {
         if (isChanged) {
             setResult(RESULT_OK);
+            showToast("Tags saved");
         } else {
             setResult(RESULT_CANCELED);
         }

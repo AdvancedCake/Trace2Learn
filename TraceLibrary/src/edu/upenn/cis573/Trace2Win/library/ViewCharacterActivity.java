@@ -262,6 +262,7 @@ public class ViewCharacterActivity extends Activity {
             _dbHelper.modifyCharacter(character);
         Log.e("Adding to DB", Long.toString(character.getId()));
         id_to_pass = character.getId();
+        showToast("Character saved");
     }
     
 	public void createTags() 
