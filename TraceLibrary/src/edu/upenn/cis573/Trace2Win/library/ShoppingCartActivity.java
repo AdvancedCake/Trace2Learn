@@ -55,11 +55,12 @@ public class ShoppingCartActivity extends Activity {
     private Button filterButton;
     private Button selectButton;
     private Button deselectButton;
-    private Button typeButton;
     private TextView filterStatus;
 
     private DbAdapter dba;
     private LayoutInflater vi;
+    
+    private Lesson allChars = new Lesson();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,6 @@ public class ShoppingCartActivity extends Activity {
         filterButton   = (Button)   findViewById(R.id.filterButton);
         selectButton   = (Button)   findViewById(R.id.selectAllButton);
         deselectButton = (Button)   findViewById(R.id.deselectAllButton);
-        typeButton     = (Button)   findViewById(R.id.typeButton);
         filterStatus   = (TextView) findViewById(R.id.filterStatus);
 
         list.setOnItemClickListener(new OnItemClickListener() {
@@ -85,6 +85,7 @@ public class ShoppingCartActivity extends Activity {
                     adapter = new ShoppingCartListAdapter(
                             ShoppingCartActivity.this, cart, vi);
                     list.setAdapter(adapter);
+                    setCartTitle();
                 } else {
                     if (cart.contains(item)) {
                         cart.remove(item);
@@ -107,6 +108,8 @@ public class ShoppingCartActivity extends Activity {
         filtered    = false;
         viewingCart = false;
         exportButton.setVisibility(View.INVISIBLE);
+        allChars.setName("All Characters");
+        allChars.setStringId("ALL_CHARACTERS");
     }
 
     @Override
@@ -142,6 +145,10 @@ public class ShoppingCartActivity extends Activity {
             }
 
             Collections.sort(source);
+            if (this.type == ItemType.LESSON) {
+                // want this to be at the end
+                source.add(allChars);
+            }
             display = source;
             adapter = new ShoppingCartListAdapter(this, display, vi);
             list.setAdapter(adapter);
@@ -208,20 +215,13 @@ public class ShoppingCartActivity extends Activity {
      */
     private void showCart() {
         viewingCart = true;
-        String t;
-        if (cart.size() == 1) {
-            t = " item in cart";
-        } else {
-            t = " items in cart";
-        }
-        title.setText(cart.size() + t);
+        setCartTitle();
         cartButton.setText(R.string.back);
         exportButton.setVisibility(View.VISIBLE);
         filterButton.setVisibility(View.INVISIBLE);
         filterStatus.setVisibility(View.INVISIBLE);
         selectButton.setVisibility(View.INVISIBLE);
         deselectButton.setVisibility(View.INVISIBLE);
-        typeButton.setVisibility(View.INVISIBLE);
 
         Collections.sort(cart);
         adapter = new ShoppingCartListAdapter(this, cart, vi);
@@ -249,7 +249,6 @@ public class ShoppingCartActivity extends Activity {
         filterStatus.setVisibility(View.VISIBLE);
         selectButton.setVisibility(View.VISIBLE);
         deselectButton.setVisibility(View.VISIBLE);
-        typeButton.setVisibility(View.VISIBLE);
 
         adapter = new ShoppingCartListAdapter(this, display, vi);
     }
@@ -398,28 +397,6 @@ public class ShoppingCartActivity extends Activity {
     }
 
     /**
-     * Click handler for "Type" button
-     * @param view
-     */
-    public void onClickType(View view) {
-        switch (type) {
-            case CHARACTER:
-                type = ItemType.LESSON;
-                title.setText(R.string.instruction_export_lessons);
-                getLessons();
-                break;
-            case WORD:
-            case LESSON:
-                type = ItemType.CHARACTER;
-                title.setText(R.string.instruction_export_chars);
-                getChars();
-                break;
-        }
-        Collections.sort(source);
-        clearFilter(); // this method also refreshes the display
-    }
-
-    /**
      * Click handler for "Export" button
      * @param view The button
      */
@@ -460,6 +437,19 @@ public class ShoppingCartActivity extends Activity {
 
                 String xml = "<ttw name=\"" + filename + "\">\n";
                 for (LessonItem item : cart) {
+                    if (item == allChars) {
+                        List<Long> ids = dba.getAllCharIds();
+                        source = new ArrayList<LessonItem>(ids.size());
+                        for (long id : ids) {
+                            LessonCharacter character = dba.getCharacterById(id);
+                            if (!cart.contains(character) &&
+                                    !dependencies.contains(character)) {
+                                dependencies.add(character);
+                            }
+                        }
+                        continue;
+                    }
+                    
                     xml += item.toXml();
 
                     // if it's a lesson, we need to make sure dependencies are
@@ -537,6 +527,16 @@ public class ShoppingCartActivity extends Activity {
             showToast("Error while writing a file to the device!");
             return;
         }
+    }
+    
+    private void setCartTitle() {
+        String t;
+        if (cart.size() == 1) {
+            t = " item in cart";
+        } else {
+            t = " items in cart";
+        }
+        title.setText(cart.size() + t);
     }
 
     /**
@@ -624,7 +624,11 @@ public class ShoppingCartActivity extends Activity {
                     Lesson lesson = (Lesson) item;
                     int count = lesson.getNumWords();
                     nameView.setText(lesson.getLessonName());
-                    sizeView.setText(count + (count == 1 ? " word" : " words"));
+                    if (lesson != allChars) {
+                        sizeView.setText(count + (count == 1 ? " word" : " words"));
+                    } else {
+                        sizeView.setText("");
+                    }
                     break;
             }
 
