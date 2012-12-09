@@ -66,24 +66,28 @@ public class TagActivity extends Activity {
         type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));        
 
         // assign layout and cache views 
+        setContentView(R.layout.id_and_tag);
+        tagEntry     = (EditText) findViewById(R.id.edittext);
+        addTagButton = (Button)   findViewById(R.id.add_tag_button);
+        keyEntry     = (EditText) findViewById(R.id.editkey);
+        valueEntry   = (EditText) findViewById(R.id.editvalue);
+        addIdButton  = (Button)   findViewById(R.id.add_key_value_pair_button);
+        listView     = (ListView) findViewById(R.id.list);
+        
         switch(type)
         {
         case CHARACTER:
         case WORD:
-        	setContentView(R.layout.id_and_tag);
-        	keyEntry = (EditText) findViewById(R.id.editkey);
-        	valueEntry = (EditText) findViewById(R.id.editvalue);
-        	addIdButton = (Button) findViewById(R.id.add_key_value_pair_button);
         	break;
         case LESSON:
-        	setContentView(R.layout.tag);
+            findViewById(R.id.id_headers).setVisibility(View.GONE);
+            findViewById(R.id.id_views).setVisibility(View.GONE);
         	break;
         default:
         	Log.e("Tag", "Unsupported Type");
+        	finish();
+        	break;
         }
-        tagEntry = (EditText) findViewById(R.id.edittext);
-        addTagButton = (Button) findViewById(R.id.add_tag_button);
-        listView = (ListView) findViewById(R.id.list);
 
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();     
@@ -458,12 +462,20 @@ public class TagActivity extends Activity {
         }
     }
     
+    public void onSaveButtonClick(View view) {
+        close();
+    }
+    
     private final void showToast(String msg){
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onBackPressed() {
+        close();
+    }
+
+    private void close() {
         if (isChanged) {
             setResult(RESULT_OK);
         } else {

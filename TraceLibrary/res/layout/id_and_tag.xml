@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
-    android:orientation="vertical" >
+    android:layout_height="fill_parent" >
 
     <TextView
+        android:id="@+id/title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/id_tag_header"
@@ -12,16 +13,28 @@
         android:textSize="25sp"
         android:textStyle="bold" />
 
+    <Button
+        android:id="@+id/saveButton"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:onClick="onSaveButtonClick"
+        android:text="@string/save" />
+
     <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="0.5" >
+        android:layout_height="match_parent"
+        android:layout_above="@+id/id_headers"
+        android:layout_below="@+id/title" >
     </ListView>
 
     <LinearLayout
+        android:id="@+id/id_headers"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/id_views"
         android:orientation="horizontal" >
 
         <TextView
@@ -37,8 +50,10 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/id_views"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/TextView2"
         android:orientation="horizontal" >
 
         <EditText
@@ -65,18 +80,22 @@
     </LinearLayout>
 
     <TextView
+        android:id="@+id/TextView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_above="@+id/LinearLayout1"
         android:text="@string/addtag_header" />
 
     <LinearLayout
+        android:id="@+id/LinearLayout1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal" >
 
         <EditText
             android:id="@+id/edittext"
-            android:layout_width="0dp"
+            android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:inputType="text" />
@@ -89,4 +108,4 @@
             android:text="@string/add" />
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
