@@ -39,7 +39,6 @@ public class PhrasePracticeActivity extends Activity {
 	private int _collectionSize;
 	private String _lessonName;
 
-	private long _wordId = -1; // TODO what is this for? please document
 	private LessonWord _word;
 
 	private ArrayList<LessonCharacter> _characters;
@@ -124,8 +123,8 @@ public class PhrasePracticeActivity extends Activity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("wordId")) 
 		{
-			_wordId = bun.getLong("wordId");
-			_word = _dbHelper.getWordById(_wordId);
+			long wordId = bun.getLong("wordId");
+			_word = _dbHelper.getWordById(wordId);
             setWord(_word);
 			updateTags();
 			
@@ -151,10 +150,8 @@ public class PhrasePracticeActivity extends Activity {
 		}
 		else
 		{
-			// Yes this is bad form
-			// Dont have time to figure out better error handling
-			// Should reach here anyway basically just an assert
-			throw new NullPointerException("Did not recieve wordId");
+			showToast("No word selected");
+			finish();
 		}
 	}
 
