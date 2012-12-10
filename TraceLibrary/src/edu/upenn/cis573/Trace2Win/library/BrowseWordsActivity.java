@@ -117,15 +117,17 @@ public class BrowseWordsActivity extends ListActivity {
     @Override  
     protected void onListItemClick(ListView l, View v, int position, long id) {  
         super.onListItemClick(l, v, position, id);
-        String mode = "display";
-        if (lessonID != null) { // looking at a lesson - start in trace mode
-            mode = "trace";
-        }
-        clickOnItem(items.get(position), position, mode);
+        clickOnItem(items.get(position), position, "trace"); // start in trace mode
     }  
-
-    //when character is clicked, it starts the display mode for that char
-    public void clickOnItem(LessonItem li, int position, String mode){
+ 
+    /**
+     * Opens the selected word in the practice activity
+     * 
+     * @param li the word
+     * @param position the index of the word in the lesson or list
+     * @param mode the mode to open, "trace" or "display"
+     */
+    private void clickOnItem(LessonItem li, int position, String mode){
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
@@ -324,9 +326,6 @@ public class BrowseWordsActivity extends ListActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == requestCodeENUM.EditTag.ordinal() 
                 && resultCode == RESULT_OK) {
-            // re-launch the current activity to reflect the changes of tags
-            // we could use recreate() instead, but note that it is supported since API 11.
-            // TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
             startActivity(getIntent());
             finish();
         } else if (requestCode == requestCodeENUM.PhrasePractice.ordinal() && 
