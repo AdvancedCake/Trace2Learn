@@ -93,7 +93,7 @@ public class BrowseCharactersActivity extends ListActivity {
 		Intent intent = new Intent();
 		Bundle bun = new Bundle();
 
-		bun.putString("mode", "display");
+		bun.putString("mode", "trace");
 		bun.putLong("charId", li.getId());
 
 		intent.setClass(this, ViewCharacterActivity.class);
@@ -202,9 +202,6 @@ public class BrowseCharactersActivity extends ListActivity {
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 	    if (requestCode == requestCodeENUM.EditTag.ordinal() &&
 	            resultCode == RESULT_OK) {
-	        // re-launch the current activity to reflect the changes of tags
-	        // we could use recreate() instead, but note that it is supported since API 11.
-	        // TODO: This implementation is quite wasting times. We could just update ArrayList and ListView 
 	        startActivity(getIntent());
             finish();
         } else if (requestCode == requestCodeENUM.ViewCharacter.ordinal() &&

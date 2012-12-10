@@ -84,18 +84,18 @@ public class ViewCharacterActivity extends Activity {
 	private void initializeMode() 
 	{
 		Bundle bun = getIntent().getExtras();
-		if (bun != null && bun.containsKey("mode")) 
-		{
+		if (bun != null && bun.containsKey("mode")) {
 			String mode = bun.getString("mode");
-			if (mode.equals("display")) 
-			{
-				setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
-				setCharacterDisplayPane();
-				id_to_pass = bun.getLong("charId");
-				updateTags();
+            setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
+            id_to_pass = bun.getLong("charId");
+            updateTags();
+            
+			if (mode.equals("trace")) {
+                setCharacterTracePane();
+			} else { // display mode
+			    setCharacterDisplayPane();
 			}
-		} else 
-		{
+		} else { // creation mode
 			setCharacterCreationPane();
 		}
 	}
