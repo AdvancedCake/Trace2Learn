@@ -49,10 +49,10 @@ public class LessonTest extends AndroidTestCase {
 		db.addCharacter(c2);
 		
 		w1 = new LessonWord();
-		w1.setId(10);
+		w1.setStringId("10");
 		db.addWord(w1);
 		w2 = new LessonWord();
-		w2.setId(20);
+		w2.setStringId("20");
 		db.addWord(w2);
 	}
 
@@ -67,8 +67,8 @@ public class LessonTest extends AndroidTestCase {
 		Lesson exp = new Lesson();
 		exp.setStringId("lesson_unique_id");
 		exp.setName("lesson_name");
-		exp.addWord(w1.getId());
-		exp.addWord(w2.getId());
+		exp.addWord(w1.getStringId());
+		exp.addWord(w2.getStringId());
 		
 		db.addLesson(exp);
 		Lesson lesson = db.getLessonById("lesson_unique_id");
@@ -78,7 +78,7 @@ public class LessonTest extends AndroidTestCase {
 	
 	
 	public void testToXml() {
-		LessonWord word1 = new LessonWord(900);
+		LessonWord word1 = new LessonWord("id1");
 		word1.addTag("English");
 		word1.addTag("Color");
 		word1.addKeyValue("Word", "Red");
@@ -86,10 +86,10 @@ public class LessonTest extends AndroidTestCase {
 		word1.addCharacter((long) 1234);
 		db.addWord(word1);
 		
-		LessonWord word1_db = db.getWordById(900);
+		LessonWord word1_db = db.getWordById("id1");
 		LessonWordTest.compareWords(word1, word1_db);		
 		
-		LessonWord word2 = new LessonWord(901);
+		LessonWord word2 = new LessonWord("id2");
 		word2.addTag("English");
 		word2.addTag("Color");
 		word2.addKeyValue("Word", "Blue");
@@ -101,19 +101,19 @@ public class LessonTest extends AndroidTestCase {
 	    Lesson lesson = new Lesson();
 	    lesson.setStringId("unique_lesson_id");
 	    lesson.setName("Colors");
-	    lesson.addWord((long) word1.getId());
-	    lesson.addWord((long) word2.getId());
+	    lesson.addWord(word1.getStringId());
+	    lesson.addWord(word2.getStringId());
 	    db.addLesson(lesson);
         
         String exp = "<lesson id=\"unique_lesson_id\" name=\"Colors\">\n" +
-        		"<word id=\"900\" position=\"0\">\n" +
+        		"<word id=\"id1\" position=\"0\">\n" +
         		"<tag tag=\"English\" />\n" +
         		"<tag tag=\"Color\" />\n" +
         		"<id key=\"Word\" value=\"Red\" />\n" +
         		"<character id=\"1234\" position=\"0\" />\n" +
         		"<character id=\"1234\" position=\"1\" />\n" +
         		"</word>\n" +
-        		"<word id=\"901\" position=\"1\">\n" +
+        		"<word id=\"id2\" position=\"1\">\n" +
         		"<tag tag=\"English\" />\n" +
         		"<tag tag=\"Color\" />\n" +
         		"<id key=\"Word\" value=\"Blue\" />\n" +
@@ -144,14 +144,14 @@ public class LessonTest extends AndroidTestCase {
     			"</lesson>\n";
         Element elem = Parser.parse(xml).getDocumentElement();
         
- 		LessonWord word1 = new LessonWord(900);
+ 		LessonWord word1 = new LessonWord("900");
 		word1.addTag("English");
 		word1.addTag("Color");
 		word1.addKeyValue("Word", "Red");
 		word1.addCharacter((long) 1234);
 		word1.addCharacter((long) 1234);
 		
-		LessonWord word2 = new LessonWord(901);
+		LessonWord word2 = new LessonWord("901");
 		word2.addTag("English");
 		word2.addTag("Color");
 		word2.addKeyValue("Word", "Blue");
@@ -161,8 +161,8 @@ public class LessonTest extends AndroidTestCase {
 	    Lesson lesson = new Lesson();
 	    lesson.setStringId("unique_lesson_id");
 	    lesson.setName("Colors");
-	    lesson.addWord((long) word1.getId());
-	    lesson.addWord((long) word2.getId());
+	    lesson.addWord(word1.getStringId());
+	    lesson.addWord(word2.getStringId());
         
         compareLessons(lesson, Lesson.importFromXml(elem));
     }	

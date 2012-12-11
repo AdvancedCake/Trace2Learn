@@ -123,7 +123,7 @@ public class PhrasePracticeActivity extends Activity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("wordId")) 
 		{
-			long wordId = bun.getLong("wordId");
+			String wordId = bun.getString("wordId");
 			_word = _dbHelper.getWordById(wordId);
             setWord(_word);
 			updateTags();

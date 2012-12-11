@@ -176,9 +176,9 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with words
      */
     private void getWords() {
-        List<Long> ids = dba.getAllWordIds();
+        List<String> ids = dba.getAllWordIds();
         source = new ArrayList<LessonItem>(ids.size());
-        for(long id : ids){
+        for(String id : ids){
             LessonWord word = dba.getWordById(id);
             source.add(word);
         }

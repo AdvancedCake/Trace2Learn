@@ -105,7 +105,7 @@ public class LessonWordTest extends AndroidTestCase {
 		LessonWord w = new LessonWord();
 		w.addTag("Tag1");
 		db.addWord(w);
-		LessonWord w1 = db.getWordById(w.getId());
+		LessonWord w1 = db.getWordById(w.getStringId());
 		compareWords(w, w1);
 	}
 	
@@ -114,7 +114,7 @@ public class LessonWordTest extends AndroidTestCase {
 		LessonWord w = new LessonWord();
 		w.addKeyValue("key1", "value1");
 		db.addWord(w);
-		LessonWord w1 = db.getWordById(w.getId());
+		LessonWord w1 = db.getWordById(w.getStringId());
 		compareWords(w, w1);
 	}	
 	
@@ -139,7 +139,7 @@ public class LessonWordTest extends AndroidTestCase {
 	
 	public void testToXml() {
 	    LessonWord w = new LessonWord();
-	    w.setId(100);
+	    w.setStringId("Foobar");
 	    w.addTag("tag!");
 	    w.addTag("another tag?");
         w.addKeyValue("k1", "v1");
@@ -148,7 +148,7 @@ public class LessonWordTest extends AndroidTestCase {
         w.addCharacter(c2.getId());
         w.addCharacter(c3.getId());
         
-        String exp = "<word id=\"100\">\n" +
+        String exp = "<word id=\"Foobar\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -162,7 +162,7 @@ public class LessonWordTest extends AndroidTestCase {
 	}
 	
     public void testImportFromXml() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"hello\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -174,7 +174,7 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("hello");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
@@ -187,7 +187,7 @@ public class LessonWordTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlNoTags() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"myId\">\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
         		"<id key=\"k2\" value=\"v2\" />\n" +
         		"<character id=\"1\" position=\"0\" />\n" +
@@ -197,7 +197,7 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("myId");
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
         exp.addCharacter(c1.getId());
@@ -208,7 +208,7 @@ public class LessonWordTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlNoIds() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"hi\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<character id=\"1\" position=\"0\" />\n" +
@@ -218,7 +218,7 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("hi");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addCharacter(c1.getId());
@@ -229,7 +229,7 @@ public class LessonWordTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlOneCharacter() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"heya\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -239,7 +239,7 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("heya");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
@@ -259,7 +259,7 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("100");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");

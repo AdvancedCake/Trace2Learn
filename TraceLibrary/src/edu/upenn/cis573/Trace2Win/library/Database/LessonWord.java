@@ -21,12 +21,13 @@ public class LessonWord extends LessonItem {
 		_characters = new ArrayList<Long>();
 	}
 	
-	public LessonWord(long id)
+	public LessonWord(String id)
 	{
 		this();
-		_id = id;
+		_stringid = id;
 	}		
 	
+	//takes the id of a character, adds the id to internal characterid list
 	public void addCharacter(Long character){
 		_characters.add(character);
 	}
@@ -143,9 +144,9 @@ public class LessonWord extends LessonItem {
 	public String toXml(int word_position) {
 		String xml = "";
 		if (word_position == -1)
-			xml = "<word id=\"" + _id + "\">\n";
+			xml = "<word id=\"" + _stringid + "\">\n";
 		else 
-			xml = "<word id=\"" + _id + "\" position=\"" + word_position + "\">\n";
+			xml = "<word id=\"" + _stringid + "\" position=\"" + word_position + "\">\n";
 
 	    for (String tag : _tags) {
 	        xml += "<tag tag=\"" + tag + "\" />\n";
@@ -179,10 +180,10 @@ public class LessonWord extends LessonItem {
 	 */
 	public static LessonWord importFromXml(Element elem) {
         try {
-            long id = Long.parseLong(elem.getAttribute("id"));
+            String id = elem.getAttribute("id");
             
             LessonWord w = new LessonWord();
-            w._id = id;
+            w._stringid = id;
             
             NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {
@@ -220,7 +221,7 @@ public class LessonWord extends LessonItem {
 	        return false;
 	    }
 
-	    return ((LessonWord) other).getId() == _id;
+	    return ((LessonWord) other).getStringId() == _stringid;
 	}
 
 }

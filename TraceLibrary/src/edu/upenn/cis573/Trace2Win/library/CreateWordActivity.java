@@ -138,8 +138,8 @@ public class CreateWordActivity extends Activity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                    String name = ((String)lessonList.getItemAtPosition(position));
                    Log.e("name",name);
-                   long success = dba.addWordToLesson(name, newWord.getId());
-                   Log.e("adding word",Long.toString(success));
+                   String success = dba.addWordToLesson(name, newWord.getStringId());
+                   Log.e("adding word",success);
                    window.dismiss();
                 }
             });
@@ -169,7 +169,7 @@ public class CreateWordActivity extends Activity {
         }
         Lesson lesson = new Lesson();
         lesson.setName(name);
-        lesson.addWord(newWord.getId());
+        lesson.addWord(newWord.getStringId());
         dba.addLesson(lesson);
         window.dismiss();
     }
@@ -194,7 +194,7 @@ public class CreateWordActivity extends Activity {
             return;
         }
         Intent i = new Intent(this, TagActivity.class);
-        i.putExtra("ID", newWord.getId());
+        i.putExtra("ID", newWord.getStringId());
         i.putExtra("TYPE", newWord.getItemType().toString());
         startActivity(i);
     }

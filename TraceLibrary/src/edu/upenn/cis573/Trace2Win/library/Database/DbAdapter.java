@@ -21,7 +21,7 @@ import edu.upenn.cis573.Trace2Win.library.Database.LessonItem.ItemType;
 public class DbAdapter {
 	
     public static final String CHAR_ROWID = "_id";
-    public static final String WORDS_ROWID = "_id";
+    public static final String WORDS_ID = "_id";
     public static final String LESSONS_ID = "_id";
     public static final String LESSONTAG_ID = "_id";
     
@@ -30,9 +30,9 @@ public class DbAdapter {
     public static final String CHARKEYVALUES_ROWID ="_id";
     public static final String CHARKEYVALUES_KEY = "key";
     public static final String CHARKEYVALUES_VALUE = "value";
-    public static final String WORDTAG_ROWID = "_id";
+    public static final String WORDTAG_ID = "_id";
     public static final String WORDTAG_TAG= "tag";
-    public static final String WORDKEYVALUES_ROWID ="_id";
+    public static final String WORDKEYVALUES_ID ="_id";
     public static final String WORDKEYVALUES_KEY = "key";
     public static final String WORDKEYVALUES_VALUE = "value";
 
@@ -71,11 +71,11 @@ public class DbAdapter {
             "FOREIGN KEY(CharId) REFERENCES Character(_id));";
     
     private static final String DATABASE_CREATE_WORDS = 
-    		"CREATE TABLE Words (_id INTEGER PRIMARY KEY AUTOINCREMENT," +
+    		"CREATE TABLE Words (_id TEXT PRIMARY KEY," +
     		"sort INTEGER);";
     
     private static final String DATABASE_CREATE_WORDS_DETAILS =
-            "CREATE TABLE WordsDetails (_id INTEGER," +
+            "CREATE TABLE WordsDetails (_id TEXT," +
             "CharId INTEGER," +
             "WordOrder INTEGER NOT NULL," +
             "FlagUserCreated INTEGER," +
@@ -83,13 +83,13 @@ public class DbAdapter {
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
     
     private static final String DATABASE_CREATE_WORDSTAG =
-            "CREATE TABLE WordsTag (_id INTEGER, " +
+            "CREATE TABLE WordsTag (_id TEXT, " +
             "tag TEXT NOT NULL, " +
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
     
     private static final String DATABASE_CREATE_WORDKEYVALUES =
-            "CREATE TABLE WordKeyValues (_id INTEGER, " +
+            "CREATE TABLE WordKeyValues (_id TEXT, " +
             "key TEXT NOT NULL, " +
             "value TEXT NOT NULL, " +
             "sort INTEGER, " +
@@ -104,7 +104,7 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_LESSONS_DETAILS =
             "CREATE TABLE LessonsDetails (" +
             "LessonId TEXT, " +
-            "WordId INTEGER," +
+            "WordId TEXT," +
             "LessonOrder INTEGER NOT NULL, " +
             "FOREIGN KEY(LessonId) REFERENCES Lessons(_id)," +
             "FOREIGN KEY(WordId) REFERENCES Words(_id));";
@@ -158,7 +158,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 11;
+    private static final int DATABASE_VERSION = 12;
 
     private final Context mCtx;
 
@@ -234,16 +234,16 @@ public class DbAdapter {
     
     /**
      * Create a new word tag. If the word tag is
-     * successfully created return the new rowId for that tag, otherwise return
-     * a -1 to indicate failure.
+     * successfully created return the new Id for that tag, otherwise return
+     * a null to indicate failure.
      * 
-     * @param id the row_id of the tag
+     * @param id the id of the tag
      * @param tag the text of the tag
-     * @return rowId or -1 if failed
+     * @return id or null if failed
      */
-    public long createWordTags(long id, String tag) {
+    public String createWordTags(String id, String tag) {
         Cursor cur = mDb.query(WORDTAG_TABLE, new String[] {"sort"}, 
-                               "_id=" + id, null, null, null, "sort DESC", "1");
+                               "_id='" + id + "'", null, null, null, "sort DESC", "1");
         int sort = 1;
         if (cur != null) {
             if (cur.moveToFirst()) {
@@ -251,16 +251,20 @@ public class DbAdapter {
             }
         }
         else {
-            return -1;
+            return null;
         }
         cur.close();
 
         ContentValues initialValues = new ContentValues();
-        initialValues.put(WORDTAG_ROWID, id);
+        initialValues.put(WORDTAG_ID, id);
         initialValues.put(WORDTAG_TAG, tag);
         initialValues.put("sort", sort);
 
-        return mDb.insert(WORDTAG_TABLE, null, initialValues);
+        long rowid = mDb.insert(WORDTAG_TABLE, null, initialValues);
+        if(rowid==-1){
+        	return null;
+        }
+        else return id;
     }
     
     /**
@@ -339,7 +343,7 @@ public class DbAdapter {
      * @param value the text of the value
      * @return rowId or -1 if failed
      */
-    public long createKeyValue(long id, LessonItem.ItemType itemType, 
+    public long createKeyValue(long id, String stringId, LessonItem.ItemType itemType, 
                                String key, String value) {
     	String table = "";
     	String rowId = "";
@@ -357,35 +361,61 @@ public class DbAdapter {
     		table = WORDKEYVALUES_TABLE;
     		keyColumn = WORDKEYVALUES_KEY;
     		valueColumn = WORDKEYVALUES_VALUE;
-    		rowId = WORDTAG_ROWID;
+    		rowId = WORDTAG_ID;
     		break;
     	default:
     		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
     		return -1;
     	}
     	
-    	// find new sort value
-        Cursor cur = mDb.query(table, new String[] {"sort"}, 
-                               "_id=" + id, null, null, null, "sort DESC", "1");
-        int sort = 1;
-        if (cur != null) {
-            if (cur.moveToFirst()) {
-                sort = cur.getInt(cur.getColumnIndexOrThrow("sort")) + 1;
-            }
-        }
-        else {
-            return -1;
-        }
-        cur.close();
-
-        
-        ContentValues initialValues = new ContentValues();
-        initialValues.put(rowId, id);
-        initialValues.put(keyColumn, key);
-        initialValues.put(valueColumn, value);
-        initialValues.put("sort", sort);
-
-        return mDb.insert(table, null, initialValues);
+    	if(itemType == ItemType.CHARACTER){ //TODO remove once characters have string ids
+	    	// find new sort value
+	        Cursor cur = mDb.query(table, new String[] {"sort"}, 
+	                               "_id=" + id, null, null, null, "sort DESC", "1");
+	        int sort = 1;
+	        if (cur != null) {
+	            if (cur.moveToFirst()) {
+	                sort = cur.getInt(cur.getColumnIndexOrThrow("sort")) + 1;
+	            }
+	        }
+	        else {
+	            return -1;
+	        }
+	        cur.close();
+	
+	        
+	        ContentValues initialValues = new ContentValues();
+	        initialValues.put(rowId, id);
+	        initialValues.put(keyColumn, key);
+	        initialValues.put(valueColumn, value);
+	        initialValues.put("sort", sort);
+	
+	        return mDb.insert(table, null, initialValues);
+    	}
+    	else{
+	    	// find new sort value
+	        Cursor cur = mDb.query(table, new String[] {"sort"}, 
+	                               "_id='" + stringId + "'", null, null, null, "sort DESC", "1");
+	        int sort = 1;
+	        if (cur != null) {
+	            if (cur.moveToFirst()) {
+	                sort = cur.getInt(cur.getColumnIndexOrThrow("sort")) + 1;
+	            }
+	        }
+	        else {
+	            return -1;
+	        }
+	        cur.close();
+	
+	        
+	        ContentValues initialValues = new ContentValues();
+	        initialValues.put(rowId, stringId);
+	        initialValues.put(keyColumn, key);
+	        initialValues.put(valueColumn, value);
+	        initialValues.put("sort", sort);
+	
+	        return mDb.insert(table, null, initialValues);
+    	}
     }
 
     
@@ -403,25 +433,24 @@ public class DbAdapter {
     }
     
     /**
-     * Delete the word tag with the given rowId and tag
+     * Delete the word tag with the given id and tag
      * 
-     * @param rowId id of tag to delete
+     * @param id id of word tag belongs to
      * @param tag text of tag to delete
      * @return true if deleted, false otherwise
      */
-    public boolean deleteWordTag(long rowId, String tag) {
-        return mDb.delete(WORDTAG_TABLE, WORDTAG_ROWID + "=" + rowId +
-                " AND " + WORDTAG_TAG + "='" + tag + "'", null) > 0;
+    public boolean deleteWordTag(String id, String tag) {
+        return mDb.delete(WORDTAG_TABLE, WORDTAG_ID + "='" + id + "' AND " + WORDTAG_TAG + "='" + tag + "'", null) > 0;
     }
    
     /**
      * Delete the (Key, Value) pair for a character/word with the given rowId and key
      * 
-     * @param rowId character/word id of pair to delete
+     * @param Id character/word id of keyvalue pair
      * @param key text of key to delete
      * @return true if deleted, false otherwise
      */
-    public boolean deleteKeyValue(long itemId, LessonItem.ItemType itemType, String key) {
+    public boolean deleteKeyValue(long itemId, String stringId, LessonItem.ItemType itemType, String key) {
     	String table = "";
     	String rowId = "";
     	String keyColumn = "";
@@ -431,18 +460,20 @@ public class DbAdapter {
     		table = CHARKEYVALUES_TABLE;
     		keyColumn = CHARKEYVALUES_KEY;
     		rowId = CHARTAG_ROWID;
-    		break;
+            return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn +
+                    "='" + key + "'", null) > 0;
+    		//break;
     	case WORD:
     		table = WORDKEYVALUES_TABLE;
     		keyColumn = WORDKEYVALUES_KEY;
-    		rowId = WORDTAG_ROWID;
-    		break;
+    		rowId = WORDTAG_ID;
+            return mDb.delete(table, rowId + "='" + stringId + "' AND " + keyColumn +
+                    "='" + key + "'", null) > 0;
+    		//break;
     	default:
     		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
     		return false;
-    	}    	
-        return mDb.delete(table, rowId + "=" + itemId + " AND " + keyColumn +
-                "='" + key + "'", null) > 0;
+    	}
     }      
 
     /**
@@ -546,7 +577,7 @@ public class DbAdapter {
     	
     	// if the given character has keyValues, copy them
     	for (Map.Entry<String, String> entry : c.getKeyValues().entrySet()) {
-    		if (-1 == createKeyValue(id, c.getItemType(), entry.getKey(), entry.getValue())) {
+    		if (-1 == createKeyValue(id, null, c.getItemType(), entry.getKey(), entry.getValue())) {
         		Log.e(CHAR_TABLE, 
         				"cannot add character's Key-Value pair(" 
         				+ entry.getKey() + ", " + entry.getValue() + ") "
@@ -612,15 +643,15 @@ public class DbAdapter {
 
     	     mDb.delete(CHAR_TABLE, CHAR_ROWID + "=" + id, null);
     		 mDb.delete(CHAR_DETAILS_TABLE, "CharId = " + id, null);
-    		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID}, "CharId =" + id, null,
+    		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ID}, "CharId =" + id, null,
                      null, null, null, null);
     		 mCursor.moveToFirst();
     		 do {
  	        	if(mCursor.getCount()==0){
  	        		break;
  	        	}
- 	        	long wordId = (mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
- 	        	mDb.delete(WORDS_TABLE, WORDS_ROWID + "=" + wordId, null);
+ 	        	String wordId = (mCursor.getString(mCursor.getColumnIndexOrThrow(WORDS_ID)));
+ 	        	mDb.delete(WORDS_TABLE, WORDS_ID + "='" + wordId + "'", null);
  	         }
  	         while(mCursor.moveToNext());
     		 mDb.delete(WORDS_DETAILS_TABLE, "CharId="+id, null);
@@ -696,7 +727,7 @@ public class DbAdapter {
     	c.setTagList(getCharacterTags(id));
 
     	// get keyValues as well
-    	c.setKeyValues(getKeyValues(id, LessonItem.ItemType.CHARACTER));
+    	c.setKeyValues(getKeyValues(id, null, LessonItem.ItemType.CHARACTER));
     	
     	return c;
     }
@@ -704,17 +735,17 @@ public class DbAdapter {
 
 
     /**
-     * Get a LessonCharacter from the database
-     * @param id id of the LessonCharacter
-     * @return The LessonCharacter if id exists, null otherwise.
+     * Get a LessonWord from the database
+     * @param id id of the LessonWord
+     * @return The LessonWord if id exists, null otherwise.
      */
-    public LessonWord getWordById(long id)
+    public LessonWord getWordById(String id)
     {
         Cursor mCursor =
-            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, WORDS_ROWID + "=" + id, null,
+            mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID}, WORDS_ID + "='" + id + "'", null,
                     null, null, null, null);
         LessonWord w = new LessonWord();
-        //if the character doesn't exists
+        //if the character doesn't exist
         if (mCursor == null) {
             return null;
         } else if (mCursor.getCount() == 0) {
@@ -726,7 +757,7 @@ public class DbAdapter {
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
         mCursor =
-            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ROWID, "CharId", "WordOrder"}, WORDS_ROWID + "=" + id, null,
+            mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ID, "CharId", "WordOrder"}, WORDS_ID + "='" + id + "'", null,
                     null, null, "WordOrder ASC", null);
         mCursor.moveToFirst();
         do {
@@ -737,12 +768,12 @@ public class DbAdapter {
         	Log.i("LOAD", "Char: " + charId);
         	w.addCharacter(charId);
         } while(mCursor.moveToNext());
-        w.setId(id);
+        w.setStringId(id);
         mCursor.close();
         
         mCursor =
                 mDb.query(true, WORDS_TABLE, new String[] {"sort"},
-                        WORDS_ROWID + " = " + id, null, null, null, null, null);
+                        WORDS_ID + "='" + id + "'", null, null, null, null, null);
         mCursor.moveToFirst();
         double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
         w.setSort(sort);
@@ -755,7 +786,7 @@ public class DbAdapter {
     	w.setTagList(getWordTags(id));
 
     	// get keyValues as well
-    	w.setKeyValues(getKeyValues(id, LessonItem.ItemType.WORD));        
+    	w.setKeyValues(getKeyValues(-1, id, LessonItem.ItemType.WORD));        
 
         return w;
     }
@@ -770,35 +801,39 @@ public class DbAdapter {
     	mDb.beginTransaction();
     	//add to WORDS_TABLE
     	ContentValues initialWordsValues = new ContentValues();
-    	
-    	if (w.getId() != -1) { // id already initialized, keep it
-        	initialWordsValues.put(WORDS_ROWID, w.getId());    	
-            if (getWordById(w.getId()) != null) {
-                deleteWord(w.getId());
+    	String wordId = w.getStringId();
+    	if (wordId != null) { // id already initialized, keep it
+        	initialWordsValues.put(WORDS_ID, wordId);    	
+            if (getWordById(wordId) != null) {
+                deleteWord(wordId);
             }
     	}
+    	else{
+    		wordId= makeUniqueId();
+    		initialWordsValues.put(WORDS_ID, wordId);
+    	}
     	
-    	long id = mDb.insert(WORDS_TABLE, "sort", initialWordsValues);
-    	if (id == -1) {
+    	long rowid = mDb.insert(WORDS_TABLE, null, initialWordsValues);
+    	if (rowid == -1) {
     		//if error
     		Log.e(WORDS_TABLE, "cannot add new character to table "+WORDS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
     	
-    	if (w.getId() == -1) { // id not initialized, set it now
-    	    w.setId(id);
+    	if (w.getStringId() == null) { // id not initialized, set it now
+    	    w.setStringId(wordId);
     	}
 
         // To make the sort order the same as the ID, we need to update the row
         // after we get the ID, i.e. now.
-        w.setSort(w.getId()); // sort value initialized to ID.
+        w.setSort(rowid); // sort value initialized to ID.
         initialWordsValues.put("sort", w.getSort());
-        mDb.update(WORDS_TABLE, initialWordsValues, WORDS_ROWID + "=" + id, null);
+        mDb.update(WORDS_TABLE, initialWordsValues, WORDS_ID + "='" + wordId + "'", null);
         
     	// if the given word has tags, copy them
     	for (String tag : w.getTags()) {
-    		if (-1 == createWordTags(id, tag)) {
+    		if (null == createWordTags(wordId, tag)) {
         		Log.e(CHAR_TABLE, 
         				"cannot add word's tag(" + tag + ") "
         				+ "to table " + WORDTAG_TABLE);
@@ -809,8 +844,8 @@ public class DbAdapter {
     	
     	// if the given word has keyValues, copy them
     	for (Map.Entry<String, String> entry : w.getKeyValues().entrySet()) {
-    		if (-1 == createKeyValue(id, w.getItemType(), entry.getKey(), entry.getValue())) {
-        		Log.e(CHAR_TABLE, 
+    		if (-1 == createKeyValue(-1, wordId, w.getItemType(), entry.getKey(), entry.getValue())) {
+        		Log.e(WORDKEYVALUES_TABLE, 
         				"cannot add word's Key-Value pair(" 
         				+ entry.getKey() + ", " + entry.getValue() + ") "
         				+ "to table " + WORDKEYVALUES_TABLE);
@@ -826,7 +861,7 @@ public class DbAdapter {
     	for(Long c:l)
     	{
     		ContentValues characterValues = new ContentValues();
-    		characterValues.put("_id", id);
+    		characterValues.put("_id", wordId);
     		characterValues.put("CharId", c.intValue());
     		characterValues.put("WordOrder", charNumber);
     		characterValues.put("FlagUserCreated", 1);
@@ -844,26 +879,25 @@ public class DbAdapter {
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
     	return true;
-    	
     }
     
-    public long deleteWord(long id){
+    public boolean deleteWord(String id){
     	Cursor mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, WORDS_ROWID + "=" + id, null,
+                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID}, WORDS_ID + "='" + id + "'", null,
                         null, null, null, null);
     	 if (mCursor == null) {
-             return -1;
+             return false;
          }
     	 
-		 mDb.delete(WORDS_TABLE, WORDS_ROWID + "=" + id, null);
-		 mDb.delete(WORDS_DETAILS_TABLE, "_id = " + id, null);
-		 mDb.delete(WORDTAG_TABLE, "_id="+id, null);
-		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId="+id, null);
-		 mDb.delete(WORDKEYVALUES_TABLE, WORDS_ROWID + "=" + id, null);
+		 mDb.delete(WORDS_TABLE, WORDS_ID + "='" + id + "'", null);
+		 mDb.delete(WORDS_DETAILS_TABLE, "_id = '" + id + "'", null);
+		 mDb.delete(WORDTAG_TABLE, "_id='"+id+"'", null);
+		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId='"+id+ "'", null);
+		 mDb.delete(WORDKEYVALUES_TABLE, WORDS_ID + "='" + id + "'", null);
     	 
 		 mCursor.close();
 
-		 return id;
+		 return true;
     }       
     
     /**
@@ -875,6 +909,7 @@ public class DbAdapter {
      */
     public List<String> getCharacterTags(long charId) throws SQLException {
         //TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
+    	//TODO: that would solve the duplicate code problem, but create the ugly switch case problem (Angela)
         Cursor mCursor =
             mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_TAG}, CHARTAG_ROWID + "=" + charId, null,
                     null, null, "sort ASC", null);
@@ -904,7 +939,7 @@ public class DbAdapter {
      * @return Map of (Key,Value) pairs, or null if the given item is not supported.
      * @throws SQLException if the item could not be found/retrieved
      */
-    public LinkedHashMap<String, String> getKeyValues(long itemId, 
+    public LinkedHashMap<String, String> getKeyValues(long itemId, String stringId, 
             LessonItem.ItemType itemType) throws SQLException {
     	String table = ""; 
     	String keyColumn = ""; 
@@ -923,35 +958,42 @@ public class DbAdapter {
     		table = WORDKEYVALUES_TABLE;
     		keyColumn = WORDKEYVALUES_KEY;
     		valueColumn = WORDKEYVALUES_VALUE;
-    		rowId = WORDTAG_ROWID;
+    		rowId = WORDTAG_ID;
     		break;
     	default:
     		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
     		return null;
     	}
-    	
-        Cursor mCursor =
-            mDb.query(true, table, new String[] {keyColumn, valueColumn}, rowId + "=" + itemId, null,
-                    null, null, orderBy, null);
-        LinkedHashMap<String, String> keyValues = new LinkedHashMap<String, String>();
-        if (mCursor != null) {
-            mCursor.moveToFirst();
-        }
-        do {
-        	if(mCursor.getCount()==0){
-        		break;
-        	}
-        	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(keyColumn)),
-                              mCursor.getString(mCursor.getColumnIndexOrThrow(valueColumn)));
-        }
-        while(mCursor.moveToNext());
-        mCursor.close();
-
-        return keyValues;
+    	Cursor mCursor;
+    	if(itemType == ItemType.CHARACTER){
+	        mCursor =
+	            mDb.query(true, table, new String[] {keyColumn, valueColumn}, rowId + "=" + itemId, null,
+	                    null, null, orderBy, null);
+    	}
+    	else{
+	        mCursor =
+		            mDb.query(true, table, new String[] {keyColumn, valueColumn}, rowId + "='" + stringId + "'", null,
+		                    null, null, orderBy, null);
+    	}
+	        LinkedHashMap<String, String> keyValues = new LinkedHashMap<String, String>();
+	        if (mCursor != null) {
+	            mCursor.moveToFirst();
+	        }
+	        do {
+	        	if(mCursor.getCount()==0){
+	        		break;
+	        	}
+	        	keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(keyColumn)),
+	                              mCursor.getString(mCursor.getColumnIndexOrThrow(valueColumn)));
+	        }
+	        while(mCursor.moveToNext());
+	        mCursor.close();
+	
+	        return keyValues;
     }    
     
     /**
-     * Return a Cursor positioned at the character that matches the partial tag
+     * Return a Cursor positioned at the item that matches the partial tag
      * if the tag is more than 2 chars, or the entire tag for 1 or 2 chars.
      * 
      * @param tag text of tag to match
@@ -973,10 +1015,10 @@ public class DbAdapter {
         		break;
         	case WORD:
         		tagsTable = WORDTAG_TABLE;
-        		tagsTableID = WORDTAG_ROWID;
+        		tagsTableID = WORDTAG_ID;
         		tagsTableTag = WORDTAG_TAG;
         		idTable = WORDKEYVALUES_TABLE;
-        		idTableID = WORDKEYVALUES_ROWID;
+        		idTableID = WORDKEYVALUES_ID;
         		idTableValue = WORDKEYVALUES_VALUE;
         		break;
         	default:
@@ -1061,11 +1103,11 @@ public class DbAdapter {
      * @return List of tags
      * @throws SQLException if word could not be found/retrieved
      */
-    public List<String> getWordTags(long wordId) throws SQLException {
+    public List<String> getWordTags(String wordId) throws SQLException {
     	//TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
         Cursor mCursor =
 
-            mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_TAG}, WORDTAG_ROWID + "=" + wordId, null,
+            mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_TAG}, WORDTAG_ID + "='" + wordId + "'", null,
                     null, null, "sort ASC", null);
         List<String> tags = new ArrayList<String>();
         if (mCursor != null) {
@@ -1085,17 +1127,17 @@ public class DbAdapter {
     }
     
     /**
-     * Return a Cursor positioned at the word that matches the given tag
+     * Return a Cursor positioned at the words that matches the given tag
      * 
      * @param tag text of tag to match
-     * @return Cursor positioned to matching word, if found
+     * @return Cursor positioned to matching words, if found
      * @throws SQLException if word could not be found/retrieved
      */
     public Cursor getWords(String tag) throws SQLException {
 
         Cursor mCursor =
-            mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_ROWID}, WORDTAG_TAG + "='" + tag+"'", null,
-                    null, null, WORDTAG_ROWID + " ASC", null);
+            mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_ID}, WORDTAG_TAG + "='" + tag+"'", null,
+                    null, null, null, null);
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -1147,11 +1189,11 @@ public class DbAdapter {
      * Return a list of word ids from the database
      * @return ids list of all word ids
      */
-    public List<Long> getAllWordIds() {
+    public List<String> getAllWordIds() {
         Cursor mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ROWID}, null, null,
-                        null, null, WORDS_ROWID+" ASC", null);
-        List<Long> ids = new ArrayList<Long>();
+                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID}, null, null,
+                        null, null, null, null);
+        List<String> ids = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
         }
@@ -1159,7 +1201,7 @@ public class DbAdapter {
             if(mCursor.getCount()==0){
                 break;
             }
-            ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow(WORDS_ROWID)));
+            ids.add(mCursor.getString(mCursor.getColumnIndexOrThrow(WORDS_ID)));
         }
         while(mCursor.moveToNext());
         mCursor.close();
@@ -1188,11 +1230,11 @@ public class DbAdapter {
     }
     
     /*
-     * returns the rowid of the word in table LESSONS_DETAILS_TABLE after being inserted
+     * returns theid of the word in table LESSONS_DETAILS_TABLE after being inserted
      * perhaps the return value should be changed, artifact of once using rowids for all ids
      */
     //TODO what if two lessons have the same name? should use lesson ID instead
-    public long addWordToLesson(String lessonName, long wordId){
+    public String addWordToLesson(String lessonName, String wordId){
     	mDb.beginTransaction();
     	// Find the lesson
     	Cursor x = mDb.query(LESSONS_TABLE, new String[]{"_id"}, "name='"+lessonName+"'", null, null, null, null, null);
@@ -1200,7 +1242,7 @@ public class DbAdapter {
             x.moveToFirst();
         }
     	else{
-    		return -1;
+    		return null;
     	}
     	String lessonId = x.getString(x.getColumnIndexOrThrow("_id"));
         x.close();
@@ -1226,9 +1268,10 @@ public class DbAdapter {
     	values.put("WordId", wordId);
     	values.put("LessonOrder", lessonOrder + 1);
     	long ret = mDb.insert(LESSONS_DETAILS_TABLE, null, values);
+    	//TODO check for errors on insert
     	mDb.setTransactionSuccessful();
     	mDb.endTransaction();
-    	return ret;
+    	return wordId;
     }
     
     /**
@@ -1239,7 +1282,7 @@ public class DbAdapter {
     public boolean addLesson(Lesson les)
     {
     	mDb.beginTransaction();
-    	//add to WORDS_TABLE
+    	//add to LESSON_TABLE
     	ContentValues initialLessonValues = new ContentValues();
     	String id = "";
     	if (les.getStringId() != null) { // id already initialized, keep it
@@ -1264,10 +1307,10 @@ public class DbAdapter {
     	les.setStringId(id);
 
     	//add each word to LESSONS_DETAILS_TABLE
-    	List<Long> l = les.getWordIds();
+    	List<String> l = les.getWordIds();
     	//word ordering
     	int wordNumber = 0;
-    	for(Long wordId:l)
+    	for(String wordId:l)
     	{
     		ContentValues lessonValues = new ContentValues();
     		lessonValues.put("LessonId", id);
@@ -1291,11 +1334,11 @@ public class DbAdapter {
     	return true;
     }
     
-    public List<Long> getWordsFromLessonId(String id){
+    public List<String> getWordsFromLessonId(String id){
     	Cursor mCursor =
     			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId='" + id + "'", null,
     					null, null, "LessonOrder ASC", null);
-    	List<Long> ids = new ArrayList<Long>();
+    	List<String> ids = new ArrayList<String>();
     	if (mCursor != null) {
     		mCursor.moveToFirst();
     	}
@@ -1303,7 +1346,7 @@ public class DbAdapter {
     		if(mCursor.getCount()==0){
     			break;
     		}
-    		ids.add(mCursor.getLong(mCursor.getColumnIndexOrThrow("WordId")));
+    		ids.add(mCursor.getString(mCursor.getColumnIndexOrThrow("WordId")));
     	}
     	while(mCursor.moveToNext());
         mCursor.close();
@@ -1391,7 +1434,7 @@ public class DbAdapter {
     		if(mCursor.getCount()==0){
     			break;
     		}
-    		long wordId = mCursor.getLong(mCursor.getColumnIndexOrThrow("WordId"));
+    		String wordId = mCursor.getString(mCursor.getColumnIndexOrThrow("WordId"));
     		Log.i("LOAD", "Word: " + wordId);
     		le.addWord(wordId);
     	} while(mCursor.moveToNext());
@@ -1448,24 +1491,24 @@ public class DbAdapter {
      * @param bSort sort value of second word
      * @return true if the transaction was successful, false otherwise
      */
-    public boolean swapWords(long aId, double aSort, long bId, double bSort) {
+    public boolean swapWords(String aId, double aSort, String bId, double bSort) {
         mDb.beginTransaction();
         ContentValues aValues = new ContentValues();
         ContentValues bValues = new ContentValues();
-        aValues.put(WORDS_ROWID, aId);
-        bValues.put(WORDS_ROWID, bId);
+        aValues.put(WORDS_ID, aId);
+        bValues.put(WORDS_ID, bId);
         aValues.put("sort", bSort);
         bValues.put("sort", aSort);
-        Log.e("Swapping positions", aId + " and " + bId);
+        Log.d("Swapping positions", aId + " and " + bId);
         
         int result;
-        result = mDb.update(WORDS_TABLE, aValues, WORDS_ROWID + "=" + aId, null);
+        result = mDb.update(WORDS_TABLE, aValues, WORDS_ID + "='" + aId + "'", null);
         if (result != 1) {
             Log.e(WORDS_TABLE, "id " + aId + ": write failed");
             mDb.endTransaction();
             return false;
         }
-        result = mDb.update(WORDS_TABLE, bValues, WORDS_ROWID + "=" + bId, null);
+        result = mDb.update(WORDS_TABLE, bValues, WORDS_ID + "='" + bId + "'", null);
         if (result != 1) {
             Log.e(WORDS_TABLE, "id " + bId + ": write failed");
             mDb.endTransaction();
@@ -1483,7 +1526,7 @@ public class DbAdapter {
      * @param bId the second word ID
      * @return true if the transaction was successful, false otherwise
      */
-    public boolean swapWordsInLesson(String lessonId, long aId, long bId) {
+    public boolean swapWordsInLesson(String lessonId, String aId, String bId) {
         String wordCol  = "WordId";
         String lesCol   = "LessonId";
         String orderCol = "LessonOrder";
@@ -1492,14 +1535,14 @@ public class DbAdapter {
         int aSort = 0, bSort = 0;
         Cursor cur = mDb.query(true, LESSONS_DETAILS_TABLE, 
                                new String[] {wordCol, orderCol}, 
-                               lesCol + "='" + lessonId + "' AND (" + wordCol + "=" + aId + " OR " + wordCol + "=" + bId + ")", 
+                               lesCol + "='" + lessonId + "' AND (" + wordCol + "='" + aId + "' OR " + wordCol + "='" + bId + "')", 
                                null, null, null, null, null);
         cur.moveToFirst();
         if (cur.getCount() != 2) {
             Log.e("Swapping positions", "Could not find words in " + LESSONS_DETAILS_TABLE);
             return false;
         }
-        if (cur.getInt(cur.getColumnIndexOrThrow(wordCol)) == aId) {
+        if (cur.getString(cur.getColumnIndexOrThrow(wordCol)).equals(aId)) {
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
             cur.moveToNext();
             bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
@@ -1508,7 +1551,7 @@ public class DbAdapter {
             cur.moveToNext();
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
         }
-        
+        cur.close();
         // insert new values
         mDb.beginTransaction();
         ContentValues aValues = new ContentValues();
@@ -1524,7 +1567,7 @@ public class DbAdapter {
         // update database
         int result;
         result = mDb.update(LESSONS_DETAILS_TABLE, aValues, 
-                            lesCol + "='" + lessonId + "' AND " + wordCol + "=" + aId, 
+                            lesCol + "='" + lessonId + "' AND " + wordCol + "='" + aId + "'", 
                             null);
         if (result != 1) {
             Log.e(LESSONS_DETAILS_TABLE, "id " + aId + ": write failed");
@@ -1532,7 +1575,7 @@ public class DbAdapter {
             return false;
         }
         result = mDb.update(LESSONS_DETAILS_TABLE, bValues, 
-                            lesCol + "='" + lessonId + "' AND " + wordCol + "=" + bId, 
+                            lesCol + "='" + lessonId + "' AND " + wordCol + "='" + bId + "'", 
                             null);
         if (result != 1) {
             Log.e(LESSONS_DETAILS_TABLE, "id " + bId + ": write failed");
@@ -1553,7 +1596,7 @@ public class DbAdapter {
      * @param b the second tag
      * @return
      */
-    public boolean swapTags(String table, long id, String a, String b) {
+    public boolean swapTags1(String table, long id, String a, String b) {
         String idCol    = "_id";
         String tagCol   = "tag";
         String orderCol = "sort";
@@ -1578,7 +1621,7 @@ public class DbAdapter {
             cur.moveToNext();
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
         }
-        
+        cur.close();
         // insert new values
         mDb.beginTransaction();
         ContentValues aValues = new ContentValues();
@@ -1694,7 +1737,7 @@ public class DbAdapter {
      * @param bKey the second key
      * @return
      */
-    public boolean swapKeyValues(String table, long id, String aKey,
+    public boolean swapKeyValues1(String table, long id, String aKey,
                                  String bKey) {
         String idCol    = "_id";
         String keyCol   = "key";
@@ -1725,7 +1768,7 @@ public class DbAdapter {
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
             aVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
         }
-        
+        cur.close();
         // insert new values
         mDb.beginTransaction();
         ContentValues aValues = new ContentValues();
@@ -1763,7 +1806,83 @@ public class DbAdapter {
         mDb.endTransaction();
         return true;
     }
-
+    /**
+     * Swaps the display order of the two IDs for the given item
+     * @param table the table containing the Key-Value pairs
+     * @param id the id of the item associated with the tags
+     * @param aKey the first key
+     * @param bKey the second key
+     * @return
+     */
+    public boolean swapKeyValues2(String table, String id, String aKey,
+                                 String bKey) {
+        String idCol    = "_id";
+        String keyCol   = "key";
+        String valCol   = "value";
+        String orderCol = "sort";
+        
+        // get sorts and values for a and b
+        int aSort = 0, bSort = 0;
+        String aVal = "", bVal = "";
+        Cursor cur = mDb.query(true, table, new String[] {keyCol, valCol, orderCol},
+                               idCol + "='" + id + "' AND (" + keyCol + "='" + aKey + "' OR " + keyCol + "='" + bKey + "')",
+                               null, null, null, null, null);
+        cur.moveToFirst();
+        if (cur.getCount() != 2) {
+            Log.e("Swapping positions", "Could not find keys in " + table);
+            return false;
+        }
+        if (cur.getString(cur.getColumnIndexOrThrow(keyCol)).equals(aKey)) {
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            aVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+            cur.moveToNext();
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            bVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+        } else { // key B is first
+            bSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            bVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+            cur.moveToNext();
+            aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
+            aVal = cur.getString(cur.getColumnIndexOrThrow(valCol));
+        }
+        cur.close();
+        // insert new values
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(idCol, id);
+        bValues.put(idCol, id);
+        aValues.put(keyCol, aKey);
+        bValues.put(keyCol, bKey);
+        aValues.put(valCol, aVal);
+        bValues.put(valCol, bVal);
+        aValues.put(orderCol, bSort);
+        bValues.put(orderCol, aSort);
+        Log.e("Swapping positions", aKey + " and " + bKey + " in table " + table + " item " + id);
+        
+        // update database
+        int result;
+        result = mDb.update(table,
+                            aValues, idCol + "='" + id + "' AND " + keyCol + "='" + aKey + "'",
+                            null);
+        if (result != 1) {
+            Log.e(table, "id " + id + " key " + aKey + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(table,
+                            bValues, idCol + "='" + id + "' AND " + keyCol + "='" + bKey + "'",
+                            null);
+        if (result != 1) {
+            Log.e(table, "id " + id + " key " + bKey + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
    
     /*private void initializeUniqueId(LessonItem i, ContentValues v)
     {
@@ -1776,7 +1895,7 @@ public class DbAdapter {
 	public String makeUniqueId(){
 		TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
 		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
-		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmss");
+		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSSZ");
 		String sDate = dtFmt.format(new Date());
 		Log.d("uniqueID", sIMEI + "_" + sDate); // testing + exceed the maximum of long int
 		

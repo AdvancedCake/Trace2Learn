@@ -104,7 +104,7 @@ public class TagActivity extends Activity {
         case WORD:
             currentKeys = new ArrayList<String>();
             currentKeyVals = new ArrayList<String>();
-            keyValMap = mDbHelper.getKeyValues(id, type);
+            keyValMap = mDbHelper.getKeyValues(-1, stringid, type);
             for(Map.Entry<String, String> entry : keyValMap.entrySet()) {
                 String k = entry.getKey();
                 String v = entry.getValue();
@@ -126,7 +126,7 @@ public class TagActivity extends Activity {
                 currentTags = mDbHelper.getCharacterTags(id);
                 break;
             case WORD:
-                currentTags = mDbHelper.getWordTags(id);
+                currentTags = mDbHelper.getWordTags(stringid);
                 break;
             case LESSON:
                 currentTags = mDbHelper.getLessonTags(stringid);
@@ -183,7 +183,7 @@ public class TagActivity extends Activity {
             {
                 case CHARACTER:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, null,
                                 type, currentKeys.get(position));
                     }
                     else {
@@ -193,11 +193,11 @@ public class TagActivity extends Activity {
                     break;
                 case WORD:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(-1, stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(stringid,
                                 selectedItem);
                     }
                     break;
@@ -277,7 +277,7 @@ public class TagActivity extends Activity {
                 String key   = currentKeys.get(position);
                 String other = currentKeys.get(otherPos);
                 
-                result = mDbHelper.swapKeyValues(table, id, key, other);
+                result = mDbHelper.swapKeyValues2(table, stringid, key, other);
                 
                 Log.e("Move result", Boolean.toString(result));
                 if (!result) {
@@ -329,9 +329,9 @@ public class TagActivity extends Activity {
                 String other = currentTags.get(otherPos);
                 switch(type){
                 	case CHARACTER:
-                	case WORD:
-                		result = mDbHelper.swapTags(table, id, tag, other);
+                		result = mDbHelper.swapTags1(table, id, tag, other);
                 		break;
+                	case WORD:
                 	case LESSON:
                 		result = mDbHelper.swapTags(table, stringid, tag, other);
                 		break;
@@ -411,7 +411,7 @@ public class TagActivity extends Activity {
                     mDbHelper.createTags(id, input);
                     break;
                 case WORD:
-                    mDbHelper.createWordTags(id, input);
+                    mDbHelper.createWordTags(stringid, input);
                     break;
                 case LESSON:
                     mDbHelper.createLessonTags(stringid, input);
@@ -445,10 +445,21 @@ public class TagActivity extends Activity {
                 return;
             }
 
-            if (type == ItemType.CHARACTER
-                    || type == ItemType.WORD)
+            if (type == ItemType.CHARACTER)
             {
-                mDbHelper.createKeyValue(id, type, keyInput, valueInput);
+                mDbHelper.createKeyValue(id, null, type, keyInput, valueInput);
+                // added it to db
+                keyValMap.put(keyInput, valueInput);
+                currentKeys.add(keyInput);
+                currentKeyVals.add(keyInput + ": " + valueInput);
+                viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
+                adapter.notifyDataSetChanged();
+                keyEntry.setText("");			
+                valueEntry.setText("");
+                isChanged = true;
+            }
+            else if(type == ItemType.WORD){
+                mDbHelper.createKeyValue(-1, stringid, type, keyInput, valueInput);
                 // added it to db
                 keyValMap.put(keyInput, valueInput);
                 currentKeys.add(keyInput);

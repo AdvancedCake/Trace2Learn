@@ -161,7 +161,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 			_tags = db.getCharacterTags(_id);
 			break;
 		case WORD:
-			_tags = db.getWordTags(_id);
+			_tags = db.getWordTags(_stringid);
 			break;
 		case LESSON:
 			_tags = db.getLessonTags(_stringid);
@@ -177,8 +177,10 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		switch(_type)
 		{
 		case CHARACTER:
+			_keyValues = db.getKeyValues(_id, null, _type);
+			break;
 		case WORD:
-			_keyValues = db.getKeyValues(_id, _type);
+			_keyValues = db.getKeyValues(-1, _stringid, _type);
 			break;
 		case LESSON:
 			Log.e(logTAG, "(Key, Value) pairs are NOT supported for LESSON");

@@ -12,31 +12,31 @@ import android.util.Log;
 
 public class Lesson extends LessonItem {
 	
-	private List<Long> _words; // list of word IDs
+	private List<String> _words; // list of word IDs
 	private String name; // lesson name
 	private List<LessonWord> wordObjects;
 
 	public Lesson(){
 		_type = ItemType.LESSON;
-		_words = new ArrayList<Long>();
+		_words = new ArrayList<String>();
 	}
 	
-	public Lesson(long id)
+	public Lesson(String id)
 	{
 		this();
-		_id = id;
+		_stringid = id;
 	}	
 
-	public synchronized void addWord(Long word){
+	public synchronized void addWord(String word){
 		_words.add(word);
 	}
 
-	public synchronized List<Long> getWordIds(){
-		return new ArrayList<Long>(_words);
+	public synchronized List<String> getWordIds(){
+		return new ArrayList<String>(_words);
 	}
 
-	public synchronized long getWordId(int i){
-		return _words.get(i).longValue();
+	public synchronized String getWordId(int i){
+		return _words.get(i);
 	}
 	
 	public synchronized int getNumWords() {
@@ -62,7 +62,7 @@ public class Lesson extends LessonItem {
 	public synchronized List<LessonItem> getWords()
 	{
 		ArrayList<LessonItem> words = new ArrayList<LessonItem>(_words.size());
-		for(Long id : _words)
+		for(String id : _words)
 		{
 			if(_db == null)
 			{
@@ -83,12 +83,12 @@ public class Lesson extends LessonItem {
 		return _words.size();
 	}
 
-	public synchronized boolean removeWord(Long word){
+	public synchronized boolean removeWord(String word){
 		return _words.remove(word);
 	}
 
-	public synchronized long removeWord(int i){
-		return _words.remove(i).longValue();
+	public synchronized String removeWord(int i){
+		return _words.remove(i);
 	}
 
 	public synchronized void clearWords(){
@@ -163,7 +163,7 @@ public class Lesson extends LessonItem {
 
 		synchronized (_words) {
 			int word_position = 0;
-			for (long word_id : _words) {
+			for (String word_id : _words) {
 				if (_db == null) {
 					Log.d("Lesson.toXml()", "_db is null");
 					return null;
@@ -203,7 +203,7 @@ public class Lesson extends LessonItem {
             lesson.wordObjects = new ArrayList<LessonWord>(words.getLength());
             for (int i = 0; i < words.getLength(); i++) {
                 LessonWord word = LessonWord.importFromXml((Element) words.item(i));
-                long word_id = word.getId();
+                String word_id = word.getStringId();
                 lesson.addWord(word_id);
                 lesson.wordObjects.add(word);
                 Log.i("Import Lesson", "  word: " + word_id);

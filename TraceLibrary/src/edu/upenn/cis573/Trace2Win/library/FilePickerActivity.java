@@ -137,7 +137,7 @@ public class FilePickerActivity extends ListActivity {
                     // add all of the words
                     List<LessonWord> words = lesson.getWordObjects();
                     for (LessonWord word : words) {
-                        if (dba.getWordById(word.getId()) == null) {
+                        if (dba.getWordById(word.getStringId()) == null) {
                             dba.addWord(word);
                         }
                     }
