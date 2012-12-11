@@ -166,7 +166,7 @@ public class PhrasePracticeActivity extends Activity {
 		setSelectedCharacter(0);
 	}
 
-	private void setCharacterList(List<Long> ids)
+	private void setCharacterList(List<String> ids)
 	{
 		_characters.clear();
 		_bitmaps.clear();
@@ -174,7 +174,7 @@ public class PhrasePracticeActivity extends Activity {
 		_playbackPanes.clear();
 		_traceLayouts.clear();
 		_displayLayouts.clear();
-		for(long id : ids)
+		for(String id : ids)
 		{
 			LessonCharacter ch = _dbHelper.getCharacterById(id);
 			Bitmap bmp = BitmapFactory.buildBitmap(ch, 64, 64);

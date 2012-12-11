@@ -14,11 +14,11 @@ import android.util.Log;
 
 public class LessonWord extends LessonItem {
 	
-	private List<Long> _characters;
+	private List<String> _characters;
 	
 	public LessonWord(){
 		_type = ItemType.WORD;
-		_characters = new ArrayList<Long>();
+		_characters = new ArrayList<String>();
 	}
 	
 	public LessonWord(String id)
@@ -28,16 +28,16 @@ public class LessonWord extends LessonItem {
 	}		
 	
 	//takes the id of a character, adds the id to internal characterid list
-	public void addCharacter(Long character){
+	public void addCharacter(String character){
 		_characters.add(character);
 	}
 	
-	public List<Long> getCharacterIds(){
-		return new ArrayList<Long>(_characters);
+	public List<String> getCharacterIds(){
+		return new ArrayList<String>(_characters);
 	}
 	
-	public long getCharacterId(int i){
-		return _characters.get(i).longValue();
+	public String getCharacterId(int i){
+		return _characters.get(i);
 	}
 	
 	/**
@@ -47,7 +47,7 @@ public class LessonWord extends LessonItem {
 	public List<LessonCharacter> getCharacters()
 	{
 		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_characters.size());
-		for(Long id : _characters)
+		for(String id : _characters)
 		{
 			if(_db == null) 
 			{
@@ -68,12 +68,12 @@ public class LessonWord extends LessonItem {
 		return _characters.size();
 	}
 	
-	public boolean removeCharacter(Long character){
+	public boolean removeCharacter(String character){
 		return _characters.remove(character);
 	}
 	
-	public long removeCharacter(int i){
-		return _characters.remove(i).longValue();
+	public String removeCharacter(int i){
+		return _characters.remove(i);
 	}
 	
 	public void clearCharacters(){
@@ -115,7 +115,7 @@ public class LessonWord extends LessonItem {
 	{
 		int i = 0;
 		float charWidth = width/length();
-		for(Long id : _characters)
+		for(String id : _characters)
 		{
 			LessonCharacter character;
 			if(_db == null)
@@ -199,14 +199,14 @@ public class LessonWord extends LessonItem {
             }
             
             NodeList chars = elem.getElementsByTagName("character");
-            Long[] charArr = new Long[chars.getLength()];
+            String[] charArr = new String[chars.getLength()];
             for (int i = 0; i < chars.getLength(); i++) {
                 Element charElem = (Element) chars.item(i);
                 int position = Integer.parseInt(charElem.getAttribute("position"));
-                long charId = Integer.parseInt(charElem.getAttribute("id"));
+                String charId = charElem.getAttribute("id");
                 charArr[position] = charId;
             }
-            w._characters = new ArrayList<Long>(Arrays.asList(charArr));
+            w._characters = new ArrayList<String>(Arrays.asList(charArr));
 
             return w;
         } catch (Exception e) {

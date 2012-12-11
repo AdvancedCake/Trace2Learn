@@ -112,7 +112,7 @@ public class FilePickerActivity extends ListActivity {
             // only want direct children
             if (e.getParentNode().getNodeName().equals("ttw")) {
                 LessonCharacter character = LessonCharacter.importFromXml(e);
-                if (dba.getCharacterById(character.getId()) == null) {
+                if (dba.getCharacterById(character.getStringId()) == null) {
                     dba.addCharacter(character);
                 }
             }

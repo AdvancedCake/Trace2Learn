@@ -10,7 +10,6 @@ public class LessonItemTest extends AndroidTestCase {
 
 	static public void compareLessonItem(LessonItem expected, LessonItem actual)
 	{
-		assertEquals(expected.getId(), actual.getId());
 		assertEquals(expected.getStringId(), actual.getStringId());
 		assertEquals(expected.getKeyValues(), actual.getKeyValues());
 		assertEquals(expected.getSort(), actual.getSort());

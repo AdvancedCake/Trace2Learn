@@ -44,7 +44,6 @@ public class TagActivity extends Activity {
     private Button addIdButton;
 
     //Variables
-    private long id; // item ID
     private String stringid; //stringID
     private Map<String, String> keyValMap;
     private List<String> currentKeys;
@@ -61,7 +60,6 @@ public class TagActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         //Grab the intent/extras. This should be called from CharacterCreation
-        id = this.getIntent().getLongExtra("ID", -1); 
         stringid = this.getIntent().getStringExtra("ID");
         type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));        
 
@@ -92,7 +90,7 @@ public class TagActivity extends Activity {
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();     
 
-        Log.e("ID",Long.toString(id));
+        Log.e("ID",stringid);
         Log.e("TYPE",type.toString());
         
         
@@ -104,7 +102,7 @@ public class TagActivity extends Activity {
         case WORD:
             currentKeys = new ArrayList<String>();
             currentKeyVals = new ArrayList<String>();
-            keyValMap = mDbHelper.getKeyValues(-1, stringid, type);
+            keyValMap = mDbHelper.getKeyValues(stringid, type);
             for(Map.Entry<String, String> entry : keyValMap.entrySet()) {
                 String k = entry.getKey();
                 String v = entry.getValue();
@@ -123,7 +121,7 @@ public class TagActivity extends Activity {
         switch(type)
         {
             case CHARACTER:
-                currentTags = mDbHelper.getCharacterTags(id);
+                currentTags = mDbHelper.getCharacterTags(stringid);
                 break;
             case WORD:
                 currentTags = mDbHelper.getWordTags(stringid);
@@ -183,17 +181,17 @@ public class TagActivity extends Activity {
             {
                 case CHARACTER:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id, null,
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteTag(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteCharTag(stringid,
                                 selectedItem);
                     }
                     break;
                 case WORD:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(-1, stringid,
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
@@ -329,8 +327,6 @@ public class TagActivity extends Activity {
                 String other = currentTags.get(otherPos);
                 switch(type){
                 	case CHARACTER:
-                		result = mDbHelper.swapTags1(table, id, tag, other);
-                		break;
                 	case WORD:
                 	case LESSON:
                 		result = mDbHelper.swapTags(table, stringid, tag, other);
@@ -408,7 +404,7 @@ public class TagActivity extends Activity {
             switch(type)
             {
                 case CHARACTER:
-                    mDbHelper.createTags(id, input);
+                    mDbHelper.createCharTags(stringid, input);
                     break;
                 case WORD:
                     mDbHelper.createWordTags(stringid, input);
@@ -445,31 +441,16 @@ public class TagActivity extends Activity {
                 return;
             }
 
-            if (type == ItemType.CHARACTER)
-            {
-                mDbHelper.createKeyValue(id, null, type, keyInput, valueInput);
-                // added it to db
-                keyValMap.put(keyInput, valueInput);
-                currentKeys.add(keyInput);
-                currentKeyVals.add(keyInput + ": " + valueInput);
-                viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
-                adapter.notifyDataSetChanged();
-                keyEntry.setText("");			
-                valueEntry.setText("");
-                isChanged = true;
-            }
-            else if(type == ItemType.WORD){
-                mDbHelper.createKeyValue(-1, stringid, type, keyInput, valueInput);
-                // added it to db
-                keyValMap.put(keyInput, valueInput);
-                currentKeys.add(keyInput);
-                currentKeyVals.add(keyInput + ": " + valueInput);
-                viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
-                adapter.notifyDataSetChanged();
-                keyEntry.setText("");			
-                valueEntry.setText("");
-                isChanged = true;
-            }
+            mDbHelper.createKeyValue(stringid, type, keyInput, valueInput);
+            // added it to db
+            keyValMap.put(keyInput, valueInput);
+            currentKeys.add(keyInput);
+            currentKeyVals.add(keyInput + ": " + valueInput);
+            viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
+            adapter.notifyDataSetChanged();
+            keyEntry.setText("");			
+            valueEntry.setText("");
+            isChanged = true;
         }
     }
     

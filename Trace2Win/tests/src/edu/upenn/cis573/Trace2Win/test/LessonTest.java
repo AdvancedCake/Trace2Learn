@@ -42,10 +42,10 @@ public class LessonTest extends AndroidTestCase {
 		db.open();
 		
 		c1 = new LessonCharacter();
-		c1.setId(1);
+		c1.setStringId("1");
 		db.addCharacter(c1);
 		c2 = new LessonCharacter();
-		c2.setId(2);		
+		c2.setStringId("2");		
 		db.addCharacter(c2);
 		
 		w1 = new LessonWord();
@@ -82,8 +82,8 @@ public class LessonTest extends AndroidTestCase {
 		word1.addTag("English");
 		word1.addTag("Color");
 		word1.addKeyValue("Word", "Red");
-		word1.addCharacter((long) 1234);
-		word1.addCharacter((long) 1234);
+		word1.addCharacter("1234");
+		word1.addCharacter("1234");
 		db.addWord(word1);
 		
 		LessonWord word1_db = db.getWordById("id1");
@@ -93,8 +93,8 @@ public class LessonTest extends AndroidTestCase {
 		word2.addTag("English");
 		word2.addTag("Color");
 		word2.addKeyValue("Word", "Blue");
-		word2.addCharacter((long) 1235);
-		word2.addCharacter((long) 1234);
+		word2.addCharacter("1235");
+		word2.addCharacter("1234");
 		db.addWord(word2);		
 		
 		
@@ -148,15 +148,15 @@ public class LessonTest extends AndroidTestCase {
 		word1.addTag("English");
 		word1.addTag("Color");
 		word1.addKeyValue("Word", "Red");
-		word1.addCharacter((long) 1234);
-		word1.addCharacter((long) 1234);
+		word1.addCharacter("1234");
+		word1.addCharacter("1234");
 		
 		LessonWord word2 = new LessonWord("901");
 		word2.addTag("English");
 		word2.addTag("Color");
 		word2.addKeyValue("Word", "Blue");
-		word2.addCharacter((long) 1235);
-		word2.addCharacter((long) 1234);		
+		word2.addCharacter("1235");
+		word2.addCharacter("1234");		
 		
 	    Lesson lesson = new Lesson();
 	    lesson.setStringId("unique_lesson_id");

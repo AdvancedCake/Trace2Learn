@@ -23,7 +23,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected LinkedHashMap<String, String> _keyValues;
 	
 	/** The id of the item */
-	protected long _id; // TODO remove this when string IDs are working.
+	//protected long _id; // TODO remove this when string IDs are working.
 	
 	/** The stringid of the item */
 	protected String _stringid;
@@ -49,7 +49,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	
 	protected LessonItem()
 	{
-		_id = -1;
 		_stringid = null;
 		_tags = new ArrayList<String>();
 		_keyValues = new LinkedHashMap<String, String>();
@@ -77,7 +76,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	 */
 	protected boolean update()
 	{
-		if(_db == null || _id < 0) return false;
+		if(_db == null || _stringid == null) return false;
 		if(updateTypeData())
 		{
 			_lastUpdate = new Date();
@@ -103,10 +102,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		return _type;
 	}
 	
-	public void setId(long id)
-	{
-		_id = id;
-	}
 	public void setStringId(String id)
 	{
 		_stringid = id;
@@ -114,11 +109,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	public void setDatabase(DbAdapter db)
 	{
 		_db = db;
-	}
-	
-	public long getId()
-	{
-		return _id;
 	}
 	
 	public String getStringId()
@@ -158,7 +148,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		switch(_type)
 		{
 		case CHARACTER:
-			_tags = db.getCharacterTags(_id);
+			_tags = db.getCharacterTags(_stringid);
 			break;
 		case WORD:
 			_tags = db.getWordTags(_stringid);
@@ -177,10 +167,8 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		switch(_type)
 		{
 		case CHARACTER:
-			_keyValues = db.getKeyValues(_id, null, _type);
-			break;
 		case WORD:
-			_keyValues = db.getKeyValues(-1, _stringid, _type);
+			_keyValues = db.getKeyValues(_stringid, _type);
 			break;
 		case LESSON:
 			Log.e(logTAG, "(Key, Value) pairs are NOT supported for LESSON");

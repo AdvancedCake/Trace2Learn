@@ -38,6 +38,6 @@ public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<Cre
 		getInstrumentation().waitForIdleSync();
 		
 		LessonWord word = activity.getWord();
-		assertEquals(word.getCharacterId(0),((LessonCharacter)list.getItemAtPosition(0)).getId());
+		assertEquals(word.getCharacterId(0),((LessonCharacter)list.getItemAtPosition(0)).getStringId());
 	}
 }
