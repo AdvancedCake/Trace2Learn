@@ -4,15 +4,6 @@
     android:layout_height="match_parent" >
 
     <Button
-        android:id="@+id/cartButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_below="@+id/title"
-        android:onClick="onClickViewCart"
-        android:text="@string/cart" />
-
-    <Button
         android:id="@+id/selectAllButton"
         android:layout_width="96dp"
         android:layout_height="wrap_content"
@@ -75,7 +66,7 @@
         android:id="@+id/exportButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
         android:layout_below="@+id/title"
         android:onClick="onClickExport"
         android:text="@string/export" />

@@ -46,15 +46,10 @@ public class ShoppingCartActivity extends Activity {
     private List<LessonItem> cart;
     private ShoppingCartListAdapter adapter;
     private boolean filtered;
-    private boolean viewingCart;
 
     private ListView list;
     private TextView title;
-    private Button exportButton;
-    private Button cartButton;
     private Button filterButton;
-    private Button selectButton;
-    private Button deselectButton;
     private TextView filterStatus;
 
     private DbAdapter dba;
@@ -69,32 +64,19 @@ public class ShoppingCartActivity extends Activity {
 
         list           = (ListView) findViewById(R.id.list);
         title          = (TextView) findViewById(R.id.title);
-        exportButton   = (Button)   findViewById(R.id.exportButton);
-        cartButton     = (Button)   findViewById(R.id.cartButton);
         filterButton   = (Button)   findViewById(R.id.filterButton);
-        selectButton   = (Button)   findViewById(R.id.selectAllButton);
-        deselectButton = (Button)   findViewById(R.id.deselectAllButton);
         filterStatus   = (TextView) findViewById(R.id.filterStatus);
 
         list.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 LessonItem item = (LessonItem) parent.getItemAtPosition(position);
-                if (viewingCart) {
+                if (cart.contains(item)) {
                     cart.remove(item);
-                    adapter = new ShoppingCartListAdapter(
-                            ShoppingCartActivity.this, cart, vi);
-                    list.setAdapter(adapter);
-                    setCartTitle();
                 } else {
-                    if (cart.contains(item)) {
-                        cart.remove(item);
-                    } else {
-                        cart.add(item);
-                    }
-                    adapter.notifyDataSetChanged();
+                    cart.add(item);
                 }
-                cartButton.setText("Cart: " + cart.size());
+                adapter.notifyDataSetChanged();
             }
         });
 
@@ -106,8 +88,6 @@ public class ShoppingCartActivity extends Activity {
 
         cart        = new ArrayList<LessonItem>();
         filtered    = false;
-        viewingCart = false;
-        exportButton.setVisibility(View.INVISIBLE);
         allChars.setName("All Characters");
         allChars.setStringId("ALL_CHARACTERS");
     }
@@ -198,62 +178,6 @@ public class ShoppingCartActivity extends Activity {
     }
 
     /**
-     * Click handler for "Cart"/"Back" button
-     * @param view The button
-     */
-    public void onClickViewCart(View view) {
-        if (viewingCart) { // go back to list view
-            showList();
-        } else { // go to cart view
-            showCart();
-        }
-        list.setAdapter(adapter);
-    }
-
-    /**
-     * Display the current cart
-     */
-    private void showCart() {
-        viewingCart = true;
-        setCartTitle();
-        cartButton.setText(R.string.back);
-        exportButton.setVisibility(View.VISIBLE);
-        filterButton.setVisibility(View.INVISIBLE);
-        filterStatus.setVisibility(View.INVISIBLE);
-        selectButton.setVisibility(View.INVISIBLE);
-        deselectButton.setVisibility(View.INVISIBLE);
-
-        Collections.sort(cart);
-        adapter = new ShoppingCartListAdapter(this, cart, vi);
-    }
-
-    /**
-     * Display the selection list of items
-     */
-    private void showList() {
-        viewingCart = false;
-        switch (type) {
-            case CHARACTER:
-                title.setText(R.string.instruction_export_chars);
-                break;
-            case WORD:
-                title.setText(R.string.instruction_export_words);
-                break;
-            case LESSON:
-                title.setText(R.string.instruction_export_lessons);
-                break;
-        }
-        cartButton.setText("Cart: " + cart.size());
-        exportButton.setVisibility(View.INVISIBLE);
-        filterButton.setVisibility(View.VISIBLE);
-        filterStatus.setVisibility(View.VISIBLE);
-        selectButton.setVisibility(View.VISIBLE);
-        deselectButton.setVisibility(View.VISIBLE);
-
-        adapter = new ShoppingCartListAdapter(this, display, vi);
-    }
-
-    /**
      * Click handler for "Select All" button
      * @param view The button
      */
@@ -264,7 +188,6 @@ public class ShoppingCartActivity extends Activity {
             }
         }
         adapter.notifyDataSetChanged();
-        cartButton.setText("Cart: " + cart.size());
     }
 
     /**
@@ -278,7 +201,6 @@ public class ShoppingCartActivity extends Activity {
             }
         }
         adapter.notifyDataSetChanged();
-        cartButton.setText("Cart: " + cart.size());
     }
 
     /**
@@ -527,16 +449,6 @@ public class ShoppingCartActivity extends Activity {
             showToast("Error while writing a file to the device!");
             return;
         }
-    }
-    
-    private void setCartTitle() {
-        String t;
-        if (cart.size() == 1) {
-            t = " item in cart";
-        } else {
-            t = " items in cart";
-        }
-        title.setText(cart.size() + t);
     }
 
     /**
