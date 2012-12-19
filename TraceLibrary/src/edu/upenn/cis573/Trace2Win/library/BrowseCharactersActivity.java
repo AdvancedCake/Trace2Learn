@@ -59,9 +59,9 @@ public class BrowseCharactersActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open();
         
-        List<Long> ids = dba.getAllCharIds();
+        List<String> ids = dba.getAllCharIds();
         items = new ArrayList<LessonItem>(ids.size());
-        for(long id : ids){
+        for(String id : ids){
         	LessonItem character = dba.getCharacterById(id);
             items.add(character);
         }
@@ -94,7 +94,7 @@ public class BrowseCharactersActivity extends ListActivity {
 		Bundle bun = new Bundle();
 
 		bun.putString("mode", "trace");
-		bun.putLong("charId", li.getId());
+		bun.putString("charId", li.getStringId());
 
 		intent.setClass(this, ViewCharacterActivity.class);
 		intent.putExtras(bun);
@@ -121,7 +121,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	  // edit tags
 	  if (menuItemIndex == menuItemsInd.EditTags.ordinal()) {
 		  Intent i = new Intent(this, TagActivity.class);
-		  i.putExtra("ID", lc.getId());
+		  i.putExtra("ID", lc.getStringId());
 		  i.putExtra("TYPE", "CHARACTER");
 		  startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
 		  return true;
@@ -129,10 +129,10 @@ public class BrowseCharactersActivity extends ListActivity {
 	  
 	  // delete
 	  else if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
-		  long id = lc.getId();
-		  long result = dba.deleteCharacter(id);
-		  Log.e("Result", Long.toString(result));
-		  if(result < 0){
+		  String id = lc.getStringId();
+		  boolean result = dba.deleteCharacter(id);
+		  Log.d("Result", Boolean.toString(result));
+		  if(result==false){
 			  showToast("Character is used by a word: cannot delete");
 			  return false;
 		  }
@@ -167,8 +167,8 @@ public class BrowseCharactersActivity extends ListActivity {
 	      }
 	      
 	      LessonCharacter other = (LessonCharacter) items.get(otherPos);
-	      boolean result = dba.swapCharacters(lc.getId(), lc.getSort(), 
-	                                          other.getId(), other.getSort());
+	      boolean result = dba.swapCharacters(lc.getStringId(), lc.getSort(), 
+	                                          other.getStringId(), other.getSort());
 	      Log.e("Move result", Boolean.toString(result));
 	      if (result) {
 	          // success, so update the local copy
@@ -240,14 +240,14 @@ public class BrowseCharactersActivity extends ListActivity {
 
                 // Filter action: query for chars and set char list
                 Cursor c = dba.browseByTag(ItemType.CHARACTER, search);
-                List<Long> ids = new LinkedList<Long>();
+                List<String> ids = new LinkedList<String>();
                 do {
                     if (c.getCount() == 0) {
                         Log.d(ACTIVITY_SERVICE, "zero rows");
                         break;
                     }
-                    ids.add(c.getLong(c.getColumnIndexOrThrow(
-                            DbAdapter.CHARTAG_ROWID)));
+                    ids.add(c.getString(c.getColumnIndexOrThrow(
+                            DbAdapter.CHARTAG_ID)));
                 } while (c.moveToNext());
                 c.close();
                 setCharList(ids);
@@ -282,9 +282,9 @@ public class BrowseCharactersActivity extends ListActivity {
     }
     
     // sets the list of items
-    private void setCharList(List<Long> ids) {
+    private void setCharList(List<String> ids) {
         items = new ArrayList<LessonItem>();
-        for(long id : ids) {
+        for(String id : ids) {
             Log.i("Found", "id: "+id);
             LessonItem character;
             try {

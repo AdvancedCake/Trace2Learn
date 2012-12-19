@@ -22,13 +22,13 @@ public class LessonCharacter extends LessonItem {
 	{
 		_type = ItemType.CHARACTER;
 		_strokes = new ArrayList<Stroke>();
-		_id = -1;
+		_stringid = null;
 	}
 	
-	public LessonCharacter(long id)
+	public LessonCharacter(String id)
 	{
 		this();
-		_id = id;
+		_stringid = id;
 	}
 	
 	protected boolean updateTypeData()
@@ -212,7 +212,7 @@ public class LessonCharacter extends LessonItem {
 	 * @return an XML string
 	 */
 	public String toXml() {
-	    String xml = "<character id=\"" + _id + "\">\n";
+	    String xml = "<character id=\"" + _stringid + "\">\n";
 	    
 	    for (String tag : _tags) {
 	        xml += "<tag tag=\"" + tag + "\" />\n";
@@ -243,7 +243,7 @@ public class LessonCharacter extends LessonItem {
         try {
             if (!elem.getNodeName().equals("character")) { return null; }
             
-            long id = Long.parseLong(elem.getAttribute("id"));
+            String id = elem.getAttribute("id");
             Log.i("Import Character", "id: " + id);
             
             LessonCharacter c = new LessonCharacter(id);
@@ -286,7 +286,7 @@ public class LessonCharacter extends LessonItem {
 	        return false;
 	    }
 	    
-	    return ((LessonCharacter) other).getId() == _id;
+	    return ((LessonCharacter) other).getStringId() == _stringid;
 	}
 	
 }

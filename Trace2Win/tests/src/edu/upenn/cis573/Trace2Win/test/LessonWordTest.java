@@ -31,9 +31,9 @@ public class LessonWordTest extends AndroidTestCase {
 		c2 = new LessonCharacter();
 		c3 = new LessonCharacter();
 		
-		c1.setId(1);
-		c2.setId(2);
-		c3.setId(3);
+		c1.setStringId("1");
+		c2.setStringId("2");
+		c3.setStringId("3");
 		
 		db = new DbAdapter(this.getContext());
 		db.open();
@@ -70,33 +70,33 @@ public class LessonWordTest extends AndroidTestCase {
 	public void testOneChar()
 	{
 		LessonWord w = new LessonWord();
-		w.addCharacter(c1.getId());
+		w.addCharacter(c1.getStringId());
 		assertEquals(1,w.getCharacters().size());
-		assertEquals(c1.getId(),w.getCharacterId(0));
-		assertTrue(!w.removeCharacter(c2.getId()));
-		assertTrue(w.removeCharacter(c1.getId()));
-		assertTrue(!w.removeCharacter(c1.getId()));
+		assertEquals(c1.getStringId(),w.getCharacterId(0));
+		assertTrue(!w.removeCharacter(c2.getStringId()));
+		assertTrue(w.removeCharacter(c1.getStringId()));
+		assertTrue(!w.removeCharacter(c1.getStringId()));
 		
-		w.addCharacter(c2.getId());
-		assertEquals(c2.getId(),w.removeCharacter(0));
-		assertTrue(!w.removeCharacter(c2.getId()));
+		w.addCharacter(c2.getStringId());
+		assertEquals(c2.getStringId(),w.removeCharacter(0));
+		assertTrue(!w.removeCharacter(c2.getStringId()));
 		
 	}
 	
 	public void testRemovalByIndex()
 	{
 		LessonWord w = new LessonWord();
-		w.addCharacter(c1.getId());
-		w.addCharacter(c2.getId());
-		w.addCharacter(c2.getId());
-		w.addCharacter(c3.getId());
+		w.addCharacter(c1.getStringId());
+		w.addCharacter(c2.getStringId());
+		w.addCharacter(c2.getStringId());
+		w.addCharacter(c3.getStringId());
 		assertEquals(4,w.getCharacters().size());
 		
-		assertEquals(c3.getId(),w.getCharacterId(3));
-		assertEquals(c2.getId(),w.removeCharacter(1));
-		assertEquals(c3.getId(),w.removeCharacter(2));
-		assertEquals(c1.getId(),w.removeCharacter(0));
-		assertEquals(c2.getId(),w.removeCharacter(0));
+		assertEquals(c3.getStringId(),w.getCharacterId(3));
+		assertEquals(c2.getStringId(),w.removeCharacter(1));
+		assertEquals(c3.getStringId(),w.removeCharacter(2));
+		assertEquals(c1.getStringId(),w.removeCharacter(0));
+		assertEquals(c2.getStringId(),w.removeCharacter(0));
 		assertEquals(0,w.getCharacters().size());
 	}
 
@@ -105,7 +105,7 @@ public class LessonWordTest extends AndroidTestCase {
 		LessonWord w = new LessonWord();
 		w.addTag("Tag1");
 		db.addWord(w);
-		LessonWord w1 = db.getWordById(w.getId());
+		LessonWord w1 = db.getWordById(w.getStringId());
 		compareWords(w, w1);
 	}
 	
@@ -114,7 +114,7 @@ public class LessonWordTest extends AndroidTestCase {
 		LessonWord w = new LessonWord();
 		w.addKeyValue("key1", "value1");
 		db.addWord(w);
-		LessonWord w1 = db.getWordById(w.getId());
+		LessonWord w1 = db.getWordById(w.getStringId());
 		compareWords(w, w1);
 	}	
 	
@@ -139,16 +139,16 @@ public class LessonWordTest extends AndroidTestCase {
 	
 	public void testToXml() {
 	    LessonWord w = new LessonWord();
-	    w.setId(100);
+	    w.setStringId("Foobar");
 	    w.addTag("tag!");
 	    w.addTag("another tag?");
         w.addKeyValue("k1", "v1");
         w.addKeyValue("k2", "v2");
-        w.addCharacter(c1.getId());
-        w.addCharacter(c2.getId());
-        w.addCharacter(c3.getId());
+        w.addCharacter(c1.getStringId());
+        w.addCharacter(c2.getStringId());
+        w.addCharacter(c3.getStringId());
         
-        String exp = "<word id=\"100\">\n" +
+        String exp = "<word id=\"Foobar\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -162,7 +162,7 @@ public class LessonWordTest extends AndroidTestCase {
 	}
 	
     public void testImportFromXml() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"hello\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -174,20 +174,20 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("hello");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
-        exp.addCharacter(c1.getId());
-        exp.addCharacter(c2.getId());
-        exp.addCharacter(c3.getId());
+        exp.addCharacter(c1.getStringId());
+        exp.addCharacter(c2.getStringId());
+        exp.addCharacter(c3.getStringId());
         
         compareWords(exp, LessonWord.importFromXml(elem));
     }
     
     public void testImportFromXmlNoTags() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"myId\">\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
         		"<id key=\"k2\" value=\"v2\" />\n" +
         		"<character id=\"1\" position=\"0\" />\n" +
@@ -197,18 +197,18 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("myId");
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
-        exp.addCharacter(c1.getId());
-        exp.addCharacter(c2.getId());
-        exp.addCharacter(c3.getId());
+        exp.addCharacter(c1.getStringId());
+        exp.addCharacter(c2.getStringId());
+        exp.addCharacter(c3.getStringId());
         
         compareWords(exp, LessonWord.importFromXml(elem));
     }
     
     public void testImportFromXmlNoIds() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"hi\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<character id=\"1\" position=\"0\" />\n" +
@@ -218,18 +218,18 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("hi");
         exp.addTag("tag!");
         exp.addTag("another tag?");
-        exp.addCharacter(c1.getId());
-        exp.addCharacter(c2.getId());
-        exp.addCharacter(c3.getId());
+        exp.addCharacter(c1.getStringId());
+        exp.addCharacter(c2.getStringId());
+        exp.addCharacter(c3.getStringId());
         
         compareWords(exp, LessonWord.importFromXml(elem));
     }
     
     public void testImportFromXmlOneCharacter() throws SAXException, IOException {
-        String xml = "<word id=\"100\">\n" +
+        String xml = "<word id=\"heya\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -239,12 +239,12 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("heya");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
-        exp.addCharacter(c1.getId());
+        exp.addCharacter(c1.getStringId());
         
         compareWords(exp, LessonWord.importFromXml(elem));
     }
@@ -259,7 +259,7 @@ public class LessonWordTest extends AndroidTestCase {
         Element elem = Parser.parse(xml).getDocumentElement();
         
         LessonWord exp = new LessonWord();
-        exp.setId(100);
+        exp.setStringId("100");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");

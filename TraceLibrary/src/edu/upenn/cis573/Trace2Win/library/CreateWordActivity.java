@@ -78,8 +78,8 @@ public class CreateWordActivity extends Activity {
 
         newWord = new LessonWord();
         items = new ArrayList<LessonItem>();
-        List<Long> ids = dba.getAllCharIds();
-        for(long id : ids) {
+        List<String> ids = dba.getAllCharIds();
+        for(String id : ids) {
             LessonItem character = dba.getCharacterById(id);
             //TODO: character.setTagList(dba.getCharacterTags(id)); 
             items.add(character);
@@ -95,7 +95,7 @@ public class CreateWordActivity extends Activity {
     
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                 numChars++;
-                long charId = ((LessonCharacter)charList.getItemAtPosition(position)).getId();
+                String charId = ((LessonCharacter)charList.getItemAtPosition(position)).getStringId();
                 newWord.addCharacter(charId);
                 LessonItem item = (LessonCharacter)charList.getItemAtPosition(position);
                 Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
@@ -138,8 +138,8 @@ public class CreateWordActivity extends Activity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                    String name = ((String)lessonList.getItemAtPosition(position));
                    Log.e("name",name);
-                   long success = dba.addWordToLesson(name, newWord.getId());
-                   Log.e("adding word",Long.toString(success));
+                   String success = dba.addWordToLesson(name, newWord.getStringId());
+                   Log.e("adding word",success);
                    window.dismiss();
                 }
             });
@@ -169,7 +169,7 @@ public class CreateWordActivity extends Activity {
         }
         Lesson lesson = new Lesson();
         lesson.setName(name);
-        lesson.addWord(newWord.getId());
+        lesson.addWord(newWord.getStringId());
         dba.addLesson(lesson);
         window.dismiss();
     }
@@ -194,7 +194,7 @@ public class CreateWordActivity extends Activity {
             return;
         }
         Intent i = new Intent(this, TagActivity.class);
-        i.putExtra("ID", newWord.getId());
+        i.putExtra("ID", newWord.getStringId());
         i.putExtra("TYPE", newWord.getItemType().toString());
         startActivity(i);
     }
@@ -226,14 +226,14 @@ public class CreateWordActivity extends Activity {
                 
                 // Filter action: query for chars and set char list
                 Cursor c = dba.browseByTag(ItemType.CHARACTER, search);
-                List<Long> ids = new LinkedList<Long>();
+                List<String> ids = new LinkedList<String>();
                 do {
                     if (c.getCount() == 0) {
                         Log.d(ACTIVITY_SERVICE, "zero rows");
                         break;
                     }
-                    ids.add(c.getLong(c.getColumnIndexOrThrow(
-                            DbAdapter.CHARTAG_ROWID)));
+                    ids.add(c.getString(c.getColumnIndexOrThrow(
+                            DbAdapter.CHARTAG_ID)));
                 } while (c.moveToNext());
                 c.close();
                 setCharList(ids);
@@ -273,9 +273,9 @@ public class CreateWordActivity extends Activity {
         return newWord;
     }
     
-    private void setCharList(List<Long> ids) {
+    private void setCharList(List<String> ids) {
         items = new ArrayList<LessonItem>();
-        for(long id : ids) {
+        for(String id : ids) {
             Log.i("Found", "id: "+id);
             LessonItem character;
             try {

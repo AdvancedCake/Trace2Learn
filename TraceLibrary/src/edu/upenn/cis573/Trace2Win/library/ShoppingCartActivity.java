@@ -144,9 +144,9 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with characters
      */
     private void getChars() {
-        List<Long> ids = dba.getAllCharIds();
+        List<String> ids = dba.getAllCharIds();
         source = new ArrayList<LessonItem>(ids.size());
-        for (long id : ids) {
+        for (String id : ids) {
             LessonCharacter character = dba.getCharacterById(id);
             source.add(character);
         }
@@ -156,9 +156,9 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with words
      */
     private void getWords() {
-        List<Long> ids = dba.getAllWordIds();
+        List<String> ids = dba.getAllWordIds();
         source = new ArrayList<LessonItem>(ids.size());
-        for(long id : ids){
+        for(String id : ids){
             LessonWord word = dba.getWordById(id);
             source.add(word);
         }
@@ -360,9 +360,9 @@ public class ShoppingCartActivity extends Activity {
                 String xml = "<ttw name=\"" + filename + "\">\n";
                 for (LessonItem item : cart) {
                     if (item == allChars) {
-                        List<Long> ids = dba.getAllCharIds();
+                        List<String> ids = dba.getAllCharIds();
                         source = new ArrayList<LessonItem>(ids.size());
-                        for (long id : ids) {
+                        for (String id : ids) {
                             LessonCharacter character = dba.getCharacterById(id);
                             if (!cart.contains(character) &&
                                     !dependencies.contains(character)) {

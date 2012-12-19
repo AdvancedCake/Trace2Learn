@@ -79,7 +79,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	{
 		LessonCharacter c = new LessonCharacter();
 		db.addCharacter(c);
-		compareCharacters(c, db.getCharacterById(c.getId()));
+		compareCharacters(c, db.getCharacterById(c.getStringId()));
 	}
 	
 	public void testOneStroke()
@@ -104,7 +104,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		db.addCharacter(c);
-		compareCharacters(c, db.getCharacterById(c.getId()));
+		compareCharacters(c, db.getCharacterById(c.getStringId()));
 	}
 	
 	public void testAddStrokeAfterSave()
@@ -112,10 +112,10 @@ public class LessonCharacterTest extends AndroidTestCase {
 		LessonCharacter c = new LessonCharacter();
 		c.addStroke(s1);
 		db.addCharacter(c);
-		compareCharacters(c, db.getCharacterById(c.getId()));
+		compareCharacters(c, db.getCharacterById(c.getStringId()));
 		c.addStroke(s2);
 		db.addCharacter(c);
-		compareCharacters(c, db.getCharacterById(c.getId()));
+		compareCharacters(c, db.getCharacterById(c.getStringId()));
 	}
 	
 	
@@ -184,7 +184,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		LessonCharacter c = new LessonCharacter();
 		c.addTag("Tag1");
 		db.addCharacter(c);
-		LessonCharacter c1 = db.getCharacterById(c.getId());
+		LessonCharacter c1 = db.getCharacterById(c.getStringId());
 		compareCharacters(c, c1);
 	}
 	
@@ -193,7 +193,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 		LessonCharacter c = new LessonCharacter();
 		c.addKeyValue("key1", "value1");
 		db.addCharacter(c);
-		LessonCharacter c1 = db.getCharacterById(c.getId());
+		LessonCharacter c1 = db.getCharacterById(c.getStringId());
 		compareCharacters(c, c1);
 	}	
 	
@@ -217,7 +217,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	}
 	
 	public void testToXml() {
-	    LessonCharacter c = new LessonCharacter(100);
+	    LessonCharacter c = new LessonCharacter("myId");
 	    c.addTag("tag!");
 	    c.addTag("another tag?");
         c.addKeyValue("k1", "v1");
@@ -226,7 +226,7 @@ public class LessonCharacterTest extends AndroidTestCase {
         c.addStroke(s2);
         c.addStroke(s3);
         
-        String exp = "<character id=\"100\">\n" +
+        String exp = "<character id=\"myId\">\n" +
         		"<tag tag=\"tag!\" />\n" +
         		"<tag tag=\"another tag?\" />\n" +
         		"<id key=\"k1\" value=\"v1\" />\n" +
@@ -252,7 +252,7 @@ public class LessonCharacterTest extends AndroidTestCase {
 	}
 	
     public void testImportFromXml() throws SAXException, IOException {
-        String xml = "<character id=\"100\">\n" +
+        String xml = "<character id=\"hai\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
                 "<id key=\"k1\" value=\"v1\" />\n" +
@@ -275,7 +275,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "</character>\n";
         Element elem = Parser.parse(xml).getDocumentElement();
         
-        LessonCharacter exp = new LessonCharacter(100);
+        LessonCharacter exp = new LessonCharacter("hai");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
@@ -288,7 +288,7 @@ public class LessonCharacterTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlNoTags() throws SAXException, IOException {
-        String xml = "<character id=\"100\">\n" +
+        String xml = "<character id=\"hai\">\n" +
                 "<id key=\"k1\" value=\"v1\" />\n" +
                 "<id key=\"k2\" value=\"v2\" />\n" +
                 "<stroke position=\"0\">\n" +
@@ -309,7 +309,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "</character>\n";
         Element elem = Parser.parse(xml).getDocumentElement();
         
-        LessonCharacter exp = new LessonCharacter(100);
+        LessonCharacter exp = new LessonCharacter("hai");
         exp.addKeyValue("k1", "v1");
         exp.addKeyValue("k2", "v2");
         exp.addStroke(s1);
@@ -320,7 +320,7 @@ public class LessonCharacterTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlNoIds() throws SAXException, IOException {
-        String xml = "<character id=\"100\">\n" +
+        String xml = "<character id=\"ello\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
                 "<stroke position=\"0\">\n" +
@@ -341,7 +341,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "</character>\n";
         Element elem = Parser.parse(xml).getDocumentElement();
         
-        LessonCharacter exp = new LessonCharacter(100);
+        LessonCharacter exp = new LessonCharacter("ello");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addStroke(s1);
@@ -352,7 +352,7 @@ public class LessonCharacterTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlOneStroke() throws SAXException, IOException {
-        String xml = "<character id=\"100\">\n" +
+        String xml = "<character id=\"salud\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
                 "<id key=\"k1\" value=\"v1\" />\n" +
@@ -365,7 +365,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "</character>\n";
         Element elem = Parser.parse(xml).getDocumentElement();
         
-        LessonCharacter exp = new LessonCharacter(100);
+        LessonCharacter exp = new LessonCharacter("salud");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
@@ -376,7 +376,7 @@ public class LessonCharacterTest extends AndroidTestCase {
     }
     
     public void testImportFromXmlNoStrokes() throws SAXException, IOException {
-        String xml = "<character id=\"100\">\n" +
+        String xml = "<character id=\"gazundheit\">\n" +
                 "<tag tag=\"tag!\" />\n" +
                 "<tag tag=\"another tag?\" />\n" +
                 "<id key=\"k1\" value=\"v1\" />\n" +
@@ -384,7 +384,7 @@ public class LessonCharacterTest extends AndroidTestCase {
                 "</character>\n";
         Element elem = Parser.parse(xml).getDocumentElement();
         
-        LessonCharacter exp = new LessonCharacter(100);
+        LessonCharacter exp = new LessonCharacter("gazundheit");
         exp.addTag("tag!");
         exp.addTag("another tag?");
         exp.addKeyValue("k1", "v1");
