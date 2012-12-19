@@ -237,7 +237,7 @@ public class DbAdapterTest extends AndroidTestCase {
         assertEquals(exp1, db.getKeyValues(c.getStringId(), LessonItem.ItemType.CHARACTER));
         assertEquals(exp1, c.getKeyValues());
         
-        db.swapKeyValues2(DbAdapter.CHARKEYVALUES_TABLE, c.getStringId(), "k1", "k2");
+        db.swapKeyValues(DbAdapter.CHARKEYVALUES_TABLE, c.getStringId(), "k1", "k2");
         LinkedHashMap<String, String> exp2 = new LinkedHashMap<String, String>();
         exp2.put("k2", "v2");
         exp2.put("k1", "v1");
@@ -259,7 +259,7 @@ public class DbAdapterTest extends AndroidTestCase {
         assertEquals(exp1, db.getKeyValues(c.getStringId(), LessonItem.ItemType.WORD));
         assertEquals(exp1, c.getKeyValues());
         
-        db.swapKeyValues2(DbAdapter.WORDKEYVALUES_TABLE, c.getStringId(), "k1", "k2");
+        db.swapKeyValues(DbAdapter.WORDKEYVALUES_TABLE, c.getStringId(), "k1", "k2");
         LinkedHashMap<String, String> exp2 = new LinkedHashMap<String, String>();
         exp2.put("k2", "v2");
         exp2.put("k1", "v1");

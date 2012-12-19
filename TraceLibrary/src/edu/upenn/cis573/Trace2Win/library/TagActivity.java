@@ -275,7 +275,7 @@ public class TagActivity extends Activity {
                 String key   = currentKeys.get(position);
                 String other = currentKeys.get(otherPos);
                 
-                result = mDbHelper.swapKeyValues2(table, stringid, key, other);
+                result = mDbHelper.swapKeyValues(table, stringid, key, other);
                 
                 Log.e("Move result", Boolean.toString(result));
                 if (!result) {

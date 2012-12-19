@@ -1628,7 +1628,7 @@ public class DbAdapter {
      * @param bKey the second key
      * @return
      */
-    public boolean swapKeyValues2(String table, String id, String aKey,
+    public boolean swapKeyValues(String table, String id, String aKey,
                                  String bKey) {
         String idCol    = "_id";
         String keyCol   = "key";
