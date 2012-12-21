@@ -1697,14 +1697,6 @@ public class DbAdapter {
         mDb.endTransaction();
         return true;
     }
-   
-    /*private void initializeUniqueId(LessonItem i, ContentValues v)
-    {
-    	if(i.getUniqueId(mCtx) != null) // TODO getUniqueId need modification
-		    v.put("_id",i.getUniqueId(mCtx));
-	    else	
-	        v.put("_id","");
-    }*/
     
 	public String makeUniqueId(){
 		TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
