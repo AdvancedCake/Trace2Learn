@@ -51,10 +51,10 @@ public class CreateLessonActivity extends Activity {
         
         //Set up the ListView
         ArrayList<LessonItem> items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
-        List<Long> ids = dba.getAllWordIds();
-        for(long id : ids){
+        List<String> ids = dba.getAllWordIds();
+        for(String id : ids){
         	LessonItem word = dba.getWordById(id);
-        	word.setTagList(dba.getCharacterTags(id));
+        	word.setTagList(dba.getWordTags(id)); //TODO Was getCharacterTags(id), but that doesnt seem to make sense...
         	items.add(word);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -65,8 +65,8 @@ public class CreateLessonActivity extends Activity {
             	numWords++;
                 Log.e("Position",Long.toString(position));
                 Log.e("Type",list.getItemAtPosition(position).getClass().getName());
-                long wordId = ((LessonWord)list.getItemAtPosition(position)).getId();
-                Log.e("Id",Long.toString(wordId));
+                String wordId = ((LessonWord)list.getItemAtPosition(position)).getStringId();
+                Log.e("Id",wordId);
                 newLesson.addWord(wordId);
                 LessonItem item = (LessonWord)list.getItemAtPosition(position);
                 Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);

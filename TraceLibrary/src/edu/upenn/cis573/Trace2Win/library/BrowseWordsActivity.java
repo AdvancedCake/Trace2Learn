@@ -76,8 +76,8 @@ public class BrowseWordsActivity extends ListActivity {
         items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
         lessonID = this.getIntent().getStringExtra("ID");
         if(lessonID == null){
-            List<Long> ids = dba.getAllWordIds();
-            for(long id : ids){
+            List<String> ids = dba.getAllWordIds();
+            for(String id : ids){
                 LessonWord word = dba.getWordById(id);
                 items.add(word);
             }
@@ -132,7 +132,7 @@ public class BrowseWordsActivity extends ListActivity {
         Bundle bun = new Bundle();
 
         bun.putString("mode", mode);
-        bun.putLong("wordId", li.getId());
+        bun.putString("wordId", li.getStringId());
         bun.putString("lessonID", lessonID);
         bun.putInt("index", position + 1);
         bun.putInt("collectionSize", items.size());
@@ -167,7 +167,7 @@ public class BrowseWordsActivity extends ListActivity {
 
         else if(menuItemIndex == menuItemsInd.EditTags.ordinal()){
             Intent i = new Intent(this, TagActivity.class);
-            i.putExtra("ID", lw.getId());
+            i.putExtra("ID", lw.getStringId());
             i.putExtra("TYPE", "WORD");
             startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
             return true;
@@ -175,10 +175,10 @@ public class BrowseWordsActivity extends ListActivity {
 
         // delete
         else if(menuItemIndex == menuItemsInd.Delete.ordinal()){
-            long id = lw.getId();
-            long result = dba.deleteWord(id);
-            Log.e("Result",Long.toString(result));
-            if(result<0){
+            String id = lw.getStringId();
+            Boolean success = dba.deleteWord(id);
+            Log.d("Result",success.toString());
+            if(!success){
                 showToast("Could not delete the word");
                 return false;
             }
@@ -215,8 +215,8 @@ public class BrowseWordsActivity extends ListActivity {
             LessonWord other = (LessonWord) items.get(otherPos);
             boolean result;
             if (lessonID == null) { // browsing all words
-                result = dba.swapWords(lw.getId(), lw.getSort(), 
-                                       other.getId(), other.getSort());
+                result = dba.swapWords(lw.getStringId(), lw.getSort(), 
+                                       other.getStringId(), other.getSort());
                 if (result) {
                     // success, so update the local copy
                     double temp = lw.getSort();
@@ -228,8 +228,8 @@ public class BrowseWordsActivity extends ListActivity {
                     return true;
                 }
             } else { // viewing a specific lesson
-                result = dba.swapWordsInLesson(lessonID, lw.getId(), 
-                                               other.getId());
+                result = dba.swapWordsInLesson(lessonID, lw.getStringId(), 
+                                               other.getStringId());
                 if (result) {
                     // success, so update the local copy
                     LessonItem[] arr = new LessonItem[items.size()];
@@ -289,8 +289,8 @@ public class BrowseWordsActivity extends ListActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                     String name = ((String)lessonList.getItemAtPosition(position));
                     Log.e("name",name);
-                    long success = dba.addWordToLesson(name, lw.getId());
-                    Log.e("adding word",Long.toString(success));
+                    String success = dba.addWordToLesson(name, lw.getStringId());
+                    Log.e("adding word",success);
                     showToast("Successfully Added");
                     window.dismiss();
                 }
@@ -316,7 +316,7 @@ public class BrowseWordsActivity extends ListActivity {
         }
         Lesson lesson = new Lesson();
         lesson.setName(name);
-        lesson.addWord(lw.getId());
+        lesson.addWord(lw.getStringId());
         dba.addLesson(lesson);
         showToast("Successfully Created");
         window.dismiss();
@@ -366,14 +366,14 @@ public class BrowseWordsActivity extends ListActivity {
 
                 // Filter action: query for words and set word list
                 Cursor c = dba.browseByTag(ItemType.WORD, search);
-                List<Long> ids = new LinkedList<Long>();
+                List<String> ids = new LinkedList<String>();
                 do {
                     if (c.getCount() == 0) {
                         Log.d(ACTIVITY_SERVICE, "zero rows");
                         break;
                     }
-                    ids.add(c.getLong(c.getColumnIndexOrThrow(
-                            DbAdapter.WORDTAG_ROWID)));
+                    ids.add(c.getString(c.getColumnIndexOrThrow(
+                            DbAdapter.WORDTAG_ID)));
                 } while (c.moveToNext());
                 c.close();
                 setWordList(ids);
@@ -412,9 +412,9 @@ public class BrowseWordsActivity extends ListActivity {
     }
     
     // sets the list of items
-    private void setWordList(List<Long> ids) {
+    private void setWordList(List<String> ids) {
         items = new ArrayList<LessonItem>();
-        for(long id : ids) {
+        for(String id : ids) {
             Log.i("Found", "id: "+id);
             LessonItem word;
             try {

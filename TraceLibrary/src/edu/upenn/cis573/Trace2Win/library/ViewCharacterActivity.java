@@ -32,7 +32,7 @@ public class ViewCharacterActivity extends Activity {
 
 	private Mode _currentMode = Mode.INVALID;
 
-	private long id_to_pass = -1;
+	private String id_to_pass = null;
 	
 	private boolean isChanged = false;
 
@@ -86,8 +86,8 @@ public class ViewCharacterActivity extends Activity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("mode")) {
 			String mode = bun.getString("mode");
-            setCharacter(_dbHelper.getCharacterById(bun.getLong("charId")));
-            id_to_pass = bun.getLong("charId");
+            setCharacter(_dbHelper.getCharacterById(bun.getString("charId")));
+            id_to_pass = bun.getString("charId");
             updateTags();
             
 			if (mode.equals("trace")) {
@@ -181,7 +181,7 @@ public class ViewCharacterActivity extends Activity {
 
 	private void updateTags()
 	{
-		if (id_to_pass >= 0)
+		if (id_to_pass !=null)
 		{
 			LessonCharacter ch = _dbHelper.getCharacterById(id_to_pass);
 			
@@ -258,22 +258,22 @@ public class ViewCharacterActivity extends Activity {
     }
     
     private void saveChar(LessonCharacter character) {
-        long id = character.getId();
-        if(id == -1)
+        String id = character.getStringId();
+        if(id == null)
             _dbHelper.addCharacter(character);
         else
             _dbHelper.modifyCharacter(character);
-        Log.e("Adding to DB", Long.toString(character.getId()));
-        id_to_pass = character.getId();
+        Log.e("Adding to DB", character.getStringId());
+        id_to_pass = character.getStringId();
         showToast("Character saved");
     }
     
 	public void createTags() 
 	{
 		LessonCharacter character = _creationPane.getCharacter();
-		if (id_to_pass >= 0) 
+		if (id_to_pass != null) 
 		{
-			Log.e("Passing this CharID", Long.toString(id_to_pass));
+			Log.e("Passing this CharID", id_to_pass);
 			Intent i = new Intent(this, TagActivity.class);
 
 			i.putExtra("ID", id_to_pass);

@@ -47,22 +47,26 @@ public class DbAdapterTest extends AndroidTestCase {
     public void testAddCharacter() {
         LessonCharacter c = new LessonCharacter();
         db.addCharacter(c);
-        LessonCharacterTest.compareCharacters(c, db.getCharacterById(c.getId()));
+        LessonCharacterTest.compareCharacters(c, db.getCharacterById(c.getStringId()));
     }
     
     public void testAddWord() {
         LessonWord c = new LessonWord();
         db.addWord(c);
-        LessonWordTest.compareWords(c, db.getWordById(c.getId()));
+        LessonWordTest.compareWords(c, db.getWordById(c.getStringId()));
+        LessonWord d = new LessonWord();
+        db.addWord(d);
+        LessonWordTest.compareWords(c, db.getWordById(c.getStringId()));
+        LessonWordTest.compareWords(d, db.getWordById(d.getStringId()));
     }
     
 	public void testCreateWordKeyValues()
 	{
 		LessonWord w = new LessonWord();
 		db.addWord(w);
-		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
+		db.createKeyValue(w.getStringId(), w.getItemType(), "key1", "value1");
 		w.addKeyValue("key1", "value1");
-		LessonWord w1 = db.getWordById(w.getId());
+		LessonWord w1 = db.getWordById(w.getStringId());
 		LessonWordTest.compareWords(w, w1);
 	}		
 
@@ -70,9 +74,9 @@ public class DbAdapterTest extends AndroidTestCase {
 	{
 		LessonCharacter c = new LessonCharacter();
 		db.addCharacter(c);
-		db.createKeyValue(c.getId(), c.getItemType(), "key1", "value1");
+		db.createKeyValue(c.getStringId(), c.getItemType(), "key1", "value1");
 		c.addKeyValue("key1", "value1");
-		LessonCharacter c1 = db.getCharacterById(c.getId());
+		LessonCharacter c1 = db.getCharacterById(c.getStringId());
 		LessonCharacterTest.compareCharacters(c, c1);
 	}		
 	
@@ -80,9 +84,9 @@ public class DbAdapterTest extends AndroidTestCase {
 	{
 		LessonWord w = new LessonWord();
 		db.addWord(w);
-		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
-		db.deleteKeyValue(w.getId(), w.getItemType(), "key1");
-		LessonWord w1 = db.getWordById(w.getId());
+		db.createKeyValue(w.getStringId(), w.getItemType(), "key1", "value1");
+		db.deleteKeyValue(w.getStringId(), w.getItemType(), "key1");
+		LessonWord w1 = db.getWordById(w.getStringId());
 		LessonWordTest.compareWords(w, w1);
 	}		
 	
@@ -90,9 +94,9 @@ public class DbAdapterTest extends AndroidTestCase {
 	{
 		LessonCharacter c = new LessonCharacter();
 		db.addCharacter(c);
-		db.createKeyValue(c.getId(), c.getItemType(), "key1", "value1");
-		db.deleteKeyValue(c.getId(), c.getItemType(), "key1");
-		LessonCharacter c1 = db.getCharacterById(c.getId());
+		db.createKeyValue(c.getStringId(), c.getItemType(), "key1", "value1");
+		db.deleteKeyValue(c.getStringId(), c.getItemType(), "key1");
+		LessonCharacter c1 = db.getCharacterById(c.getStringId());
 		LessonCharacterTest.compareCharacters(c, c1);
 	}	
 	
@@ -100,8 +104,8 @@ public class DbAdapterTest extends AndroidTestCase {
 	{
 		LessonWord w = new LessonWord();
 		db.addWord(w);
-		db.createKeyValue(w.getId(), w.getItemType(), "key1", "value1");
-		HashMap<String, String> keyValues = db.getKeyValues(w.getId(), w.getItemType());
+		db.createKeyValue(w.getStringId(), w.getItemType(), "key1", "value1");
+		HashMap<String, String> keyValues = db.getKeyValues(w.getStringId(), w.getItemType());
 		
 		assertEquals(1, keyValues.size());
 		assertTrue(keyValues.containsKey("key1"));
@@ -112,8 +116,8 @@ public class DbAdapterTest extends AndroidTestCase {
 	{
 		LessonCharacter c = new LessonCharacter();
 		db.addCharacter(c);
-		db.createKeyValue(c.getId(), c.getItemType(), "key1", "value1");
-		HashMap<String, String> keyValues = db.getKeyValues(c.getId(), c.getItemType());
+		db.createKeyValue(c.getStringId(), c.getItemType(), "key1", "value1");
+		HashMap<String, String> keyValues = db.getKeyValues(c.getStringId(), c.getItemType());
 		
 		assertEquals(1, keyValues.size());
 		assertTrue(keyValues.containsKey("key1"));
@@ -129,11 +133,11 @@ public class DbAdapterTest extends AndroidTestCase {
         double bOrigSort = b.getSort();
         assertFalse(aOrigSort == bOrigSort);
         
-        assertTrue(db.swapCharacters(a.getId(), aOrigSort,
-                                     b.getId(), bOrigSort));
+        assertTrue(db.swapCharacters(a.getStringId(), aOrigSort,
+                                     b.getStringId(), bOrigSort));
         
-        LessonCharacter a1 = db.getCharacterById(a.getId());
-        LessonCharacter b1 = db.getCharacterById(b.getId());
+        LessonCharacter a1 = db.getCharacterById(a.getStringId());
+        LessonCharacter b1 = db.getCharacterById(b.getStringId());
         a.setSort(bOrigSort);
         b.setSort(aOrigSort);
         
@@ -150,11 +154,11 @@ public class DbAdapterTest extends AndroidTestCase {
         double bOrigSort = b.getSort();
         assertFalse(aOrigSort == bOrigSort);
         
-        assertTrue(db.swapWords(a.getId(), aOrigSort,
-                                b.getId(), bOrigSort));
+        assertTrue(db.swapWords(a.getStringId(), aOrigSort,
+                                b.getStringId(), bOrigSort));
         
-        LessonWord a1 = db.getWordById(a.getId());
-        LessonWord b1 = db.getWordById(b.getId());
+        LessonWord a1 = db.getWordById(a.getStringId());
+        LessonWord b1 = db.getWordById(b.getStringId());
         a.setSort(bOrigSort);
         b.setSort(aOrigSort);
         
@@ -168,17 +172,17 @@ public class DbAdapterTest extends AndroidTestCase {
         db.addWord(a);
         db.addWord(b);
         Lesson lesson = new Lesson();
-        lesson.addWord(a.getId());
-        lesson.addWord(b.getId());
+        lesson.addWord(a.getStringId());
+        lesson.addWord(b.getStringId());
         db.addLesson(lesson);
         
-        List<Long> exp1 = Arrays.asList(new Long[] {a.getId(), b.getId()});
+        List<String> exp1 = Arrays.asList(new String[] {a.getStringId(), b.getStringId()});
         assertEquals(exp1, db.getWordsFromLessonId(lesson.getStringId()));
         assertEquals(exp1, lesson.getWordIds());
         
-        db.swapWordsInLesson(lesson.getStringId(), a.getId(), b.getId());
+        db.swapWordsInLesson(lesson.getStringId(), a.getStringId(), b.getStringId());
         
-        List<Long> exp2 = Arrays.asList(new Long[] {b.getId(), a.getId()});
+        List<String> exp2 = Arrays.asList(new String[] {b.getStringId(), a.getStringId()});
         assertEquals(exp2, db.getWordsFromLessonId(lesson.getStringId()));
         
         Lesson lesson2 = db.getLessonById(lesson.getStringId());
@@ -192,14 +196,14 @@ public class DbAdapterTest extends AndroidTestCase {
         db.addCharacter(c);
         
         List<String> exp1 = Arrays.asList(new String[] {"1", "2"});
-        assertEquals(exp1, db.getCharacterTags(c.getId()));
+        assertEquals(exp1, db.getCharacterTags(c.getStringId()));
         assertEquals(exp1, c.getTags());
         
-        db.swapTags(DbAdapter.CHARTAG_TABLE, c.getId(), "1", "2");
+        db.swapTags(DbAdapter.CHARTAG_TABLE, c.getStringId(), "1", "2");
         List<String> exp2 = Arrays.asList(new String[] {"2", "1"});
-        assertEquals(exp2, db.getCharacterTags(c.getId()));
+        assertEquals(exp2, db.getCharacterTags(c.getStringId()));
         
-        LessonCharacter c1 = db.getCharacterById(c.getId());
+        LessonCharacter c1 = db.getCharacterById(c.getStringId());
         assertEquals(exp2, c1.getTags());
     }
     
@@ -210,14 +214,14 @@ public class DbAdapterTest extends AndroidTestCase {
         db.addWord(c);
         
         List<String> exp1 = Arrays.asList(new String[] {"1", "2"});
-        assertEquals(exp1, db.getWordTags(c.getId()));
+        assertEquals(exp1, db.getWordTags(c.getStringId()));
         assertEquals(exp1, c.getTags());
         
-        db.swapTags(DbAdapter.WORDTAG_TABLE, c.getId(), "1", "2");
+        db.swapTags(DbAdapter.WORDTAG_TABLE, c.getStringId(), "1", "2");
         List<String> exp2 = Arrays.asList(new String[] {"2", "1"});
-        assertEquals(exp2, db.getWordTags(c.getId()));
+        assertEquals(exp2, db.getWordTags(c.getStringId()));
         
-        LessonWord c1 = db.getWordById(c.getId());
+        LessonWord c1 = db.getWordById(c.getStringId());
         assertEquals(exp2, c1.getTags());
     }
     
@@ -230,16 +234,16 @@ public class DbAdapterTest extends AndroidTestCase {
         LinkedHashMap<String, String> exp1 = new LinkedHashMap<String, String>();
         exp1.put("k1", "v1");
         exp1.put("k2", "v2");
-        assertEquals(exp1, db.getKeyValues(c.getId(), LessonItem.ItemType.CHARACTER));
+        assertEquals(exp1, db.getKeyValues(c.getStringId(), LessonItem.ItemType.CHARACTER));
         assertEquals(exp1, c.getKeyValues());
         
-        db.swapKeyValues(DbAdapter.CHARKEYVALUES_TABLE, c.getId(), "k1", "k2");
+        db.swapKeyValues(DbAdapter.CHARKEYVALUES_TABLE, c.getStringId(), "k1", "k2");
         LinkedHashMap<String, String> exp2 = new LinkedHashMap<String, String>();
         exp2.put("k2", "v2");
         exp2.put("k1", "v1");
-        assertEquals(exp2, db.getKeyValues(c.getId(), LessonItem.ItemType.CHARACTER));
+        assertEquals(exp2, db.getKeyValues(c.getStringId(), LessonItem.ItemType.CHARACTER));
         
-        LessonCharacter c1 = db.getCharacterById(c.getId());
+        LessonCharacter c1 = db.getCharacterById(c.getStringId());
         assertEquals(exp2, c1.getKeyValues());
     }
     
@@ -252,16 +256,16 @@ public class DbAdapterTest extends AndroidTestCase {
         LinkedHashMap<String, String> exp1 = new LinkedHashMap<String, String>();
         exp1.put("k1", "v1");
         exp1.put("k2", "v2");
-        assertEquals(exp1, db.getKeyValues(c.getId(), LessonItem.ItemType.WORD));
+        assertEquals(exp1, db.getKeyValues(c.getStringId(), LessonItem.ItemType.WORD));
         assertEquals(exp1, c.getKeyValues());
         
-        db.swapKeyValues(DbAdapter.WORDKEYVALUES_TABLE, c.getId(), "k1", "k2");
+        db.swapKeyValues(DbAdapter.WORDKEYVALUES_TABLE, c.getStringId(), "k1", "k2");
         LinkedHashMap<String, String> exp2 = new LinkedHashMap<String, String>();
         exp2.put("k2", "v2");
         exp2.put("k1", "v1");
-        assertEquals(exp2, db.getKeyValues(c.getId(), LessonItem.ItemType.WORD));
+        assertEquals(exp2, db.getKeyValues(c.getStringId(), LessonItem.ItemType.WORD));
         
-        LessonWord c1 = db.getWordById(c.getId());
+        LessonWord c1 = db.getWordById(c.getStringId());
         assertEquals(exp2, c1.getKeyValues());
     }	
 
@@ -282,22 +286,22 @@ public class DbAdapterTest extends AndroidTestCase {
     	//Test Case: equivalence class: tag, 1 letter, character
     	Cursor result = db.browseByTag(ItemType.CHARACTER, "A");
     	assertEquals(1, result.getCount());
-    	assertEquals(a.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	assertEquals(a.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
     	
     	//Test Case: equivalence class: tag, multiple character, character, case insensitive, partial match
     	result = db.browseByTag(ItemType.CHARACTER, "SON");
     	assertEquals(1, result.getCount());
-    	assertEquals(b.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	assertEquals(b.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
     	
     	//Test Case: equivalence class: keyvalue, single character, character, case insensitive
     	result = db.browseByTag(ItemType.CHARACTER, "A");
     	assertEquals(1, result.getCount());
-    	assertEquals(a.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	assertEquals(a.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
     	
     	//Test Case: equivalence class: keyvalue, multiple character, character, exact match
     	result = db.browseByTag(ItemType.CHARACTER, "batt");
     	assertEquals(1, result.getCount());
-    	assertEquals(b.getId(), result.getLong(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ROWID)));
+    	assertEquals(b.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
     	
     	//Need more tests for words
     	result.close();
@@ -307,15 +311,15 @@ public class DbAdapterTest extends AndroidTestCase {
     {
     	LessonCharacter c = new LessonCharacter();
     	db.addCharacter(c);
-    	db.deleteCharacter(c.getId());
-    	assertNull(db.getCharacterById(c.getId()));
+    	db.deleteCharacter(c.getStringId());
+    	assertNull(db.getCharacterById(c.getStringId()));
     }
 
     public void testDeleteWord()
     {
     	LessonWord w = new LessonWord();
     	db.addWord(w);
-    	db.deleteWord(w.getId());
-    	assertNull(db.getWordById(w.getId()));
+    	db.deleteWord(w.getStringId());
+    	assertNull(db.getWordById(w.getStringId()));
     }
 }

@@ -44,7 +44,6 @@ public class TagActivity extends Activity {
     private Button addIdButton;
 
     //Variables
-    private long id; // item ID
     private String stringid; //stringID
     private Map<String, String> keyValMap;
     private List<String> currentKeys;
@@ -61,7 +60,6 @@ public class TagActivity extends Activity {
         super.onCreate(savedInstanceState);
         
         //Grab the intent/extras. This should be called from CharacterCreation
-        id = this.getIntent().getLongExtra("ID", -1); 
         stringid = this.getIntent().getStringExtra("ID");
         type = ItemType.valueOf(getIntent().getStringExtra("TYPE"));        
 
@@ -92,7 +90,7 @@ public class TagActivity extends Activity {
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();     
 
-        Log.e("ID",Long.toString(id));
+        Log.e("ID",stringid);
         Log.e("TYPE",type.toString());
         
         
@@ -104,7 +102,7 @@ public class TagActivity extends Activity {
         case WORD:
             currentKeys = new ArrayList<String>();
             currentKeyVals = new ArrayList<String>();
-            keyValMap = mDbHelper.getKeyValues(id, type);
+            keyValMap = mDbHelper.getKeyValues(stringid, type);
             for(Map.Entry<String, String> entry : keyValMap.entrySet()) {
                 String k = entry.getKey();
                 String v = entry.getValue();
@@ -123,10 +121,10 @@ public class TagActivity extends Activity {
         switch(type)
         {
             case CHARACTER:
-                currentTags = mDbHelper.getCharacterTags(id);
+                currentTags = mDbHelper.getCharacterTags(stringid);
                 break;
             case WORD:
-                currentTags = mDbHelper.getWordTags(id);
+                currentTags = mDbHelper.getWordTags(stringid);
                 break;
             case LESSON:
                 currentTags = mDbHelper.getLessonTags(stringid);
@@ -183,21 +181,21 @@ public class TagActivity extends Activity {
             {
                 case CHARACTER:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteTag(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteCharTag(stringid,
                                 selectedItem);
                     }
                     break;
                 case WORD:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(id,
+                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(stringid,
                                 selectedItem);
                     }
                     break;
@@ -277,7 +275,7 @@ public class TagActivity extends Activity {
                 String key   = currentKeys.get(position);
                 String other = currentKeys.get(otherPos);
                 
-                result = mDbHelper.swapKeyValues(table, id, key, other);
+                result = mDbHelper.swapKeyValues(table, stringid, key, other);
                 
                 Log.e("Move result", Boolean.toString(result));
                 if (!result) {
@@ -330,8 +328,6 @@ public class TagActivity extends Activity {
                 switch(type){
                 	case CHARACTER:
                 	case WORD:
-                		result = mDbHelper.swapTags(table, id, tag, other);
-                		break;
                 	case LESSON:
                 		result = mDbHelper.swapTags(table, stringid, tag, other);
                 		break;
@@ -408,10 +404,10 @@ public class TagActivity extends Activity {
             switch(type)
             {
                 case CHARACTER:
-                    mDbHelper.createTags(id, input);
+                    mDbHelper.createCharTags(stringid, input);
                     break;
                 case WORD:
-                    mDbHelper.createWordTags(id, input);
+                    mDbHelper.createWordTags(stringid, input);
                     break;
                 case LESSON:
                     mDbHelper.createLessonTags(stringid, input);
@@ -445,20 +441,16 @@ public class TagActivity extends Activity {
                 return;
             }
 
-            if (type == ItemType.CHARACTER
-                    || type == ItemType.WORD)
-            {
-                mDbHelper.createKeyValue(id, type, keyInput, valueInput);
-                // added it to db
-                keyValMap.put(keyInput, valueInput);
-                currentKeys.add(keyInput);
-                currentKeyVals.add(keyInput + ": " + valueInput);
-                viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
-                adapter.notifyDataSetChanged();
-                keyEntry.setText("");			
-                valueEntry.setText("");
-                isChanged = true;
-            }
+            mDbHelper.createKeyValue(stringid, type, keyInput, valueInput);
+            // added it to db
+            keyValMap.put(keyInput, valueInput);
+            currentKeys.add(keyInput);
+            currentKeyVals.add(keyInput + ": " + valueInput);
+            viewSource.add(currentKeyVals.size() - 1, keyInput + ": " + valueInput);
+            adapter.notifyDataSetChanged();
+            keyEntry.setText("");			
+            valueEntry.setText("");
+            isChanged = true;
         }
     }
     
