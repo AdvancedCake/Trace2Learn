@@ -1,20 +1,10 @@
 Trace2Learn
+===========
 
-Trace things to learn them!!!
-
--------------------------------------------------------------
-Contents
--------------------------------------------------------------
-Trace2Win : the main app
-Trace2Win/tests : android test project for the main app
-TraceLibrary : the core library
-TraceThis : the simplified app(just for importing/viewing)
-
-
--------------------------------------------------------------
 How to import to Eclipse
+------------------------
 (By Seunghoon Park, pclove1@gmail.com, Dec 7th 2012)
--------------------------------------------------------------
+
 1. right-click on the package explorer in Eclipse
 
 2. select "Import..."
@@ -26,8 +16,8 @@ How to import to Eclipse
 
 5. Now, you should be able to see 4 detected projects.
    please 'un-select' MainMenuActivity from TraceThis.
-   (Note: 
-   This is because Eclipse/Android don't use a smart way to specify the project's name. 
+   (Note:
+   This is because Eclipse/Android don't use a smart way to specify the project's name.
    You'll change the project name manually soon.)
 
 6. While selecting the rest of three projects, click "Finish"
@@ -35,7 +25,7 @@ How to import to Eclipse
 7. Now, let's change the projects' names.
    Click a project that you want change its name on the package explorer.
    Then, push 'F2'.
-   Recommended projects' names: 
+   Recommended projects' names:
     - CharacterCreationActivity -> TraceLibrary
     - MainMenuActivity(from Trace2Win directory) -> Trace2Win
     - tests -> Trace2Win_tests
