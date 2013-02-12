@@ -3,7 +3,7 @@ Trace2Learn
 
 How to import to Eclipse
 ------------------------
-(By Seunghoon Park, pclove1@gmail.com, Dec 7th 2012)
+_(By Seunghoon Park, pclove1@gmail.com, Dec 7th 2012)_
 
 1. right-click on the package explorer in Eclipse
 
