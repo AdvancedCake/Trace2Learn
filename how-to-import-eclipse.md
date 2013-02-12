@@ -27,9 +27,9 @@ _(By Seunghoon Park, pclove1@gmail.com, Dec 7th 2012)_
    Then, push 'F2'.
    Recommended projects' names:
 
-  * CharacterCreationActivity -> TraceLibrary
-  * MainMenuActivity(from Trace2Learn directory) -> Trace2Learn
-  * tests -> Trace2Learn_tests
+    * CharacterCreationActivity -> TraceLibrary
+    * MainMenuActivity(from Trace2Learn directory) -> Trace2Learn
+    * tests -> Trace2Learn_tests
 
 8. Now, let's import the simplified app as well.
    Repeat 1-5 steps.
