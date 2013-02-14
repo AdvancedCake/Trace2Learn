@@ -130,12 +130,6 @@ public class LessonWord extends LessonItem {
 			i++;
 		}
 	}
-
-	@Override
-	protected boolean updateTypeData() {
-		// TODO Auto-generated method stub
-		return false;
-	}
 	
 	/**
 	 * Creates an XML representation of this word.

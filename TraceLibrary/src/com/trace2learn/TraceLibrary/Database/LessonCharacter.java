@@ -31,14 +31,6 @@ public class LessonCharacter extends LessonItem {
 		_stringid = id;
 	}
 	
-	protected boolean updateTypeData()
-	{
-		// TODO: check against db timestamp
-		
-		
-		return true;
-	}
-	
 	public synchronized void addStroke(Stroke stroke)
 	{
 		_strokes.add(stroke);

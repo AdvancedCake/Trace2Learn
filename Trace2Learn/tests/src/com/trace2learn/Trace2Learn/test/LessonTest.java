@@ -99,14 +99,14 @@ public class LessonTest extends AndroidTestCase {
 		db.addWord(word2);		
 		
 		
-	    Lesson lesson = new Lesson();
+	    Lesson lesson = new Lesson(false);
 	    lesson.setStringId("unique_lesson_id");
 	    lesson.setName("Colors");
 	    lesson.addWord(word1.getStringId());
 	    lesson.addWord(word2.getStringId());
 	    db.addLesson(lesson);
         
-        String exp = "<lesson id=\"unique_lesson_id\" name=\"Colors\">\n" +
+        String exp = "<lesson id=\"unique_lesson_id\" name=\"Colors\" author=\"admin\">\n" +
         		"<word id=\"id1\" position=\"0\">\n" +
         		"<tag tag=\"English\" />\n" +
         		"<tag tag=\"Color\" />\n" +

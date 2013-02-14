@@ -15,27 +15,36 @@ public class Lesson extends LessonItem {
 	private List<String> _words; // list of word IDs
 	private String name; // lesson name
 	private List<LessonWord> wordObjects;
+	private boolean isUserDefined;
 
-	public Lesson(){
-		_type = ItemType.LESSON;
-		_words = new ArrayList<String>();
+	public Lesson() {
+	    this(null, true);
 	}
 	
-	public Lesson(String id)
-	{
-		this();
-		_stringid = id;
-	}	
-
-	public synchronized void addWord(String word){
+	public Lesson(String id) {
+	    this(id, true);
+	}
+	
+	public Lesson(boolean isUserDefined) {
+	    this(null, isUserDefined);
+	}
+	
+    public Lesson(String id, boolean isUserDefined) {
+        _type              = ItemType.LESSON;
+        _words             = new ArrayList<String>();
+        _stringid          = id;
+        this.isUserDefined = isUserDefined;
+    }
+    
+	public synchronized void addWord(String word) {
 		_words.add(word);
 	}
 
-	public synchronized List<String> getWordIds(){
+	public synchronized List<String> getWordIds() {
 		return new ArrayList<String>(_words);
 	}
 
-	public synchronized String getWordId(int i){
+	public synchronized String getWordId(int i) {
 		return _words.get(i);
 	}
 	
@@ -47,20 +56,23 @@ public class Lesson extends LessonItem {
 	    return wordObjects;
 	}
 	
-	public String getLessonName(){
+	public String getLessonName() {
 		return this.name;
 	}
 	
-	public void setName(String name){
+	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public boolean isUserDefined() {
+	    return isUserDefined;
 	}
 
 	/**
 	 * Get the list of items that compose this lesson
 	 * @return the list of characters that compose this word
 	 */
-	public synchronized List<LessonItem> getWords()
-	{
+	public synchronized List<LessonItem> getWords() {
 		ArrayList<LessonItem> words = new ArrayList<LessonItem>(_words.size());
 		for(String id : _words)
 		{
@@ -78,20 +90,19 @@ public class Lesson extends LessonItem {
 		return words;
 	}
 
-	public int length()
-	{
+	public int length() {
 		return _words.size();
 	}
 
-	public synchronized boolean removeWord(String word){
+	public synchronized boolean removeWord(String word) {
 		return _words.remove(word);
 	}
 
-	public synchronized String removeWord(int i){
+	public synchronized String removeWord(int i) {
 		return _words.remove(i);
 	}
 
-	public synchronized void clearWords(){
+	public synchronized void clearWords() {
 		_words.clear();
 	}
 
@@ -109,47 +120,9 @@ public class Lesson extends LessonItem {
 	 * @param time - the time in the animation from 0 to 1
 	 */
 	@Override
-	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
-	{
+	public void draw(Canvas canvas, Paint paint, float left, float top,
+	        float width, float height, float time) {
 		draw(canvas, paint, left, top, width, height);
-	}
-
-	@Override
-	protected boolean updateTypeData() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	/**
-	 * Draws the item in the canvas provided, using the provided paint brush
-	 * within the provided bounding box
-	 * @param canvas - the canvas to draw on
-	 * @param paint - the drawing settings for the item
-	 * @param left - the left bound in which the item should be drawn
-	 * @param top - the top bound in which the item should be drawn
-	 * @param width - the width of the bounding box in which the item should be drawn
-	 * @param height - the height of the bounding box in which the item should be drawn
-	 */
-	@Override
-	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
-	{
-		// TODO
-		/*int i = 0;
-		float charWidth = width/length();
-		for(Long id : _phrases)
-		{
-			LessonWord word;
-			if(_db == null)
-			{
-				word = new LessonWord(id);
-			}
-			else
-			{
-				word = _db.getCharacterById(id);
-			}
-			word.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
-			i++;
-		}*/
 	}
 
 	/**
@@ -159,7 +132,8 @@ public class Lesson extends LessonItem {
 	public String toXml() {
 		StringBuffer sb = new StringBuffer();
 		sb.append("<lesson id=\"").append(_stringid).append("\" ");
-		sb.append("name=\"").append(name).append("\">\n");
+		sb.append("name=\"").append(name).append("\" ");
+		sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
 		synchronized (_words) {
 			int word_position = 0;
@@ -189,14 +163,15 @@ public class Lesson extends LessonItem {
 	 */
 	public static Lesson importFromXml(Element elem) {
         try {
-            String id = elem.getAttribute("id");
-            String name = elem.getAttribute("name");
+            String  id          = elem.getAttribute("id");
+            String  name        = elem.getAttribute("name");
+            boolean userDefined = elem.getAttribute("author").equals("user");
 
             Log.i("Import Lesson", "id: " + id);
             Log.i("Import Lesson", "  name: " + name);
+            Log.i("Import Lesson", "  user-defined: " + userDefined);
             
-            Lesson lesson = new Lesson();
-            lesson.setStringId(id);
+            Lesson lesson = new Lesson(id, userDefined);
             lesson.setName(name);
             
             NodeList words = elem.getElementsByTagName("word");

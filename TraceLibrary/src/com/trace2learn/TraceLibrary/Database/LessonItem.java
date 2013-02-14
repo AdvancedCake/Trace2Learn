@@ -67,36 +67,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
         return Double.compare(this._sort, other._sort);
     }
 	
-	/**
-	 * Synchs the LessonItem to match the database
-	 * TODO: Uses a timestamp to check for any new updates that need to be
-	 * pulled from the database
-	 * @return True - if the item was updated
-	 * 		   False - otherwise
-	 */
-	protected boolean update()
-	{
-		if(_db == null || _stringid == null) return false;
-		if(updateTypeData())
-		{
-			_lastUpdate = new Date();
-			return true;
-		}
-		else
-		{
-			return false;
-		}
-	}
-	
-	/**
-	 * Synchs the type specific data from the database
-	 * TODO: Uses a timestamp to check for any new updates that need to be
-	 * pulled from the database
-	 * @return True - if the item was updated
-	 * 		   False - otherwise
-	 */
-	protected abstract boolean updateTypeData();
-	
 	public ItemType getItemType()
 	{
 		return _type;
