@@ -1,4 +1,4 @@
-package edu.upenn.cis573.Trace2Win.test;
+package com.trace2learn.Trace2Learn.test;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,7 +15,7 @@ import com.trace2learn.TraceLibrary.ShoppingCartActivity;
 public class ShoppingCartActivityTest extends ActivityInstrumentationTestCase2<ShoppingCartActivity>{
 	
 	public ShoppingCartActivityTest(){
-		super("edu.upenn.cis573.Trace2Win.library",ShoppingCartActivity.class);
+		super("com.trace2learn.Trace2Learn.TraceLibrary",ShoppingCartActivity.class);
 	}
 	
 	private ShoppingCartActivity activity;

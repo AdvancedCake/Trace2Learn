@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="edu.upenn.cis573.Trace2Win.test"
+    package="com.trace2learn.Trace2Learn.test"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -8,10 +8,10 @@
 
     <instrumentation
         android:name="android.test.InstrumentationTestRunner"
-        android:targetPackage="edu.upenn.cis573.Trace2Win" >
+        android:targetPackage="com.trace2learn.Trace2Learn" >
     </instrumentation>
 
-	<application>
+    <application>
         <uses-library android:name="android.test.runner" />
     </application>
 

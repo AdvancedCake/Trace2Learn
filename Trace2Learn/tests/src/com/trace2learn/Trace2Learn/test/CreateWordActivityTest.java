@@ -1,4 +1,4 @@
-package edu.upenn.cis573.Trace2Win.test;
+package com.trace2learn.Trace2Learn.test;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.ListView;
@@ -12,7 +12,7 @@ import com.trace2learn.TraceLibrary.Database.LessonWord;
 public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<CreateWordActivity>{
 	
 	public CreateWordActivityTest(){
-		super("edu.upenn.cis573.Trace2Win.library",CreateWordActivity.class);
+		super("com.trace2learn.Trace2Learn.TraceLibrary",CreateWordActivity.class);
 	}
 	
 	private CreateWordActivity activity;
