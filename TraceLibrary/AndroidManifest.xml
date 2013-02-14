@@ -29,7 +29,7 @@
         </activity>
         <activity android:name="ShoppingCartActivity" >
         </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.FilePickerActivity" >
+        <activity android:name="FilePickerActivity" >
         </activity>
     </application>
 
