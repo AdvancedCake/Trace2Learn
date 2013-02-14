@@ -45,7 +45,7 @@
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.ShoppingCartActivity" >
         </activity>
-        <activity android:name=".library.FilePickerActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.FilePickerActivity" >
         </activity>
     </application>
 
