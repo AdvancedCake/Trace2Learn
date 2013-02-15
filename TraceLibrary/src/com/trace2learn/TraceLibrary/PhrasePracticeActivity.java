@@ -138,8 +138,6 @@ public class PhrasePracticeActivity extends Activity {
 				_lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
 				_phraseTitle.setText(_lessonName + " - " + _wordIndex + 
 				                     " of " + _collectionSize);
-				Toolbox.showToast(context, _lessonName + " - " + _wordIndex +
-				        " of " + _collectionSize);
 			}
 			
 			String mode = bun.getString("mode");
