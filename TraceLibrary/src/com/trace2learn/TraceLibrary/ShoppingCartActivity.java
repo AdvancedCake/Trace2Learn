@@ -235,7 +235,7 @@ public class ShoppingCartActivity extends Activity {
                 }
 
                 // Filter action: keep matching items from display list
-                // Note that it should be partial match for search terms 2
+                // Note that it should be partial match for search terms 3
                 // characters or more.
                 List<LessonItem> newList = new ArrayList<LessonItem>();
                 switch (type) {

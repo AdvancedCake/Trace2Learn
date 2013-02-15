@@ -418,6 +418,7 @@ public class BrowseWordsActivity extends ListActivity {
             }
             items.add(word);
         }
+        Collections.sort(items);
         LayoutInflater vi = (LayoutInflater) getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonItemListAdapter(this, items, vi);

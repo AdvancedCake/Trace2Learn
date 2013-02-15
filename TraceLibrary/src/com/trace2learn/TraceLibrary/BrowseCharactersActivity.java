@@ -60,16 +60,8 @@ public class BrowseCharactersActivity extends ListActivity {
         dba.open();
         
         List<String> ids = dba.getAllCharIds();
-        items = new ArrayList<LessonItem>(ids.size());
-        for(String id : ids){
-        	LessonItem character = dba.getCharacterById(id);
-            items.add(character);
-        }
-        Collections.sort(items);
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new LessonItemListAdapter(this, items, vi);
-        setListAdapter(adapter);
+        setCharList(ids);
+        
         registerForContextMenu(getListView());
         
         filtered = false;
@@ -282,12 +274,12 @@ public class BrowseCharactersActivity extends ListActivity {
             LessonItem character;
             try {
                 character = dba.getCharacterById(id);
+                items.add(character);
             } catch(Exception e) {
-                character = new LessonCharacter(id);
                 Log.d("SEARCH", "Character " + id + " not found in db");
             }
-            items.add(character);
         }
+        Collections.sort(items);
         LayoutInflater vi = (LayoutInflater) getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonItemListAdapter(this, items, vi);
@@ -298,15 +290,6 @@ public class BrowseCharactersActivity extends ListActivity {
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-    
-    //Methods for exporting and importing temporarily put here, place wherever shopping cart functionality is later
-    public void exportCharSet(){
-    	
-    }
-    
-    public void importCharSet(){
-    
     }
     
 }

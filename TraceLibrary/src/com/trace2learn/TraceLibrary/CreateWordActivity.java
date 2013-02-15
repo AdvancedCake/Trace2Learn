@@ -1,6 +1,7 @@
 package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -90,16 +91,9 @@ public class CreateWordActivity extends Activity {
         gallery.setAdapter(imgAdapter);
 
         newWord = new LessonWord();
-        items = new ArrayList<LessonItem>();
+
         List<String> ids = dba.getAllCharIds();
-        for(String id : ids) {
-            LessonItem character = dba.getCharacterById(id);
-            items.add(character);
-        }
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        charAdapter = new LessonItemListAdapter(this, items, vi);
-        charList.setAdapter(charAdapter);
+        setCharList(ids);
     }
     
     @Override
@@ -352,12 +346,12 @@ public class CreateWordActivity extends Activity {
             LessonItem character;
             try {
                 character = dba.getCharacterById(id);
+                items.add(character);
             } catch(Exception e) {
-                character = new LessonCharacter(id);
                 Log.d("SEARCH", "Character " + id + " not found in db");
             }
-            items.add(character);
         }
+        Collections.sort(items);
         LayoutInflater vi = (LayoutInflater) getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         charAdapter = new LessonItemListAdapter(this, items, vi);
