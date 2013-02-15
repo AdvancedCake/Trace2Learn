@@ -48,5 +48,7 @@
     <string name="back">Back</string>
     <string name="file_header">Import from file</string>
     <string name="type">Type</string>
+    <string name="undo">Undo</string>
+    <string name="delete">Delete</string>
 
 </resources>

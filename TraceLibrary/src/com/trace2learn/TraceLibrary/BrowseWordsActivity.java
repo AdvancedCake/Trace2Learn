@@ -19,7 +19,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -40,7 +39,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;
@@ -160,6 +158,8 @@ public class BrowseWordsActivity extends ListActivity {
         Log.e("MenuIndex",Integer.toString(menuItemIndex));
         Log.e("ListIndex",Integer.toString(info.position));
 
+        Context context = getApplicationContext();
+        
         // add to collection
         if(menuItemIndex == menuItemsInd.Add2Lesson.ordinal()){
             initiatePopupWindow();
@@ -180,11 +180,11 @@ public class BrowseWordsActivity extends ListActivity {
             Boolean success = dba.deleteWord(id);
             Log.d("Result",success.toString());
             if(!success){
-                showToast("Could not delete the word");
+                Toolbox.showToast(context, "Could not delete the word");
                 return false;
             }
             else{
-                showToast("Successfully deleted");
+                Toolbox.showToast(context, "Successfully deleted");
                 startActivity(getIntent()); 
                 finish();
                 return true;
@@ -206,10 +206,10 @@ public class BrowseWordsActivity extends ListActivity {
 
             // check that item exists
             if (otherPos < 0) {
-                showToast("Cannot move this word up");
+                Toolbox.showToast(context, "Cannot move this word up");
                 return false;
             } else if (otherPos >= items.size()) {
-                showToast("Cannot move this word down");
+                Toolbox.showToast(context, "Cannot move this word down");
                 return false;
             }
 
@@ -249,20 +249,11 @@ public class BrowseWordsActivity extends ListActivity {
                 }
             }
             Log.e("Move result", Boolean.toString(result));
-            showToast("Move failed");
+            Toolbox.showToast(context, "Move failed");
             return false;
         }
 
         return false;
-    }
-
-    public void showToast(String msg){
-        Context context = getApplicationContext();
-        CharSequence text = msg;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 
     private void initiatePopupWindow(){
@@ -292,7 +283,7 @@ public class BrowseWordsActivity extends ListActivity {
                     Log.e("name",name);
                     String success = dba.addWordToLesson(name, lw.getStringId());
                     Log.e("adding word",success);
-                    showToast("Successfully Added");
+                    Toolbox.showToast(getApplicationContext(), "Successfully Added");
                     window.dismiss();
                 }
             });
@@ -308,18 +299,19 @@ public class BrowseWordsActivity extends ListActivity {
     }
 
     public void onNewCollectionButtonClick(View view){
+        Context  context  = getApplicationContext();
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
-        Editable edit = editText.getText();
-        String name = edit.toString();
+        
+        String name = editText.getText().toString();
         if(name.equals("")){
-            showToast("You must name the lesson!");
+            Toolbox.showToast(context, "You must name the lesson!");
             return;
         }
         Lesson lesson = new Lesson();
         lesson.setName(name);
         lesson.addWord(lw.getStringId());
         dba.addLesson(lesson);
-        showToast("Successfully Created");
+        Toolbox.showToast(context, "Successfully Created");
         window.dismiss();
     }
 

@@ -31,7 +31,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
@@ -119,6 +118,8 @@ public class BrowseCharactersActivity extends ListActivity {
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
+	  Context context = getApplicationContext();
+	  
 	  // edit tags
 	  if (menuItemIndex == menuItemsInd.EditTags.ordinal()) {
 		  Intent i = new Intent(this, TagActivity.class);
@@ -134,11 +135,11 @@ public class BrowseCharactersActivity extends ListActivity {
 		  boolean result = dba.deleteCharacter(id);
 		  Log.d("Result", Boolean.toString(result));
 		  if(result==false){
-			  showToast("Character is used by a word: cannot delete");
+			  Toolbox.showToast(context, "Character is used by a word: cannot delete");
 			  return false;
 		  }
 		  else{
-			  showToast("Successfully deleted");
+			  Toolbox.showToast(context, "Successfully deleted");
 			  startActivity(getIntent()); 
 			  finish();
 			  return true;
@@ -160,10 +161,10 @@ public class BrowseCharactersActivity extends ListActivity {
 	      
 	      // check that item exists
 	      if (otherPos < 0) {
-	          showToast("Cannot move this character up");
+	          Toolbox.showToast(context, "Cannot move this character up");
 	          return false;
 	      } else if (otherPos >= items.size()) {
-              showToast("Cannot move this character down");
+              Toolbox.showToast(context, "Cannot move this character down");
               return false;
 	      }
 	      
@@ -182,21 +183,12 @@ public class BrowseCharactersActivity extends ListActivity {
               return true;
 	      }
 	      else {
-	          showToast("Move failed");
+	          Toolbox.showToast(context, "Move failed");
 	          return false;
 	      }
 	  }
 	  
 	  return false;
-	}
-	
-	public void showToast(String msg){
-		Context context = getApplicationContext();
-		CharSequence text = msg;
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
 	}
 
 	@Override

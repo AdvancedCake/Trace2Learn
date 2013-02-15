@@ -21,7 +21,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 
 public class BrowseLessonsActivity extends ListActivity {
 	private Lesson le;
@@ -92,30 +91,22 @@ public class BrowseLessonsActivity extends ListActivity {
 
 	  //delete lesson
 	  if(menuItemIndex==0){
+	      Context context = getApplicationContext();
 		  String id = le.getStringId();
 		  String result = dba.deleteLesson(id);
 		  Log.e("Result", result);
 		  if(result == null){
-			  showToast("Could not delete the lesson");
+			  Toolbox.showToast(context, "Could not delete the lesson");
 			  return false;
 		  }
 		  else{
-			  showToast("Successfully deleted");
+			  Toolbox.showToast(context, "Successfully deleted");
 			  startActivity(getIntent()); 
 			  finish();
 			  return true;
 		  }
 	  }
 	  return false;
-	}
-
-	public void showToast(String msg){
-		Context context = getApplicationContext();
-		CharSequence text = msg;
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
 	}
 
 }

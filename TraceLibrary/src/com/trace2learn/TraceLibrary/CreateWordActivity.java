@@ -25,6 +25,7 @@ import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -37,21 +38,32 @@ import android.widget.Gallery;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class CreateWordActivity extends Activity {
     
-    private DbAdapter dba;
-    private LessonWord newWord;
-    private ListView charList, lessonList;
+    private DbAdapter             dba;
+    private LessonWord            newWord;
     private ArrayList<LessonItem> items;
     private LessonItemListAdapter charAdapter;
-    private ArrayList<Bitmap> currentChars;
-    private Gallery gallery;
-    private ImageAdapter imgAdapter;
-    private int numChars;
+    private ArrayList<Bitmap>     currentChars;
+    private ImageAdapter          imgAdapter;
+    
+    // Activity views
+    private Gallery  gallery;
+    private ListView charList;
+    private TextView filterStatus;
+    private Button   clearButton;
+    private Button   delButton;
+    private Button   cancelButton;
+    private Button   saveButton;
+    private Button   filterButton;
+    
+    // Lesson popup views
     private PopupWindow window;
-    private View layout;
+    private View        layout;
+    private ListView    lessonList;
+    
+    private int     numChars;
     private boolean saved;
     private boolean filtered;
     
@@ -65,55 +77,129 @@ public class CreateWordActivity extends Activity {
         numChars = 0;
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
-        findViewById(R.id.filterStatus).setVisibility(View.GONE);
+        initViews();
+        initHandlers();
+        
         dba = new DbAdapter(this);
         dba.open();
+
+        filterStatus.setVisibility(View.GONE);
         
         imgAdapter = new ImageAdapter(this,currentChars);
-        gallery = (Gallery)findViewById(R.id.gallery);
         gallery.setSpacing(0);
-        
         gallery.setAdapter(imgAdapter);
-        
-        charList = (ListView)findViewById(R.id.charslist);
 
         newWord = new LessonWord();
         items = new ArrayList<LessonItem>();
         List<String> ids = dba.getAllCharIds();
         for(String id : ids) {
             LessonItem character = dba.getCharacterById(id);
-            //TODO: character.setTagList(dba.getCharacterTags(id)); 
             items.add(character);
         }
         LayoutInflater vi = (LayoutInflater) getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         charAdapter = new LessonItemListAdapter(this, items, vi);
         charList.setAdapter(charAdapter);
-        //dba.close();        
-
-        //when a char is clicked, it is added to the new word and added to the gallery
-        charList.setOnItemClickListener(new OnItemClickListener() {
-    
-            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-                numChars++;
-                String charId = ((LessonCharacter)charList.getItemAtPosition(position)).getStringId();
-                newWord.addCharacter(charId);
-                LessonItem item = (LessonCharacter)charList.getItemAtPosition(position);
-                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
-                currentChars.add(bitmap);
-                imgAdapter.update(currentChars);
-                imgAdapter.notifyDataSetChanged();
-                gallery.setSelection(numChars/2);
-            }
-        });
-        
     }
     
     @Override
     protected void onDestroy() {
         super.onDestroy();
         dba.close();
-    };
+    }
+    
+    private void initViews() {
+        gallery      = (Gallery)  findViewById(R.id.gallery);
+        charList     = (ListView) findViewById(R.id.charList);
+        filterStatus = (TextView) findViewById(R.id.filterStatus);
+        clearButton  = (Button)   findViewById(R.id.clearButton);
+        delButton    = (Button)   findViewById(R.id.delButton);
+        cancelButton = (Button)   findViewById(R.id.cancelButton);
+        saveButton   = (Button)   findViewById(R.id.saveButton);
+        filterButton = (Button)   findViewById(R.id.filterButton);
+    }
+    
+    private void initHandlers() {
+        //when a char is clicked, it is added to the new word and added to the gallery
+        charList.setOnItemClickListener(new OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
+                numChars++;
+                LessonItem item = (LessonCharacter) charList.getItemAtPosition(position);
+                String charId = item.getStringId();
+                newWord.addCharacter(charId);
+                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
+                currentChars.add(bitmap);
+                imgAdapter.update(currentChars);
+                imgAdapter.notifyDataSetChanged();
+                gallery.setSelection(numChars / 2);
+            }
+        });
+        
+        // clear button - clears the current word
+        clearButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                numChars = 0;
+                newWord.clearCharacters();
+                currentChars.clear();
+                imgAdapter.update(currentChars);
+                imgAdapter.notifyDataSetChanged();
+            }
+        });
+        
+        // delete button - deletes the last character in the word
+        delButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (numChars == 0) {
+                    return;
+                }
+                numChars--;
+                newWord.removeLastCharacter();
+                currentChars.remove(currentChars.size() - 1);
+                imgAdapter.update(currentChars);
+                imgAdapter.notifyDataSetChanged();
+                gallery.setSelection(numChars / 2);
+            }
+        });
+        
+        // filter button - either shows the filter popup or clears the filter
+        filterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (filtered) {
+                    clearFilter();
+                } else {
+                    showFilterPopup();
+                }
+            }
+        });
+        
+        // save button - prompts to add word to a lesson
+        saveButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Context context = getApplicationContext();
+                if(newWord.length() > 0 && dba.addWord(newWord)){
+                    saved = true;
+                    Toolbox.showToast(context, "Successfully added!");
+                    initiatePopupWindow();
+                    return;
+                }
+                Toolbox.showToast(context, "Word is empty!");
+            }
+        });
+        
+        // cancel button - finishes this activity
+        cancelButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(RESULT_CANCELED);
+                finish();
+            }
+        });
+
+    }
     
     private void initiatePopupWindow(){
         try {
@@ -144,28 +230,22 @@ public class CreateWordActivity extends Activity {
                    window.dismiss();
                 }
             });
-            
-            
-            /*mResultText = (TextView) layout.findViewById(R.id.server_status_text);
-            Button cancelButton = (Button) layout.findViewById(R.id.end_data_send_button);
-            makeBlack(cancelButton);
-            cancelButton.setOnClickListener(cancel_button_click_listener);*/
-     
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
     
-    public void onSkipButtonClick(View view){
+    public void lessonPopupOnClickSkip(View view){
         window.dismiss();
     }
     
-    public void onNewCollectionButtonClick(View view){
+    public void lessonPopupOnClickNewLesson(View view){
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
         Editable edit = editText.getText();
         String name = edit.toString();
         if(name.equals("")){
-            showToast("You must name the lesson!");
+            Toolbox.showToast(getApplicationContext(),
+                    "You must name the lesson!");
             return;
         }
         Lesson lesson = new Lesson();
@@ -173,40 +253,6 @@ public class CreateWordActivity extends Activity {
         lesson.addWord(newWord.getStringId());
         dba.addLesson(lesson);
         window.dismiss();
-    }
-    
-    //adds the new word to the database
-    public void onSaveWordButtonClick(View view){
-        if(newWord.length() > 0 && dba.addWord(newWord)){
-            saved = true;
-            TextView word = (TextView)findViewById(R.id.characters);
-            word.setText("Successfully added!");
-            initiatePopupWindow();
-            return;
-        }
-        showToast("Word is empty");
-        //return to home screen
-    }
-    
-    //brings the user to the tag screen
-    public void onAddTagButtonClick(View view){
-        if(!saved){
-            showToast("Save the word first");
-            return;
-        }
-        Intent i = new Intent(this, TagActivity.class);
-        i.putExtra("ID", newWord.getStringId());
-        i.putExtra("TYPE", newWord.getItemType().toString());
-        startActivity(i);
-    }
-    
-    // depending on the state, shows the filter popup or clears the filter
-    public void onClickFilter(View view) {
-        if (filtered) {
-            clearFilter();
-        } else {
-            showFilterPopup();
-        }
     }
     
     // displays the filter popup
@@ -240,7 +286,7 @@ public class CreateWordActivity extends Activity {
                 setCharList(ids);
                 
                 // Set state to filtered
-                ((Button)findViewById(R.id.filter_button)).setText(R.string.clear_filter);
+                ((Button)findViewById(R.id.filterButton)).setText(R.string.clear_filter);
                 filtered = true;
                 hideKeyboard(filterText);
                 
@@ -264,7 +310,7 @@ public class CreateWordActivity extends Activity {
     // clears the filter
     public void clearFilter() {
         setCharList(dba.getAllCharIds());
-        ((Button)findViewById(R.id.filter_button)).setText(R.string.filter);
+        ((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
         filtered = false;
         findViewById(R.id.filterStatus).setVisibility(View.GONE);
     }
@@ -297,14 +343,5 @@ public class CreateWordActivity extends Activity {
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-    }
-    
-    public void showToast(String msg){
-        Context context = getApplicationContext();
-        CharSequence text = msg;
-        int duration = Toast.LENGTH_SHORT;
-
-        Toast toast = Toast.makeText(context, text, duration);
-        toast.show();
     }
 }

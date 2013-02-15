@@ -228,7 +228,7 @@ public class ShoppingCartActivity extends Activity {
 
         builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                String search = filterText.getText().toString().toLowerCase();
+                String search = filterText.getText().toString();
                 if (search.equals("")) {
                     hideKeyboard(filterText);
                     return;
@@ -244,16 +244,14 @@ public class ShoppingCartActivity extends Activity {
                         topLoop: for (LessonItem item : display) {
                             List<String> tags = item.getTags();
                             for (String tag : tags) {
-                                if ((search.length() >= 2 && tag.toLowerCase().contains(search)) ||
-                                        tag.equalsIgnoreCase(search)) {
+                                if (Toolbox.containsMatch(2, tag, search)) {
                                     newList.add(item);
                                     continue topLoop;
                                 }
                             }
                             Collection<String> values = item.getKeyValues().values();
                             for (String value : values) {
-                                if ((search.length() >= 2 && value.toLowerCase().contains(search)) ||
-                                        value.equalsIgnoreCase(search)) {
+                                if (Toolbox.containsMatch(2, value, search)) {
                                     newList.add(item);
                                     continue topLoop;
                                 }
@@ -263,8 +261,7 @@ public class ShoppingCartActivity extends Activity {
                     case LESSON:
                         for (LessonItem item : display) {
                             String name = ((Lesson) item).getLessonName();
-                            if ((search.length() >= 2 && name.toLowerCase().contains(search)) ||
-                                    name.equalsIgnoreCase(search)) {
+                            if (Toolbox.containsMatch(2, name, search)) {
                                 newList.add(item);
                             }
                         }

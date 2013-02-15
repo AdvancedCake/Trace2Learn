@@ -23,7 +23,6 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
 import android.widget.Gallery;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ViewAnimator;
 
 @SuppressLint("HandlerLeak")
@@ -121,7 +120,8 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private void initializeMode() 
 	{
-		Bundle bun = getIntent().getExtras();
+		Bundle bun      = getIntent().getExtras();
+		Context context = getApplicationContext();
 		if (bun != null && bun.containsKey("wordId")) 
 		{
 			String wordId = bun.getString("wordId");
@@ -138,8 +138,8 @@ public class PhrasePracticeActivity extends Activity {
 				_lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
 				_phraseTitle.setText(_lessonName + " - " + _wordIndex + 
 				                     " of " + _collectionSize);
-				showToast(_lessonName + " - " + _wordIndex + 
-				          " of " + _collectionSize);
+				Toolbox.showToast(context, _lessonName + " - " + _wordIndex +
+				        " of " + _collectionSize);
 			}
 			
 			String mode = bun.getString("mode");
@@ -151,7 +151,7 @@ public class PhrasePracticeActivity extends Activity {
 		}
 		else
 		{
-			showToast("No word selected");
+			Toolbox.showToast(context, "No word selected");
 			finish();
 		}
 	}
@@ -296,15 +296,6 @@ public class PhrasePracticeActivity extends Activity {
 		setDisplayPane();
 	}
 	
-	public void showToast(String msg){
-		Context context = getApplicationContext();
-		CharSequence text = msg;
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
-	}
-	
 	Handler moveToNext = new Handler() {
 		@Override
 		public void handleMessage(Message m) {
@@ -324,7 +315,8 @@ public class PhrasePracticeActivity extends Activity {
 						finish();
 					} else {
 						// the last word in the collection
-						showToast("Reached the last word in " + _lessonName);
+						Toolbox.showToast(getApplicationContext(),
+						        "Reached the last word in " + _lessonName);
 					}
 				}
 			}

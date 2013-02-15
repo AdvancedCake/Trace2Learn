@@ -27,7 +27,7 @@ public class FileItem implements Comparable<FileItem> {
     public int compareTo(FileItem other) {
         if (name == null) { return 1; }
         else if (other.name == null) { return -1; }
-        return name.toLowerCase().compareTo(other.getName().toLowerCase());
+        return name.compareToIgnoreCase(other.name);
     }
 
 }

@@ -63,20 +63,23 @@ public class LessonWord extends LessonItem {
 		return chars;
 	}
 	
-	public int length()
-	{
+	public int length()	{
 		return _characters.size();
 	}
 	
-	public boolean removeCharacter(String character){
+	public boolean removeCharacter(String character) {
 		return _characters.remove(character);
 	}
 	
-	public String removeCharacter(int i){
+	public String removeCharacter(int i) {
 		return _characters.remove(i);
 	}
 	
-	public void clearCharacters(){
+	public String removeLastCharacter() {
+	    return _characters.remove(_characters.size() - 1);
+	}
+	
+	public void clearCharacters() {
 		_characters.clear();
 	}
 	

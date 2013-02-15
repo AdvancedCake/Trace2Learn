@@ -1,11 +1,9 @@
 package com.trace2learn.TraceLibrary;
 
-
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -14,7 +12,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 public class ViewCharacterActivity extends Activity {
 
@@ -242,7 +239,8 @@ public class ViewCharacterActivity extends Activity {
             case CREATION: // "save"
                 LessonCharacter character = _creationPane.getCharacter();
                 if(character.getNumStrokes() == 0){
-                    showToast("Please add a stroke");
+                    Toolbox.showToast(getApplicationContext(),
+                            "Please add a stroke");
                     return;
                 }
                 saveChar(character);
@@ -266,7 +264,7 @@ public class ViewCharacterActivity extends Activity {
             _dbHelper.modifyCharacter(character);
         Log.e("Adding to DB", character.getStringId());
         id_to_pass = character.getStringId();
-        showToast("Character saved");
+        Toolbox.showToast(getApplicationContext(), "Character saved");
     }
     
 	public void createTags() 
@@ -309,15 +307,6 @@ public class ViewCharacterActivity extends Activity {
 	        setResult(RESULT_CANCELED);
 	    }
 	    finish();
-	}
-	
-	public void showToast(String msg){
-		Context context = getApplicationContext();
-		CharSequence text = msg;
-		int duration = Toast.LENGTH_SHORT;
-
-		Toast toast = Toast.makeText(context, text, duration);
-		toast.show();
 	}
 
 }
