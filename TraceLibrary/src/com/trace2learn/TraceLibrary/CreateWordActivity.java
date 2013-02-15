@@ -64,7 +64,6 @@ public class CreateWordActivity extends Activity {
     private ListView    lessonList;
     
     private int     numChars;
-    private boolean saved;
     private boolean filtered;
     
     private static enum requestCodeENUM { EditTag };
@@ -74,7 +73,6 @@ public class CreateWordActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        saved = false;
         filtered = false;
         numChars = 0;
         currentChars = new ArrayList<Bitmap>();
@@ -183,7 +181,6 @@ public class CreateWordActivity extends Activity {
             public void onClick(View v) {
                 Context context = getApplicationContext();
                 if(newWord.length() > 0 && dba.addWord(newWord)){
-                    saved = true;
                     Toolbox.showToast(context, "Word saved");
                     initiatePopupWindow();
                     return;
