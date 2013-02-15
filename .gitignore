@@ -1,6 +1,10 @@
+# Eclipse
 gen
 bin
 .project
 .classpath
 .settings
 .metadata
+
+# Microsoft
+~$*
