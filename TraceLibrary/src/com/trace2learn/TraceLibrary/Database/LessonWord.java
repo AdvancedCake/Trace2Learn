@@ -16,15 +16,14 @@ public class LessonWord extends LessonItem {
 	
 	private List<String> _characters;
 	
-	public LessonWord(){
-		_type = ItemType.WORD;
-		_characters = new ArrayList<String>();
+	public LessonWord() {
+        this(null);
 	}
 	
-	public LessonWord(String id)
-	{
-		this();
-		_stringid = id;
+	public LessonWord(String id) {
+        _type       = ItemType.WORD;
+        _characters = new ArrayList<String>();
+		_stringid   = id;
 	}		
 	
 	//takes the id of a character, adds the id to internal characterid list

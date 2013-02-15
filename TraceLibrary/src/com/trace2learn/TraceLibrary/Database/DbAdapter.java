@@ -780,7 +780,7 @@ public class DbAdapter {
             }
     	}
     	else{
-    		wordId= makeUniqueId();
+    		wordId = makeUniqueId();
     		initialWordsValues.put(WORDS_ID, wordId);
     	}
     	
@@ -1702,7 +1702,7 @@ public class DbAdapter {
 	public String makeUniqueId(){
 		TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
 		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
-		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSSZ");
+		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
 		String sDate = dtFmt.format(new Date());
 		Log.d("uniqueID", sIMEI + "_" + sDate); // testing + exceed the maximum of long int
 		

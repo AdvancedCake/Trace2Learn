@@ -67,6 +67,8 @@ public class CreateWordActivity extends Activity {
     private boolean saved;
     private boolean filtered;
     
+    private static enum requestCodeENUM { EditTag };
+    
     
     //initializes the list if all characters in the database
     @Override
@@ -182,7 +184,7 @@ public class CreateWordActivity extends Activity {
                 Context context = getApplicationContext();
                 if(newWord.length() > 0 && dba.addWord(newWord)){
                     saved = true;
-                    Toolbox.showToast(context, "Successfully added!");
+                    Toolbox.showToast(context, "Word saved");
                     initiatePopupWindow();
                     return;
                 }
@@ -228,6 +230,7 @@ public class CreateWordActivity extends Activity {
                    String success = dba.addWordToLesson(name, newWord.getStringId());
                    Log.e("adding word",success);
                    window.dismiss();
+                   createTags();
                 }
             });
         } catch (Exception e) {
@@ -237,6 +240,7 @@ public class CreateWordActivity extends Activity {
     
     public void lessonPopupOnClickSkip(View view){
         window.dismiss();
+        createTags();
     }
     
     public void lessonPopupOnClickNewLesson(View view){
@@ -253,6 +257,30 @@ public class CreateWordActivity extends Activity {
         lesson.addWord(newWord.getStringId());
         dba.addLesson(lesson);
         window.dismiss();
+        createTags();
+    }
+    
+    private void createTags() {
+        String id = newWord.getStringId();
+        if (id != null) {
+            Log.e("Passing this WordID", id);
+            Intent i = new Intent(this, TagActivity.class);
+
+            i.putExtra("ID", id);
+            i.putExtra("TYPE", newWord.getItemType().toString());
+
+            startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
+        } else {
+            Toolbox.showToast(getApplicationContext(),
+                    "Error: Save the word before adding tags");
+        }
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == requestCodeENUM.EditTag.ordinal()) {
+            finish();
+        }
     }
     
     // displays the filter popup

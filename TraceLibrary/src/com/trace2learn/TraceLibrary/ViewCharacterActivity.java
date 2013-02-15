@@ -217,7 +217,7 @@ public class ViewCharacterActivity extends Activity {
 	    }
 	}
 
-	public void onLeft2ButtonClick(View view) { // "not used"
+	public void onLeft2ButtonClick(View view) { // not used
 	}
 
     public void onRight2ButtonClick(View view) { // "practice" or "cancel"
@@ -267,11 +267,9 @@ public class ViewCharacterActivity extends Activity {
         Toolbox.showToast(getApplicationContext(), "Character saved");
     }
     
-	public void createTags() 
-	{
+	public void createTags() {
 		LessonCharacter character = _creationPane.getCharacter();
-		if (id_to_pass != null) 
-		{
+		if (id_to_pass != null) {
 			Log.e("Passing this CharID", id_to_pass);
 			Intent i = new Intent(this, TagActivity.class);
 
@@ -279,20 +277,17 @@ public class ViewCharacterActivity extends Activity {
 			i.putExtra("TYPE", character.getItemType().toString());
 
 			startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
-		} else
-		{
+		} else {
 			_tagText.setText("Error: Save the character before adding tags");
 		}
-
 	}
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (requestCode == requestCodeENUM.EditTag.ordinal() 
-	            && resultCode == RESULT_OK) {
-	        isChanged = true;
+	    if (requestCode == requestCodeENUM.EditTag.ordinal()) {
+	        isChanged = resultCode == RESULT_OK;
+	        close();
 	    }
-	    close();
 	}
 	
 	@Override
