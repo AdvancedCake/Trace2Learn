@@ -42,7 +42,7 @@ import android.widget.Toast;
 public class ShoppingCartActivity extends Activity {
 
     private ItemType type; // determines the type of items being displayed
-    private List<LessonItem> source; // all items of the specified type
+    private List<LessonItem> source;  // all items of the specified type
     private List<LessonItem> display; // items to be displayed
     private List<LessonItem> cart;
     private ShoppingCartListAdapter adapter;
