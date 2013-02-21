@@ -955,6 +955,9 @@ public class DbAdapter {
     }    
     
     /**
+     * THIS METHOD DOES NOT WORK CORRECTLY.
+     * A match is only returned if the item has both a tag and an ID.
+     * 
      * Return a Cursor positioned at the item that matches the partial tag
      * if the tag is more than 2 chars, or the entire tag for 1 or 2 chars.
      * 
