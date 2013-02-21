@@ -35,12 +35,12 @@ public class BrowseCharactersActivity extends ListActivity {
 	private ArrayList<LessonItem> display; // list of items being displayed
 	private LessonItemListAdapter adapter;
 	
-	private boolean filtered;
+	private ListView list;
+	private Button   filterButton;
 	private TextView filterStatus;
+    private boolean filtered;
 	
 	private LayoutInflater vi;
-	
-	//TODO replace findViewById() calls
 	
 	private static final String[] menuItems = {"Edit Tags",
 	                                           "Move Up",
@@ -61,12 +61,19 @@ public class BrowseCharactersActivity extends ListActivity {
         dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
+        getViews();
+        
         getChars();
         displayAllChars();
         
-        registerForContextMenu(getListView());
+        registerForContextMenu(list);
         
         filtered = false;
+	}
+
+	private void getViews() {
+	    list = getListView();
+	    filterButton = (Button)   findViewById(R.id.filterButton);
         filterStatus = (TextView) findViewById(R.id.filterStatus);
 	}
 	
@@ -278,7 +285,7 @@ public class BrowseCharactersActivity extends ListActivity {
                 displayChars();
                 
                 // Set state to filtered
-                ((Button)findViewById(R.id.filterButton)).setText(R.string.clear_filter);
+                filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
                 hideKeyboard(filterText);
@@ -301,7 +308,7 @@ public class BrowseCharactersActivity extends ListActivity {
     // clears the filter
     private void clearFilter() {
         displayAllChars();
-        ((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
+        filterButton.setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
     }
