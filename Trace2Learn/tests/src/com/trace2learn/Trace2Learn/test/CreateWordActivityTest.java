@@ -22,7 +22,7 @@ public class CreateWordActivityTest extends ActivityInstrumentationTestCase2<Cre
 	public void setUp() throws Exception {
 		super.setUp();
 		activity = getActivity();
-		list = (ListView)activity.findViewById(R.id.charslist);
+		list = (ListView)activity.findViewById(R.id.charList);
 	}
 	
 	public void testOneChar(){
