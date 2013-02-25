@@ -1,6 +1,7 @@
 package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
@@ -58,6 +59,8 @@ public class PhrasePracticeActivity extends Activity {
 	
 	private Button playButton;
 	private Button traceButton;
+	
+	private final String PINYIN_KEY = "pinyin";
 	
 	private enum Mode {
 		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
@@ -255,19 +258,23 @@ public class PhrasePracticeActivity extends Activity {
 //		_playbackPane.setCharacter(character);
 //		_tracePane.setTemplate(character);
 //	}
-
+	
 	private void updateTags()
 	{
-		if (_word != null) {						
+		if (_word != null) {
 			StringBuilder sb = new StringBuilder();
-			sb.append(_word.getKeyValuesToString());
-			if (_word.getKeyValues().size() > 0 && _word.getTags().size() > 0) {
-				sb.append(", ");
-			}
+			// display any tags
 			sb.append(_word.getTagsToString());
+			HashMap<String, String> map = _word.getKeyValues();
+			if (map.containsKey(PINYIN_KEY)) {
+				if (sb.length() > 0) sb.append("\n");
+				sb.append("(");
+				sb.append(map.get(PINYIN_KEY));
+				sb.append(")");
+			}
 			
 			_tagText.setText(sb.toString());
-		} 
+		}
 	}
 
 	public void onClearButtonClick(View view)
