@@ -2,22 +2,15 @@ package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
-
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.Lesson;
-import com.trace2learn.TraceLibrary.Database.LessonItem;
-import com.trace2learn.TraceLibrary.Database.LessonWord;
-import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -40,18 +33,31 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.Lesson;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
+
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;
+    private List<LessonItem> source;  // list of all characters
+    private List<LessonItem> display; // list of items being displayed
     private LessonItemListAdapter adapter;
-    private List<LessonItem> items;
+
+    private ListView list;
+    private TextView title;
+    private Button   filterButton;
+    private TextView filterStatus;
+    private boolean  filtered;
+
+    private LayoutInflater vi;
+    private String lessonID;
+
+    // Lesson popup views
     private View layout;
     private PopupWindow window;
     private LessonWord lw;
-    private String lessonID;
-    
-    private boolean filtered;
-	private TextView filterStatus;
-	
+
     private static final String[] menuItems = { "Add to Lesson",
                                                 "Edit Tags",
                                                 "Move Up",
@@ -70,17 +76,37 @@ public class BrowseWordsActivity extends ListActivity {
         setContentView(R.layout.create_lesson);
         dba = new DbAdapter(this);
         dba.open();
+        vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
+        getViews();
+        
+        getWords();
+        displayAllWords();
 
-        //Set up the ListView
-        items = new ArrayList<LessonItem>(); //items to show in ListView to choose from 
+        registerForContextMenu(list);
+        
+        filtered = false;
+    }
+    
+    private void getViews() {
+        list = getListView();
+        title        = (TextView) findViewById(R.id.instructions);
+        filterButton = (Button)   findViewById(R.id.filterButton);
+        filterStatus = (TextView) findViewById(R.id.filterStatus);
+    }
+    
+    /**
+     * Populate the source list with words
+     */
+    private void getWords() {
         lessonID = this.getIntent().getStringExtra("ID");
         if(lessonID == null){
             List<String> ids = dba.getAllWordIds();
+            source = new ArrayList<LessonItem>(ids.size());
             for(String id : ids){
                 LessonWord word = dba.getWordById(id);
-                items.add(word);
+                source.add(word);
             }
-            Collections.sort(items);
         }
         else{
             Lesson les = dba.getLessonById(lessonID);
@@ -88,22 +114,29 @@ public class BrowseWordsActivity extends ListActivity {
             int size = les.length();
 
             // set lesson title
-            TextView title = (TextView)findViewById(R.id.instructions);
             if (size == 1) { title.setText(name + ": " + size + " word"); }
             else { title.setText(name + ": " + size + " words"); }
 
             // populate words
-            items = les.getWords();
+            source = les.getWords();
         }
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new LessonItemListAdapter(this, items, vi);
+    }
+    
+    /**
+     * Set display list to source list, thus displaying all words
+     */
+    private void displayAllWords() {
+        display = source;
+        displayWords();
+    }
+    
+    /**
+     * Display the current display list
+     */
+    private void displayWords() {
+        Collections.sort(display);
+        adapter = new LessonItemListAdapter(this, display, vi);
         setListAdapter(adapter);
-
-        registerForContextMenu(getListView());
-        
-        filtered = false;
-        filterStatus = (TextView) findViewById(R.id.filterStatus);
     }
     
     @Override
@@ -116,7 +149,7 @@ public class BrowseWordsActivity extends ListActivity {
     @Override  
     protected void onListItemClick(ListView l, View v, int position, long id) {  
         super.onListItemClick(l, v, position, id);
-        clickOnItem(items.get(position), position, "trace"); // start in trace mode
+        clickOnItem(display.get(position), position, "trace"); // start in trace mode
     }  
  
     /**
@@ -134,7 +167,7 @@ public class BrowseWordsActivity extends ListActivity {
         bun.putString("wordId", li.getStringId());
         bun.putString("lessonID", lessonID);
         bun.putInt("index", position + 1);
-        bun.putInt("collectionSize", items.size());
+        bun.putInt("collectionSize", display.size());
 
         intent.setClass(this, PhrasePracticeActivity.class);
         intent.putExtras(bun);
@@ -154,7 +187,7 @@ public class BrowseWordsActivity extends ListActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        lw = (LessonWord) items.get(info.position);
+        lw = (LessonWord) display.get(info.position);
         Log.e("MenuIndex",Integer.toString(menuItemIndex));
         Log.e("ListIndex",Integer.toString(info.position));
 
@@ -208,12 +241,12 @@ public class BrowseWordsActivity extends ListActivity {
             if (otherPos < 0) {
                 Toolbox.showToast(context, "Cannot move this word up");
                 return false;
-            } else if (otherPos >= items.size()) {
+            } else if (otherPos >= display.size()) {
                 Toolbox.showToast(context, "Cannot move this word down");
                 return false;
             }
 
-            LessonWord other = (LessonWord) items.get(otherPos);
+            LessonWord other = (LessonWord) display.get(otherPos);
             boolean result;
             if (lessonID == null) { // browsing all words
                 result = dba.swapWords(lw.getStringId(), lw.getSort(), 
@@ -223,8 +256,8 @@ public class BrowseWordsActivity extends ListActivity {
                     double temp = lw.getSort();
                     lw.setSort(other.getSort());
                     other.setSort(temp);
-                    Collections.sort(items);
-                    adapter._items = items;
+                    Collections.sort(display);
+                    adapter._items = display;
                     adapter.notifyDataSetChanged();
                     return true;
                 }
@@ -233,17 +266,17 @@ public class BrowseWordsActivity extends ListActivity {
                                                other.getStringId());
                 if (result) {
                     // success, so update the local copy
-                    LessonItem[] arr = new LessonItem[items.size()];
-                    arr = items.toArray(arr);
+                    LessonItem[] arr = new LessonItem[display.size()];
+                    arr = display.toArray(arr);
                     
-                    int lwIndex = items.indexOf(lw);
-                    int otherIndex = items.indexOf(other);
+                    int lwIndex = display.indexOf(lw);
+                    int otherIndex = display.indexOf(other);
                     LessonItem temp = arr[lwIndex];
                     arr[lwIndex] = arr[otherIndex];
                     arr[otherIndex] = temp;
                     
-                    items = new ArrayList<LessonItem>(Arrays.asList(arr)); 
-                    adapter._items = items;
+                    display = new ArrayList<LessonItem>(Arrays.asList(arr)); 
+                    adapter._items = display;
                     adapter.notifyDataSetChanged();
                     return true;
                 }
@@ -324,8 +357,8 @@ public class BrowseWordsActivity extends ListActivity {
         } else if (requestCode == requestCodeENUM.PhrasePractice.ordinal() && 
                 resultCode == RESULT_OK) {
             int next = data.getExtras().getInt("next");
-            if (next < items.size()) {
-                clickOnItem(items.get(next), next, "trace");
+            if (next < display.size()) {
+                clickOnItem(display.get(next), next, "trace");
             }
         }
     }
@@ -342,7 +375,7 @@ public class BrowseWordsActivity extends ListActivity {
     }
     
     // displays the filter pop up
-    public void showFilterPopup() {
+    private void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
         
@@ -357,22 +390,31 @@ public class BrowseWordsActivity extends ListActivity {
                     return;
                 }
 
-                // Filter action: query for words and set word list
-                Cursor c = dba.browseByTag(ItemType.WORD, search);
-                List<String> ids = new LinkedList<String>();
-                do {
-                    if (c.getCount() == 0) {
-                        Log.d(ACTIVITY_SERVICE, "zero rows");
-                        break;
+                // Filter action: keep matching items from display list
+                // Note that it should be partial match for search terms 3
+                // characters or more.
+                ArrayList<LessonItem> newList = new ArrayList<LessonItem>();
+                topLoop: for (LessonItem item : display) {
+                    List<String> tags = item.getTags();
+                    for (String tag : tags) {
+                        if (Toolbox.containsMatch(2, tag, search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
                     }
-                    ids.add(c.getString(c.getColumnIndexOrThrow(
-                            DbAdapter.WORDTAG_ID)));
-                } while (c.moveToNext());
-                c.close();
-                setWordList(ids);
+                    Collection<String> values = item.getKeyValues().values();
+                    for (String value : values) {
+                        if (Toolbox.containsMatch(2, value, search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
+                    }
+                }
+                display = newList;
+                displayWords();
                 
                 // Set state to filtered
-                ((Button)findViewById(R.id.filterButton)).setText(R.string.clear_filter);
+                filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
                 hideKeyboard(filterText);
@@ -393,36 +435,11 @@ public class BrowseWordsActivity extends ListActivity {
     }
     
     // clears the filter
-    public void clearFilter() {
-    	if(lessonID == null)
-    		setWordList(dba.getAllWordIds());
-    	else
-    		setWordList(dba.getWordsFromLessonId(lessonID));
-    	
-    	((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
+    private void clearFilter() {
+        displayAllWords();
+        filterButton.setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
-    }
-    
-    // sets the list of items
-    private void setWordList(List<String> ids) {
-        items = new ArrayList<LessonItem>();
-        for(String id : ids) {
-            Log.i("Found", "id: "+id);
-            LessonItem word;
-            try {
-                word = dba.getWordById(id);
-            } catch(Exception e) {
-                word = new LessonWord();
-                Log.d("SEARCH", "Word " + id + " not found in db");
-            }
-            items.add(word);
-        }
-        Collections.sort(items);
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new LessonItemListAdapter(this, items, vi);
-        setListAdapter(adapter);
     }
     
     private void hideKeyboard(View view) {
