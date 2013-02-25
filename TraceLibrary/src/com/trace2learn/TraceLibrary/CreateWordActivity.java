@@ -1,8 +1,8 @@
 package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
@@ -10,14 +10,11 @@ import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
-import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
@@ -44,7 +41,8 @@ public class CreateWordActivity extends Activity {
     
     private DbAdapter             dba;
     private LessonWord            newWord;
-    private ArrayList<LessonItem> items;
+    private List<LessonItem>      source;  // list of all characters
+    private List<LessonItem>      display; // list of items being displayed
     private LessonItemListAdapter charAdapter;
     private ArrayList<Bitmap>     currentChars;
     private ImageAdapter          imgAdapter;
@@ -58,6 +56,8 @@ public class CreateWordActivity extends Activity {
     private Button   cancelButton;
     private Button   saveButton;
     private Button   filterButton;
+    
+    private LayoutInflater vi;
     
     // Lesson popup views
     private PopupWindow window;
@@ -77,22 +77,24 @@ public class CreateWordActivity extends Activity {
         numChars = 0;
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
-        initViews();
-        initHandlers();
+        vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
+        getViews();
+        getHandlers();
         
         dba = new DbAdapter(this);
         dba.open();
 
         filterStatus.setVisibility(View.GONE);
         
-        imgAdapter = new ImageAdapter(this,currentChars);
+        imgAdapter = new ImageAdapter(this, currentChars);
         gallery.setSpacing(0);
         gallery.setAdapter(imgAdapter);
 
         newWord = new LessonWord();
 
-        List<String> ids = dba.getAllCharIds();
-        setCharList(ids);
+        getChars();
+        displayAllChars();
     }
     
     @Override
@@ -101,7 +103,7 @@ public class CreateWordActivity extends Activity {
         dba.close();
     }
     
-    private void initViews() {
+    private void getViews() {
         gallery      = (Gallery)  findViewById(R.id.gallery);
         charList     = (ListView) findViewById(R.id.charList);
         filterStatus = (TextView) findViewById(R.id.filterStatus);
@@ -112,7 +114,7 @@ public class CreateWordActivity extends Activity {
         filterButton = (Button)   findViewById(R.id.filterButton);
     }
     
-    private void initHandlers() {
+    private void getHandlers() {
         //when a char is clicked, it is added to the new word and added to the gallery
         charList.setOnItemClickListener(new OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
@@ -190,9 +192,34 @@ public class CreateWordActivity extends Activity {
                 finish();
             }
         });
-
     }
     
+    private void getChars() {
+        List<String> ids = dba.getAllCharIds();
+        source = new ArrayList<LessonItem>(ids.size());
+        for (String id : ids) {
+            LessonCharacter character = dba.getCharacterById(id);
+            source.add(character);
+        }
+    }
+
+    /**
+     * Set display list to source list, thus displaying all characters
+     */
+    private void displayAllChars() {
+        display = source;
+        displayChars();      
+    }
+
+    /**
+     * Display the current display list
+     */
+    private void displayChars() {
+        Collections.sort(display);
+        charAdapter = new LessonItemListAdapter(this, display, vi);
+        charList.setAdapter(charAdapter);   
+    }
+
     private void initiatePopupWindow(){
         try {
             Display display = getWindowManager().getDefaultDisplay();
@@ -274,7 +301,7 @@ public class CreateWordActivity extends Activity {
     }
     
     // displays the filter popup
-    public void showFilterPopup() {
+    private void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
         
@@ -289,26 +316,33 @@ public class CreateWordActivity extends Activity {
                     return;
                 }
                 
-                // Filter action: query for chars and set char list
-                Cursor c = dba.browseByTag(ItemType.CHARACTER, search);
-                List<String> ids = new LinkedList<String>();
-                do {
-                    if (c.getCount() == 0) {
-                        Log.d(ACTIVITY_SERVICE, "zero rows");
-                        break;
+                // Filter action: keep matching items from display list
+                // Note that it should be partial match for search terms 3
+                // characters or more.
+                ArrayList<LessonItem> newList = new ArrayList<LessonItem>();
+                topLoop: for (LessonItem item : display) {
+                    List<String> tags = item.getTags();
+                    for (String tag : tags) {
+                        if (Toolbox.containsMatch(2, tag, search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
                     }
-                    ids.add(c.getString(c.getColumnIndexOrThrow(
-                            DbAdapter.CHARTAG_ID)));
-                } while (c.moveToNext());
-                c.close();
-                setCharList(ids);
+                    Collection<String> values = item.getKeyValues().values();
+                    for (String value : values) {
+                        if (Toolbox.containsMatch(2, value, search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
+                    }
+                }
+                display = newList;
+                displayChars();
                 
                 // Set state to filtered
-                ((Button)findViewById(R.id.filterButton)).setText(R.string.clear_filter);
+                filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 hideKeyboard(filterText);
-                
-                TextView filterStatus = (TextView) findViewById(R.id.filterStatus);
                 filterStatus.setText("Current filter: " + search);
                 filterStatus.setVisibility(View.VISIBLE);
             }
@@ -326,35 +360,16 @@ public class CreateWordActivity extends Activity {
     }
     
     // clears the filter
-    public void clearFilter() {
-        setCharList(dba.getAllCharIds());
-        ((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
+    private void clearFilter() {
+        displayAllChars();
+        filterButton.setText(R.string.filter);
         filtered = false;
-        findViewById(R.id.filterStatus).setVisibility(View.GONE);
+        filterStatus.setVisibility(View.GONE);
     }
     
     //for testing purposes
     public LessonWord getWord(){
         return newWord;
-    }
-    
-    private void setCharList(List<String> ids) {
-        items = new ArrayList<LessonItem>();
-        for(String id : ids) {
-            Log.i("Found", "id: "+id);
-            LessonItem character;
-            try {
-                character = dba.getCharacterById(id);
-                items.add(character);
-            } catch(Exception e) {
-                Log.d("SEARCH", "Character " + id + " not found in db");
-            }
-        }
-        Collections.sort(items);
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        charAdapter = new LessonItemListAdapter(this, items, vi);
-        charList.setAdapter(charAdapter);
     }
     
     private void hideKeyboard(View view) {
