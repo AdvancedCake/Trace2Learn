@@ -31,14 +31,14 @@ import android.widget.TextView;
 
 public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
-	private ArrayList<LessonItem> source;  // list of all characters
-	private ArrayList<LessonItem> display; // list of items being displayed
+	private List<LessonItem> source;  // list of all characters
+	private List<LessonItem> display; // list of items being displayed
 	private LessonItemListAdapter adapter;
 	
 	private ListView list;
 	private Button   filterButton;
 	private TextView filterStatus;
-    private boolean filtered;
+    private boolean  filtered;
 	
 	private LayoutInflater vi;
 	

@@ -62,7 +62,6 @@ public class CreateWordActivity extends Activity {
     // Lesson popup views
     private PopupWindow window;
     private View        layout;
-    private ListView    lessonList;
     
     private int     numChars;
     private boolean filtered;
@@ -206,7 +205,7 @@ public class CreateWordActivity extends Activity {
             // create a 300px width and 470px height PopupWindow
             List<String> allLessons = dba.getAllLessonNames();
             Log.e("numLessons",Integer.toString(allLessons.size()));
-            lessonList = (ListView)layout.findViewById(R.id.collectionlist);
+            final ListView lessonList = (ListView)layout.findViewById(R.id.collectionlist);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
             lessonList.setAdapter(adapter);
             window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
