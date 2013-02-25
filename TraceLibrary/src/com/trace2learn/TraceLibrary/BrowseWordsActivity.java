@@ -40,7 +40,7 @@ import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class BrowseWordsActivity extends ListActivity {
     private DbAdapter dba;
-    private List<LessonItem> source;  // list of all characters
+    private List<LessonItem> source;  // list of all words
     private List<LessonItem> display; // list of items being displayed
     private LessonItemListAdapter adapter;
 
