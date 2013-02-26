@@ -40,8 +40,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignTop="@+id/infoButton"
         android:contentDescription="@string/category"
-        android:padding="2dp"
-        android:src="@drawable/shape_and_structure" />
+        android:padding="2dp" />
 
     <ImageView
         android:id="@+id/category2"
@@ -50,8 +49,7 @@
         android:layout_alignTop="@+id/infoButton"
         android:layout_toRightOf="@+id/category1"
         android:contentDescription="@string/category"
-        android:padding="2dp"
-        android:src="@drawable/phonetic" />
+        android:padding="2dp" />
 
     <ImageView
         android:id="@+id/category3"
@@ -60,8 +58,7 @@
         android:layout_alignTop="@+id/infoButton"
         android:layout_toRightOf="@+id/category2"
         android:contentDescription="@string/category"
-        android:padding="2dp"
-        android:src="@drawable/meaning" />
+        android:padding="2dp" />
 
     <ImageView
         android:id="@+id/category4"
@@ -70,7 +67,6 @@
         android:layout_alignTop="@+id/infoButton"
         android:layout_toRightOf="@+id/category3"
         android:contentDescription="@string/category"
-        android:padding="2dp"
-        android:src="@drawable/grammar" />
+        android:padding="2dp" />
 
 </RelativeLayout>
