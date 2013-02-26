@@ -2,6 +2,7 @@ package com.trace2learn.TraceLibrary.Database;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -15,6 +16,7 @@ public class Lesson extends LessonItem {
 	private List<String> _words; // list of word IDs
 	private String name; // lesson name
 	private List<LessonWord> wordObjects;
+	private Set<LessonCategory> categories;
 	private boolean isUserDefined;
 
 	public Lesson() {
@@ -66,6 +68,18 @@ public class Lesson extends LessonItem {
 	
 	public boolean isUserDefined() {
 	    return isUserDefined;
+	}
+	
+	public Set<LessonCategory> getCategories() {
+	    return categories;
+	}
+	
+	public void setCategories(Set<LessonCategory> categories) {
+	    this.categories = categories;
+	}
+	
+	public void addCategory(LessonCategory category) {
+	    this.categories.add(category);
 	}
 
 	/**
