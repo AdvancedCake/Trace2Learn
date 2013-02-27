@@ -1449,6 +1449,16 @@ public class DbAdapter {
     	return le;
     }
     
+    public boolean saveLessonCategories(String lessonId, boolean[] categories) {
+        ContentValues values = new ContentValues();
+        values.put("catShapeAndStructure", categories[0]);
+        values.put("catMeaning",           categories[1]);
+        values.put("catPhonetic",          categories[2]);
+        values.put("catGrammar",           categories[3]);
+        return mDb.update(LESSONS_TABLE, values, LESSONS_ID + "=" + lessonId,
+                null) == 1;
+    }
+    
     /**
      * Swap the display order of two characters.
      * @param aId id of first character

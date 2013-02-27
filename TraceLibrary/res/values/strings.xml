@@ -52,5 +52,6 @@
     <string name="delete">Delete</string>
     <string name="info">Info</string>
     <string name="category">Category</string>
+    <string name="assign_categories">Assign Categories</string>
 
 </resources>
