@@ -68,7 +68,6 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
         // Blank out all of the other icons
         for (; i < 4; i++) {
             categories[i].setImageResource(0);
-            i++;
         }
 
         return v;

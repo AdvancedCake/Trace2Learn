@@ -43,7 +43,8 @@ public class DbAdapter {
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
     
-    private HashMap<LessonCategory, String> categoryColumns;
+    private static final HashMap<LessonCategory, String> categoryColumns =
+            new HashMap<LessonCategory, String>();
 
     /**
      * Database creation sql statement
@@ -236,10 +237,12 @@ public class DbAdapter {
         mDb = mDbHelper.getWritableDatabase();
         
         // Initialize LessonCategory column names
-        categoryColumns.put(LessonCategory.SHAPE_AND_STRUCTURE, "catShapeAndStructure");
-        categoryColumns.put(LessonCategory.MEANING,             "catMeaning");
-        categoryColumns.put(LessonCategory.PHONETIC,            "catPhonetic");
-        categoryColumns.put(LessonCategory.GRAMMAR,             "catGrammar");
+        if (categoryColumns.size() == 0) {
+            categoryColumns.put(LessonCategory.SHAPE_AND_STRUCTURE, "catShapeAndStructure");
+            categoryColumns.put(LessonCategory.MEANING,             "catMeaning");
+            categoryColumns.put(LessonCategory.PHONETIC,            "catPhonetic");
+            categoryColumns.put(LessonCategory.GRAMMAR,             "catGrammar");
+        }
         
         return this;
     }
@@ -1455,8 +1458,8 @@ public class DbAdapter {
         values.put("catMeaning",           categories[1]);
         values.put("catPhonetic",          categories[2]);
         values.put("catGrammar",           categories[3]);
-        return mDb.update(LESSONS_TABLE, values, LESSONS_ID + "=" + lessonId,
-                null) == 1;
+        return mDb.update(LESSONS_TABLE, values,
+                LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
     
     /**

@@ -2,10 +2,7 @@ package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.Lesson;
-import com.trace2learn.TraceLibrary.Database.LessonItem;
+import java.util.SortedSet;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -22,13 +19,31 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.Lesson;
+import com.trace2learn.TraceLibrary.Database.LessonCategory;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
+
 public class BrowseLessonsActivity extends ListActivity {
 	private Lesson le;
 	private DbAdapter dba; 
 	private ArrayList<Lesson> items;
 	ArrayAdapter<String> arrAdapter;
-
-	final Context c = this;
+	
+	private enum ContextMenuItem {
+	    DELETE            ("Delete"),
+	    ASSIGN_CATEGORIES ("Assign Categories");
+	    
+	    public final String text;
+	    
+	    ContextMenuItem(String text) {
+	        this.text = text;
+	    }
+	}
+	
+	private enum RequestCode {
+	    ASSIGN_CATEGORIES;
+	}
 
 	@Override
     public void onCreate(Bundle savedInstanceState) {
@@ -75,9 +90,9 @@ public class BrowseLessonsActivity extends ListActivity {
 	public void onCreateContextMenu(ContextMenu menu, View v,
 	    ContextMenuInfo menuInfo) {
 	    menu.setHeaderTitle("Options");
-	    String[] menuItems = {"Delete"};
-	    for (int i = 0; i<menuItems.length; i++) {
-	        menu.add(Menu.NONE, i, i, menuItems[i]);
+	    for (ContextMenuItem item : ContextMenuItem.values()) {
+	        int ord = item.ordinal();
+	        menu.add(Menu.NONE, ord, ord, item.text);
 	    }
 	}
 
@@ -89,24 +104,55 @@ public class BrowseLessonsActivity extends ListActivity {
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 
-	  //delete lesson
-	  if(menuItemIndex==0){
+	  // Delete lesson
+	  if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
 	      Context context = getApplicationContext();
 		  String id = le.getStringId();
 		  String result = dba.deleteLesson(id);
 		  Log.e("Result", result);
-		  if(result == null){
+		  if (result == null) {
 			  Toolbox.showToast(context, "Could not delete the lesson");
 			  return false;
 		  }
-		  else{
+		  else {
 			  Toolbox.showToast(context, "Successfully deleted");
 			  startActivity(getIntent()); 
 			  finish();
 			  return true;
 		  }
 	  }
+	  
+	  // Assign Categories
+	  else if (menuItemIndex == ContextMenuItem.ASSIGN_CATEGORIES.ordinal()) {
+	      Intent i = new Intent(getApplicationContext(),
+	              ChooseLessonCategoryActivity.class);
+	      i.putExtra("ID",   le.getStringId());
+	      i.putExtra("name", le.getLessonName());
+	      
+	      boolean[] original = new boolean[] {false, false, false, false};
+	      SortedSet<LessonCategory> categories = le.getCategories();
+	      if (categories != null) {
+	          for (LessonCategory category : categories) {
+	              original[category.ordinal()] = true;
+	          }
+	      }
+	      i.putExtra("categories", original);
+	      
+          startActivityForResult(i, RequestCode.ASSIGN_CATEGORIES.ordinal());
+          return true;
+	  }
+	  
 	  return false;
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+	    super.onActivityResult(requestCode, resultCode, data);
+	    if (requestCode == RequestCode.ASSIGN_CATEGORIES.ordinal() &&
+	            resultCode == RESULT_OK) {
+	        startActivity(getIntent());
+	        finish();
+	    }
 	}
 
 }

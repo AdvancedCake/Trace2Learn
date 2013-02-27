@@ -46,6 +46,8 @@
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.FilePickerActivity" >
         </activity>
+        <activity android:name="com.trace2learn.TraceLibrary.ChooseLessonCategoryActivity" >
+        </activity>
     </application>
 
 </manifest>

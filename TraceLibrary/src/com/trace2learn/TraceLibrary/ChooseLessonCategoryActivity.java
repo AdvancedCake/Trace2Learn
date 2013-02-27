@@ -43,14 +43,14 @@ public class ChooseLessonCategoryActivity extends Activity {
         // Initialize Views and Handlers
         getViews();
         getHandlers();
-        initCategories();
+        initCategoriesList();
         
         // Grab the extras
         intent = getIntent();
         lessonID = intent.getStringExtra("ID");
         lessonName = intent.getStringExtra("name");
         original = intent.getBooleanArrayExtra("categories");
-        selections = original;
+        selections = original.clone();
         
         nameView.setText(lessonName);
     }
@@ -70,12 +70,8 @@ public class ChooseLessonCategoryActivity extends Activity {
         });
     }
     
-    private void initCategories() {
-        categories = new LessonCategory[4];
-        categories[0] = LessonCategory.SHAPE_AND_STRUCTURE;
-        categories[1] = LessonCategory.MEANING;
-        categories[2] = LessonCategory.PHONETIC;
-        categories[3] = LessonCategory.GRAMMAR;
+    private void initCategoriesList() {
+        categories = LessonCategory.values();
         LayoutInflater vi = (LayoutInflater)
                 getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonCategoryAdapter(getApplicationContext(),
@@ -99,6 +95,9 @@ public class ChooseLessonCategoryActivity extends Activity {
     }
     
     private void close() {
+        for (boolean b : selections) {
+            System.out.println(b);
+        }
         if (original.equals(selections)) {
             setResult(RESULT_CANCELED);
         } else {
@@ -136,13 +135,9 @@ public class ChooseLessonCategoryActivity extends Activity {
             }
             
             LessonCategory category = items[position];
-            CheckBox  checkbox = (CheckBox)  findViewById(R.id.checkbox);
-            ImageView icon     = (ImageView) findViewById(R.id.icon);
-            TextView  name     = (TextView)  findViewById(R.id.name);
-            
-            checkbox.setChecked(selections[position]);
-            icon.setImageResource(category.rid);
-            name.setText(category.name);
+            CheckBox  checkbox = (CheckBox)  v.findViewById(R.id.checkbox);
+            ImageView icon     = (ImageView) v.findViewById(R.id.icon);
+            TextView  name     = (TextView)  v.findViewById(R.id.name);
             
             checkbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
                 @Override
@@ -151,6 +146,10 @@ public class ChooseLessonCategoryActivity extends Activity {
                     selections[position] = isChecked;
                 }
             });
+            
+            checkbox.setChecked(selections[position]);
+            icon.setImageResource(category.rid);
+            name.setText(category.name);
             
             return v;
         }

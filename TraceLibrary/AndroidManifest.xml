@@ -31,6 +31,8 @@
         </activity>
         <activity android:name="FilePickerActivity" >
         </activity>
+        <activity android:name="ChooseLessonCategoryActivity" >
+        </activity>
     </application>
 
 </manifest>
