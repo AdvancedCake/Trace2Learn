@@ -50,5 +50,7 @@
     <string name="type">Type</string>
     <string name="undo">Undo</string>
     <string name="delete">Delete</string>
+    <string name="quizModeOn">Quiz On</string>
+    <string name="quizModeOff">Quiz Off</string>
 
 </resources>

@@ -28,19 +28,6 @@
             android:onClick="onTraceButtonClick"
             android:text="@string/practice" />
 
-        <Button
-            android:id="@+id/animate_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onAnimateButtonClick"
-            android:text="@string/animate" />
-
-        <Button
-            android:id="@+id/clear_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onClearButtonClick"
-            android:text="@string/clear" />
     </LinearLayout>
 
     <Gallery
@@ -86,5 +73,24 @@
             android:orientation="vertical" >
         </com.trace2learn.TraceLibrary.SquareLayout>
     </ViewAnimator>
+
+    <Button
+        android:id="@+id/animate_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tag_list_scroll_view"
+        android:layout_toRightOf="@+id/LinearLayout1"
+        android:onClick="onAnimateButtonClick"
+        android:text="@string/animate" />
+
+    <ToggleButton
+        android:id="@+id/quizModeToggle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/tag_list_scroll_view"
+        android:text="ToggleButton"
+        android:textOff="@string/quizModeOff"
+        android:textOn="@string/quizModeOn" />
 
 </RelativeLayout>
