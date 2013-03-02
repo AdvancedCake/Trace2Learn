@@ -3,14 +3,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical" >
-    
-     <TextView
-         android:id="@+id/instructions"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:text="Click and hold on a lesson for more options"
-         android:textSize="15sp" />
-    
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Click and hold on a lesson for more options"
+        android:textSize="15sp" />
+
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"

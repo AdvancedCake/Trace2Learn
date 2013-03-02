@@ -3,11 +3,11 @@ package com.trace2learn.TraceLibrary.Database;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-
-import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
+import java.util.SortedSet;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -18,6 +18,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
 import android.telephony.TelephonyManager;
 import android.util.Log;
+
+import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
 public class DbAdapter {
 	
@@ -40,6 +42,9 @@ public class DbAdapter {
     private static final String TAG = "TagsDbAdapter";
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
+    
+    private static final HashMap<LessonCategory, String> categoryColumns =
+            new HashMap<LessonCategory, String>();
 
     /**
      * Database creation sql statement
@@ -100,7 +105,11 @@ public class DbAdapter {
     private static final String DATABASE_CREATE_LESSONS=
             "CREATE TABLE Lessons (_id TEXT PRIMARY KEY,"+
             "name TEXT, " +
-            "sort INTEGER);";
+            "sort INTEGER, " +
+            "catShapeAndStructure INTEGER, " +
+            "catMeaning INTEGER, " +
+            "catPhonetic INTEGER, " +
+            "catGrammar INTEGER);";
         
     private static final String DATABASE_CREATE_LESSONS_DETAILS =
             "CREATE TABLE LessonsDetails (" +
@@ -159,7 +168,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 12;
+    private static final int DATABASE_VERSION = 20130226;
 
     private final Context mCtx;
 
@@ -226,6 +235,15 @@ public class DbAdapter {
     public DbAdapter open() throws SQLException {
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
+        
+        // Initialize LessonCategory column names
+        if (categoryColumns.size() == 0) {
+            categoryColumns.put(LessonCategory.SHAPE_AND_STRUCTURE, "catShapeAndStructure");
+            categoryColumns.put(LessonCategory.MEANING,             "catMeaning");
+            categoryColumns.put(LessonCategory.PHONETIC,            "catPhonetic");
+            categoryColumns.put(LessonCategory.GRAMMAR,             "catGrammar");
+        }
+        
         return this;
     }
     
@@ -307,7 +325,7 @@ public class DbAdapter {
      * 
      * @param id the id of the char
      * @param tag the text of the tag
-     * @return boolean: if tags were created successfully
+     * @return true if tags were created successfully, false otherwise
      */
     public boolean createCharTags(String id, String tag) {
         Cursor cur = mDb.query(CHARTAG_TABLE, new String[] {"sort"}, 
@@ -955,6 +973,9 @@ public class DbAdapter {
     }    
     
     /**
+     * THIS METHOD DOES NOT WORK CORRECTLY.
+     * A match is only returned if the item has both a tag and an ID.
+     * 
      * Return a Cursor positioned at the item that matches the partial tag
      * if the tag is more than 2 chars, or the entire tag for 1 or 2 chars.
      * 
@@ -1250,14 +1271,22 @@ public class DbAdapter {
     	String id = "";
     	if (les.getStringId() != null) { // id already initialized, keep it
     	    id = les.getStringId();
-            if (getLessonById(les.getStringId()) != null) {
-                deleteLesson(les.getStringId());
+            if (getLessonById(id) != null) {
+                deleteLesson(id);
             }
     	} else { // make new id
     	    id = makeUniqueId();
     	}
     	initialLessonValues.put(LESSONS_ID, id);
     	initialLessonValues.put("name", les.getLessonName());
+    	SortedSet<LessonCategory> categories = les.getCategories();
+    	if (categories != null) {
+    	    for (LessonCategory category : categories) {
+    	        initialLessonValues.put(categoryColumns.get(category), 1);
+    	    }
+    	}
+    	
+    	// Attempt the insert
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
     	if(rowid == -1)
     	{
@@ -1371,9 +1400,12 @@ public class DbAdapter {
      * @return
      */
     public Lesson getLessonById(String id) {
-    	Cursor mCursor =
-    			mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID, "name"}, LESSONS_ID + "='" + id + "'", null,
-    					null, null, null, null);
+        String[] columns = new String[] {LESSONS_ID, "name",
+                "catShapeAndStructure", "catMeaning", "catPhonetic",
+                "catGrammar"};
+    	Cursor mCursor = mDb.query(true, LESSONS_TABLE, columns,
+    	        LESSONS_ID + "='" + id + "'", null, null, null, null, null);
+    	
     	//if the Lesson doesn't exists
         Lesson le = new Lesson();
     	if (mCursor == null) {
@@ -1381,11 +1413,22 @@ public class DbAdapter {
     	} else if (mCursor.getCount() == 0) {
     	    mCursor.close();
     	    return null;
-        } else {
-    		mCursor.moveToFirst();
-            le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	}
-        mCursor.close();
+    	mCursor.moveToFirst();
+    	le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catShapeAndStructure")) == 1) {
+            le.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);
+        }
+    	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catMeaning")) == 1) {
+            le.addCategory(LessonCategory.MEANING);
+        }
+    	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catPhonetic")) == 1) {
+            le.addCategory(LessonCategory.PHONETIC);
+        }
+    	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catGrammar")) == 1) {
+            le.addCategory(LessonCategory.GRAMMAR);
+        }
+    	mCursor.close();
 
     	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
     	// but it is for data consistency.
@@ -1407,6 +1450,16 @@ public class DbAdapter {
     	le.setDatabase(this);
     	
     	return le;
+    }
+    
+    public boolean saveLessonCategories(String lessonId, boolean[] categories) {
+        ContentValues values = new ContentValues();
+        values.put("catShapeAndStructure", categories[0]);
+        values.put("catMeaning",           categories[1]);
+        values.put("catPhonetic",          categories[2]);
+        values.put("catGrammar",           categories[3]);
+        return mDb.update(LESSONS_TABLE, values,
+                LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
     
     /**

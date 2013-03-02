@@ -1,21 +1,18 @@
 package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedList;
 import java.util.List;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
-import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
-
 import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -34,11 +31,16 @@ import android.widget.TextView;
 
 public class BrowseCharactersActivity extends ListActivity {
 	private DbAdapter dba;
-	private ArrayList<LessonItem> items;
+	private List<LessonItem> source;  // list of all characters
+	private List<LessonItem> display; // list of items being displayed
 	private LessonItemListAdapter adapter;
 	
-	private boolean filtered;
+	private ListView list;
+	private Button   filterButton;
 	private TextView filterStatus;
+    private boolean  filtered;
+	
+	private LayoutInflater vi;
 	
 	private static final String[] menuItems = {"Edit Tags",
 	                                           "Move Up",
@@ -51,22 +53,58 @@ public class BrowseCharactersActivity extends ListActivity {
 	private static enum requestCodeENUM { EditTag,
 	                                      ViewCharacter };
 	
-	//initialized list of all characters
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_chars);
         dba = new DbAdapter(this);
         dba.open();
+        vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-        List<String> ids = dba.getAllCharIds();
-        setCharList(ids);
+        getViews();
         
-        registerForContextMenu(getListView());
+        getChars();
+        displayAllChars();
+        
+        registerForContextMenu(list);
         
         filtered = false;
+	}
+
+	private void getViews() {
+	    list = getListView();
+	    filterButton = (Button)   findViewById(R.id.filterButton);
         filterStatus = (TextView) findViewById(R.id.filterStatus);
 	}
+	
+    /**
+     * Populate the source list with characters
+     */
+    private void getChars() {
+        List<String> ids = dba.getAllCharIds();
+        source = new ArrayList<LessonItem>(ids.size());
+        for (String id : ids) {
+            LessonCharacter character = dba.getCharacterById(id);
+            source.add(character);
+        }
+    }
+    
+    /**
+     * Set display list to source list, thus displaying all characters
+     */
+    private void displayAllChars() {
+        display = source;
+        displayChars();      
+    }
+    
+    /**
+     * Display the current display list
+     */
+    private void displayChars() {
+        Collections.sort(display);
+        adapter = new LessonItemListAdapter(this, display, vi);
+        setListAdapter(adapter);   
+    }
 	
 	@Override
 	protected void onDestroy() {
@@ -77,7 +115,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	@Override  
 	protected void onListItemClick(ListView l, View v, int position, long id) {  
 	  super.onListItemClick(l, v, position, id);  
-	  clickOnItem(items.get(position));
+	  clickOnItem(display.get(position));
 	}  
 
 	//when character is clicked, it starts the display mode for that char
@@ -106,7 +144,7 @@ public class BrowseCharactersActivity extends ListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  LessonCharacter lc = (LessonCharacter)items.get(info.position);
+	  LessonCharacter lc = (LessonCharacter)display.get(info.position);
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 	  
@@ -155,12 +193,12 @@ public class BrowseCharactersActivity extends ListActivity {
 	      if (otherPos < 0) {
 	          Toolbox.showToast(context, "Cannot move this character up");
 	          return false;
-	      } else if (otherPos >= items.size()) {
+	      } else if (otherPos >= display.size()) {
               Toolbox.showToast(context, "Cannot move this character down");
               return false;
 	      }
 	      
-	      LessonCharacter other = (LessonCharacter) items.get(otherPos);
+	      LessonCharacter other = (LessonCharacter) display.get(otherPos);
 	      boolean result = dba.swapCharacters(lc.getStringId(), lc.getSort(), 
 	                                          other.getStringId(), other.getSort());
 	      Log.e("Move result", Boolean.toString(result));
@@ -169,8 +207,8 @@ public class BrowseCharactersActivity extends ListActivity {
 	          double temp = lc.getSort();
 	          lc.setSort(other.getSort());
 	          other.setSort(temp);
-	          Collections.sort(items);
-	          adapter._items = items;
+	          Collections.sort(display);
+	          adapter._items = display;
               adapter.notifyDataSetChanged();
               return true;
 	      }
@@ -208,7 +246,7 @@ public class BrowseCharactersActivity extends ListActivity {
     }
     
     // displays the filter pop up
-    public void showFilterPopup() {
+    private void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
         
@@ -223,22 +261,31 @@ public class BrowseCharactersActivity extends ListActivity {
                     return;
                 }
 
-                // Filter action: query for chars and set char list
-                Cursor c = dba.browseByTag(ItemType.CHARACTER, search);
-                List<String> ids = new LinkedList<String>();
-                do {
-                    if (c.getCount() == 0) {
-                        Log.d(ACTIVITY_SERVICE, "zero rows");
-                        break;
+                // Filter action: keep matching items from display list
+                // Note that it should be partial match for search terms 3
+                // characters or more.
+                ArrayList<LessonItem> newList = new ArrayList<LessonItem>();
+                topLoop: for (LessonItem item : display) {
+                    List<String> tags = item.getTags();
+                    for (String tag : tags) {
+                        if (Toolbox.containsMatch(2, tag, search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
                     }
-                    ids.add(c.getString(c.getColumnIndexOrThrow(
-                            DbAdapter.CHARTAG_ID)));
-                } while (c.moveToNext());
-                c.close();
-                setCharList(ids);
+                    Collection<String> values = item.getKeyValues().values();
+                    for (String value : values) {
+                        if (Toolbox.containsMatch(2, value, search)) {
+                            newList.add(item);
+                            continue topLoop;
+                        }
+                    }
+                }
+                display = newList;
+                displayChars();
                 
                 // Set state to filtered
-                ((Button)findViewById(R.id.filterButton)).setText(R.string.clear_filter);
+                filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
                 hideKeyboard(filterText);
@@ -259,31 +306,11 @@ public class BrowseCharactersActivity extends ListActivity {
     }
     
     // clears the filter
-    public void clearFilter() {
-        setCharList(dba.getAllCharIds());
-        ((Button)findViewById(R.id.filterButton)).setText(R.string.filter);
+    private void clearFilter() {
+        displayAllChars();
+        filterButton.setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
-    }
-    
-    // sets the list of items
-    private void setCharList(List<String> ids) {
-        items = new ArrayList<LessonItem>();
-        for(String id : ids) {
-            Log.i("Found", "id: "+id);
-            LessonItem character;
-            try {
-                character = dba.getCharacterById(id);
-                items.add(character);
-            } catch(Exception e) {
-                Log.d("SEARCH", "Character " + id + " not found in db");
-            }
-        }
-        Collections.sort(items);
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new LessonItemListAdapter(this, items, vi);
-        setListAdapter(adapter);
     }
     
     private void hideKeyboard(View view) {

@@ -11,9 +11,8 @@
         android:id="@+id/nameView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"
+        android:layout_alignParentTop="true"
         android:layout_toLeftOf="@+id/sizeView"
-        android:gravity="center_vertical"
         android:textSize="20sp" />
 
     <TextView
@@ -21,8 +20,53 @@
         android:id="@+id/sizeView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/nameView"
+        android:layout_alignParentRight="true" />
+
+    <ImageView
+        android:id="@+id/infoButton"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_vertical" />
+        android:layout_below="@+id/sizeView"
+        android:contentDescription="@string/info"
+        android:padding="2dp"
+        android:src="@drawable/info_button" />
+
+    <ImageView
+        android:id="@+id/category1"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/infoButton"
+        android:contentDescription="@string/category"
+        android:padding="2dp" />
+
+    <ImageView
+        android:id="@+id/category2"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/infoButton"
+        android:layout_toRightOf="@+id/category1"
+        android:contentDescription="@string/category"
+        android:padding="2dp" />
+
+    <ImageView
+        android:id="@+id/category3"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/infoButton"
+        android:layout_toRightOf="@+id/category2"
+        android:contentDescription="@string/category"
+        android:padding="2dp" />
+
+    <ImageView
+        android:id="@+id/category4"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignTop="@+id/infoButton"
+        android:layout_toRightOf="@+id/category3"
+        android:contentDescription="@string/category"
+        android:padding="2dp" />
 
 </RelativeLayout>

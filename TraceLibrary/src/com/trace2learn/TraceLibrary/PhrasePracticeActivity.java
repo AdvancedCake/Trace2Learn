@@ -232,6 +232,10 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setCharacterTracePane()
 	{
+		// this used to be onClearButtonClick
+		int child = _animator.getDisplayedChild();
+		this._tracePanes.get(child).clearPane();
+
 		if (_currentMode != Mode.TRACE) 
 		{
 			int curInd = _animator.getDisplayedChild();
@@ -277,11 +281,6 @@ public class PhrasePracticeActivity extends Activity {
 		}
 	}
 
-	public void onClearButtonClick(View view)
-	{
-		int child = _animator.getDisplayedChild();
-		this._tracePanes.get(child).clearPane();
-	}
 	
 	public void onTraceButtonClick(View view)
 	{

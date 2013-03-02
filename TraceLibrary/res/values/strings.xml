@@ -3,7 +3,7 @@
 
     <string name="app_name">Trace2Learn</string>
     <string name="file_dir_name">Trace2Learn</string>
-   <!-- we have two different apps. -->
+    <!-- we have two different apps. -->
     <string name="insert_tag">Insert a new tag</string>
     <string name="character">Character</string>
     <string name="tag">Tag</string>
@@ -50,7 +50,10 @@
     <string name="type">Type</string>
     <string name="undo">Undo</string>
     <string name="delete">Delete</string>
+    <string name="info">Info</string>
+    <string name="category">Category</string>
+    <string name="assign_categories">Assign Categories</string>
     <string name="quizModeOn">Quiz On</string>
     <string name="quizModeOff">Quiz Off</string>
-
+    
 </resources>
