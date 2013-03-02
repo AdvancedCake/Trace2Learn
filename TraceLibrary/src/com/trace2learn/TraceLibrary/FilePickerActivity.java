@@ -42,6 +42,7 @@ public class FilePickerActivity extends ListActivity {
         
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 "/data/" + getString(R.string.file_dir_name);
+        Log.i("File Import", "Opening directory " + path);
         currentDir = new File(path);
         currentDir.mkdirs();
         fill(currentDir);

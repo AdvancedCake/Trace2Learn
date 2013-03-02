@@ -153,6 +153,10 @@ public class Lesson extends LessonItem {
         sb.append("name=\"").append(name).append("\" ");
         sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
+        for (LessonCategory category : categories) {
+            sb.append("<category category=\"").append(category.name).append("\" />\n");
+        }
+        
         synchronized (_words) {
             int word_position = 0;
             for (String word_id : _words) {
@@ -191,6 +195,16 @@ public class Lesson extends LessonItem {
 
             Lesson lesson = new Lesson(id, userDefined);
             lesson.setName(name);
+            
+            NodeList cats = elem.getElementsByTagName("category");
+            for (int i = 0; i < cats.getLength(); i++) {
+                String str = ((Element) cats.item(i)).getAttribute("category");
+                LessonCategory cat = LessonCategory.lookup(str);
+                if (cat != null) {
+                    lesson.addCategory(cat);
+                }
+                Log.i("Import Lesson", "  category: " + str);
+            }
 
             NodeList words = elem.getElementsByTagName("word");
             lesson.wordObjects = new ArrayList<LessonWord>(words.getLength());

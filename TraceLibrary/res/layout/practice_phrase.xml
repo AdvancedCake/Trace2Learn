@@ -83,7 +83,7 @@
 
     <ToggleButton
         android:id="@+id/quizModeToggle"
-        android:layout_width="wrap_content"
+        android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tag_list_scroll_view"
