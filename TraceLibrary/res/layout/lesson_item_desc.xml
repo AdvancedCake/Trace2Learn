@@ -7,7 +7,6 @@
     android:padding="6dip" >
 
     <ImageView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/li_image"
         android:layout_width="wrap_content"
         android:layout_height="fill_parent"
@@ -17,7 +16,6 @@
         android:contentDescription="@string/li_preview_description" />
 
     <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/idView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
@@ -30,7 +28,6 @@
         android:singleLine="true" />
 
     <TextView
-        xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/tagView"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

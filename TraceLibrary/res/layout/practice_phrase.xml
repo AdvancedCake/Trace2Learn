@@ -27,7 +27,6 @@
             android:layout_height="wrap_content"
             android:onClick="onTraceButtonClick"
             android:text="@string/practice" />
-
     </LinearLayout>
 
     <Gallery
@@ -54,7 +53,6 @@
             android:scrollHorizontally="true"
             android:text="@string/tag"
             android:textSize="25sp" />
-
     </HorizontalScrollView>
 
     <ViewAnimator
@@ -89,7 +87,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/tag_list_scroll_view"
-        android:text="ToggleButton"
         android:textOff="@string/quizModeOff"
         android:textOn="@string/quizModeOn" />
 
