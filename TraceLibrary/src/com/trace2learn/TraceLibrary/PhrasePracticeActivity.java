@@ -269,6 +269,8 @@ public class PhrasePracticeActivity extends Activity {
 			StringBuilder sb = new StringBuilder();
 			// display any tags
 			sb.append(_word.getTagsToString());
+			
+			// display the pinyin value, if it exists
 			HashMap<String, String> map = _word.getKeyValues();
 			if (map.containsKey(PINYIN_KEY)) {
 				if (sb.length() > 0) sb.append("\n");
@@ -279,6 +281,12 @@ public class PhrasePracticeActivity extends Activity {
 			
 			_tagText.setText(sb.toString());
 		}
+	}
+	
+	@Override
+	public void onWindowFocusChanged (boolean hasFocus) {
+	        // the height will be set at this point
+	        System.out.println(_tagText.getMeasuredHeight());
 	}
 
 	
