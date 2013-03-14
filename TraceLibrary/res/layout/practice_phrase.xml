@@ -6,7 +6,7 @@
     android:gravity="bottom" >
 
     <TextView
-        android:id="@+id/phraseTitle"
+        android:id="@+id/phrase_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -19,7 +19,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/phraseTitle" />
+        android:layout_below="@+id/phrase_title" />
 
     <HorizontalScrollView
         android:id="@+id/tag_list_scroll_view"
@@ -59,13 +59,14 @@
     </ViewAnimator>
 
     <ImageView
-        android:id="@+id/quizIcon"
+        android:id="@+id/quiz_icon"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:layout_above="@+id/trace_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp"
         android:contentDescription="@string/see_answer"
+        android:src="@drawable/quiz_button"
         android:visibility="invisible" />
 
     <Button
@@ -85,7 +86,7 @@
         android:text="@string/animate" />
 
     <ToggleButton
-        android:id="@+id/quizModeToggle"
+        android:id="@+id/quiz_toggle"
         android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:layout_alignBottom="@+id/trace_button"
