@@ -55,5 +55,6 @@
     <string name="assign_categories">Assign Categories</string>
     <string name="quizModeOn">Quiz On</string>
     <string name="quizModeOff">Quiz Off</string>
-    
+    <string name="see_answer">See Answer</string>
+
 </resources>

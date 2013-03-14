@@ -13,22 +13,6 @@
         android:layout_alignParentTop="true"
         android:textSize="15sp" />
 
-    <LinearLayout
-        android:id="@+id/LinearLayout1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:orientation="horizontal" >
-
-        <Button
-            android:id="@+id/trace_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:onClick="onTraceButtonClick"
-            android:text="@string/practice" />
-    </LinearLayout>
-
     <Gallery
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/gallery"
@@ -41,7 +25,7 @@
         android:id="@+id/tag_list_scroll_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/LinearLayout1"
+        android:layout_above="@+id/trace_button"
         android:layout_centerHorizontal="true"
         android:layout_marginBottom="10dp" >
 
@@ -74,21 +58,38 @@
         </com.trace2learn.TraceLibrary.SquareLayout>
     </ViewAnimator>
 
+    <ImageView
+        android:id="@+id/quizIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/trace_button"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="10dp"
+        android:contentDescription="@string/see_answer"
+        android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/trace_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:text="@string/practice" />
+
     <Button
         android:id="@+id/animate_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/tag_list_scroll_view"
-        android:layout_toRightOf="@+id/LinearLayout1"
-        android:onClick="onAnimateButtonClick"
+        android:layout_alignBottom="@+id/trace_button"
+        android:layout_toRightOf="@+id/trace_button"
         android:text="@string/animate" />
 
     <ToggleButton
         android:id="@+id/quizModeToggle"
         android:layout_width="65dp"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/trace_button"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/tag_list_scroll_view"
         android:textOff="@string/quizModeOff"
         android:textOn="@string/quizModeOn" />
 

@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.LessonCharacter;
-import com.trace2learn.TraceLibrary.Database.LessonWord;
-
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
@@ -19,6 +15,7 @@ import android.os.Message;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -26,96 +23,110 @@ import android.widget.Gallery;
 import android.widget.TextView;
 import android.widget.ViewAnimator;
 
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
+
 @SuppressLint("HandlerLeak")
 public class PhrasePracticeActivity extends Activity {
 		
-	private TextView _tagText;
-	private TextView _phraseTitle;
+	private DbAdapter dba;
 
-	private DbAdapter _dbHelper;
+	private Mode   currentMode = null;
+	private String lessonID = null;
+	private int    phraseIndex; // index of current phrase in collection
+	private int    collectionSize;
+	private String lessonName;
 
-	private Mode _currentMode = Mode.INVALID;
-	private String _lessonID = null;
-	private int _wordIndex;
-	private int _collectionSize;
-	private String _lessonName;
+	private LessonWord                 word;
+	private ArrayList<LessonCharacter> characters;
+	private ArrayList<Bitmap>          bitmaps;
+	private ImageAdapter               imgAdapter;
 
-	private LessonWord _word;
+    private TextView     tagView;
+    private TextView     titleView;	
+	private Button       playButton;
+	private Button       traceButton;
+    private Gallery      gallery;    
+    private ViewAnimator animator;
 
-	private ArrayList<LessonCharacter> _characters;
-	private ArrayList<Bitmap> _bitmaps;
-	
-	private ArrayList<SquareLayout> _displayLayouts;
-	private ArrayList<SquareLayout> _traceLayouts;
-	
-	private ArrayList<CharacterPlaybackPane> _playbackPanes;
-	private ArrayList<CharacterTracePane> _tracePanes;
-	
-	private ImageAdapter _imgAdapter;
-	
-	private Gallery _gallery;
-	
-	private ViewAnimator _animator;
-	
-	private Button playButton;
-	private Button traceButton;
+    private ArrayList<SquareLayout>          displayLayouts;
+    private ArrayList<SquareLayout>          traceLayouts;
+    private ArrayList<CharacterPlaybackPane> playbackPanes;
+    private ArrayList<CharacterTracePane>    tracePanes;
 	
 	private final String PINYIN_KEY = "pinyin";
 	
 	private enum Mode {
-		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
+		CREATION, DISPLAY, ANIMATE, SAVE, TRACE;
 	}
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState) 
-	{
-		super.onCreate(savedInstanceState);
+	protected void onCreate(Bundle savedInstanceState) {
+	    super.onCreate(savedInstanceState);
+	    setContentView(R.layout.practice_phrase);
+	    
+	    getViews();
+	    getHandlers();
 
-		setContentView(R.layout.practice_phrase);
+	    characters = new ArrayList<LessonCharacter>();
+	    bitmaps    = new ArrayList<Bitmap>();
+	    imgAdapter = new ImageAdapter(this,bitmaps);
 
-		_animator = (ViewAnimator) findViewById(R.id.view_slot);
-		
-		_characters = new ArrayList<LessonCharacter>();
-		_bitmaps = new ArrayList<Bitmap>();
-		
-		_displayLayouts = new ArrayList<SquareLayout>();
-		_traceLayouts = new ArrayList<SquareLayout>();
-		
-		_playbackPanes = new ArrayList<CharacterPlaybackPane>();
-		_tracePanes = new ArrayList<CharacterTracePane>();
-		
-		
-		_imgAdapter = new ImageAdapter(this,_bitmaps);
-        _gallery = (Gallery) findViewById(R.id.gallery);
-        _gallery.setSpacing(0);
-        
-        _gallery.setAdapter(_imgAdapter);
-		_gallery.setOnItemClickListener(new OnItemClickListener()
-		{
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-				setSelectedCharacter(position);
-			}
-			
-		});
+	    displayLayouts = new ArrayList<SquareLayout>();
+	    traceLayouts   = new ArrayList<SquareLayout>();
+	    playbackPanes  = new ArrayList<CharacterPlaybackPane>();
+	    tracePanes     = new ArrayList<CharacterTracePane>();
 
-		_tagText     = (TextView) findViewById(R.id.tag_list);
-		_phraseTitle = (TextView) findViewById(R.id.phraseTitle);
-		
-		playButton  = (Button) findViewById(R.id.animate_button);
-		traceButton = (Button) findViewById(R.id.trace_button);
+	    gallery.setSpacing(0);
+	    gallery.setAdapter(imgAdapter);
 
-		_dbHelper = new DbAdapter(this);
-		_dbHelper.open();
+	    dba = new DbAdapter(this);
+	    dba.open();
 
-		initializeMode();
-
+	    initializeMode();
 	}
     
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        _dbHelper.close();
+        dba.close();
     };
+	
+	private void getViews() {
+        tagView     = (TextView)     findViewById(R.id.tag_list);
+        titleView   = (TextView)     findViewById(R.id.phraseTitle);
+        playButton  = (Button)       findViewById(R.id.animate_button);
+        traceButton = (Button)       findViewById(R.id.trace_button);
+        animator    = (ViewAnimator) findViewById(R.id.view_slot);
+        gallery     = (Gallery)      findViewById(R.id.gallery);
+	}
+	
+	private void getHandlers() {
+	    // Trace Button
+	    traceButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setCharacterTracePane();
+            }
+        });
+	    
+	    // Play Button
+	    playButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setDisplayPane();
+            }
+        });
+	    
+	    // Clicking on a character in the phrase
+	    gallery.setOnItemClickListener(new OnItemClickListener() {
+	        public void onItemClick(AdapterView<?> parent, View view,
+	                int position, long id) {
+	            setSelectedCharacter(position);
+	        }
+	    });
+	}
 
 	/**
 	 * Initialize the display mode, if the activity was started with intent to
@@ -128,19 +139,19 @@ public class PhrasePracticeActivity extends Activity {
 		if (bun != null && bun.containsKey("wordId")) 
 		{
 			String wordId = bun.getString("wordId");
-			_word = _dbHelper.getWordById(wordId);
-            setWord(_word);
+			word = dba.getWordById(wordId);
+            setWord(word);
 			updateTags();
 			
-			_lessonID = bun.getString("lessonID");
-			if (_lessonID == null) {
-				_phraseTitle.setText("");
+			lessonID = bun.getString("lessonID");
+			if (lessonID == null) {
+				titleView.setText("");
 			} else {
-				_wordIndex = bun.getInt("index");
-				_collectionSize = bun.getInt("collectionSize");
-				_lessonName = _dbHelper.getLessonById(_lessonID).getLessonName();
-				_phraseTitle.setText(_lessonName + " - " + _wordIndex + 
-				                     " of " + _collectionSize);
+				phraseIndex = bun.getInt("index");
+				collectionSize = bun.getInt("collectionSize");
+				lessonName = dba.getLessonById(lessonID).getLessonName();
+				titleView.setText(lessonName + " - " + phraseIndex + 
+				                     " of " + collectionSize);
 			}
 			
 			String mode = bun.getString("mode");
@@ -158,8 +169,8 @@ public class PhrasePracticeActivity extends Activity {
 	}
 
 	private void setSelectedCharacter(int position) {
-		_animator.setDisplayedChild(position);
-		_tracePanes.get(position).clearPane();
+		animator.setDisplayedChild(position);
+		tracePanes.get(position).clearPane();
 		updateTags();
 	}
 	
@@ -170,37 +181,37 @@ public class PhrasePracticeActivity extends Activity {
 
 	private void setCharacterList(List<String> ids)
 	{
-		_characters.clear();
-		_bitmaps.clear();
-		_tracePanes.clear();
-		_playbackPanes.clear();
-		_traceLayouts.clear();
-		_displayLayouts.clear();
+		characters.clear();
+		bitmaps.clear();
+		tracePanes.clear();
+		playbackPanes.clear();
+		traceLayouts.clear();
+		displayLayouts.clear();
 		for(String id : ids)
 		{
-			LessonCharacter ch = _dbHelper.getCharacterById(id);
+			LessonCharacter ch = dba.getCharacterById(id);
 			Bitmap bmp = BitmapFactory.buildBitmap(ch, 64, 64);
-			this._characters.add(ch);
-			this._bitmaps.add(bmp);
-			SquareLayout disp = new SquareLayout(_animator.getContext());
+			this.characters.add(ch);
+			this.bitmaps.add(bmp);
+			SquareLayout disp = new SquareLayout(animator.getContext());
 			CharacterPlaybackPane dispPane = new CharacterPlaybackPane(disp.getContext(), false, 2);
 			dispPane.setCharacter(ch);
 			disp.addView(dispPane);
 			
-			this._displayLayouts.add(disp);
-			this._playbackPanes.add(dispPane);
+			this.displayLayouts.add(disp);
+			this.playbackPanes.add(dispPane);
 			
-			SquareLayout trace = new SquareLayout(_animator.getContext());
+			SquareLayout trace = new SquareLayout(animator.getContext());
 			CharacterTracePane tracePane = new CharacterTracePane(disp.getContext());
 			tracePane.setTemplate(ch);
 			tracePane.addMoveToNextHandler(moveToNext);
 			trace.addView(tracePane);
 			
-			this._traceLayouts.add(trace);
-			this._tracePanes.add(tracePane);
+			this.traceLayouts.add(trace);
+			this.tracePanes.add(tracePane);
 		}
-		_imgAdapter.update(_bitmaps);
-        _imgAdapter.notifyDataSetChanged();
+		imgAdapter.update(bitmaps);
+        imgAdapter.notifyDataSetChanged();
 	}
 	
 	/**
@@ -208,19 +219,19 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setDisplayPane()
 	{
-		int child = _animator.getDisplayedChild();
-		_playbackPanes.get(child).setAnimated(true);
+		int child = animator.getDisplayedChild();
+		playbackPanes.get(child).setAnimated(true);
 		
-		if (_currentMode != Mode.DISPLAY) 
+		if (currentMode != Mode.DISPLAY) 
 		{
-			int curInd = _animator.getDisplayedChild();
-			_animator.removeAllViews();
-			for(SquareLayout disp : this._displayLayouts)
+			int curInd = animator.getDisplayedChild();
+			animator.removeAllViews();
+			for(SquareLayout disp : this.displayLayouts)
 			{
-				_animator.addView(disp);
+				animator.addView(disp);
 			}
-			_animator.setDisplayedChild(curInd);
-			_currentMode = Mode.DISPLAY;
+			animator.setDisplayedChild(curInd);
+			currentMode = Mode.DISPLAY;
             playButton.setText(Html.fromHtml("<b>" +
                     getString(R.string.animate) + "</b>"));
             traceButton.setText(getString(R.string.practice));
@@ -232,46 +243,37 @@ public class PhrasePracticeActivity extends Activity {
 	 */
 	private synchronized void setCharacterTracePane()
 	{
-		// this used to be onClearButtonClick
-		int child = _animator.getDisplayedChild();
-		this._tracePanes.get(child).clearPane();
+		int child = animator.getDisplayedChild();
+		this.tracePanes.get(child).clearPane();
 
-		if (_currentMode != Mode.TRACE) 
+		if (currentMode != Mode.TRACE) 
 		{
-			int curInd = _animator.getDisplayedChild();
-			_animator.removeAllViews();
-			for(SquareLayout trace : this._traceLayouts)
+			int curInd = animator.getDisplayedChild();
+			animator.removeAllViews();
+			for(SquareLayout trace : this.traceLayouts)
 			{
-				_animator.addView(trace);
+				animator.addView(trace);
 			}
-			_animator.setDisplayedChild(curInd);
-			_currentMode = Mode.TRACE;
+			animator.setDisplayedChild(curInd);
+			currentMode = Mode.TRACE;
             traceButton.setText(Html.fromHtml("<b>" +
                     getString(R.string.practice) + "</b>"));
             playButton.setText(getString(R.string.animate));
 		}
 	}
 	
-	public void setContentView(View view)
-	{
+	public void setContentView(View view) {
 		super.setContentView(view);
 	}
-
-//	private void setCharacter(LessonCharacter character)
-//	{
-//		_playbackPane.setCharacter(character);
-//		_tracePane.setTemplate(character);
-//	}
 	
-	private void updateTags()
-	{
-		if (_word != null) {
+	private void updateTags() {
+		if (word != null) {
 			StringBuilder sb = new StringBuilder();
 			// display any tags
-			sb.append(_word.getTagsToString());
+			sb.append(word.getTagsToString());
 			
 			// display the pinyin value, if it exists
-			HashMap<String, String> map = _word.getKeyValues();
+			HashMap<String, String> map = word.getKeyValues();
 			if (map.containsKey(PINYIN_KEY)) {
 				if (sb.length() > 0) sb.append("\n");
 				sb.append("(");
@@ -279,48 +281,29 @@ public class PhrasePracticeActivity extends Activity {
 				sb.append(")");
 			}
 			
-			_tagText.setText(sb.toString());
+			tagView.setText(sb.toString());
 		}
 	}
 	
-	@Override
-	public void onWindowFocusChanged (boolean hasFocus) {
-	        // the height will be set at this point
-	        System.out.println(_tagText.getMeasuredHeight());
-	}
-
-	
-	public void onTraceButtonClick(View view)
-	{
-		setCharacterTracePane();
-	}
-	
-	@Override
-	public void onRestart()
-	{
-		super.onRestart();
-		updateTags();
-	}
-
-	public void onAnimateButtonClick(View view) 
-	{
-		Log.i("CLICK", "DISPLAY");
-		setDisplayPane();
-	}
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        updateTags();
+    }
 	
 	Handler moveToNext = new Handler() {
 		@Override
 		public void handleMessage(Message m) {
-			int index = _animator.getDisplayedChild();
-			if (index + 1 < _characters.size()) {
+			int index = animator.getDisplayedChild();
+			if (index + 1 < characters.size()) {
 				setSelectedCharacter(index + 1);
 			} else {
 				// this is the end of the word
-				if (_lessonID != null) {
-					if (_wordIndex < _collectionSize) { // still more words to come
+				if (lessonID != null) {
+					if (phraseIndex < collectionSize) { // still more words to come
 						// shutdown and notify parent activity
 						Bundle bundle = new Bundle();
-						bundle.putInt("next", _wordIndex);
+						bundle.putInt("next", phraseIndex);
 						Intent intent = new Intent();
 						intent.putExtras(bundle);
 						setResult(RESULT_OK, intent);
@@ -328,7 +311,7 @@ public class PhrasePracticeActivity extends Activity {
 					} else {
 						// the last word in the collection
 						Toolbox.showToast(getApplicationContext(),
-						        "Reached the last word in " + _lessonName);
+						        "Reached the last word in " + lessonName);
 					}
 				}
 			}
