@@ -18,8 +18,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -77,7 +75,7 @@ public class PhrasePracticeActivity extends Activity {
 
         characters = new ArrayList<LessonCharacter>();
         bitmaps    = new ArrayList<Bitmap>();
-        imgAdapter = new ImageAdapter(this,bitmaps);
+        imgAdapter = new ImageAdapter(this, bitmaps);
 
         displayLayouts = new ArrayList<SquareLayout>();
         traceLayouts   = new ArrayList<SquareLayout>();
@@ -128,14 +126,13 @@ public class PhrasePracticeActivity extends Activity {
         });
         
         // Quiz Mode Toggle
-        quizToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        quizToggle.setOnClickListener(new OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                    boolean isChecked) {
-                setQuizMode(isChecked);
+            public void onClick(View v) {
+                setQuizMode(!quizMode);
             }
         });
-        
+
         // Clicking on the tags while in quiz mode
         tagView.setOnClickListener(new OnClickListener() {
             @Override
@@ -316,8 +313,6 @@ public class PhrasePracticeActivity extends Activity {
     }
     
     private void setQuizMode(boolean state) {
-        if (quizMode == state) { return; }
-        
         if (state) {
             quizMode = true;
             tagView.setClickable(true);
@@ -329,6 +324,7 @@ public class PhrasePracticeActivity extends Activity {
             tagView.setVisibility(View.VISIBLE);
             quizIcon.setVisibility(View.INVISIBLE);
         }
+        quizToggle.setChecked(quizMode);
     }
     
     private void toggleTagView(boolean show) {
