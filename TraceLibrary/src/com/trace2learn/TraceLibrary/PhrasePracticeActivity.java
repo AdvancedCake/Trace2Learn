@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,7 +39,7 @@ public class PhrasePracticeActivity extends Activity {
     private int     phraseIndex; // index of current phrase in collection
     private int     collectionSize;
     private String  lessonName;
-    private boolean quizMode = true;
+    private boolean quizMode;
 
     private LessonWord                 word;
     private ArrayList<LessonCharacter> characters;
@@ -58,8 +59,8 @@ public class PhrasePracticeActivity extends Activity {
     private ArrayList<SquareLayout>          traceLayouts;
     private ArrayList<CharacterPlaybackPane> playbackPanes;
     private ArrayList<CharacterTracePane>    tracePanes;
-
-    private final String PINYIN_KEY = "pinyin";
+    
+    private SharedPreferences prefs;
 
     private enum Mode {
         CREATION, DISPLAY, ANIMATE, SAVE, TRACE;
@@ -196,6 +197,8 @@ public class PhrasePracticeActivity extends Activity {
                 setCharacterTracePane();
             }
             
+            prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+            quizMode = prefs.getBoolean(Toolbox.PREFS_QUIZ_MODE, true);
             setQuizMode(quizMode);
         } else {
             Toolbox.showToast(context, "No word selected");
@@ -301,10 +304,10 @@ public class PhrasePracticeActivity extends Activity {
 
             // display the pinyin value, if it exists
             HashMap<String, String> map = word.getKeyValues();
-            if (map.containsKey(PINYIN_KEY)) {
+            if (map.containsKey(Toolbox.PINYIN_KEY)) {
                 if (sb.length() > 0) sb.append("\n");
                 sb.append("(");
-                sb.append(map.get(PINYIN_KEY));
+                sb.append(map.get(Toolbox.PINYIN_KEY));
                 sb.append(")");
             }
 
@@ -324,7 +327,12 @@ public class PhrasePracticeActivity extends Activity {
             tagView.setVisibility(View.VISIBLE);
             quizIcon.setVisibility(View.INVISIBLE);
         }
+        
         quizToggle.setChecked(quizMode);
+        
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Toolbox.PREFS_QUIZ_MODE, quizMode);
+        editor.commit();
     }
     
     private void toggleTagView(boolean show) {

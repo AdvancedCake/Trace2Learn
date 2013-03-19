@@ -7,7 +7,12 @@ import android.widget.Toast;
 
 public class Toolbox {
 
-    public static Locale locale = Locale.getDefault();
+    public static final String PREFS_FILE      = "T2L_prefs";
+    public static final String PREFS_QUIZ_MODE = "quizMode";
+    
+    public static final String PINYIN_KEY = "pinyin";
+    
+    public static final Locale locale = Locale.getDefault();
     
     /**
      * If query is less than or equal to exact characters long, containsMatch
