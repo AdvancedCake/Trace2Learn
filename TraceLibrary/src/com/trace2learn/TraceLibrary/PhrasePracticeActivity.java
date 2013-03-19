@@ -93,6 +93,15 @@ public class PhrasePracticeActivity extends Activity {
     }
 
     @Override
+    protected void onPause() {
+        super.onPause();
+        
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Toolbox.PREFS_QUIZ_MODE, quizMode);
+        editor.commit();
+    }
+    
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         dba.close();
@@ -329,10 +338,6 @@ public class PhrasePracticeActivity extends Activity {
         }
         
         quizToggle.setChecked(quizMode);
-        
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putBoolean(Toolbox.PREFS_QUIZ_MODE, quizMode);
-        editor.commit();
     }
     
     private void toggleTagView(boolean show) {
