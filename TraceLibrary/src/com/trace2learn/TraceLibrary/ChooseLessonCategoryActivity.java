@@ -95,9 +95,6 @@ public class ChooseLessonCategoryActivity extends Activity {
     }
     
     private void close() {
-        for (boolean b : selections) {
-            System.out.println(b);
-        }
         if (original.equals(selections)) {
             setResult(RESULT_CANCELED);
         } else {
