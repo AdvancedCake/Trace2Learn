@@ -3,7 +3,6 @@
 
     <string name="app_name">Trace2Learn</string>
     <string name="file_dir_name">Trace2Learn</string>
-    <!-- we have two different apps. -->
     <string name="insert_tag">Insert a new tag</string>
     <string name="character">Character</string>
     <string name="tag">Tag</string>
