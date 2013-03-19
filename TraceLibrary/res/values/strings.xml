@@ -42,7 +42,7 @@
     <string name="instruction_export">Add items to cart</string>
     <string name="instruction_export_chars">Add characters to cart</string>
     <string name="instruction_export_words">Add words to cart</string>
-    <string name="instruction_export_lessons">Add lessons to cart</string>
+    <string name="instruction_export_lessons">Add collections to cart</string>
     <string name="shopping_cart">Viewing cart</string>
     <string name="back">Back</string>
     <string name="file_header">Import from file</string>

@@ -266,7 +266,7 @@ public class CreateWordActivity extends Activity {
         String name = edit.toString();
         if(name.equals("")){
             Toolbox.showToast(getApplicationContext(),
-                    "You must name the lesson!");
+                    "You must name the collection!");
             return;
         }
         Lesson lesson = new Lesson();

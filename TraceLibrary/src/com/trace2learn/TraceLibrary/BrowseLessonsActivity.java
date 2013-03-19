@@ -111,7 +111,7 @@ public class BrowseLessonsActivity extends ListActivity {
 		  String result = dba.deleteLesson(id);
 		  Log.e("Result", result);
 		  if (result == null) {
-			  Toolbox.showToast(context, "Could not delete the lesson");
+			  Toolbox.showToast(context, "Could not delete the collection");
 			  return false;
 		  }
 		  else {
