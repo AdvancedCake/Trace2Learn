@@ -3,7 +3,6 @@
 
     <string name="app_name">Trace2Learn</string>
     <string name="file_dir_name">Trace2Learn</string>
-    <!-- we have two different apps. -->
     <string name="insert_tag">Insert a new tag</string>
     <string name="character">Character</string>
     <string name="tag">Tag</string>
@@ -43,7 +42,7 @@
     <string name="instruction_export">Add items to cart</string>
     <string name="instruction_export_chars">Add characters to cart</string>
     <string name="instruction_export_words">Add words to cart</string>
-    <string name="instruction_export_lessons">Add lessons to cart</string>
+    <string name="instruction_export_lessons">Add collections to cart</string>
     <string name="shopping_cart">Viewing cart</string>
     <string name="back">Back</string>
     <string name="file_header">Import from file</string>
@@ -56,5 +55,6 @@
     <string name="quizModeOn">Quiz On</string>
     <string name="quizModeOff">Quiz Off</string>
     <string name="see_answer">See Answer</string>
+    <string name="exit">Exit</string>
 
 </resources>

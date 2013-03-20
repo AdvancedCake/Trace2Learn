@@ -8,6 +8,7 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,8 +19,6 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.CompoundButton;
-import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -40,7 +39,7 @@ public class PhrasePracticeActivity extends Activity {
     private int     phraseIndex; // index of current phrase in collection
     private int     collectionSize;
     private String  lessonName;
-    private boolean quizMode = true;
+    private boolean quizMode;
 
     private LessonWord                 word;
     private ArrayList<LessonCharacter> characters;
@@ -60,8 +59,8 @@ public class PhrasePracticeActivity extends Activity {
     private ArrayList<SquareLayout>          traceLayouts;
     private ArrayList<CharacterPlaybackPane> playbackPanes;
     private ArrayList<CharacterTracePane>    tracePanes;
-
-    private final String PINYIN_KEY = "pinyin";
+    
+    private SharedPreferences prefs;
 
     private enum Mode {
         CREATION, DISPLAY, ANIMATE, SAVE, TRACE;
@@ -77,7 +76,7 @@ public class PhrasePracticeActivity extends Activity {
 
         characters = new ArrayList<LessonCharacter>();
         bitmaps    = new ArrayList<Bitmap>();
-        imgAdapter = new ImageAdapter(this,bitmaps);
+        imgAdapter = new ImageAdapter(this, bitmaps);
 
         displayLayouts = new ArrayList<SquareLayout>();
         traceLayouts   = new ArrayList<SquareLayout>();
@@ -93,6 +92,15 @@ public class PhrasePracticeActivity extends Activity {
         initializeMode();
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Toolbox.PREFS_QUIZ_MODE, quizMode);
+        editor.commit();
+    }
+    
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -128,14 +136,13 @@ public class PhrasePracticeActivity extends Activity {
         });
         
         // Quiz Mode Toggle
-        quizToggle.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+        quizToggle.setOnClickListener(new OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView,
-                    boolean isChecked) {
-                setQuizMode(isChecked);
+            public void onClick(View v) {
+                setQuizMode(!quizMode);
             }
         });
-        
+
         // Clicking on the tags while in quiz mode
         tagView.setOnClickListener(new OnClickListener() {
             @Override
@@ -199,6 +206,8 @@ public class PhrasePracticeActivity extends Activity {
                 setCharacterTracePane();
             }
             
+            prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+            quizMode = prefs.getBoolean(Toolbox.PREFS_QUIZ_MODE, true);
             setQuizMode(quizMode);
         } else {
             Toolbox.showToast(context, "No word selected");
@@ -304,10 +313,10 @@ public class PhrasePracticeActivity extends Activity {
 
             // display the pinyin value, if it exists
             HashMap<String, String> map = word.getKeyValues();
-            if (map.containsKey(PINYIN_KEY)) {
+            if (map.containsKey(Toolbox.PINYIN_KEY)) {
                 if (sb.length() > 0) sb.append("\n");
                 sb.append("(");
-                sb.append(map.get(PINYIN_KEY));
+                sb.append(map.get(Toolbox.PINYIN_KEY));
                 sb.append(")");
             }
 
@@ -316,8 +325,6 @@ public class PhrasePracticeActivity extends Activity {
     }
     
     private void setQuizMode(boolean state) {
-        if (quizMode == state) { return; }
-        
         if (state) {
             quizMode = true;
             tagView.setClickable(true);
@@ -329,6 +336,8 @@ public class PhrasePracticeActivity extends Activity {
             tagView.setVisibility(View.VISIBLE);
             quizIcon.setVisibility(View.INVISIBLE);
         }
+        
+        quizToggle.setChecked(quizMode);
     }
     
     private void toggleTagView(boolean show) {

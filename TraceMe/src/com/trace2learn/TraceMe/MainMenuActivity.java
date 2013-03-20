@@ -22,7 +22,7 @@ public class MainMenuActivity extends ListActivity {
 		{ 
 			"Browse All Characters",
 			"Browse All Words",
-			"Browse All Lessons",
+			"Browse All Collections",
 			"Import From File"
 		};
 
@@ -54,7 +54,7 @@ public class MainMenuActivity extends ListActivity {
 						Intent i = new Intent(c, BrowseWordsActivity.class);
 						startActivity(i);
 					}
-                    else if (clicked.equals(APPS[2]))// "Browse All Lessons"
+                    else if (clicked.equals(APPS[2]))// "Browse All Collections"
                     {
                         Intent i = new Intent(c, BrowseLessonsActivity.class);
                         startActivity(i);
