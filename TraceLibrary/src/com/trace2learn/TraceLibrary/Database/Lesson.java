@@ -14,11 +14,12 @@ import android.util.Log;
 
 public class Lesson extends LessonItem {
 
-    private List<String> _words; // list of word IDs
-    private String name; // lesson name
-    private List<LessonWord> wordObjects;
+    private List<String>              _words; // list of word IDs
+    private String                    name; // lesson name
+    private List<LessonWord>          wordObjects;
     private SortedSet<LessonCategory> categories;
-    private boolean isUserDefined;
+    private String                    narrative = "lololol";
+    private boolean                   isUserDefined;
 
     public Lesson() {
         this(null, true);
@@ -85,11 +86,20 @@ public class Lesson extends LessonItem {
         }
         categories.add(category);
     }
+    
+    public String getNarrative() {
+        return narrative;
+    }
+    
+    public void setNarrative(String narrative) {
+        this.narrative = narrative;
+    }
 
     /**
      * Get the list of items that compose this lesson
      * @return the list of characters that compose this word
      */
+    // TODO just use wordObjects field
     public synchronized List<LessonItem> getWords() {
         ArrayList<LessonItem> words = new ArrayList<LessonItem>(_words.size());
         for(String id : _words)
