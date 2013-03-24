@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 
@@ -25,6 +26,8 @@ public class LessonNarrativeActivity extends Activity {
     private String                    lessonName;
     private String                    narrative;
     private SortedSet<LessonCategory> categories;
+    
+    private DbAdapter dba;
     
     private TextView     nameView;
     private TextView     narrativeView;
@@ -40,10 +43,14 @@ public class LessonNarrativeActivity extends Activity {
         getViews();
         getHandlers();
         
+        // Initialize database adapter
+        dba = new DbAdapter(this);
+        dba.open();
+        
         // Grab the extras
-        intent = getIntent();
-        lessonId = intent.getStringExtra("ID");
-        // get lesson from the database
+        intent     = getIntent();
+        lessonId   = intent.getStringExtra("ID");
+        lesson     = dba.getLessonById(lessonId);
         lessonName = lesson.getLessonName();
         categories = lesson.getCategories();
         narrative  = lesson.getNarrative();
@@ -73,10 +80,8 @@ public class LessonNarrativeActivity extends Activity {
          if (categories != null) {
              LayoutInflater vi = (LayoutInflater)
                      getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-             Context context = getApplicationContext();
              for (LessonCategory category : categories) {
-                 View view = new View(context);
-                 vi.inflate(R.layout.lesson_category, categoryLayout);
+                 View view = vi.inflate(R.layout.lesson_category, null);
                  
                  ImageView icon = (ImageView) view.findViewById(R.id.icon);
                  TextView  name = (TextView)  view.findViewById(R.id.name);

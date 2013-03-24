@@ -81,7 +81,8 @@ public class BrowseLessonsActivity extends ListActivity {
 	//when character is clicked, it starts the display mode for that char
 	public void clickOnItem(LessonItem li){
 		Lesson le = ((Lesson)li);
-		Intent i = new Intent(this, BrowseWordsActivity.class);
+        Intent i = new Intent(this, LessonNarrativeActivity.class);
+//        Intent i = new Intent(this, BrowseWordsActivity.class);
 		i.putExtra("ID", le.getStringId());
 		startActivity(i);
 	}
