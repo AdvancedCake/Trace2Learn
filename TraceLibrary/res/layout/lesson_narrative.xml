@@ -9,34 +9,55 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:text="Collection"
         android:textColor="#00ccff"
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <Button
+    <ImageView
         android:id="@+id/exit_button"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:text="@string/exit" />
+        android:layout_margin="5dp"
+        android:contentDescription="@string/exit"
+        android:src="@drawable/exit_button" />
+
+    <View
+        android:id="@+id/rule1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/lesson_name"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#FFFFFF" />
 
     <LinearLayout
         android:id="@+id/categories"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/lesson_name"
+        android:layout_below="@+id/rule1"
         android:orientation="vertical" >
     </LinearLayout>
+
+    <View
+        android:id="@+id/rule2"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@+id/categories"
+        android:layout_marginBottom="5dp"
+        android:layout_marginTop="5dp"
+        android:background="#FFFFFF" />
 
     <TextView
         android:id="@+id/narrative"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/categories"
-        android:text="lololol" />
+        android:layout_below="@+id/rule2"
+        android:textSize="16sp" />
 
 </RelativeLayout>

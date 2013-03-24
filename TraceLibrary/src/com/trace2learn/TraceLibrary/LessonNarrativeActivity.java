@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,7 +31,7 @@ public class LessonNarrativeActivity extends Activity {
     private TextView     nameView;
     private TextView     narrativeView;
     private LinearLayout categoryLayout;
-    private Button       exitButton;
+    private ImageView    exitButton;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -54,6 +53,9 @@ public class LessonNarrativeActivity extends Activity {
         lessonName = lesson.getLessonName();
         categories = lesson.getCategories();
         narrative  = lesson.getNarrative();
+        if (narrative == null || narrative.length() == 0) {
+            narrative = "No narrative!";
+        }
         
         nameView.setText(lessonName);
         narrativeView.setText(narrative);
@@ -64,7 +66,7 @@ public class LessonNarrativeActivity extends Activity {
         nameView       = (TextView)     findViewById(R.id.lesson_name);
         narrativeView  = (TextView)     findViewById(R.id.narrative);
         categoryLayout = (LinearLayout) findViewById(R.id.categories);
-        exitButton     = (Button)       findViewById(R.id.exit_button);
+        exitButton     = (ImageView)    findViewById(R.id.exit_button);
     }
     
     private void getHandlers() {
@@ -77,7 +79,7 @@ public class LessonNarrativeActivity extends Activity {
     }
     
     private void initCategoriesList() {
-         if (categories != null) {
+         if (categories != null && categories.size() > 0) {
              LayoutInflater vi = (LayoutInflater)
                      getSystemService(Context.LAYOUT_INFLATER_SERVICE);
              for (LessonCategory category : categories) {
@@ -91,6 +93,11 @@ public class LessonNarrativeActivity extends Activity {
                  
                  categoryLayout.addView(view);
              }
+         } else {
+             TextView text = new TextView(getApplicationContext());
+             text.setText("No categories!");
+             text.setTextSize(18);
+             categoryLayout.addView(text);
          }
     }
     

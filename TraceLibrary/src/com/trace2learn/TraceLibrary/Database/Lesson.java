@@ -18,7 +18,7 @@ public class Lesson extends LessonItem {
     private String                    name; // lesson name
     private List<LessonWord>          wordObjects;
     private SortedSet<LessonCategory> categories;
-    private String                    narrative = "lololol";
+    private String                    narrative;
     private boolean                   isUserDefined;
 
     public Lesson() {
