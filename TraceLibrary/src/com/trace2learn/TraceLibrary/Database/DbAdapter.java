@@ -44,7 +44,7 @@ public class DbAdapter {
     private SQLiteDatabase mDb;
     
     private static final HashMap<LessonCategory, String> categoryColumns =
-            new HashMap<LessonCategory, String>();
+            new HashMap<LessonCategory, String>(); // TODO
 
     /**
      * Database creation sql statement
@@ -106,6 +106,7 @@ public class DbAdapter {
             "CREATE TABLE Lessons (_id TEXT PRIMARY KEY,"+
             "name TEXT, " +
             "sort INTEGER, " +
+            "narrative TEXT, " +
             "catShapeAndStructure INTEGER, " +
             "catMeaning INTEGER, " +
             "catPhonetic INTEGER, " +
@@ -168,7 +169,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 20130226;
+    private static final int DATABASE_VERSION = 20130326;
 
     private final Context mCtx;
 
@@ -1400,7 +1401,7 @@ public class DbAdapter {
      * @return
      */
     public Lesson getLessonById(String id) {
-        String[] columns = new String[] {LESSONS_ID, "name",
+        String[] columns = new String[] {LESSONS_ID, "name", "narrative", 
                 "catShapeAndStructure", "catMeaning", "catPhonetic",
                 "catGrammar"};
     	Cursor mCursor = mDb.query(true, LESSONS_TABLE, columns,
@@ -1416,6 +1417,7 @@ public class DbAdapter {
     	}
     	mCursor.moveToFirst();
     	le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	le.setNarrative(mCursor.getString(mCursor.getColumnIndexOrThrow("narrative")));
     	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catShapeAndStructure")) == 1) {
             le.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);
         }
@@ -1458,6 +1460,13 @@ public class DbAdapter {
         values.put("catMeaning",           categories[1]);
         values.put("catPhonetic",          categories[2]);
         values.put("catGrammar",           categories[3]);
+        return mDb.update(LESSONS_TABLE, values,
+                LESSONS_ID + "='" + lessonId + "'", null) == 1;
+    }
+    
+    public boolean saveLessonNarrative(String lessonId, String narrative) {
+        ContentValues values = new ContentValues();
+        values.put("narrative", narrative);
         return mDb.update(LESSONS_TABLE, values,
                 LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }

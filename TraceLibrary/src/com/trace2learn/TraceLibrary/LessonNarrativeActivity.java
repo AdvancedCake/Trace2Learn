@@ -3,12 +3,16 @@ package com.trace2learn.TraceLibrary;
 import java.util.SortedSet;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -32,6 +36,7 @@ public class LessonNarrativeActivity extends Activity {
     private TextView     narrativeView;
     private LinearLayout categoryLayout;
     private ImageView    exitButton;
+    private Button       editButton;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,13 +58,14 @@ public class LessonNarrativeActivity extends Activity {
         lessonName = lesson.getLessonName();
         categories = lesson.getCategories();
         narrative  = lesson.getNarrative();
-        if (narrative == null || narrative.length() == 0) {
-            narrative = "No narrative!";
-        }
         
         nameView.setText(lessonName);
         narrativeView.setText(narrative);
         initCategoriesList();
+
+        if (narrative == null || narrative.length() == 0) {
+            narrativeView.setText("No narrative!");
+        }
     }
     
     private void getViews() {
@@ -67,6 +73,7 @@ public class LessonNarrativeActivity extends Activity {
         narrativeView  = (TextView)     findViewById(R.id.narrative);
         categoryLayout = (LinearLayout) findViewById(R.id.categories);
         exitButton     = (ImageView)    findViewById(R.id.exit_button);
+        editButton     = (Button)       findViewById(R.id.edit_button);
     }
     
     private void getHandlers() {
@@ -74,6 +81,13 @@ public class LessonNarrativeActivity extends Activity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+        
+        editButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editNarrative();
             }
         });
     }
@@ -99,6 +113,31 @@ public class LessonNarrativeActivity extends Activity {
              text.setTextSize(18);
              categoryLayout.addView(text);
          }
+    }
+    
+    private void editNarrative() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Edit Narrative");
+        
+        final EditText edit = new EditText(this);
+        edit.setText(narrative);
+        builder.setView(edit);
+        
+        builder.setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                narrative = edit.getText().toString();
+                lesson.setNarrative(narrative);
+                narrativeView.setText(narrative);
+                dba.saveLessonNarrative(lessonId, narrative);
+            }
+        });
+        
+        builder.setNegativeButton(R.string.cancel, null);
+        
+        AlertDialog dialog = builder.create();
+        Toolbox.showKeyboard(dialog);
+        dialog.show();
     }
     
 }

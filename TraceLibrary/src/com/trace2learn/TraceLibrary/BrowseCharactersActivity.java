@@ -299,7 +299,7 @@ public class BrowseCharactersActivity extends ListActivity {
         
         AlertDialog dialog = builder.create();
         
-        // show the keyboard
+        // show the keyboard TODO
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
 

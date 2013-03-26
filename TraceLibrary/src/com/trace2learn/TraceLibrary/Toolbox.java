@@ -2,7 +2,12 @@ package com.trace2learn.TraceLibrary;
 
 import java.util.Locale;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
+import android.view.View;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 public class Toolbox {
@@ -43,6 +48,16 @@ public class Toolbox {
      */
     public static void showToast(Context context, String msg) {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
+    }
+    
+    public static void showKeyboard(Dialog dialog) {
+        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+    }
+    
+    public static void hideKeyboard(Activity activity, View view) {
+        InputMethodManager imm = (InputMethodManager) 
+                activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     
 }
