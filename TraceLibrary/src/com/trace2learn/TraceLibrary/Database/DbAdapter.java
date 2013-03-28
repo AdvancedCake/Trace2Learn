@@ -1267,7 +1267,8 @@ public class DbAdapter {
     public boolean addLesson(Lesson les)
     {
     	mDb.beginTransaction();
-    	//add to LESSON_TABLE
+    	
+    	// add to LESSON_TABLE
     	ContentValues initialLessonValues = new ContentValues();
     	String id = "";
     	if (les.getStringId() != null) { // id already initialized, keep it
@@ -1286,13 +1287,14 @@ public class DbAdapter {
     	        initialLessonValues.put(categoryColumns.get(category), 1);
     	    }
     	}
+    	initialLessonValues.put("narrative", les.getNarrative());
     	
     	// Attempt the insert
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
     	if(rowid == -1)
     	{
-    		//if error
-    		Log.e(LESSONS_TABLE, "cannot add new character to table "+LESSONS_TABLE);
+    		// error
+    		Log.e(LESSONS_TABLE, "cannot add new character to table " + LESSONS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
@@ -1312,8 +1314,8 @@ public class DbAdapter {
     		long success = mDb.insert(LESSONS_DETAILS_TABLE, null, lessonValues);
     		if(success == -1)
     		{	
-    			//if error
-    			Log.e(LESSONS_DETAILS_TABLE,"cannot add to table");
+    			// error
+    			Log.e(LESSONS_DETAILS_TABLE, "cannot add to table");
     			mDb.endTransaction();
     			return false;
     		}

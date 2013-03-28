@@ -1,5 +1,8 @@
 <ttw name="English-Basic">
     <lesson id="351863043173505_04022005081117" name="Colors">
+        <narrative narrative="These are a few colors." />
+        <category category="Phonetic" />
+        <category category="Grammar" />
         <word id="5" position="0">
             <tag tag="English" />
             <tag tag="Color" />

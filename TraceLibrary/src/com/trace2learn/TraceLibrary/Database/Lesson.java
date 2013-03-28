@@ -163,8 +163,15 @@ public class Lesson extends LessonItem {
         sb.append("name=\"").append(name).append("\" ");
         sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
-        for (LessonCategory category : categories) {
-            sb.append("<category category=\"").append(category.name).append("\" />\n");
+        if (narrative != null && narrative.length() > 0) {
+            // TODO what happens if narrative has quotes or angle brackets?
+            sb.append("<narrative narrative=\"").append(narrative).append("\" />\n");
+        }
+        
+        if (categories != null && categories.size() > 0) {
+            for (LessonCategory category : categories) {
+                sb.append("<category category=\"").append(category.name).append("\" />\n");
+            }
         }
         
         synchronized (_words) {
@@ -197,7 +204,7 @@ public class Lesson extends LessonItem {
         try {
             String  id          = elem.getAttribute("id");
             String  name        = elem.getAttribute("name");
-            boolean userDefined = elem.getAttribute("author").equals("user");
+            boolean userDefined = !elem.getAttribute("author").equals("admin");
 
             Log.i("Import Lesson", "id: " + id);
             Log.i("Import Lesson", "  name: " + name);
@@ -205,6 +212,11 @@ public class Lesson extends LessonItem {
 
             Lesson lesson = new Lesson(id, userDefined);
             lesson.setName(name);
+            
+            NodeList narr = elem.getElementsByTagName("narrative");
+            if (narr.getLength() > 0) {
+                lesson.setNarrative(((Element) narr.item(0)).getAttribute("narrative"));
+            }
             
             NodeList cats = elem.getElementsByTagName("category");
             for (int i = 0; i < cats.getLength(); i++) {
