@@ -7,7 +7,9 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -68,12 +70,27 @@ public class LessonNarrativeActivity extends Activity {
         }
     }
     
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
+    }
+    
     private void getViews() {
         nameView       = (TextView)     findViewById(R.id.lesson_name);
         narrativeView  = (TextView)     findViewById(R.id.narrative);
         categoryLayout = (LinearLayout) findViewById(R.id.categories);
         exitButton     = (ImageView)    findViewById(R.id.exit_button);
         editButton     = (Button)       findViewById(R.id.edit_button);
+        
+        // Because setMovementMethod causes the view to darken when clicked, we
+        // must disable the view. But that dims the text color, so we need to
+        // save the old text color and change the color back.
+        ColorStateList colors = narrativeView.getTextColors();
+        int color = colors.getDefaultColor();
+        narrativeView.setMovementMethod(new ScrollingMovementMethod());
+        narrativeView.setEnabled(false);
+        narrativeView.setTextColor(color);
     }
     
     private void getHandlers() {
