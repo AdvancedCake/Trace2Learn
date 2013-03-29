@@ -164,8 +164,13 @@ public class Lesson extends LessonItem {
         sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
         if (narrative != null && narrative.length() > 0) {
-            // TODO what happens if narrative has quotes or angle brackets?
-            sb.append("<narrative narrative=\"").append(narrative).append("\" />\n");
+            // TODO loses line breaks
+            String xmlNarrative = narrative.replace("\"", "&quot;")
+                                           .replace("'", "&apos;")
+                                           .replace("<", "&lt;")
+                                           .replace(">", "&gt;")
+                                           .replace("&", "&amp;");
+            sb.append("<narrative narrative=\"").append(xmlNarrative).append("\" />\n");
         }
         
         if (categories != null && categories.size() > 0) {
@@ -215,7 +220,13 @@ public class Lesson extends LessonItem {
             
             NodeList narr = elem.getElementsByTagName("narrative");
             if (narr.getLength() > 0) {
-                lesson.setNarrative(((Element) narr.item(0)).getAttribute("narrative"));
+                String narrative = ((Element) narr.item(0)).getAttribute("narrative");
+                narrative = narrative.replace("&quot;", "\"")
+                                     .replace("&apos;", "'")
+                                     .replace("&lt;", "<")
+                                     .replace("&gt;", ">")
+                                     .replace("&amp;", "&");
+                lesson.setNarrative(narrative);
             }
             
             NodeList cats = elem.getElementsByTagName("category");
