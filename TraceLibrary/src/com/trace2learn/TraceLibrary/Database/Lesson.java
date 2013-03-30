@@ -164,13 +164,12 @@ public class Lesson extends LessonItem {
         sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
         if (narrative != null && narrative.length() > 0) {
-            // TODO loses line breaks
             String xmlNarrative = narrative.replace("\"", "&quot;")
                                            .replace("'", "&apos;")
                                            .replace("<", "&lt;")
                                            .replace(">", "&gt;")
                                            .replace("&", "&amp;");
-            sb.append("<narrative narrative=\"").append(xmlNarrative).append("\" />\n");
+            sb.append("<narrative>").append(xmlNarrative).append("</narrative>\n");
         }
         
         if (categories != null && categories.size() > 0) {
@@ -220,7 +219,7 @@ public class Lesson extends LessonItem {
             
             NodeList narr = elem.getElementsByTagName("narrative");
             if (narr.getLength() > 0) {
-                String narrative = ((Element) narr.item(0)).getAttribute("narrative");
+                String narrative = Parser.getNodeValue(narr.item(0));
                 narrative = narrative.replace("&quot;", "\"")
                                      .replace("&apos;", "'")
                                      .replace("&lt;", "<")
@@ -251,6 +250,7 @@ public class Lesson extends LessonItem {
 
             return lesson;
         } catch (Exception e) {
+            e.printStackTrace();
             Log.e("Import lesson", e.getMessage());
             return null;
         }

@@ -9,6 +9,8 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -40,6 +42,24 @@ public class Parser {
         createBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         return builder.parse(is);
+    }
+ 
+    /**
+     * @param node an XML node
+     * @return the String contained within the node
+     */
+    public static String getNodeValue(Node node) {
+        StringBuffer buf = new StringBuffer();
+        NodeList children = node.getChildNodes();
+        for (int i = 0; i < children.getLength(); i++) {
+            Node textChild = children.item(i);
+            if (textChild.getNodeType() != Node.TEXT_NODE) {
+                System.err.println("Mixed content! Skipping child element " + textChild.getNodeName());
+                continue;
+            }
+            buf.append(textChild.getNodeValue());
+        }
+        return buf.toString();
     }
 
 }
