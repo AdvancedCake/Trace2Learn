@@ -1,11 +1,13 @@
 package com.trace2learn.TraceLibrary.Database;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 
@@ -126,6 +128,9 @@ public class DbAdapter {
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Lessons(_id));";
     
+    private static final String DATABASE_CREATE_APPSTARTS =
+            "CREATE TABLE AppStarts (date TEXT);";
+    
     //DB Drop Statements
     
     private static final String DATABASE_DROP_CHAR = 
@@ -148,11 +153,10 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS Lessons";
     private static final String DATABASE_DROP_LESSONS_DETAILS = 
     		"DROP TABLE IF EXISTS LessonsDetails";
-    private static final String DATABASE_DROP_LESSONTAG= 
+    private static final String DATABASE_DROP_LESSONTAG = 
     		"DROP TABLE IF EXISTS LessonTag";
-    
-    
-    
+    private static final String DATABASE_DROP_APPSTARTS =
+            "DROP TABLE IF EXISTS AppStarts";
     
     
     public static final String DATABASE_NAME         = "CharTags";
@@ -167,10 +171,12 @@ public class DbAdapter {
     public static final String LESSONS_TABLE         = "Lessons";
     public static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
     public static final String LESSONTAG_TABLE       = "LessonTag";
+    public static final String APPSTARTS_TABLE       = "AppStarts";
     
     
-    private static final int DATABASE_VERSION = 20130326;
+    private static final int DATABASE_VERSION = 20130331;
 
+    
     private final Context mCtx;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -181,7 +187,6 @@ public class DbAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-
             db.execSQL(DATABASE_CREATE_CHAR);
             db.execSQL(DATABASE_CREATE_CHARTAG);
             db.execSQL(DATABASE_CREATE_CHARKEYVALUES);
@@ -193,6 +198,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_CREATE_LESSONS);
             db.execSQL(DATABASE_CREATE_LESSONS_DETAILS);
             db.execSQL(DATABASE_CREATE_LESSONTAG);
+            db.execSQL(DATABASE_CREATE_APPSTARTS);
         }
 
         @Override
@@ -209,7 +215,8 @@ public class DbAdapter {
             db.execSQL(DATABASE_DROP_WORDSTAG);
             db.execSQL(DATABASE_DROP_LESSONS);
             db.execSQL(DATABASE_DROP_LESSONS_DETAILS);
-            db.execSQL(DATABASE_DROP_LESSONTAG);     
+            db.execSQL(DATABASE_DROP_LESSONTAG);
+            db.execSQL(DATABASE_DROP_APPSTARTS);
             onCreate(db);
         }
     }
@@ -1763,13 +1770,37 @@ public class DbAdapter {
         return true;
     }
     
-	public String makeUniqueId(){
-		TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
-		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
-		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
-		String sDate = dtFmt.format(new Date());
-		Log.d("uniqueID", sIMEI + "_" + sDate); // testing + exceed the maximum of long int
-		
-		return sIMEI + "_" + sDate;
-	}
+    public String makeUniqueId() {
+        TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(
+                Context.TELEPHONY_SERVICE);
+        String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
+        SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSS",
+                Locale.US);
+        String sDate = dtFmt.format(new Date());
+        Log.d("uniqueID", sIMEI + "_" + sDate);
+
+        return sIMEI + "_" + sDate;
+    }
+
+    public long recordAppStart() {
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.FULL,
+                DateFormat.FULL);
+        String date = format.format(new Date());
+        
+        ContentValues values = new ContentValues();
+        values.put("date", date);
+        long result = mDb.insert(APPSTARTS_TABLE, null, values);
+        
+        return result;
+    }
+
+    public boolean firstStart() {
+        Cursor cursor = mDb.query(APPSTARTS_TABLE, new String[] {"date"},
+                null, null, null, null, null, "1");
+        
+        boolean result = cursor.getCount() == 0;
+        cursor.close();
+
+        return result;
+    }
 }
