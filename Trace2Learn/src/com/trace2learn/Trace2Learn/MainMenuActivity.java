@@ -35,7 +35,7 @@ public class MainMenuActivity extends ListActivity {
         "Create Character", 
         "Create Word",
         "Browse All Characters",
-        "Browse All Words",
+        "Browse All Phrases",
         "Browse All Collections",
         "Export To File",
         "Import From File",

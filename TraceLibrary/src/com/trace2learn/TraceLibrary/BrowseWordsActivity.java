@@ -58,7 +58,7 @@ public class BrowseWordsActivity extends ListActivity {
     private PopupWindow window;
     private LessonWord lw;
 
-    private static final String[] menuItems = { "Add to Lesson",
+    private static final String[] menuItems = { "Add to Collection",
                                                 "Edit Tags",
                                                 "Move Up",
                                                 "Move Down",

@@ -28,7 +28,7 @@ public class MainMenuActivity extends ListActivity {
     
 	static final String[] APPS = new String[] { 
 		"Browse All Characters",
-		"Browse All Words",
+		"Browse All Phrases",
 		"Browse All Collections",
 		"Import From File"};
 
