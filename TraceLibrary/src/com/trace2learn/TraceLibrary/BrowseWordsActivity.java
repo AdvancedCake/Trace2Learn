@@ -331,13 +331,13 @@ public class BrowseWordsActivity extends ListActivity {
         window.dismiss();
     }
 
-    public void onNewCollectionButtonClick(View view){
+    public void lessonPopupOnClickNewLesson(View view){
         Context  context  = getApplicationContext();
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
         
         String name = editText.getText().toString();
         if(name.equals("")){
-            Toolbox.showToast(context, "You must name the lesson!");
+            Toolbox.showToast(context, "You must name the collection!");
             return;
         }
         Lesson lesson = new Lesson();
