@@ -1,16 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout android:id="@+id/RelativeLayout1"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" xmlns:android="http://schemas.android.com/apk/res/android">
-
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/lesson_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:textColor="#00ccff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
     <TextView
         android:id="@+id/instructions"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="Click and hold on a word for more options"
+        android:layout_below="@+id/lesson_name"
+        android:text="Click and hold on a phrase for more options"
         android:textSize="15sp" />
 
     <ListView
@@ -19,10 +30,9 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/filterButton"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/instructions"
-        android:layout_weight="1.0" >
+        android:layout_below="@+id/instructions" >
     </ListView>
-
+
     <Button
         android:id="@+id/filterButton"
         android:layout_width="wrap_content"
@@ -31,7 +41,7 @@
         android:layout_alignParentLeft="true"
         android:onClick="onClickFilter"
         android:text="@string/filter" />
-
+
     <TextView
         android:id="@+id/filterStatus"
         android:layout_width="wrap_content"

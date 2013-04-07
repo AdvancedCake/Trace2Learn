@@ -56,5 +56,6 @@
     <string name="quizModeOff">Quiz Off</string>
     <string name="see_answer">See Answer</string>
     <string name="exit">Exit</string>
+    <string name="all_words">All Phrases</string>
 
 </resources>

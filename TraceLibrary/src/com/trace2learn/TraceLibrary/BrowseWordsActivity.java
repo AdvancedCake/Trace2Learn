@@ -45,7 +45,7 @@ public class BrowseWordsActivity extends ListActivity {
     private LessonItemListAdapter adapter;
 
     private ListView list;
-    private TextView title;
+    private TextView lessonName;
     private Button   filterButton;
     private TextView filterStatus;
     private boolean  filtered;
@@ -73,7 +73,7 @@ public class BrowseWordsActivity extends ListActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.create_lesson);
+        setContentView(R.layout.browse_words);
         dba = new DbAdapter(this);
         dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -90,7 +90,7 @@ public class BrowseWordsActivity extends ListActivity {
     
     private void getViews() {
         list = getListView();
-        title        = (TextView) findViewById(R.id.instructions);
+        lessonName   = (TextView) findViewById(R.id.lesson_name);
         filterButton = (Button)   findViewById(R.id.filterButton);
         filterStatus = (TextView) findViewById(R.id.filterStatus);
     }
@@ -107,6 +107,7 @@ public class BrowseWordsActivity extends ListActivity {
                 LessonWord word = dba.getWordById(id);
                 source.add(word);
             }
+            lessonName.setText(R.string.all_words);
         }
         else{
             Lesson les = dba.getLessonById(lessonID);
@@ -114,8 +115,8 @@ public class BrowseWordsActivity extends ListActivity {
             int size = les.length();
 
             // set lesson title
-            if (size == 1) { title.setText(name + ": " + size + " word"); }
-            else { title.setText(name + ": " + size + " words"); }
+            if (size == 1) { lessonName.setText(name + " - " + size + " word"); }
+            else { lessonName.setText(name + " - " + size + " words"); }
 
             // populate words
             source = les.getWords();
