@@ -47,13 +47,14 @@ public class PhrasePracticeActivity extends Activity {
     private ImageAdapter               imgAdapter;
 
     private TextView     tagView;
-    private TextView     titleView;	
+    private TextView     titleView;
     private Button       playButton;
     private Button       traceButton;
     private ToggleButton quizToggle;
     private ImageView    quizIcon;
-    private Gallery      gallery;    
+    private Gallery      gallery;
     private ViewAnimator animator;
+    private ImageView    soundIcon;
 
     private ArrayList<SquareLayout>          displayLayouts;
     private ArrayList<SquareLayout>          traceLayouts;
@@ -116,6 +117,7 @@ public class PhrasePracticeActivity extends Activity {
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
         animator    = (ViewAnimator) findViewById(R.id.view_slot);
         gallery     = (Gallery)      findViewById(R.id.gallery);
+        soundIcon   = (ImageView)    findViewById(R.id.sound_button);
     }
 
     private void getHandlers() {
@@ -164,6 +166,14 @@ public class PhrasePracticeActivity extends Activity {
             public void onItemClick(AdapterView<?> parent, View view,
                     int position, long id) {
                 setSelectedCharacter(position);
+            }
+        });
+        
+        // Clicking on the sound icon
+        soundIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playSound();
             }
         });
     }
@@ -350,6 +360,10 @@ public class PhrasePracticeActivity extends Activity {
             tagView.setVisibility(View.INVISIBLE);
             quizIcon.setVisibility(View.VISIBLE);
         }
+    }
+    
+    private void playSound() {
+        Toolbox.showToast(getApplicationContext(), "sound");
     }
 
     @Override

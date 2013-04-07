@@ -94,4 +94,13 @@
         android:textOff="@string/quizModeOff"
         android:textOn="@string/quizModeOn" />
 
+    <ImageView
+        android:id="@+id/sound_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@+id/view_slot"
+        android:contentDescription="@string/play_sound"
+        android:src="@drawable/sound_button" />
+
 </RelativeLayout>
