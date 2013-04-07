@@ -112,7 +112,9 @@ public class PhrasePracticeActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         dba.close();
-        soundPool.release();
+        if (soundPool != null) {
+            soundPool.release();
+        }
     };
 
     private void getViews() {

@@ -11,7 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:textSize="15sp" />
+        android:textColor="#00ccff"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
     <Gallery
         xmlns:android="http://schemas.android.com/apk/res/android"
