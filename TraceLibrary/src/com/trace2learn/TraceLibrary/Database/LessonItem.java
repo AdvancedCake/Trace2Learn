@@ -20,7 +20,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected List<String> _tags;
 	
 	/** The (Key, Value) cache */
-	protected LinkedHashMap<String, String> _keyValues;
+	protected LinkedHashMap<String, String> keyValues;
 	
 	/** The id of the item */
 	//protected long _id; // TODO remove this when string IDs are working.
@@ -51,7 +51,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	{
 		_stringid = null;
 		_tags = new ArrayList<String>();
-		_keyValues = new LinkedHashMap<String, String>();
+		keyValues = new LinkedHashMap<String, String>();
 		
 		_lastUpdate = new Date(0);
 	}
@@ -90,8 +90,8 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		_tags.addAll(tags);
 	}
 	
-	public void setKeyValues(LinkedHashMap<String, String> keyValues){
-		_keyValues.putAll(keyValues);
+	public void setKeyValues(Map<String, String> kv){
+		keyValues.putAll(kv);
 	}	
 	
     public void setSort(double sort) {
@@ -138,7 +138,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		{
 		case CHARACTER:
 		case WORD:
-			_keyValues = db.getKeyValues(_stringid, _type);
+			keyValues = db.getKeyValues(_stringid, _type);
 			break;
 		case LESSON:
 			Log.e(logTAG, "(Key, Value) pairs are NOT supported for LESSON");
@@ -170,28 +170,36 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		return new String(sb.length()>0 ? sb.substring(2) : "");
 	}
 	
+	public synchronized boolean hasKey(String key) {
+	    return keyValues.containsKey(key);
+	}
+	
 	public synchronized boolean hasKeyValue(String key, String value)
 	{
-		return _keyValues.containsKey(key) && _keyValues.containsValue(value);
+		return keyValues.containsKey(key) && keyValues.containsValue(value);
 	}
 	
 	public synchronized void addKeyValue(String key, String value)
 	{
-		_keyValues.put(key, value);
+		keyValues.put(key, value);
 	}	
 	
 	public synchronized LinkedHashMap<String, String> getKeyValues()
 	{
-		return new LinkedHashMap<String, String>(_keyValues);
+		return new LinkedHashMap<String, String>(keyValues);
 	}	
 	
 	public synchronized String getKeyValuesToString()
 	{
 		StringBuilder sb = new StringBuilder();
-		for (Map.Entry<String, String> entry : _keyValues.entrySet()) {
+		for (Map.Entry<String, String> entry : keyValues.entrySet()) {
 			sb.append(", " + entry.getKey() + ": " + entry.getValue());
 		}    	
 		return new String(sb.length()>0 ? sb.substring(2) : "");
+	}
+	
+	public synchronized String getValue(String key) {
+	    return keyValues.get(key);
 	}
 	
 	/** 

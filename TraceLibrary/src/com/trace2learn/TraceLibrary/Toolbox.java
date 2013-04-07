@@ -16,6 +16,9 @@ public class Toolbox {
     public static final String PREFS_QUIZ_MODE = "quizMode";
     
     public static final String PINYIN_KEY = "pinyin";
+    public static final String SOUND_KEY  = "sound";
+    
+    public static final float VOLUME = 1;
     
     public static final Locale locale = Locale.getDefault();
     

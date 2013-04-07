@@ -10,10 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -62,6 +65,9 @@ public class PhrasePracticeActivity extends Activity {
     private ArrayList<CharacterTracePane>    tracePanes;
     
     private SharedPreferences prefs;
+    
+    private SoundPool soundPool;
+    private int       soundId;
 
     private enum Mode {
         CREATION, DISPLAY, ANIMATE, SAVE, TRACE;
@@ -106,6 +112,7 @@ public class PhrasePracticeActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         dba.close();
+        soundPool.release();
     };
 
     private void getViews() {
@@ -216,9 +223,21 @@ public class PhrasePracticeActivity extends Activity {
                 setCharacterTracePane();
             }
             
+            // Quiz Mode
             prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
             quizMode = prefs.getBoolean(Toolbox.PREFS_QUIZ_MODE, true);
             setQuizMode(quizMode);
+            
+            // Sound
+            if (word.hasKey(Toolbox.SOUND_KEY)) {
+                soundIcon.setVisibility(View.VISIBLE);
+                soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+                int soundFile = getResources().getIdentifier(
+                        word.getValue(Toolbox.SOUND_KEY), "raw", getPackageName());
+                soundId = soundPool.load(getApplicationContext(), soundFile, 1);
+            } else {
+                soundIcon.setVisibility(View.GONE);
+            }
         } else {
             Toolbox.showToast(context, "No word selected");
             finish();
@@ -363,7 +382,8 @@ public class PhrasePracticeActivity extends Activity {
     }
     
     private void playSound() {
-        Toolbox.showToast(getApplicationContext(), "sound");
+        Log.i("SoundPool", "Playing sound");
+        soundPool.play(soundId, Toolbox.VOLUME, Toolbox.VOLUME, 1, 0, 1);
     }
 
     @Override
