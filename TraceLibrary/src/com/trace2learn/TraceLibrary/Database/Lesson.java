@@ -14,11 +14,12 @@ import android.util.Log;
 
 public class Lesson extends LessonItem {
 
-    private List<String> _words; // list of word IDs
-    private String name; // lesson name
-    private List<LessonWord> wordObjects;
+    private List<String>              _words; // list of word IDs
+    private String                    name; // lesson name
+    private List<LessonWord>          wordObjects;
     private SortedSet<LessonCategory> categories;
-    private boolean isUserDefined;
+    private String                    narrative;
+    private boolean                   isUserDefined;
 
     public Lesson() {
         this(null, true);
@@ -85,11 +86,20 @@ public class Lesson extends LessonItem {
         }
         categories.add(category);
     }
+    
+    public String getNarrative() {
+        return narrative;
+    }
+    
+    public void setNarrative(String narrative) {
+        this.narrative = narrative;
+    }
 
     /**
      * Get the list of items that compose this lesson
      * @return the list of characters that compose this word
      */
+    // TODO just use wordObjects field
     public synchronized List<LessonItem> getWords() {
         ArrayList<LessonItem> words = new ArrayList<LessonItem>(_words.size());
         for(String id : _words)
@@ -153,8 +163,19 @@ public class Lesson extends LessonItem {
         sb.append("name=\"").append(name).append("\" ");
         sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
-        for (LessonCategory category : categories) {
-            sb.append("<category category=\"").append(category.name).append("\" />\n");
+        if (narrative != null && narrative.length() > 0) {
+            String xmlNarrative = narrative.replace("\"", "&quot;")
+                                           .replace("'", "&apos;")
+                                           .replace("<", "&lt;")
+                                           .replace(">", "&gt;")
+                                           .replace("&", "&amp;");
+            sb.append("<narrative>").append(xmlNarrative).append("</narrative>\n");
+        }
+        
+        if (categories != null && categories.size() > 0) {
+            for (LessonCategory category : categories) {
+                sb.append("<category category=\"").append(category.name).append("\" />\n");
+            }
         }
         
         synchronized (_words) {
@@ -187,7 +208,7 @@ public class Lesson extends LessonItem {
         try {
             String  id          = elem.getAttribute("id");
             String  name        = elem.getAttribute("name");
-            boolean userDefined = elem.getAttribute("author").equals("user");
+            boolean userDefined = !elem.getAttribute("author").equals("admin");
 
             Log.i("Import Lesson", "id: " + id);
             Log.i("Import Lesson", "  name: " + name);
@@ -195,6 +216,17 @@ public class Lesson extends LessonItem {
 
             Lesson lesson = new Lesson(id, userDefined);
             lesson.setName(name);
+            
+            NodeList narr = elem.getElementsByTagName("narrative");
+            if (narr.getLength() > 0) {
+                String narrative = Parser.getNodeValue(narr.item(0));
+                narrative = narrative.replace("&quot;", "\"")
+                                     .replace("&apos;", "'")
+                                     .replace("&lt;", "<")
+                                     .replace("&gt;", ">")
+                                     .replace("&amp;", "&");
+                lesson.setNarrative(narrative);
+            }
             
             NodeList cats = elem.getElementsByTagName("category");
             for (int i = 0; i < cats.getLength(); i++) {
@@ -218,6 +250,7 @@ public class Lesson extends LessonItem {
 
             return lesson;
         } catch (Exception e) {
+            e.printStackTrace();
             Log.e("Import lesson", e.getMessage());
             return null;
         }

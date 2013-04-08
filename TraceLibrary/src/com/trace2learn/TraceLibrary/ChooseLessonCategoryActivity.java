@@ -23,7 +23,7 @@ import com.trace2learn.TraceLibrary.Database.LessonCategory;
 public class ChooseLessonCategoryActivity extends Activity {
     
     private Intent    intent;
-    private String    lessonID;
+    private String    lessonId;
     private String    lessonName;
     private boolean[] original;
     private boolean[] selections;
@@ -47,7 +47,7 @@ public class ChooseLessonCategoryActivity extends Activity {
         
         // Grab the extras
         intent = getIntent();
-        lessonID = intent.getStringExtra("ID");
+        lessonId = intent.getStringExtra("ID");
         lessonName = intent.getStringExtra("name");
         original = intent.getBooleanArrayExtra("categories");
         selections = original.clone();
@@ -83,7 +83,7 @@ public class ChooseLessonCategoryActivity extends Activity {
         DbAdapter dba = new DbAdapter(getApplicationContext());
         dba.open();
         
-        boolean result = dba.saveLessonCategories(lessonID, selections);
+        boolean result = dba.saveLessonCategories(lessonId, selections);
         
         dba.close();
         return result;
@@ -128,7 +128,7 @@ public class ChooseLessonCategoryActivity extends Activity {
             View v = convertView;
             
             if (v == null) {
-                v = vi.inflate(R.layout.lesson_category, null);
+                v = vi.inflate(R.layout.lesson_category_checkbox, null);
             }
             
             LessonCategory category = items[position];

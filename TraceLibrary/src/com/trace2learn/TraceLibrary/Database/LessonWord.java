@@ -148,7 +148,7 @@ public class LessonWord extends LessonItem {
 	        xml += "<tag tag=\"" + tag + "\" />\n";
 	    }
 
-	    for (Map.Entry<String, String> entry : _keyValues.entrySet()) {
+	    for (Map.Entry<String, String> entry : keyValues.entrySet()) {
 	        xml += "<id key=\"" + entry.getKey() + "\" value=\"" +
 	                entry.getValue() + "\" />\n";
 	    }

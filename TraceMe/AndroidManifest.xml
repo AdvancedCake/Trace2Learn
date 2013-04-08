@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
-        android:icon="@drawable/tracethis"
+        android:icon="@drawable/trace2learn"
         android:label="@string/app_name" >
         <activity
             android:name="MainMenuActivity"
@@ -47,6 +47,8 @@
         <activity android:name="com.trace2learn.TraceLibrary.FilePickerActivity" >
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.ChooseLessonCategoryActivity" >
+        </activity>
+        <activity android:name="com.trace2learn.TraceLibrary.LessonNarrativeActivity" >
         </activity>
     </application>
 

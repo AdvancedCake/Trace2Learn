@@ -8,6 +8,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -60,7 +62,8 @@ public class BrowseLessonsActivity extends ListActivity {
         	items.add(le);
         }
         LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LessonListAdapter la = new LessonListAdapter(this,items,vi);
+        LessonListAdapter la = new LessonListAdapter(this, items, vi,
+                infoButtonHandler);
         setListAdapter(la);
         registerForContextMenu(getListView());
     }
@@ -79,11 +82,17 @@ public class BrowseLessonsActivity extends ListActivity {
 	} 
 
 	//when character is clicked, it starts the display mode for that char
-	public void clickOnItem(LessonItem li){
+	private void clickOnItem(LessonItem li){
 		Lesson le = ((Lesson)li);
-		Intent i = new Intent(this, BrowseWordsActivity.class);
+        Intent i = new Intent(this, BrowseWordsActivity.class);
 		i.putExtra("ID", le.getStringId());
 		startActivity(i);
+	}
+
+	private void getItemInfo(String lessonId) {
+        Intent i = new Intent(this, LessonNarrativeActivity.class);
+        i.putExtra("ID", lessonId);
+        startActivity(i);
 	}
 
 	@Override
@@ -154,5 +163,13 @@ public class BrowseLessonsActivity extends ListActivity {
 	        finish();
 	    }
 	}
+
+	private Handler infoButtonHandler = new Handler() {
+	    @Override
+	    public void handleMessage(Message msg) {
+	        String lessonId = (String) msg.obj;
+	        getItemInfo(lessonId);
+	    }
+	};
 
 }

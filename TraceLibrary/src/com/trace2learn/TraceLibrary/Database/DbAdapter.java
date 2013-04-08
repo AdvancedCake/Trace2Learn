@@ -1,11 +1,13 @@
 package com.trace2learn.TraceLibrary.Database;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.SortedSet;
 
@@ -44,7 +46,7 @@ public class DbAdapter {
     private SQLiteDatabase mDb;
     
     private static final HashMap<LessonCategory, String> categoryColumns =
-            new HashMap<LessonCategory, String>();
+            new HashMap<LessonCategory, String>(); // TODO
 
     /**
      * Database creation sql statement
@@ -106,6 +108,7 @@ public class DbAdapter {
             "CREATE TABLE Lessons (_id TEXT PRIMARY KEY,"+
             "name TEXT, " +
             "sort INTEGER, " +
+            "narrative TEXT, " +
             "catShapeAndStructure INTEGER, " +
             "catMeaning INTEGER, " +
             "catPhonetic INTEGER, " +
@@ -124,6 +127,9 @@ public class DbAdapter {
             "tag TEXT NOT NULL, " +
             "sort INTEGER, " +
             "FOREIGN KEY(_id) REFERENCES Lessons(_id));";
+    
+    private static final String DATABASE_CREATE_APPSTARTS =
+            "CREATE TABLE AppStarts (date TEXT);";
     
     //DB Drop Statements
     
@@ -147,11 +153,10 @@ public class DbAdapter {
     		"DROP TABLE IF EXISTS Lessons";
     private static final String DATABASE_DROP_LESSONS_DETAILS = 
     		"DROP TABLE IF EXISTS LessonsDetails";
-    private static final String DATABASE_DROP_LESSONTAG= 
+    private static final String DATABASE_DROP_LESSONTAG = 
     		"DROP TABLE IF EXISTS LessonTag";
-    
-    
-    
+    private static final String DATABASE_DROP_APPSTARTS =
+            "DROP TABLE IF EXISTS AppStarts";
     
     
     public static final String DATABASE_NAME         = "CharTags";
@@ -166,10 +171,12 @@ public class DbAdapter {
     public static final String LESSONS_TABLE         = "Lessons";
     public static final String LESSONS_DETAILS_TABLE = "LessonsDetails";
     public static final String LESSONTAG_TABLE       = "LessonTag";
+    public static final String APPSTARTS_TABLE       = "AppStarts";
     
     
-    private static final int DATABASE_VERSION = 20130226;
+    private static final int DATABASE_VERSION = 20130331;
 
+    
     private final Context mCtx;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
@@ -180,7 +187,6 @@ public class DbAdapter {
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-
             db.execSQL(DATABASE_CREATE_CHAR);
             db.execSQL(DATABASE_CREATE_CHARTAG);
             db.execSQL(DATABASE_CREATE_CHARKEYVALUES);
@@ -192,6 +198,7 @@ public class DbAdapter {
             db.execSQL(DATABASE_CREATE_LESSONS);
             db.execSQL(DATABASE_CREATE_LESSONS_DETAILS);
             db.execSQL(DATABASE_CREATE_LESSONTAG);
+            db.execSQL(DATABASE_CREATE_APPSTARTS);
         }
 
         @Override
@@ -208,7 +215,8 @@ public class DbAdapter {
             db.execSQL(DATABASE_DROP_WORDSTAG);
             db.execSQL(DATABASE_DROP_LESSONS);
             db.execSQL(DATABASE_DROP_LESSONS_DETAILS);
-            db.execSQL(DATABASE_DROP_LESSONTAG);     
+            db.execSQL(DATABASE_DROP_LESSONTAG);
+            db.execSQL(DATABASE_DROP_APPSTARTS);
             onCreate(db);
         }
     }
@@ -1266,7 +1274,8 @@ public class DbAdapter {
     public boolean addLesson(Lesson les)
     {
     	mDb.beginTransaction();
-    	//add to LESSON_TABLE
+    	
+    	// add to LESSON_TABLE
     	ContentValues initialLessonValues = new ContentValues();
     	String id = "";
     	if (les.getStringId() != null) { // id already initialized, keep it
@@ -1285,13 +1294,14 @@ public class DbAdapter {
     	        initialLessonValues.put(categoryColumns.get(category), 1);
     	    }
     	}
+    	initialLessonValues.put("narrative", les.getNarrative());
     	
     	// Attempt the insert
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
     	if(rowid == -1)
     	{
-    		//if error
-    		Log.e(LESSONS_TABLE, "cannot add new character to table "+LESSONS_TABLE);
+    		// error
+    		Log.e(LESSONS_TABLE, "cannot add new character to table " + LESSONS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
@@ -1311,8 +1321,8 @@ public class DbAdapter {
     		long success = mDb.insert(LESSONS_DETAILS_TABLE, null, lessonValues);
     		if(success == -1)
     		{	
-    			//if error
-    			Log.e(LESSONS_DETAILS_TABLE,"cannot add to table");
+    			// error
+    			Log.e(LESSONS_DETAILS_TABLE, "cannot add to table");
     			mDb.endTransaction();
     			return false;
     		}
@@ -1400,7 +1410,7 @@ public class DbAdapter {
      * @return
      */
     public Lesson getLessonById(String id) {
-        String[] columns = new String[] {LESSONS_ID, "name",
+        String[] columns = new String[] {LESSONS_ID, "name", "narrative", 
                 "catShapeAndStructure", "catMeaning", "catPhonetic",
                 "catGrammar"};
     	Cursor mCursor = mDb.query(true, LESSONS_TABLE, columns,
@@ -1416,6 +1426,7 @@ public class DbAdapter {
     	}
     	mCursor.moveToFirst();
     	le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	le.setNarrative(mCursor.getString(mCursor.getColumnIndexOrThrow("narrative")));
     	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catShapeAndStructure")) == 1) {
             le.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);
         }
@@ -1458,6 +1469,13 @@ public class DbAdapter {
         values.put("catMeaning",           categories[1]);
         values.put("catPhonetic",          categories[2]);
         values.put("catGrammar",           categories[3]);
+        return mDb.update(LESSONS_TABLE, values,
+                LESSONS_ID + "='" + lessonId + "'", null) == 1;
+    }
+    
+    public boolean saveLessonNarrative(String lessonId, String narrative) {
+        ContentValues values = new ContentValues();
+        values.put("narrative", narrative);
         return mDb.update(LESSONS_TABLE, values,
                 LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
@@ -1752,13 +1770,37 @@ public class DbAdapter {
         return true;
     }
     
-	public String makeUniqueId(){
-		TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(Context.TELEPHONY_SERVICE);
-		String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
-		SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSS");
-		String sDate = dtFmt.format(new Date());
-		Log.d("uniqueID", sIMEI + "_" + sDate); // testing + exceed the maximum of long int
-		
-		return sIMEI + "_" + sDate;
-	}
+    public String makeUniqueId() {
+        TelephonyManager tMgr = (TelephonyManager) mCtx.getSystemService(
+                Context.TELEPHONY_SERVICE);
+        String sIMEI = tMgr.getDeviceId(); // Requires READ_PHONE_STATE
+        SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSS",
+                Locale.US);
+        String sDate = dtFmt.format(new Date());
+        Log.d("uniqueID", sIMEI + "_" + sDate);
+
+        return sIMEI + "_" + sDate;
+    }
+
+    public long recordAppStart() {
+        DateFormat format = DateFormat.getDateTimeInstance(DateFormat.FULL,
+                DateFormat.FULL);
+        String date = format.format(new Date());
+        
+        ContentValues values = new ContentValues();
+        values.put("date", date);
+        long result = mDb.insert(APPSTARTS_TABLE, null, values);
+        
+        return result;
+    }
+
+    public boolean firstStart() {
+        Cursor cursor = mDb.query(APPSTARTS_TABLE, new String[] {"date"},
+                null, null, null, null, null, "1");
+        
+        boolean result = cursor.getCount() == 0;
+        cursor.close();
+
+        return result;
+    }
 }

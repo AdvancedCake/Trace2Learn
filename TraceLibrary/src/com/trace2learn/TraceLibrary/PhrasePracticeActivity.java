@@ -10,10 +10,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.Html;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -47,13 +50,14 @@ public class PhrasePracticeActivity extends Activity {
     private ImageAdapter               imgAdapter;
 
     private TextView     tagView;
-    private TextView     titleView;	
+    private TextView     titleView;
     private Button       playButton;
     private Button       traceButton;
     private ToggleButton quizToggle;
     private ImageView    quizIcon;
-    private Gallery      gallery;    
+    private Gallery      gallery;
     private ViewAnimator animator;
+    private ImageView    soundIcon;
 
     private ArrayList<SquareLayout>          displayLayouts;
     private ArrayList<SquareLayout>          traceLayouts;
@@ -61,6 +65,9 @@ public class PhrasePracticeActivity extends Activity {
     private ArrayList<CharacterTracePane>    tracePanes;
     
     private SharedPreferences prefs;
+    
+    private SoundPool soundPool;
+    private int       soundId;
 
     private enum Mode {
         CREATION, DISPLAY, ANIMATE, SAVE, TRACE;
@@ -105,6 +112,9 @@ public class PhrasePracticeActivity extends Activity {
     protected void onDestroy() {
         super.onDestroy();
         dba.close();
+        if (soundPool != null) {
+            soundPool.release();
+        }
     };
 
     private void getViews() {
@@ -116,6 +126,7 @@ public class PhrasePracticeActivity extends Activity {
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
         animator    = (ViewAnimator) findViewById(R.id.view_slot);
         gallery     = (Gallery)      findViewById(R.id.gallery);
+        soundIcon   = (ImageView)    findViewById(R.id.sound_button);
     }
 
     private void getHandlers() {
@@ -166,6 +177,14 @@ public class PhrasePracticeActivity extends Activity {
                 setSelectedCharacter(position);
             }
         });
+        
+        // Clicking on the sound icon
+        soundIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                playSound();
+            }
+        });
     }
 
     /**
@@ -206,9 +225,21 @@ public class PhrasePracticeActivity extends Activity {
                 setCharacterTracePane();
             }
             
+            // Quiz Mode
             prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
             quizMode = prefs.getBoolean(Toolbox.PREFS_QUIZ_MODE, true);
             setQuizMode(quizMode);
+            
+            // Sound
+            if (word.hasKey(Toolbox.SOUND_KEY)) {
+                soundIcon.setVisibility(View.VISIBLE);
+                soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+                int soundFile = getResources().getIdentifier(
+                        word.getValue(Toolbox.SOUND_KEY), "raw", getPackageName());
+                soundId = soundPool.load(getApplicationContext(), soundFile, 1);
+            } else {
+                soundIcon.setVisibility(View.GONE);
+            }
         } else {
             Toolbox.showToast(context, "No word selected");
             finish();
@@ -350,6 +381,11 @@ public class PhrasePracticeActivity extends Activity {
             tagView.setVisibility(View.INVISIBLE);
             quizIcon.setVisibility(View.VISIBLE);
         }
+    }
+    
+    private void playSound() {
+        Log.i("SoundPool", "Playing sound");
+        soundPool.play(soundId, Toolbox.VOLUME, Toolbox.VOLUME, 1, 0, 1);
     }
 
     @Override

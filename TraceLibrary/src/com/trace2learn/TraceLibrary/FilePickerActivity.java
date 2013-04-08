@@ -97,7 +97,6 @@ public class FilePickerActivity extends ListActivity {
             showToast("This is not a valid " + getString(R.string.app_name) +
                     " file!");
             Log.e("Import", e.getMessage());
-            e.printStackTrace();
         }
     }
     
