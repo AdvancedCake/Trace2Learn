@@ -231,14 +231,15 @@ public class PhrasePracticeActivity extends Activity {
             setQuizMode(quizMode);
             
             // Sound
+            soundIcon.setVisibility(View.GONE);
             if (word.hasKey(Toolbox.SOUND_KEY)) {
-                soundIcon.setVisibility(View.VISIBLE);
                 soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
                 int soundFile = getResources().getIdentifier(
                         word.getValue(Toolbox.SOUND_KEY), "raw", getPackageName());
-                soundId = soundPool.load(getApplicationContext(), soundFile, 1);
-            } else {
-                soundIcon.setVisibility(View.GONE);
+                if (soundFile != 0) { // check to make sure resource exists
+                    soundId = soundPool.load(getApplicationContext(), soundFile, 1);
+                    soundIcon.setVisibility(View.VISIBLE);
+                }
             }
         } else {
             Toolbox.showToast(context, "No word selected");
