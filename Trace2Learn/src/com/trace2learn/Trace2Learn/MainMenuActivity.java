@@ -33,7 +33,7 @@ public class MainMenuActivity extends ListActivity {
 	
     static final String[] APPS = new String[] {
         "Create Character", 
-        "Create Word",
+        "Create Phrase",
         "Browse All Characters",
         "Browse All Phrases",
         "Browse All Collections",
