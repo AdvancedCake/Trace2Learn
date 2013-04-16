@@ -35,6 +35,8 @@
         </activity>
         <activity android:name="LessonNarrativeActivity" >
         </activity>
+        <activity android:name="IntroductionActivity" >
+        </activity>
     </application>
 
 </manifest>
