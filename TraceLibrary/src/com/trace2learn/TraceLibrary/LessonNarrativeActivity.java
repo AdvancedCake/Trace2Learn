@@ -7,6 +7,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -32,7 +33,8 @@ public class LessonNarrativeActivity extends Activity {
     private String                    narrative;
     private SortedSet<LessonCategory> categories;
     
-    private DbAdapter dba;
+    private DbAdapter         dba;
+    private SharedPreferences prefs;
     
     private TextView     nameView;
     private TextView     narrativeView;
@@ -52,6 +54,9 @@ public class LessonNarrativeActivity extends Activity {
         // Initialize database adapter
         dba = new DbAdapter(this);
         dba.open();
+        
+        // Initialize SharedPreferences
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
         // Grab the extras
         intent     = getIntent();
@@ -82,6 +87,12 @@ public class LessonNarrativeActivity extends Activity {
         categoryLayout = (LinearLayout) findViewById(R.id.categories);
         exitButton     = (ImageView)    findViewById(R.id.exit_button);
         editButton     = (Button)       findViewById(R.id.edit_button);
+        
+        if (!lesson.isUserDefined() &&
+                !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false)) {
+            // Lesson is admin, but user is not admin
+            editButton.setVisibility(View.GONE);
+        }
         
         // Because setMovementMethod causes the view to darken when clicked, we
         // must disable the view. But that dims the text color, so we need to
