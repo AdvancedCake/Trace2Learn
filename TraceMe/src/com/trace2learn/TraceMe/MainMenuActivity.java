@@ -37,10 +37,10 @@ public class MainMenuActivity extends Activity {
         getViews();
         getHandlers();
         
-        checkFirstStart();
-        
         prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         editor = prefs.edit();
+
+        checkFirstStart();
 
         // Set user permissions
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, false);

@@ -11,6 +11,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -51,6 +52,8 @@ public class BrowseWordsActivity extends ListActivity {
     private boolean  filtered;
 
     private LayoutInflater vi;
+    private SharedPreferences prefs;
+    
     private String lessonID;
 
     // Lesson popup views
@@ -77,6 +80,8 @@ public class BrowseWordsActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
         getViews();
         
@@ -293,25 +298,27 @@ public class BrowseWordsActivity extends ListActivity {
     private void initiatePopupWindow(){
         try {
             Display display = getWindowManager().getDefaultDisplay(); 
-            display.getWidth();
             int height = display.getHeight();  // deprecated
-            //We need to get the instance of the LayoutInflater, use the context of this activity
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //Inflate the view from a predefined XML layout
-            layout = inflater.inflate(R.layout.add_to_collection_popup,(ViewGroup) findViewById(R.id.popup_layout));
-            layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            
+            LayoutInflater inflater = (LayoutInflater) this.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            layout = inflater.inflate(R.layout.add_to_collection_popup,
+                    (ViewGroup) findViewById(R.id.popup_layout));
+            layout.measure(View.MeasureSpec.UNSPECIFIED,
+                    View.MeasureSpec.UNSPECIFIED);
+            
             // create a 300px width and 470px height PopupWindow
             List<String> allLessons = dba.getAllLessonNames();
-            Log.e("numLessons",Integer.toString(allLessons.size()));
-            final ListView lessonList = (ListView)layout.findViewById(R.id.collectionlist);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
+            Log.e("numLessons", Integer.toString(allLessons.size()));
+            final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
             lessonList.setAdapter(adapter);
-            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
+            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
+            
             // display the popup in the center
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
             lessonList.setOnItemClickListener(new OnItemClickListener() {
-
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                     String name = ((String)lessonList.getItemAtPosition(position));
                     Log.e("name",name);
@@ -321,8 +328,6 @@ public class BrowseWordsActivity extends ListActivity {
                     window.dismiss();
                 }
             });
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -341,7 +346,8 @@ public class BrowseWordsActivity extends ListActivity {
             Toolbox.showToast(context, "You must name the collection!");
             return;
         }
-        Lesson lesson = new Lesson();
+        Lesson lesson = new Lesson(
+                !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false));
         lesson.setName(name);
         lesson.addWord(lw.getStringId());
         dba.addLesson(lesson);

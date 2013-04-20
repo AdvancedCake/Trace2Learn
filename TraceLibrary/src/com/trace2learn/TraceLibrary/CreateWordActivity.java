@@ -15,6 +15,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
@@ -59,6 +60,8 @@ public class CreateWordActivity extends Activity {
     
     private LayoutInflater vi;
     
+    private SharedPreferences prefs;
+    
     // Lesson popup views
     private PopupWindow window;
     private View        layout;
@@ -85,6 +88,8 @@ public class CreateWordActivity extends Activity {
         dba = new DbAdapter(this);
         dba.open();
 
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        
         filterStatus.setVisibility(View.GONE);
         
         imgAdapter = new ImageAdapter(this, currentChars);
@@ -220,34 +225,37 @@ public class CreateWordActivity extends Activity {
         charList.setAdapter(charAdapter);   
     }
 
-    private void initiatePopupWindow(){
+    private void initiatePopupWindow() {
         try {
             Display display = getWindowManager().getDefaultDisplay();
             int height = display.getHeight();  // deprecated
-            //We need to get the instance of the LayoutInflater, use the context of this activity
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //Inflate the view from a predefined XML layout
-            layout = inflater.inflate(R.layout.add_to_collection_popup,(ViewGroup) findViewById(R.id.popup_layout));
-            layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            
+            LayoutInflater inflater = (LayoutInflater) this.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            layout = inflater.inflate(R.layout.add_to_collection_popup,
+                    (ViewGroup) findViewById(R.id.popup_layout));
+            layout.measure(View.MeasureSpec.UNSPECIFIED,
+                    View.MeasureSpec.UNSPECIFIED);
+            
             // create a 300px width and 470px height PopupWindow
             List<String> allLessons = dba.getAllLessonNames();
-            Log.e("numLessons",Integer.toString(allLessons.size()));
-            final ListView lessonList = (ListView)layout.findViewById(R.id.collectionlist);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
+            Log.e("numLessons", Integer.toString(allLessons.size()));
+            final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
             lessonList.setAdapter(adapter);
-            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
+            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
+
             // display the popup in the center
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-    
+
             lessonList.setOnItemClickListener(new OnItemClickListener() {
-                
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-                   String name = ((String)lessonList.getItemAtPosition(position));
-                   Log.e("name",name);
-                   String success = dba.addWordToLesson(name, newWord.getStringId());
-                   Log.e("adding word",success);
-                   window.dismiss();
-                   createTags();
+                    String name = ((String)lessonList.getItemAtPosition(position));
+                    Log.e("name",name);
+                    String success = dba.addWordToLesson(name, newWord.getStringId());
+                    Log.e("adding word",success);
+                    window.dismiss();
+                    createTags();
                 }
             });
         } catch (Exception e) {
@@ -255,21 +263,22 @@ public class CreateWordActivity extends Activity {
         }
     }
     
-    public void lessonPopupOnClickSkip(View view){
+    public void lessonPopupOnClickSkip(View view) {
         window.dismiss();
         createTags();
     }
     
-    public void lessonPopupOnClickNewLesson(View view){
+    public void lessonPopupOnClickNewLesson(View view) {
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
         Editable edit = editText.getText();
         String name = edit.toString();
-        if(name.equals("")){
+        if (name.equals("")) {
             Toolbox.showToast(getApplicationContext(),
                     "You must name the collection!");
             return;
         }
-        Lesson lesson = new Lesson();
+        Lesson lesson = new Lesson(
+                !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false));
         lesson.setName(name);
         lesson.addWord(newWord.getStringId());
         dba.addLesson(lesson);

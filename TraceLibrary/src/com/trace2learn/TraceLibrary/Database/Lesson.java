@@ -34,9 +34,9 @@ public class Lesson extends LessonItem {
     }
 
     public Lesson(String id, boolean isUserDefined) {
-        _type              = ItemType.LESSON;
-        _words             = new ArrayList<String>();
-        _stringid          = id;
+        this._type         = ItemType.LESSON;
+        this._words        = new ArrayList<String>();
+        this._stringid     = id;
         this.isUserDefined = isUserDefined;
     }
 

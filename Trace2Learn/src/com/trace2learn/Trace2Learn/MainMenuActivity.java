@@ -56,6 +56,7 @@ public class MainMenuActivity extends ListActivity {
 
         // Set admin permissions
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, true);
+        editor.commit();
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu,APPS));
 

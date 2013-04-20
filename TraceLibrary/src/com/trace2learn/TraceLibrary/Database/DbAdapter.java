@@ -86,7 +86,6 @@ public class DbAdapter {
             "CREATE TABLE WordsDetails (_id TEXT," +
             "CharId TEXT," +
             "WordOrder INTEGER NOT NULL," +
-            "FlagUserCreated INTEGER," +
             "FOREIGN KEY(CharId) REFERENCES Character(_id)," +
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
     
@@ -109,6 +108,7 @@ public class DbAdapter {
             "name TEXT, " +
             "sort INTEGER, " +
             "narrative TEXT, " +
+            "userDefined INTEGER, " +
             "catShapeAndStructure INTEGER, " +
             "catMeaning INTEGER, " +
             "catPhonetic INTEGER, " +
@@ -168,7 +168,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 20130409;
+    private static final int DATABASE_VERSION = 20130420;
 
     
     private final Context mCtx;
@@ -620,7 +620,7 @@ public class DbAdapter {
          }
          mCursor.close();
     	 
-    	 mCursor = mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId ='" + id +"' AND FlagUserCreated=1", null,
+    	 mCursor = mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId ='" + id, null,
                  null, null, null, null);
     	 if(mCursor.getCount()>0){
     		 //Some word is using the character
@@ -853,7 +853,6 @@ public class DbAdapter {
     		characterValues.put("_id", wordId);
     		characterValues.put("CharId", c);
     		characterValues.put("WordOrder", charNumber);
-    		characterValues.put("FlagUserCreated", 1);
     		long success = mDb.insert(WORDS_DETAILS_TABLE, null, characterValues);
     		if(success == -1)
     		{	
@@ -1287,6 +1286,7 @@ public class DbAdapter {
     	    }
     	}
     	initialLessonValues.put("narrative", les.getNarrative());
+    	initialLessonValues.put("userDefined", les.isUserDefined());
     	
     	// Attempt the insert
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
@@ -1402,14 +1402,12 @@ public class DbAdapter {
      * @return
      */
     public Lesson getLessonById(String id) {
-        String[] columns = new String[] {LESSONS_ID, "name", "narrative", 
-                "catShapeAndStructure", "catMeaning", "catPhonetic",
-                "catGrammar"};
+        String[] columns = new String[] {LESSONS_ID, "name", "narrative",
+                "userDefined", "catShapeAndStructure", "catMeaning",
+                "catPhonetic", "catGrammar"};
     	Cursor mCursor = mDb.query(true, LESSONS_TABLE, columns,
     	        LESSONS_ID + "='" + id + "'", null, null, null, null, null);
     	
-    	//if the Lesson doesn't exists
-        Lesson le = new Lesson();
     	if (mCursor == null) {
     		return null;
     	} else if (mCursor.getCount() == 0) {
@@ -1417,7 +1415,9 @@ public class DbAdapter {
     	    return null;
     	}
     	mCursor.moveToFirst();
-    	le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	boolean userDefined = mCursor.getInt(mCursor.getColumnIndexOrThrow("userDefined")) == 1;
+        Lesson le = new Lesson(userDefined);
+        le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	le.setNarrative(mCursor.getString(mCursor.getColumnIndexOrThrow("narrative")));
     	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catShapeAndStructure")) == 1) {
             le.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);

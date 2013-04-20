@@ -47,16 +47,12 @@ public class LessonNarrativeActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lesson_narrative);
         
-        // Initialize Views and Handlers
-        getViews();
-        getHandlers();
+        // Initialize SharedPreferences
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
         // Initialize database adapter
         dba = new DbAdapter(this);
         dba.open();
-        
-        // Initialize SharedPreferences
-        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
         // Grab the extras
         intent     = getIntent();
@@ -65,6 +61,10 @@ public class LessonNarrativeActivity extends Activity {
         lessonName = lesson.getLessonName();
         categories = lesson.getCategories();
         narrative  = lesson.getNarrative();
+        
+        // Initialize Views and Handlers
+        getViews();
+        getHandlers();
         
         nameView.setText(lessonName);
         narrativeView.setText(narrative);
@@ -88,8 +88,12 @@ public class LessonNarrativeActivity extends Activity {
         exitButton     = (ImageView)    findViewById(R.id.exit_button);
         editButton     = (Button)       findViewById(R.id.edit_button);
         
+        System.out.println(lesson.isUserDefined());
+        System.out.println(prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false));
+        
         if (!lesson.isUserDefined() &&
                 !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false)) {
+            System.out.println("lol");
             // Lesson is admin, but user is not admin
             editButton.setVisibility(View.GONE);
         }
