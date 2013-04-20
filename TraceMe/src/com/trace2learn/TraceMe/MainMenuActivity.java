@@ -22,6 +22,9 @@ import com.trace2learn.TraceLibrary.Database.DbAdapter;
 
 public class MainMenuActivity extends Activity {
 
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+    
     ImageView introduction;
     ImageView createPhrase;
     ImageView browseCollections;
@@ -35,6 +38,12 @@ public class MainMenuActivity extends Activity {
         getHandlers();
         
         checkFirstStart();
+        
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        editor = prefs.edit();
+
+        // Set user permissions
+        editor.putBoolean(Toolbox.PREFS_IS_ADMIN, false);
     }
     
     private void getViews() {
@@ -72,15 +81,12 @@ public class MainMenuActivity extends Activity {
     }
     
     private void checkFirstStart() {
-        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
-                MODE_PRIVATE);
         boolean firstStart = prefs.getBoolean(Toolbox.PREFS_FIRST_START, true);
         if (firstStart) {
             initializeDatabase();
         }
         
         // Log previously started
-        SharedPreferences.Editor editor = prefs.edit();
         editor.putBoolean(Toolbox.PREFS_FIRST_START, false);
         editor.commit();
     }

@@ -14,6 +14,7 @@ public class Toolbox {
 
     // SharedPreferences
     public static final String PREFS_FILE        = "T2L_prefs";
+    public static final String PREFS_IS_ADMIN    = "isAdmin";
     public static final String PREFS_QUIZ_MODE   = "quizMode";
     public static final String PREFS_FIRST_START = "firstStart";
     
