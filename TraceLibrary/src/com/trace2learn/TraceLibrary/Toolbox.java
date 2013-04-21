@@ -12,12 +12,16 @@ import android.widget.Toast;
 
 public class Toolbox {
 
-    public static final String PREFS_FILE      = "T2L_prefs";
-    public static final String PREFS_QUIZ_MODE = "quizMode";
+    // SharedPreferences
+    public static final String PREFS_FILE        = "T2L_prefs";
+    public static final String PREFS_QUIZ_MODE   = "quizMode";
+    public static final String PREFS_FIRST_START = "firstStart";
     
+    // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
     public static final String SOUND_KEY  = "sound";
     
+    // Sound Playback
     public static final float VOLUME = 1;
     
     public static final Locale locale = Locale.getDefault();

@@ -50,6 +50,8 @@
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.LessonNarrativeActivity" >
         </activity>
+        <activity android:name="com.trace2learn.TraceLibrary.IntroductionActivity" >
+        </activity>
     </application>
 
 </manifest>

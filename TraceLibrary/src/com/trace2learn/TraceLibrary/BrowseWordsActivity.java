@@ -115,8 +115,8 @@ public class BrowseWordsActivity extends ListActivity {
             int size = les.length();
 
             // set lesson title
-            if (size == 1) { lessonName.setText(name + " - " + size + " word"); }
-            else { lessonName.setText(name + " - " + size + " words"); }
+            if (size == 1) { lessonName.setText(name + " - " + size + " phrase"); }
+            else { lessonName.setText(name + " - " + size + " phrases"); }
 
             // populate words
             source = les.getWords();
@@ -214,7 +214,7 @@ public class BrowseWordsActivity extends ListActivity {
             Boolean success = dba.deleteWord(id);
             Log.d("Result",success.toString());
             if(!success){
-                Toolbox.showToast(context, "Could not delete the word");
+                Toolbox.showToast(context, "Could not delete the phrase");
                 return false;
             }
             else{
@@ -240,10 +240,10 @@ public class BrowseWordsActivity extends ListActivity {
 
             // check that item exists
             if (otherPos < 0) {
-                Toolbox.showToast(context, "Cannot move this word up");
+                Toolbox.showToast(context, "Cannot move this phrase up");
                 return false;
             } else if (otherPos >= display.size()) {
-                Toolbox.showToast(context, "Cannot move this word down");
+                Toolbox.showToast(context, "Cannot move this phrase down");
                 return false;
             }
 
@@ -316,7 +316,7 @@ public class BrowseWordsActivity extends ListActivity {
                     String name = ((String)lessonList.getItemAtPosition(position));
                     Log.e("name",name);
                     String success = dba.addWordToLesson(name, lw.getStringId());
-                    Log.e("adding word",success);
+                    Log.e("adding phrase",success);
                     Toolbox.showToast(getApplicationContext(), "Successfully Added");
                     window.dismiss();
                 }

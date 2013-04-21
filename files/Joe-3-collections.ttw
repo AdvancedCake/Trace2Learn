@@ -1,65 +1,90 @@
 <ttw name="collections">
 <lesson id="357288040566226_09022013025122" name="1: Basic Patterns" author="user">
+<narrative>In this first collection, you&apos;ll start learning how to write Chinese right away.  The collection contains twelve common characters, covering all four tones of pronunciation: high, rising, deep and falling.  They also illustrate many of the recurring patterns in the way characters are written.  Rather than risk boring you to death by trying to explain these patterns in advance, it&apos;s better if you figure them out on your own.  Practice each of the characters several times, by tracing the strokes in the order and direction given, and you will start to get a feel for the patterns pretty soon.
+
+Spoiler alert - here are some of the patterns you will come across here:
+
+1.  Horizontal strokes are drawn left to right.
+
+2.  Vertical strokes are drawn top to bottom.
+
+3.  Diagonal strokes are drawn top to bottom, and with a slight downward curvature, as in 人, 木, 手 and 文.
+
+4.  When horizontal and vertical strokes intersect, horizontals are drawn first, proceeding top to bottom, except for the horizontal at the base of a character, as in 工, which is drawn last.
+
+5.  To draw rectangles, as in 口 and 車, start with the left side, then draw the top &amp; right in one continuous stroke (you can think of this as a corner bracket), then finish with the horizontal base.</narrative>
 <category category="Shape and Structure" />
 <word id="1" position="0">
 <tag tag="work" />
 <id key="pinyin" value="gong1" />
+<id key="sound" value="gong1_work" />
 <character id="2" position="0" />
 </word>
 <word id="2" position="1">
 <tag tag="person" />
 <id key="pinyin" value="ren2" />
+<id key="sound" value="ren2_person" />
 <character id="3" position="0" />
 </word>
 <word id="3" position="2">
 <tag tag="mouth" />
 <id key="pinyin" value="kou3" />
+<id key="sound" value="kou3_mouth" />
 <character id="4" position="0" />
 </word>
 <word id="8" position="3">
 <tag tag="wood" />
 <id key="pinyin" value="mu4" />
+<id key="sound" value="mu4_wood" />
 <character id="5" position="0" />
 </word>
 <word id="9" position="4">
 <tag tag="hand" />
 <id key="pinyin" value="shou3" />
+<id key="sound" value="shou3_hand" />
 <character id="6" position="0" />
 </word>
 <word id="10" position="5">
 <tag tag="mountain" />
 <id key="pinyin" value="shan1" />
+<id key="sound" value="shan1_mountain" />
 <character id="7" position="0" />
 </word>
 <word id="11" position="6">
 <tag tag="fire" />
 <id key="pinyin" value="huo3" />
+<id key="sound" value="huo3_fire" />
 <character id="8" position="0" />
 </word>
 <word id="12" position="7">
 <tag tag="door, gate" />
 <id key="pinyin" value="men2" />
+<id key="sound" value="men2_door" />
 <character id="9" position="0" />
 </word>
 <word id="13" position="8">
 <tag tag="script" />
 <tag tag="writing" />
 <id key="pinyin" value="wen2" />
+<id key="sound" value="wen2_script" />
 <character id="10" position="0" />
 </word>
 <word id="14" position="9">
 <tag tag="car" />
 <id key="pinyin" value="che1" />
+<id key="sound" value="che1_car" />
 <character id="11" position="0" />
 </word>
 <word id="15" position="10">
 <tag tag="knife" />
 <id key="pinyin" value="dao1" />
+<id key="sound" value="dao1_knife" />
 <character id="12" position="0" />
 </word>
 <word id="16" position="11">
 <tag tag="heart" />
 <id key="pinyin" value="xin1" />
+<id key="sound" value="xin1_heart" />
 <character id="13" position="0" />
 </word>
 </lesson>
