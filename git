@@ -1,0 +1,62 @@
+[1mdiff --git a/TraceLibrary/res/layout/practice_phrase.xml b/TraceLibrary/res/layout/practice_phrase.xml[m
+[1mindex 382921a..cfd0e34 100644[m
+[1m--- a/TraceLibrary/res/layout/practice_phrase.xml[m
+[1m+++ b/TraceLibrary/res/layout/practice_phrase.xml[m
+[36m@@ -28,19 +28,6 @@[m
+             android:onClick="onTraceButtonClick"[m
+             android:text="@string/practice" />[m
+ [m
+[31m-        <Button[m
+[31m-            android:id="@+id/animate_button"[m
+[31m-            android:layout_width="wrap_content"[m
+[31m-            android:layout_height="wrap_content"[m
+[31m-            android:onClick="onAnimateButtonClick"[m
+[31m-            android:text="@string/animate" />[m
+[31m-[m
+[31m-        <Button[m
+[31m-            android:id="@+id/clear_button"[m
+[31m-            android:layout_width="wrap_content"[m
+[31m-            android:layout_height="wrap_content"[m
+[31m-            android:onClick="onClearButtonClick"[m
+[31m-            android:text="@string/clear" />[m
+     </LinearLayout>[m
+ [m
+     <Gallery[m
+[36m@@ -87,4 +74,23 @@[m
+         </com.trace2learn.TraceLibrary.SquareLayout>[m
+     </ViewAnimator>[m
+ [m
+[32m+[m[32m    <Button[m[41m[m
+[32m+[m[32m        android:id="@+id/animate_button"[m[41m[m
+[32m+[m[32m        android:layout_width="wrap_content"[m[41m[m
+[32m+[m[32m        android:layout_height="wrap_content"[m[41m[m
+[32m+[m[32m        android:layout_below="@+id/tag_list_scroll_view"[m[41m[m
+[32m+[m[32m        android:layout_toRightOf="@+id/LinearLayout1"[m[41m[m
+[32m+[m[32m        android:onClick="onAnimateButtonClick"[m[41m[m
+[32m+[m[32m        android:text="@string/animate" />[m[41m[m
+[32m+[m[41m[m
+[32m+[m[32m    <ToggleButton[m[41m[m
+[32m+[m[32m        android:id="@+id/quizModeToggle"[m[41m[m
+[32m+[m[32m        android:layout_width="wrap_content"[m[41m[m
+[32m+[m[32m        android:layout_height="wrap_content"[m[41m[m
+[32m+[m[32m        android:layout_alignParentRight="true"[m[41m[m
+[32m+[m[32m        android:layout_below="@+id/tag_list_scroll_view"[m[41m[m
+[32m+[m[32m        android:text="ToggleButton"[m[41m[m
+[32m+[m[32m        android:textOff="@string/quizModeOff"[m[41m[m
+[32m+[m[32m        android:textOn="@string/quizModeOn" />[m[41m[m
+[32m+[m[41m[m
+ </RelativeLayout>[m
+\ No newline at end of file[m
+[1mdiff --git a/TraceLibrary/res/values/strings.xml b/TraceLibrary/res/values/strings.xml[m
+[1mindex 071c93b..fd12d54 100644[m
+[1m--- a/TraceLibrary/res/values/strings.xml[m
+[1m+++ b/TraceLibrary/res/values/strings.xml[m
+[36m@@ -50,5 +50,7 @@[m
+     <string name="type">Type</string>[m
+     <string name="undo">Undo</string>[m
+     <string name="delete">Delete</string>[m
+[32m+[m[32m    <string name="quizModeOn">Quiz On</string>[m
+[32m+[m[32m    <string name="quizModeOff">Quiz Off</string>[m
+ [m
+ </resources>[m
+\ No newline at end of file[m

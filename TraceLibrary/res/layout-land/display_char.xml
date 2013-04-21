@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/LinearLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="horizontal" >
+
+    <ViewAnimator
+        android:id="@+id/view_slot"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_gravity="left" >
+
+        <com.trace2learn.TraceLibrary.SquareLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/character_view_slot"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+        </com.trace2learn.TraceLibrary.SquareLayout>
+    </ViewAnimator>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right" >
+
+        <HorizontalScrollView
+            android:id="@+id/tag_list_scroll_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/left1Button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="25dp" >
+
+            <TextView
+                android:id="@+id/tag_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:maxLines="1"
+                android:scrollHorizontally="true"
+                android:textSize="25sp" />
+        </HorizontalScrollView>
+
+        <Button
+            android:id="@+id/right1Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:onClick="onRight1ButtonClick" />
+
+        <Button
+            android:id="@+id/right2Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toLeftOf="@+id/right1Button"
+            android:onClick="onRight2ButtonClick" />
+
+        <Button
+            android:id="@+id/left1Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:onClick="onLeft1ButtonClick" />
+
+        <Button
+            android:id="@+id/left2Button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_toRightOf="@+id/left1Button"
+            android:onClick="onLeft2ButtonClick" />
+    </RelativeLayout>
+
+</LinearLayout>
