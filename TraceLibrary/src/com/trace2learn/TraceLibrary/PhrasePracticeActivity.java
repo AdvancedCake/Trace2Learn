@@ -250,6 +250,8 @@ public class PhrasePracticeActivity extends Activity {
     private void setSelectedCharacter(int position) {
         animator.setDisplayedChild(position);
         tracePanes.get(position).clearPane();
+        // update thumbnail gallery (fix for issue #18)
+        gallery.setSelection(position);
         updateTags();
     }
 
@@ -404,7 +406,8 @@ public class PhrasePracticeActivity extends Activity {
             } else {
                 // this is the end of the word
                 if (lessonID != null) {
-                    if (phraseIndex < collectionSize) { // still more words
+                	// disabling following, as we need more elegant navigation, see issue #2 (Joe V)
+                    if (phraseIndex < collectionSize && false) { // still more words
                         // shutdown and notify parent activity
                         Bundle bundle = new Bundle();
                         bundle.putInt("next", phraseIndex);
@@ -412,10 +415,10 @@ public class PhrasePracticeActivity extends Activity {
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();
-                    } else {
+                    } else if (phraseIndex == collectionSize) {
                         // the last word in the collection
                         Toolbox.showToast(getApplicationContext(),
-                                "Reached the last word in " + lessonName);
+                                "Completed " + lessonName);
                     }
                 }
             }
