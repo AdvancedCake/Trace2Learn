@@ -53,7 +53,8 @@ public class BrowseWordsActivity extends ListActivity {
 
     private LayoutInflater vi;
     
-    private String lessonID;
+    private String  lessonID;
+    private boolean userDefined;
 
     private boolean isAdmin;
     
@@ -61,18 +62,27 @@ public class BrowseWordsActivity extends ListActivity {
     private View layout;
     private PopupWindow window;
     private LessonWord lw;
+    
+    private enum ContextMenuItem {
+        ADD_TO_LESSON (0, "Add to Collection"),
+        EDIT_TAGS     (2, "Edit Tags"),
+        MOVE_UP       (1, "Move Up"),
+        MOVE_DOWN     (1, "Move Down"),
+        DELETE        (1, "Delete");
+        
+        public final String text;
+        public final int    privilege; // 0: anyone, 1: owner, 2: admin
+        
+        ContextMenuItem(int privilege, String text) {
+            this.privilege = privilege;
+            this.text      = text;
+        }
+    }
 
-    private static final String[] menuItems = { "Add to Collection",
-                                                "Edit Tags",
-                                                "Move Up",
-                                                "Move Down",
-                                                "Delete" };
-    private static enum menuItemsInd { Add2Lesson,
-                                       EditTags,
-                                       MoveUp,
-                                       MoveDown,
-                                       Delete }
-    private static enum requestCodeENUM { EditTag, PhrasePractice }; 
+    private enum RequestCode {
+        EDIT_TAGS,
+        PHRASE_PRACTICE;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -110,6 +120,7 @@ public class BrowseWordsActivity extends ListActivity {
     private void getWords() {
         lessonID = this.getIntent().getStringExtra("ID");
         if(lessonID == null){
+            userDefined = false;
             List<String> ids = dba.getAllWordIds();
             source = new ArrayList<LessonItem>(ids.size());
             for(String id : ids){
@@ -121,6 +132,7 @@ public class BrowseWordsActivity extends ListActivity {
         else{
             Lesson les = dba.getLessonById(lessonID);
             String name = les.getLessonName();
+            userDefined = les.isUserDefined();
             int size = les.length();
 
             // set lesson title
@@ -181,15 +193,23 @@ public class BrowseWordsActivity extends ListActivity {
 
         intent.setClass(this, PhrasePracticeActivity.class);
         intent.putExtras(bun);
-        startActivityForResult(intent, requestCodeENUM.PhrasePractice.ordinal());
+        startActivityForResult(intent, RequestCode.PHRASE_PRACTICE.ordinal());
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Options");
-        for (int i = 0; i<menuItems.length; i++) {
-            menu.add(Menu.NONE, i, i, menuItems[i]);
+        for (ContextMenuItem item : ContextMenuItem.values()) {
+            if (!isAdmin && !userDefined && item.privilege >= 1) {
+                // user does not own the lesson
+                continue;
+            } else if (!isAdmin && item.privilege >= 2) {
+                // admin only option
+                continue;
+            }
+            int ord = item.ordinal();
+            menu.add(Menu.NONE, ord, ord, item.text);
         }
     }
 
@@ -203,22 +223,23 @@ public class BrowseWordsActivity extends ListActivity {
 
         Context context = getApplicationContext();
         
-        // add to collection
-        if(menuItemIndex == menuItemsInd.Add2Lesson.ordinal()){
+        // Add to Collection
+        if(menuItemIndex == ContextMenuItem.ADD_TO_LESSON.ordinal()){
             initiatePopupWindow();
             return true;
         }
 
-        else if(menuItemIndex == menuItemsInd.EditTags.ordinal()){
+        // Edit Tags
+        else if(menuItemIndex == ContextMenuItem.EDIT_TAGS.ordinal()){
             Intent i = new Intent(this, TagActivity.class);
             i.putExtra("ID", lw.getStringId());
             i.putExtra("TYPE", "WORD");
-            startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
+            startActivityForResult(i, RequestCode.EDIT_TAGS.ordinal());
             return true;
         }
 
-        // delete
-        else if(menuItemIndex == menuItemsInd.Delete.ordinal()){
+        // Delete
+        else if(menuItemIndex == ContextMenuItem.DELETE.ordinal()){
             String id = lw.getStringId();
             Boolean success = dba.deleteWord(id);
             Log.d("Result",success.toString());
@@ -234,14 +255,14 @@ public class BrowseWordsActivity extends ListActivity {
             }
         }
 
-        // move
-        else if (menuItemIndex == menuItemsInd.MoveUp.ordinal() ||
-                 menuItemIndex == menuItemsInd.MoveDown.ordinal()) {
+        // Move
+        else if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal() ||
+                 menuItemIndex == ContextMenuItem.MOVE_DOWN.ordinal()) {
             // going to swap sort values with the item above or below
 
             // need to get other item
             int otherPos;
-            if (menuItemIndex == menuItemsInd.MoveUp.ordinal()) {
+            if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal()) {
                 otherPos = info.position - 1;
             } else {
                 otherPos = info.position + 1;
@@ -367,12 +388,13 @@ public class BrowseWordsActivity extends ListActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == requestCodeENUM.EditTag.ordinal() 
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        if (requestCode == RequestCode.EDIT_TAGS.ordinal() 
                 && resultCode == RESULT_OK) {
             startActivity(getIntent());
             finish();
-        } else if (requestCode == requestCodeENUM.PhrasePractice.ordinal() && 
+        } else if (requestCode == RequestCode.PHRASE_PRACTICE.ordinal() && 
                 resultCode == RESULT_OK) {
             int next = data.getExtras().getInt("next");
             if (next < display.size()) {
