@@ -91,13 +91,11 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
             sizeView.setTextColor(userColor);
             nameView.setTypeface(null, Typeface.ITALIC);
             sizeView.setTypeface(null, Typeface.ITALIC);
-            System.out.println("wat");
         } else { // admin-created
             nameView.setTextColor(defaultColor);
             sizeView.setTextColor(defaultColor);
             nameView.setTypeface(null, Typeface.NORMAL);
             sizeView.setTypeface(null, Typeface.NORMAL);
-            System.out.println("lol");
         }
 
         // Set onClick listener for info button
