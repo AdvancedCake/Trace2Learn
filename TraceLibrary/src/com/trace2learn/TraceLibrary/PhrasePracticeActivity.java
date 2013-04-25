@@ -231,15 +231,18 @@ public class PhrasePracticeActivity extends Activity {
             setQuizMode(quizMode);
             
             // Sound
-            soundIcon.setVisibility(View.GONE);
-            if (word.hasKey(Toolbox.SOUND_KEY)) {
+            soundIcon.setVisibility(View.GONE);            
+            int soundFile = 0;
+            if (word.hasKey(Toolbox.SOUND_KEY) || word.hasKey(Toolbox.PINYIN_KEY)) {
                 soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-                int soundFile = getResources().getIdentifier(
-                        word.getValue(Toolbox.SOUND_KEY), "raw", getPackageName());
-                if (soundFile != 0) { // check to make sure resource exists
-                    soundId = soundPool.load(getApplicationContext(), soundFile, 1);
-                    soundIcon.setVisibility(View.VISIBLE);
-                }
+                // use 'sound' tag to locate audio if it exists, otherwise use 'pinyin' tag
+                String audioKey = word.hasKey(Toolbox.SOUND_KEY) ? Toolbox.SOUND_KEY : Toolbox.PINYIN_KEY;
+                soundFile = getResources().getIdentifier(
+                        word.getValue(audioKey), "raw", getPackageName());
+	            if (soundFile != 0) { // check to make sure resource exists
+	                soundId = soundPool.load(getApplicationContext(), soundFile, 1);
+	                soundIcon.setVisibility(View.VISIBLE);
+	            }
             }
         } else {
             Toolbox.showToast(context, "No word selected");
