@@ -4,9 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import android.R.color;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;

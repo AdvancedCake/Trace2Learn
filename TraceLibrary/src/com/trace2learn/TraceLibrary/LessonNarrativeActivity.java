@@ -88,9 +88,6 @@ public class LessonNarrativeActivity extends Activity {
         exitButton     = (ImageView)    findViewById(R.id.exit_button);
         editButton     = (Button)       findViewById(R.id.edit_button);
         
-        System.out.println(lesson.isUserDefined());
-        System.out.println(prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false));
-        
         if (!lesson.isUserDefined() &&
                 !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false)) {
             System.out.println("lol");

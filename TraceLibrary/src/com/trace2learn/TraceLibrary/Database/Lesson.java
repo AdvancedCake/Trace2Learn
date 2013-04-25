@@ -67,9 +67,13 @@ public class Lesson extends LessonItem {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public boolean isUserDefined() {
         return isUserDefined;
+    }
+    
+    public void setUserDefined(boolean userDefined) {
+        this.isUserDefined = userDefined;
     }
 
     public SortedSet<LessonCategory> getCategories() {

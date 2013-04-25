@@ -1,6 +1,5 @@
 package com.trace2learn.TraceLibrary.Database;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1468,6 +1467,13 @@ public class DbAdapter {
     public boolean saveLessonNarrative(String lessonId, String narrative) {
         ContentValues values = new ContentValues();
         values.put("narrative", narrative);
+        return mDb.update(LESSONS_TABLE, values,
+                LESSONS_ID + "='" + lessonId + "'", null) == 1;
+    }
+    
+    public boolean saveLessonUserDefined(String lessonId, boolean userDefined) {
+        ContentValues values = new ContentValues();
+        values.put("userDefined", userDefined);
         return mDb.update(LESSONS_TABLE, values,
                 LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
