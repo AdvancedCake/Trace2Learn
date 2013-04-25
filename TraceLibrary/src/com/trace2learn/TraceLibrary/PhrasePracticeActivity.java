@@ -231,15 +231,18 @@ public class PhrasePracticeActivity extends Activity {
             setQuizMode(quizMode);
             
             // Sound
-            soundIcon.setVisibility(View.GONE);
-            if (word.hasKey(Toolbox.SOUND_KEY)) {
+            soundIcon.setVisibility(View.GONE);            
+            int soundFile = 0;
+            if (word.hasKey(Toolbox.SOUND_KEY) || word.hasKey(Toolbox.PINYIN_KEY)) {
                 soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
-                int soundFile = getResources().getIdentifier(
-                        word.getValue(Toolbox.SOUND_KEY), "raw", getPackageName());
-                if (soundFile != 0) { // check to make sure resource exists
-                    soundId = soundPool.load(getApplicationContext(), soundFile, 1);
-                    soundIcon.setVisibility(View.VISIBLE);
-                }
+                // use 'sound' tag to locate audio if it exists, otherwise use 'pinyin' tag
+                String audioKey = word.hasKey(Toolbox.SOUND_KEY) ? Toolbox.SOUND_KEY : Toolbox.PINYIN_KEY;
+                soundFile = getResources().getIdentifier(
+                        word.getValue(audioKey), "raw", getPackageName());
+	            if (soundFile != 0) { // check to make sure resource exists
+	                soundId = soundPool.load(getApplicationContext(), soundFile, 1);
+	                soundIcon.setVisibility(View.VISIBLE);
+	            }
             }
         } else {
             Toolbox.showToast(context, "No word selected");
@@ -250,6 +253,8 @@ public class PhrasePracticeActivity extends Activity {
     private void setSelectedCharacter(int position) {
         animator.setDisplayedChild(position);
         tracePanes.get(position).clearPane();
+        // update thumbnail gallery (fix for issue #18)
+        gallery.setSelection(position);
         updateTags();
     }
 
@@ -404,7 +409,8 @@ public class PhrasePracticeActivity extends Activity {
             } else {
                 // this is the end of the word
                 if (lessonID != null) {
-                    if (phraseIndex < collectionSize) { // still more words
+                	// disabling following, as we need more elegant navigation, see issue #2 (Joe V)
+                    if (phraseIndex < collectionSize && false) { // still more words
                         // shutdown and notify parent activity
                         Bundle bundle = new Bundle();
                         bundle.putInt("next", phraseIndex);
@@ -412,10 +418,10 @@ public class PhrasePracticeActivity extends Activity {
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();
-                    } else {
+                    } else if (phraseIndex == collectionSize) {
                         // the last word in the collection
                         Toolbox.showToast(getApplicationContext(),
-                                "Reached the last word in " + lessonName);
+                                "Completed " + lessonName);
                     }
                 }
             }

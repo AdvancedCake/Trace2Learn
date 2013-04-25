@@ -15,22 +15,13 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/instructions"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/lesson_name"
-        android:text="Click and hold on a phrase for more options"
-        android:textSize="15sp" />
-
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/filterButton"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/instructions" >
+        android:layout_below="@+id/lesson_name" >
     </ListView>
 
     <Button
