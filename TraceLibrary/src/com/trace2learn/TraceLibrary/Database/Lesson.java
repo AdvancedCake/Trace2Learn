@@ -208,7 +208,7 @@ public class Lesson extends LessonItem {
         try {
             String  id          = elem.getAttribute("id");
             String  name        = elem.getAttribute("name");
-            boolean userDefined = !elem.getAttribute("author").equals("admin");
+            boolean userDefined = elem.getAttribute("author").equals("user");
 
             Log.i("Import Lesson", "id: " + id);
             Log.i("Import Lesson", "  name: " + name);

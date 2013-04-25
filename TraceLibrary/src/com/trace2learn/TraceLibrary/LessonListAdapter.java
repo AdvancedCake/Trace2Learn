@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import android.R.color;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
 import android.view.LayoutInflater;
@@ -24,6 +27,9 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 
     private Handler handler;
     private LayoutInflater vi;
+    
+    private int defaultColor = -1;
+    private int userColor    = 0xFF666699;
 
     public LessonListAdapter(Context context, List<Lesson> objects,
             LayoutInflater vi, Handler handler) {
@@ -74,6 +80,26 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
         // Blank out all of the other icons
         for (; i < 4; i++) {
             categories[i].setImageResource(0);
+        }
+        
+        // Save default text color
+        if (defaultColor == -1) {
+            defaultColor = nameView.getTextColors().getDefaultColor();
+        }
+        
+        // Check if this is an admin lesson or user lesson
+        if (item.isUserDefined()) {
+            nameView.setTextColor(userColor);
+            sizeView.setTextColor(userColor);
+            nameView.setTypeface(null, Typeface.ITALIC);
+            sizeView.setTypeface(null, Typeface.ITALIC);
+            System.out.println("wat");
+        } else { // admin-created
+            nameView.setTextColor(defaultColor);
+            sizeView.setTextColor(defaultColor);
+            nameView.setTypeface(null, Typeface.NORMAL);
+            sizeView.setTypeface(null, Typeface.NORMAL);
+            System.out.println("lol");
         }
 
         // Set onClick listener for info button
