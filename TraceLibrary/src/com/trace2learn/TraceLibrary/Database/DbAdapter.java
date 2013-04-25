@@ -1191,10 +1191,28 @@ public class DbAdapter {
         return ids;
     }
     
-    public List<String> getAllLessonNames(){
-        Cursor mCursor =
-                mDb.query(true, LESSONS_TABLE, new String[] {"name"}, null, null,
-                        null, null, "name ASC", null);
+    public List<String> getAllLessonNames() {
+        Cursor mCursor = mDb.query(true, LESSONS_TABLE, new String[] {"name"},
+                null, null, null, null, null, null);
+        List<String> names = new ArrayList<String>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+            if(mCursor.getCount()==0){
+                break;
+            }
+            names.add(mCursor.getString((mCursor.getColumnIndexOrThrow("name"))));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
+
+        return names;
+    }
+    
+    public List<String> getAllUserLessonNames() {
+        Cursor mCursor = mDb.query(true, LESSONS_TABLE, new String[] {"name"},
+                "userDefined=1", null, null, null, null, null);
         List<String> names = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();

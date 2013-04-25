@@ -52,10 +52,11 @@ public class BrowseWordsActivity extends ListActivity {
     private boolean  filtered;
 
     private LayoutInflater vi;
-    private SharedPreferences prefs;
     
     private String lessonID;
 
+    private boolean isAdmin;
+    
     // Lesson popup views
     private View layout;
     private PopupWindow window;
@@ -81,7 +82,10 @@ public class BrowseWordsActivity extends ListActivity {
         dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
-        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        // Set admin privilege
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
+                MODE_PRIVATE);
+        isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         getViews();
         
@@ -308,12 +312,20 @@ public class BrowseWordsActivity extends ListActivity {
                     View.MeasureSpec.UNSPECIFIED);
             
             // create a 300px width and 470px height PopupWindow
-            List<String> allLessons = dba.getAllLessonNames();
+            List<String> allLessons;
+            if (isAdmin) {
+                allLessons = dba.getAllLessonNames();
+            } else {
+                allLessons = dba.getAllUserLessonNames();
+            }
             Log.e("numLessons", Integer.toString(allLessons.size()));
             final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
             lessonList.setAdapter(adapter);
             window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
+            
+            // remove "skip" button
+            layout.findViewById(R.id.skip_button).setVisibility(View.GONE);
             
             // display the popup in the center
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
@@ -346,8 +358,7 @@ public class BrowseWordsActivity extends ListActivity {
             Toolbox.showToast(context, "You must name the collection!");
             return;
         }
-        Lesson lesson = new Lesson(
-                !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false));
+        Lesson lesson = new Lesson(!isAdmin);
         lesson.setName(name);
         lesson.addWord(lw.getStringId());
         dba.addLesson(lesson);

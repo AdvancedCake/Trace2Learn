@@ -58,20 +58,22 @@ public class BrowseLessonsActivity extends ListActivity {
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
-        items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
+        items = new ArrayList<Lesson>(); 
         List<String> ids = dba.getAllLessonIds();
         for(String id : ids){
         	Lesson le = dba.getLessonById(id);
         	le.setTagList(dba.getLessonTags(id));
         	items.add(le);
         }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        LayoutInflater vi = (LayoutInflater) getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
         setListAdapter(adapter);
         registerForContextMenu(getListView());
         
         // Set admin privilege
-        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
+                MODE_PRIVATE);
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
     }
     

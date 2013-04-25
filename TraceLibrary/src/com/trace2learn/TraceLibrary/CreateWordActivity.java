@@ -60,7 +60,7 @@ public class CreateWordActivity extends Activity {
     
     private LayoutInflater vi;
     
-    private SharedPreferences prefs;
+    private boolean isAdmin;
     
     // Lesson popup views
     private PopupWindow window;
@@ -88,7 +88,9 @@ public class CreateWordActivity extends Activity {
         dba = new DbAdapter(this);
         dba.open();
 
-        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
+                MODE_PRIVATE);
+        isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         filterStatus.setVisibility(View.GONE);
         
@@ -238,7 +240,12 @@ public class CreateWordActivity extends Activity {
                     View.MeasureSpec.UNSPECIFIED);
             
             // create a 300px width and 470px height PopupWindow
-            List<String> allLessons = dba.getAllLessonNames();
+            List<String> allLessons;
+            if (isAdmin) {
+                allLessons = dba.getAllLessonNames();
+            } else {
+                allLessons = dba.getAllUserLessonNames();
+            }
             Log.e("numLessons", Integer.toString(allLessons.size()));
             final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
@@ -277,8 +284,7 @@ public class CreateWordActivity extends Activity {
                     "You must name the collection!");
             return;
         }
-        Lesson lesson = new Lesson(
-                !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false));
+        Lesson lesson = new Lesson(!isAdmin);
         lesson.setName(name);
         lesson.addWord(newWord.getStringId());
         dba.addLesson(lesson);
