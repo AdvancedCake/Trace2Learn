@@ -54,7 +54,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
         android:contentDescription="@string/create_phrase"
-        android:src="@drawable/menu_button_create_phrase" />
+        android:src="@drawable/menu_button_build_phrase" />
 
     <ImageView
         android:id="@+id/browse_collections"
