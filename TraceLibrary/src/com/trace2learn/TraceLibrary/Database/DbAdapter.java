@@ -1345,24 +1345,32 @@ public class DbAdapter {
     	return true;
     }
     
-    public List<String> getWordsFromLessonId(String id){
-    	Cursor mCursor =
-    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId='" + id + "'", null,
-    					null, null, "LessonOrder ASC", null);
+    public List<LessonItem> getWordsFromLesson(String lessonId){
+    	Cursor mCursor = mDb.query(true, LESSONS_DETAILS_TABLE,
+    	        new String[] {"WordId"}, "LessonId='" + lessonId + "'",
+    	        null, null, null, "LessonOrder ASC", null);
     	List<String> ids = new ArrayList<String>();
-    	if (mCursor != null) {
-    		mCursor.moveToFirst();
+    	if (mCursor == null | mCursor.getCount() == 0) {
+    	    Log.e("Get Words From Lesson", "Cursor is empty");
+    		return null;
     	}
+    	
+    	mCursor.moveToFirst();
     	do {
-    		if(mCursor.getCount()==0){
-    			break;
-    		}
     		ids.add(mCursor.getString(mCursor.getColumnIndexOrThrow("WordId")));
     	}
     	while(mCursor.moveToNext());
         mCursor.close();
+        
+        List<LessonItem> words = new ArrayList<LessonItem>(ids.size());
+        for (String id : ids) {
+            LessonWord word = getWordById(id);
+            if (word != null) {
+                words.add(word);
+            }
+        }
 
-    	return ids;
+    	return words;
     }
     
     /**
@@ -1601,6 +1609,8 @@ public class DbAdapter {
             cur.moveToNext();
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
         }
+        System.out.println("1st word sort " + aSort);
+        System.out.println("2nd word sort " + bSort);
         cur.close();
         // insert new values
         mDb.beginTransaction();

@@ -119,7 +119,7 @@ public class BrowseWordsActivity extends ListActivity {
      */
     private void getWords() {
         lessonID = this.getIntent().getStringExtra("ID");
-        if(lessonID == null){
+        if(lessonID == null) {
             userDefined = false;
             List<String> ids = dba.getAllWordIds();
             source = new ArrayList<LessonItem>(ids.size());
@@ -128,8 +128,7 @@ public class BrowseWordsActivity extends ListActivity {
                 source.add(word);
             }
             lessonName.setText(R.string.all_words);
-        }
-        else{
+        } else {
             Lesson les = dba.getLessonById(lessonID);
             String name = les.getLessonName();
             userDefined = les.isUserDefined();
@@ -280,10 +279,13 @@ public class BrowseWordsActivity extends ListActivity {
             LessonWord other = (LessonWord) display.get(otherPos);
             boolean result;
             if (lessonID == null) { // browsing all words
+                Log.i("Move", "Attempting to swap " + lw.getStringId() +
+                        " and " + other.getStringId());
                 result = dba.swapWords(lw.getStringId(), lw.getSort(), 
                                        other.getStringId(), other.getSort());
                 if (result) {
                     // success, so update the local copy
+                    Log.i("Move", "Success");
                     double temp = lw.getSort();
                     lw.setSort(other.getSort());
                     other.setSort(temp);
@@ -293,10 +295,13 @@ public class BrowseWordsActivity extends ListActivity {
                     return true;
                 }
             } else { // viewing a specific lesson
+                Log.i("Move", "Attempting to swap " + lw.getStringId() +
+                        " and " + other.getStringId());
                 result = dba.swapWordsInLesson(lessonID, lw.getStringId(), 
                                                other.getStringId());
                 if (result) {
                     // success, so update the local copy
+                    Log.i("Move", "Success");
                     LessonItem[] arr = new LessonItem[display.size()];
                     arr = display.toArray(arr);
                     
@@ -312,7 +317,7 @@ public class BrowseWordsActivity extends ListActivity {
                     return true;
                 }
             }
-            Log.e("Move result", Boolean.toString(result));
+            Log.e("Move", "Failure!");
             Toolbox.showToast(context, "Move failed");
             return false;
         }
