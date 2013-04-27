@@ -270,11 +270,6 @@ public class CreateWordActivity extends Activity {
         }
     }
     
-    public void lessonPopupOnClickSkip(View view) {
-        window.dismiss();
-        createTags();
-    }
-    
     public void lessonPopupOnClickNewLesson(View view) {
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
         Editable edit = editText.getText();

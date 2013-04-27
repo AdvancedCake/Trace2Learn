@@ -345,9 +345,6 @@ public class BrowseWordsActivity extends ListActivity {
             lessonList.setAdapter(adapter);
             window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
             
-            // remove "skip" button
-            layout.findViewById(R.id.skip_button).setVisibility(View.GONE);
-            
             // display the popup in the center
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
@@ -364,10 +361,6 @@ public class BrowseWordsActivity extends ListActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void onSkipButtonClick(View view){
-        window.dismiss();
     }
 
     public void lessonPopupOnClickNewLesson(View view){
