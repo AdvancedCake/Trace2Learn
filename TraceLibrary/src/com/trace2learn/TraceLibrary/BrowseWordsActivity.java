@@ -127,6 +127,7 @@ public class BrowseWordsActivity extends ListActivity {
                 LessonWord word = dba.getWordById(id);
                 source.add(word);
             }
+            Collections.sort(source);
             lessonName.setText(R.string.all_words);
         } else {
             Lesson les = dba.getLessonById(lessonID);
@@ -155,7 +156,6 @@ public class BrowseWordsActivity extends ListActivity {
      * Display the current display list
      */
     private void displayWords() {
-        Collections.sort(display);
         adapter = new LessonItemListAdapter(this, display, vi);
         setListAdapter(adapter);
     }
@@ -314,6 +314,7 @@ public class BrowseWordsActivity extends ListActivity {
                     display = new ArrayList<LessonItem>(Arrays.asList(arr)); 
                     adapter._items = display;
                     adapter.notifyDataSetChanged();
+                    
                     return true;
                 }
             }

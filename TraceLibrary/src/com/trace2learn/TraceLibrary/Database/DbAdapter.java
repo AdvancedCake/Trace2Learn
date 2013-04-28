@@ -1172,9 +1172,8 @@ public class DbAdapter {
      * @return ids list of all word ids
      */
     public List<String> getAllWordIds() {
-        Cursor mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID}, null, null,
-                        null, null, null, null);
+        Cursor mCursor = mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID},
+                null, null, null, null, "sort ASC", null);
         List<String> ids = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -1367,6 +1366,7 @@ public class DbAdapter {
             LessonWord word = getWordById(id);
             if (word != null) {
                 words.add(word);
+                System.out.println(word.getTagsToString());
             }
         }
 

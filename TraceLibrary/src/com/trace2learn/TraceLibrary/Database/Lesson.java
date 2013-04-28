@@ -64,6 +64,10 @@ public class Lesson extends LessonItem {
         }
         return wordObjects;
     }
+    
+    public synchronized void invalidateWords() {
+        wordObjects = null;
+    }
 
     public String getLessonName() {
         return this.name;
