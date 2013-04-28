@@ -8,6 +8,7 @@ import java.io.OutputStream;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -33,6 +34,9 @@ import com.trace2learn.TraceLibrary.Database.DbAdapter;
 
 public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActivity {
 
+    SharedPreferences prefs;
+    SharedPreferences.Editor editor;
+
     static final String[] APPS = new String[] {
         "Create Character", 
         "Create Phrase",
@@ -47,6 +51,13 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        editor = prefs.edit();
+
+        // Set admin permissions
+        editor.putBoolean(Toolbox.PREFS_IS_ADMIN, true);
+        editor.commit();
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu,APPS));
 

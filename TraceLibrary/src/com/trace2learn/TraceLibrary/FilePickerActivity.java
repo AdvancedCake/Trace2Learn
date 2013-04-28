@@ -9,12 +9,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.Lesson;
-import com.trace2learn.TraceLibrary.Database.LessonCharacter;
-import com.trace2learn.TraceLibrary.Database.LessonWord;
-import com.trace2learn.TraceLibrary.Database.Parser;
-
 import android.app.ListActivity;
 import android.os.Bundle;
 import android.os.Environment;
@@ -23,6 +17,13 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.Lesson;
+import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
+import com.trace2learn.TraceLibrary.Database.Parser;
 
 public class FilePickerActivity extends ListActivity {
 
@@ -136,10 +137,10 @@ public class FilePickerActivity extends ListActivity {
                 
                 if (dba.getLessonById(lesson.getStringId()) == null) {
                     // add all of the words
-                    List<LessonWord> words = lesson.getWordObjects();
-                    for (LessonWord word : words) {
+                    List<LessonItem> words = lesson.getWords();
+                    for (LessonItem word : words) {
                         if (dba.getWordById(word.getStringId()) == null) {
-                            dba.addWord(word);
+                            dba.addWord((LessonWord) word);
                         }
                     }
                     

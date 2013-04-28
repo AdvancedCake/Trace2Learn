@@ -16,7 +16,7 @@ public class Lesson extends LessonItem {
 
     private List<String>              _words; // list of word IDs
     private String                    name; // lesson name
-    private List<LessonWord>          wordObjects;
+    private List<LessonItem>          wordObjects;
     private SortedSet<LessonCategory> categories;
     private String                    narrative;
     private boolean                   isUserDefined;
@@ -34,9 +34,9 @@ public class Lesson extends LessonItem {
     }
 
     public Lesson(String id, boolean isUserDefined) {
-        _type              = ItemType.LESSON;
-        _words             = new ArrayList<String>();
-        _stringid          = id;
+        this._type         = ItemType.LESSON;
+        this._words        = new ArrayList<String>();
+        this._stringid     = id;
         this.isUserDefined = isUserDefined;
     }
 
@@ -56,8 +56,17 @@ public class Lesson extends LessonItem {
         return _words.size();
     }
 
-    public synchronized List<LessonWord> getWordObjects() {
+    public synchronized List<LessonItem> getWords() {
+        if (_db == null) {
+            Log.e("Fetch Words", "DbAdapter is null");
+        } else if (wordObjects == null) {
+            wordObjects = _db.getWordsFromLesson(_stringid);
+        }
         return wordObjects;
+    }
+    
+    public synchronized void invalidateWords() {
+        wordObjects = null;
     }
 
     public String getLessonName() {
@@ -67,9 +76,13 @@ public class Lesson extends LessonItem {
     public void setName(String name) {
         this.name = name;
     }
-
+    
     public boolean isUserDefined() {
         return isUserDefined;
+    }
+    
+    public void setUserDefined(boolean userDefined) {
+        this.isUserDefined = userDefined;
     }
 
     public SortedSet<LessonCategory> getCategories() {
@@ -93,29 +106,6 @@ public class Lesson extends LessonItem {
     
     public void setNarrative(String narrative) {
         this.narrative = narrative;
-    }
-
-    /**
-     * Get the list of items that compose this lesson
-     * @return the list of characters that compose this word
-     */
-    // TODO just use wordObjects field
-    public synchronized List<LessonItem> getWords() {
-        ArrayList<LessonItem> words = new ArrayList<LessonItem>(_words.size());
-        for(String id : _words)
-        {
-            if(_db == null)
-            {
-                words.add(new LessonWord());
-            }
-            else
-            {
-                LessonWord word = _db.getWordById(id);
-                words.add(word);
-            }
-
-        }
-        return words;
     }
 
     public int length() {
@@ -208,7 +198,7 @@ public class Lesson extends LessonItem {
         try {
             String  id          = elem.getAttribute("id");
             String  name        = elem.getAttribute("name");
-            boolean userDefined = !elem.getAttribute("author").equals("admin");
+            boolean userDefined = elem.getAttribute("author").equals("user");
 
             Log.i("Import Lesson", "id: " + id);
             Log.i("Import Lesson", "  name: " + name);
@@ -239,12 +229,10 @@ public class Lesson extends LessonItem {
             }
 
             NodeList words = elem.getElementsByTagName("word");
-            lesson.wordObjects = new ArrayList<LessonWord>(words.getLength());
             for (int i = 0; i < words.getLength(); i++) {
                 LessonWord word = LessonWord.importFromXml((Element) words.item(i));
                 String word_id = word.getStringId();
                 lesson.addWord(word_id);
-                lesson.wordObjects.add(word);
                 Log.i("Import Lesson", "  word: " + word_id);
             }
 

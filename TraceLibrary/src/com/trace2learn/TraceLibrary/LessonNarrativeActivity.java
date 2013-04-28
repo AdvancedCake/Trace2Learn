@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.text.method.ScrollingMovementMethod;
@@ -31,7 +32,8 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
     private String                    narrative;
     private SortedSet<LessonCategory> categories;
     
-    private DbAdapter dba;
+    private DbAdapter         dba;
+    private SharedPreferences prefs;
     
     private TextView     nameView;
     private TextView     narrativeView;
@@ -44,9 +46,8 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.lesson_narrative);
         
-        // Initialize Views and Handlers
-        getViews();
-        getHandlers();
+        // Initialize SharedPreferences
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
         // Initialize database adapter
         dba = new DbAdapter(this);
@@ -59,6 +60,10 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         lessonName = lesson.getLessonName();
         categories = lesson.getCategories();
         narrative  = lesson.getNarrative();
+        
+        // Initialize Views and Handlers
+        getViews();
+        getHandlers();
         
         nameView.setText(lessonName);
         narrativeView.setText(narrative);
@@ -81,6 +86,13 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         categoryLayout = (LinearLayout) findViewById(R.id.categories);
         exitButton     = (ImageView)    findViewById(R.id.exit_button);
         editButton     = (Button)       findViewById(R.id.edit_button);
+        
+        if (!lesson.isUserDefined() &&
+                !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false)) {
+            System.out.println("lol");
+            // Lesson is admin, but user is not admin
+            editButton.setVisibility(View.GONE);
+        }
         
         // Because setMovementMethod causes the view to darken when clicked, we
         // must disable the view. But that dims the text color, so we need to

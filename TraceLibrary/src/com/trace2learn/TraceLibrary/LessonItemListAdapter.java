@@ -21,11 +21,8 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 	
 	protected LayoutInflater _vi;
 	
-	public LessonItemListAdapter(
-			Context context,
-			List<LessonItem> objects,
-			LayoutInflater vi) 
-	{
+	public LessonItemListAdapter(Context context,
+	        List<LessonItem> objects, LayoutInflater vi) {
 		super(context, 0, objects);
 		_items = new ArrayList<LessonItem>(objects);
 		_vi = vi;

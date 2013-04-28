@@ -1,6 +1,5 @@
 package com.trace2learn.TraceLibrary.Database;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -86,7 +85,6 @@ public class DbAdapter {
             "CREATE TABLE WordsDetails (_id TEXT," +
             "CharId TEXT," +
             "WordOrder INTEGER NOT NULL," +
-            "FlagUserCreated INTEGER," +
             "FOREIGN KEY(CharId) REFERENCES Character(_id)," +
             "FOREIGN KEY(_id) REFERENCES Words(_id));";
     
@@ -109,6 +107,7 @@ public class DbAdapter {
             "name TEXT, " +
             "sort INTEGER, " +
             "narrative TEXT, " +
+            "userDefined INTEGER, " +
             "catShapeAndStructure INTEGER, " +
             "catMeaning INTEGER, " +
             "catPhonetic INTEGER, " +
@@ -168,7 +167,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 20130409;
+    private static final int DATABASE_VERSION = 20130420;
 
     
     private final Context mCtx;
@@ -620,7 +619,7 @@ public class DbAdapter {
          }
          mCursor.close();
     	 
-    	 mCursor = mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId ='" + id +"' AND FlagUserCreated=1", null,
+    	 mCursor = mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId ='" + id, null,
                  null, null, null, null);
     	 if(mCursor.getCount()>0){
     		 //Some word is using the character
@@ -853,7 +852,6 @@ public class DbAdapter {
     		characterValues.put("_id", wordId);
     		characterValues.put("CharId", c);
     		characterValues.put("WordOrder", charNumber);
-    		characterValues.put("FlagUserCreated", 1);
     		long success = mDb.insert(WORDS_DETAILS_TABLE, null, characterValues);
     		if(success == -1)
     		{	
@@ -1174,9 +1172,8 @@ public class DbAdapter {
      * @return ids list of all word ids
      */
     public List<String> getAllWordIds() {
-        Cursor mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID}, null, null,
-                        null, null, null, null);
+        Cursor mCursor = mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID},
+                null, null, null, null, "sort ASC", null);
         List<String> ids = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -1193,10 +1190,28 @@ public class DbAdapter {
         return ids;
     }
     
-    public List<String> getAllLessonNames(){
-        Cursor mCursor =
-                mDb.query(true, LESSONS_TABLE, new String[] {"name"}, null, null,
-                        null, null, "name ASC", null);
+    public List<String> getAllLessonNames() {
+        Cursor mCursor = mDb.query(true, LESSONS_TABLE, new String[] {"name"},
+                null, null, null, null, null, null);
+        List<String> names = new ArrayList<String>();
+        if (mCursor != null) {
+            mCursor.moveToFirst();
+        }
+        do {
+            if(mCursor.getCount()==0){
+                break;
+            }
+            names.add(mCursor.getString((mCursor.getColumnIndexOrThrow("name"))));
+        }
+        while(mCursor.moveToNext());
+        mCursor.close();
+
+        return names;
+    }
+    
+    public List<String> getAllUserLessonNames() {
+        Cursor mCursor = mDb.query(true, LESSONS_TABLE, new String[] {"name"},
+                "userDefined=1", null, null, null, null, null);
         List<String> names = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -1287,6 +1302,7 @@ public class DbAdapter {
     	    }
     	}
     	initialLessonValues.put("narrative", les.getNarrative());
+    	initialLessonValues.put("userDefined", les.isUserDefined());
     	
     	// Attempt the insert
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
@@ -1328,24 +1344,33 @@ public class DbAdapter {
     	return true;
     }
     
-    public List<String> getWordsFromLessonId(String id){
-    	Cursor mCursor =
-    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] {"WordId"}, "LessonId='" + id + "'", null,
-    					null, null, "LessonOrder ASC", null);
+    public List<LessonItem> getWordsFromLesson(String lessonId){
+    	Cursor mCursor = mDb.query(true, LESSONS_DETAILS_TABLE,
+    	        new String[] {"WordId"}, "LessonId='" + lessonId + "'",
+    	        null, null, null, "LessonOrder ASC", null);
     	List<String> ids = new ArrayList<String>();
-    	if (mCursor != null) {
-    		mCursor.moveToFirst();
+    	if (mCursor == null | mCursor.getCount() == 0) {
+    	    Log.e("Get Words From Lesson", "Cursor is empty");
+    		return null;
     	}
+    	
+    	mCursor.moveToFirst();
     	do {
-    		if(mCursor.getCount()==0){
-    			break;
-    		}
     		ids.add(mCursor.getString(mCursor.getColumnIndexOrThrow("WordId")));
     	}
     	while(mCursor.moveToNext());
         mCursor.close();
+        
+        List<LessonItem> words = new ArrayList<LessonItem>(ids.size());
+        for (String id : ids) {
+            LessonWord word = getWordById(id);
+            if (word != null) {
+                words.add(word);
+                System.out.println(word.getTagsToString());
+            }
+        }
 
-    	return ids;
+    	return words;
     }
     
     /**
@@ -1402,14 +1427,12 @@ public class DbAdapter {
      * @return
      */
     public Lesson getLessonById(String id) {
-        String[] columns = new String[] {LESSONS_ID, "name", "narrative", 
-                "catShapeAndStructure", "catMeaning", "catPhonetic",
-                "catGrammar"};
+        String[] columns = new String[] {LESSONS_ID, "name", "narrative",
+                "userDefined", "catShapeAndStructure", "catMeaning",
+                "catPhonetic", "catGrammar"};
     	Cursor mCursor = mDb.query(true, LESSONS_TABLE, columns,
     	        LESSONS_ID + "='" + id + "'", null, null, null, null, null);
     	
-    	//if the Lesson doesn't exists
-        Lesson le = new Lesson();
     	if (mCursor == null) {
     		return null;
     	} else if (mCursor.getCount() == 0) {
@@ -1417,7 +1440,9 @@ public class DbAdapter {
     	    return null;
     	}
     	mCursor.moveToFirst();
-    	le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
+    	boolean userDefined = mCursor.getInt(mCursor.getColumnIndexOrThrow("userDefined")) == 1;
+        Lesson le = new Lesson(userDefined);
+        le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	le.setNarrative(mCursor.getString(mCursor.getColumnIndexOrThrow("narrative")));
     	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catShapeAndStructure")) == 1) {
             le.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);
@@ -1468,6 +1493,13 @@ public class DbAdapter {
     public boolean saveLessonNarrative(String lessonId, String narrative) {
         ContentValues values = new ContentValues();
         values.put("narrative", narrative);
+        return mDb.update(LESSONS_TABLE, values,
+                LESSONS_ID + "='" + lessonId + "'", null) == 1;
+    }
+    
+    public boolean saveLessonUserDefined(String lessonId, boolean userDefined) {
+        ContentValues values = new ContentValues();
+        values.put("userDefined", userDefined);
         return mDb.update(LESSONS_TABLE, values,
                 LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
@@ -1577,6 +1609,8 @@ public class DbAdapter {
             cur.moveToNext();
             aSort = cur.getInt(cur.getColumnIndexOrThrow(orderCol));
         }
+        System.out.println("1st word sort " + aSort);
+        System.out.println("2nd word sort " + bSort);
         cur.close();
         // insert new values
         mDb.beginTransaction();

@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,7 +32,7 @@ import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 @SuppressLint("HandlerLeak")
-public class PhrasePracticeActivity extends Activity {
+public class PhrasePracticeActivity extends TraceBaseActivity {
 
     private DbAdapter dba;
 

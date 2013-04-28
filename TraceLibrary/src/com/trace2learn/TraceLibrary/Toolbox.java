@@ -15,6 +15,7 @@ public class Toolbox {
 
     // SharedPreferences
     public static final String PREFS_FILE        = "T2L_prefs";
+    public static final String PREFS_IS_ADMIN    = "isAdmin";
     public static final String PREFS_QUIZ_MODE   = "quizMode";
     public static final String PREFS_FIRST_START = "firstStart";
     
@@ -58,14 +59,21 @@ public class Toolbox {
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show();
     }
     
+    /**
+     * @param dialog
+     */
     public static void showKeyboard(Dialog dialog) {
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
     }
     
+    /**
+     * @param activity
+     * @param view
+     */
     public static void hideKeyboard(Activity activity, View view) {
         InputMethodManager imm = (InputMethodManager) 
                 activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
- 
+
 }

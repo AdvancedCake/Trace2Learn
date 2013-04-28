@@ -6,6 +6,7 @@ import java.util.SortedSet;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -17,7 +18,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
@@ -26,19 +26,24 @@ import com.trace2learn.TraceLibrary.Database.LessonCategory;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 public class BrowseLessonsActivity extends TraceListActivity {
-	private Lesson le;
+
 	private DbAdapter dba; 
 	private ArrayList<Lesson> items;
-	ArrayAdapter<String> arrAdapter;
+	private LessonListAdapter adapter;
+	
+	private boolean isAdmin;
 	
 	private enum ContextMenuItem {
-	    DELETE            ("Delete"),
-	    ASSIGN_CATEGORIES ("Assign Categories");
+	    DELETE              (1, "Delete"),
+	    ASSIGN_CATEGORIES   (1, "Assign Categories"),
+	    TOGGLE_USER_DEFINED (2, "Toggle User-Defined");
 	    
 	    public final String text;
+	    public final int    privilege; // 0: anyone, 1: owner, 2: admin
 	    
-	    ContextMenuItem(String text) {
-	        this.text = text;
+	    ContextMenuItem(int privilege, String text) {
+	        this.privilege = privilege;
+	        this.text      = text;
 	    }
 	}
 	
@@ -53,18 +58,23 @@ public class BrowseLessonsActivity extends TraceListActivity {
         dba = new DbAdapter(this);
         dba.open(); //opening the connection to database        
         
-        items = new ArrayList<Lesson>(); //items to show in ListView to choose from 
+        items = new ArrayList<Lesson>(); 
         List<String> ids = dba.getAllLessonIds();
         for(String id : ids){
         	Lesson le = dba.getLessonById(id);
         	le.setTagList(dba.getLessonTags(id));
         	items.add(le);
         }
-        LayoutInflater vi = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        LessonListAdapter la = new LessonListAdapter(this, items, vi,
-                infoButtonHandler);
-        setListAdapter(la);
+        LayoutInflater vi = (LayoutInflater) getSystemService(
+                Context.LAYOUT_INFLATER_SERVICE);
+        adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
+        setListAdapter(adapter);
         registerForContextMenu(getListView());
+        
+        // Set admin privilege
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
+                MODE_PRIVATE);
+        isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
     }
     
     @Override
@@ -96,9 +106,19 @@ public class BrowseLessonsActivity extends TraceListActivity {
 
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v,
-	    ContextMenuInfo menuInfo) {
+	        ContextMenuInfo menuInfo) {
+	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+	    Lesson le = items.get(info.position);
+	    
 	    menu.setHeaderTitle("Options");
 	    for (ContextMenuItem item : ContextMenuItem.values()) {
+	        if (!isAdmin && !le.isUserDefined() && item.privilege >= 1) {
+	            // user does not own the lesson
+	            continue;
+	        } else if (!isAdmin && item.privilege >= 2) {
+	            // admin only option
+	            continue;
+	        }
 	        int ord = item.ordinal();
 	        menu.add(Menu.NONE, ord, ord, item.text);
 	    }
@@ -108,13 +128,13 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
 	  int menuItemIndex = item.getItemId();
-	  le = (Lesson)items.get(info.position);
+	  Lesson le = items.get(info.position);
+      Context context = getApplicationContext();
 	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
 	  Log.e("ListIndex",Integer.toString(info.position));
 
 	  // Delete lesson
 	  if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
-	      Context context = getApplicationContext();
 		  String id = le.getStringId();
 		  String result = dba.deleteLesson(id);
 		  Log.e("Result", result);
@@ -132,8 +152,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	  
 	  // Assign Categories
 	  else if (menuItemIndex == ContextMenuItem.ASSIGN_CATEGORIES.ordinal()) {
-	      Intent i = new Intent(getApplicationContext(),
-	              ChooseLessonCategoryActivity.class);
+	      Intent i = new Intent(context, ChooseLessonCategoryActivity.class);
 	      i.putExtra("ID",   le.getStringId());
 	      i.putExtra("name", le.getLessonName());
 	      
@@ -148,6 +167,20 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	      
           startActivityForResult(i, RequestCode.ASSIGN_CATEGORIES.ordinal());
           return true;
+	  }
+	  
+	  // Toggle User-Defined
+	  else if (menuItemIndex == ContextMenuItem.TOGGLE_USER_DEFINED.ordinal()) {
+	      le.setUserDefined(!le.isUserDefined());
+	      boolean result = dba.saveLessonUserDefined(le.getStringId(),
+	              le.isUserDefined());
+	      if (result) {
+	          adapter.notifyDataSetChanged();
+	          return true;
+	      } else {
+	          Toolbox.showToast(context, "Could not edit the collection");
+	          return false;
+	      }
 	  }
 	  
 	  return false;

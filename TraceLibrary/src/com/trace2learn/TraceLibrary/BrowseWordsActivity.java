@@ -10,6 +10,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -50,24 +51,37 @@ public class BrowseWordsActivity extends TraceListActivity {
     private boolean  filtered;
 
     private LayoutInflater vi;
-    private String lessonID;
+    
+    private String  lessonID;
+    private boolean userDefined;
 
+    private boolean isAdmin;
+    
     // Lesson popup views
     private View layout;
     private PopupWindow window;
     private LessonWord lw;
+    
+    private enum ContextMenuItem {
+        ADD_TO_LESSON (0, "Add to Collection"),
+        EDIT_TAGS     (2, "Edit Tags"),
+        MOVE_UP       (1, "Move Up"),
+        MOVE_DOWN     (1, "Move Down"),
+        DELETE        (1, "Delete");
+        
+        public final String text;
+        public final int    privilege; // 0: anyone, 1: owner, 2: admin
+        
+        ContextMenuItem(int privilege, String text) {
+            this.privilege = privilege;
+            this.text      = text;
+        }
+    }
 
-    private static final String[] menuItems = { "Add to Collection",
-                                                "Edit Tags",
-                                                "Move Up",
-                                                "Move Down",
-                                                "Delete" };
-    private static enum menuItemsInd { Add2Lesson,
-                                       EditTags,
-                                       MoveUp,
-                                       MoveDown,
-                                       Delete }
-    private static enum requestCodeENUM { EditTag, PhrasePractice }; 
+    private enum RequestCode {
+        EDIT_TAGS,
+        PHRASE_PRACTICE;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,6 +90,11 @@ public class BrowseWordsActivity extends TraceListActivity {
         dba = new DbAdapter(this);
         dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        
+        // Set admin privilege
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
+                MODE_PRIVATE);
+        isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         getViews();
         
@@ -99,18 +118,20 @@ public class BrowseWordsActivity extends TraceListActivity {
      */
     private void getWords() {
         lessonID = this.getIntent().getStringExtra("ID");
-        if(lessonID == null){
+        if(lessonID == null) {
+            userDefined = false;
             List<String> ids = dba.getAllWordIds();
             source = new ArrayList<LessonItem>(ids.size());
             for(String id : ids){
                 LessonWord word = dba.getWordById(id);
                 source.add(word);
             }
+            Collections.sort(source);
             lessonName.setText(R.string.all_words);
-        }
-        else{
+        } else {
             Lesson les = dba.getLessonById(lessonID);
             String name = les.getLessonName();
+            userDefined = les.isUserDefined();
             int size = les.length();
 
             // set lesson title
@@ -134,7 +155,6 @@ public class BrowseWordsActivity extends TraceListActivity {
      * Display the current display list
      */
     private void displayWords() {
-        Collections.sort(display);
         adapter = new LessonItemListAdapter(this, display, vi);
         setListAdapter(adapter);
     }
@@ -171,15 +191,23 @@ public class BrowseWordsActivity extends TraceListActivity {
 
         intent.setClass(this, PhrasePracticeActivity.class);
         intent.putExtras(bun);
-        startActivityForResult(intent, requestCodeENUM.PhrasePractice.ordinal());
+        startActivityForResult(intent, RequestCode.PHRASE_PRACTICE.ordinal());
     }
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
             ContextMenuInfo menuInfo) {
         menu.setHeaderTitle("Options");
-        for (int i = 0; i<menuItems.length; i++) {
-            menu.add(Menu.NONE, i, i, menuItems[i]);
+        for (ContextMenuItem item : ContextMenuItem.values()) {
+            if (!isAdmin && !userDefined && item.privilege >= 1) {
+                // user does not own the lesson
+                continue;
+            } else if (!isAdmin && item.privilege >= 2) {
+                // admin only option
+                continue;
+            }
+            int ord = item.ordinal();
+            menu.add(Menu.NONE, ord, ord, item.text);
         }
     }
 
@@ -193,22 +221,23 @@ public class BrowseWordsActivity extends TraceListActivity {
 
         Context context = getApplicationContext();
         
-        // add to collection
-        if(menuItemIndex == menuItemsInd.Add2Lesson.ordinal()){
+        // Add to Collection
+        if(menuItemIndex == ContextMenuItem.ADD_TO_LESSON.ordinal()){
             initiatePopupWindow();
             return true;
         }
 
-        else if(menuItemIndex == menuItemsInd.EditTags.ordinal()){
+        // Edit Tags
+        else if(menuItemIndex == ContextMenuItem.EDIT_TAGS.ordinal()){
             Intent i = new Intent(this, TagActivity.class);
             i.putExtra("ID", lw.getStringId());
             i.putExtra("TYPE", "WORD");
-            startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
+            startActivityForResult(i, RequestCode.EDIT_TAGS.ordinal());
             return true;
         }
 
-        // delete
-        else if(menuItemIndex == menuItemsInd.Delete.ordinal()){
+        // Delete
+        else if(menuItemIndex == ContextMenuItem.DELETE.ordinal()){
             String id = lw.getStringId();
             Boolean success = dba.deleteWord(id);
             Log.d("Result",success.toString());
@@ -224,14 +253,14 @@ public class BrowseWordsActivity extends TraceListActivity {
             }
         }
 
-        // move
-        else if (menuItemIndex == menuItemsInd.MoveUp.ordinal() ||
-                 menuItemIndex == menuItemsInd.MoveDown.ordinal()) {
+        // Move
+        else if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal() ||
+                 menuItemIndex == ContextMenuItem.MOVE_DOWN.ordinal()) {
             // going to swap sort values with the item above or below
 
             // need to get other item
             int otherPos;
-            if (menuItemIndex == menuItemsInd.MoveUp.ordinal()) {
+            if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal()) {
                 otherPos = info.position - 1;
             } else {
                 otherPos = info.position + 1;
@@ -249,10 +278,13 @@ public class BrowseWordsActivity extends TraceListActivity {
             LessonWord other = (LessonWord) display.get(otherPos);
             boolean result;
             if (lessonID == null) { // browsing all words
+                Log.i("Move", "Attempting to swap " + lw.getStringId() +
+                        " and " + other.getStringId());
                 result = dba.swapWords(lw.getStringId(), lw.getSort(), 
                                        other.getStringId(), other.getSort());
                 if (result) {
                     // success, so update the local copy
+                    Log.i("Move", "Success");
                     double temp = lw.getSort();
                     lw.setSort(other.getSort());
                     other.setSort(temp);
@@ -262,10 +294,13 @@ public class BrowseWordsActivity extends TraceListActivity {
                     return true;
                 }
             } else { // viewing a specific lesson
+                Log.i("Move", "Attempting to swap " + lw.getStringId() +
+                        " and " + other.getStringId());
                 result = dba.swapWordsInLesson(lessonID, lw.getStringId(), 
                                                other.getStringId());
                 if (result) {
                     // success, so update the local copy
+                    Log.i("Move", "Success");
                     LessonItem[] arr = new LessonItem[display.size()];
                     arr = display.toArray(arr);
                     
@@ -278,10 +313,11 @@ public class BrowseWordsActivity extends TraceListActivity {
                     display = new ArrayList<LessonItem>(Arrays.asList(arr)); 
                     adapter._items = display;
                     adapter.notifyDataSetChanged();
+                    
                     return true;
                 }
             }
-            Log.e("Move result", Boolean.toString(result));
+            Log.e("Move", "Failure!");
             Toolbox.showToast(context, "Move failed");
             return false;
         }
@@ -292,25 +328,32 @@ public class BrowseWordsActivity extends TraceListActivity {
     private void initiatePopupWindow(){
         try {
             Display display = getWindowManager().getDefaultDisplay(); 
-            display.getWidth();
             int height = display.getHeight();  // deprecated
-            //We need to get the instance of the LayoutInflater, use the context of this activity
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            //Inflate the view from a predefined XML layout
-            layout = inflater.inflate(R.layout.add_to_collection_popup,(ViewGroup) findViewById(R.id.popup_layout));
-            layout.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            
+            LayoutInflater inflater = (LayoutInflater) this.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            layout = inflater.inflate(R.layout.add_to_collection_popup,
+                    (ViewGroup) findViewById(R.id.popup_layout));
+            layout.measure(View.MeasureSpec.UNSPECIFIED,
+                    View.MeasureSpec.UNSPECIFIED);
+            
             // create a 300px width and 470px height PopupWindow
-            List<String> allLessons = dba.getAllLessonNames();
-            Log.e("numLessons",Integer.toString(allLessons.size()));
-            final ListView lessonList = (ListView)layout.findViewById(R.id.collectionlist);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this,android.R.layout.simple_list_item_1,allLessons); 
+            List<String> allLessons;
+            if (isAdmin) {
+                allLessons = dba.getAllLessonNames();
+            } else {
+                allLessons = dba.getAllUserLessonNames();
+            }
+            Log.e("numLessons", Integer.toString(allLessons.size()));
+            final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
             lessonList.setAdapter(adapter);
-            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int)(height*.8), true);
+            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
+            
             // display the popup in the center
             window.showAtLocation(layout, Gravity.CENTER, 0, 0);
 
             lessonList.setOnItemClickListener(new OnItemClickListener() {
-
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                     String name = ((String)lessonList.getItemAtPosition(position));
                     Log.e("name",name);
@@ -320,15 +363,9 @@ public class BrowseWordsActivity extends TraceListActivity {
                     window.dismiss();
                 }
             });
-
-
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void onSkipButtonClick(View view){
-        window.dismiss();
     }
 
     public void lessonPopupOnClickNewLesson(View view){
@@ -340,7 +377,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             Toolbox.showToast(context, "You must name the collection!");
             return;
         }
-        Lesson lesson = new Lesson();
+        Lesson lesson = new Lesson(!isAdmin);
         lesson.setName(name);
         lesson.addWord(lw.getStringId());
         dba.addLesson(lesson);
@@ -349,12 +386,13 @@ public class BrowseWordsActivity extends TraceListActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == requestCodeENUM.EditTag.ordinal() 
+    protected void onActivityResult(int requestCode, int resultCode,
+            Intent data) {
+        if (requestCode == RequestCode.EDIT_TAGS.ordinal() 
                 && resultCode == RESULT_OK) {
             startActivity(getIntent());
             finish();
-        } else if (requestCode == requestCodeENUM.PhrasePractice.ordinal() && 
+        } else if (requestCode == RequestCode.PHRASE_PRACTICE.ordinal() && 
                 resultCode == RESULT_OK) {
             int next = data.getExtras().getInt("next");
             if (next < display.size()) {

@@ -10,7 +10,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/introduction"
-        android:textColor="#00ccff"
+        android:textColor="@color/header"
         android:textSize="20sp"
         android:textStyle="bold" />
 
