@@ -225,12 +225,10 @@ public class Lesson extends LessonItem {
             }
 
             NodeList words = elem.getElementsByTagName("word");
-            lesson.wordObjects = new ArrayList<LessonItem>(words.getLength());
             for (int i = 0; i < words.getLength(); i++) {
                 LessonWord word = LessonWord.importFromXml((Element) words.item(i));
                 String word_id = word.getStringId();
                 lesson.addWord(word_id);
-                lesson.wordObjects.add(word);
                 Log.i("Import Lesson", "  word: " + word_id);
             }
 
