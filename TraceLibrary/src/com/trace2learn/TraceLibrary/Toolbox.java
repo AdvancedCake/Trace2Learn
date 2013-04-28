@@ -10,6 +10,7 @@ import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+
 public class Toolbox {
 
     // SharedPreferences
@@ -66,5 +67,5 @@ public class Toolbox {
                 activity.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
-    
+ 
 }

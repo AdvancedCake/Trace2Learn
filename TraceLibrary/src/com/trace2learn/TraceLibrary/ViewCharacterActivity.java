@@ -3,7 +3,6 @@ package com.trace2learn.TraceLibrary;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
@@ -13,7 +12,7 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-public class ViewCharacterActivity extends Activity {
+public class ViewCharacterActivity extends TraceBaseActivity {
 
 	private LinearLayout _characterViewSlot;
 	private CharacterCreationPane _creationPane;

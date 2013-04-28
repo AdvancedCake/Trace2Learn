@@ -1,6 +1,5 @@
 package com.trace2learn.TraceLibrary;
 
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,7 +19,7 @@ import android.widget.TextView;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 
-public class ChooseLessonCategoryActivity extends Activity {
+public class ChooseLessonCategoryActivity extends TraceBaseActivity {
     
     private Intent    intent;
     private String    lessonId;

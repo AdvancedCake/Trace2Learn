@@ -53,6 +53,8 @@
         </activity>
         <activity android:name="com.Trace2Learn.TraceLibrary.IntroductionActivity" >
         </activity>
-    </application>
+        <activity android:name="com.trace2learn.TraceLibrary.Statistics" >
+        </activity>
+	</application>
 
 </manifest>

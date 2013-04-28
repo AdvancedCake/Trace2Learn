@@ -8,7 +8,6 @@ import java.util.Map;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -23,7 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class TagActivity extends Activity {
+public class TagActivity extends TraceBaseActivity {
 
     private static final String[] menuItems = { "Move Up",
                                                 "Move Down",

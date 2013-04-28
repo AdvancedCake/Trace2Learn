@@ -7,7 +7,6 @@ import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -38,7 +37,7 @@ import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
-public class BrowseWordsActivity extends ListActivity {
+public class BrowseWordsActivity extends TraceListActivity {
     private DbAdapter dba;
     private List<LessonItem> source;  // list of all words
     private List<LessonItem> display; // list of items being displayed

@@ -9,7 +9,6 @@ import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import android.app.AlertDialog;
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +28,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class BrowseCharactersActivity extends ListActivity {
+public class BrowseCharactersActivity extends TraceListActivity {
 	private DbAdapter dba;
 	private List<LessonItem> source;  // list of all characters
 	private List<LessonItem> display; // list of items being displayed

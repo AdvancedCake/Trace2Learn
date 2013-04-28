@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -17,10 +16,13 @@ import android.widget.ImageView;
 import com.trace2learn.TraceLibrary.BrowseLessonsActivity;
 import com.trace2learn.TraceLibrary.CreateWordActivity;
 import com.trace2learn.TraceLibrary.IntroductionActivity;
+import com.trace2learn.TraceLibrary.R;
+import com.trace2learn.TraceLibrary.TraceBaseActivity;
+
 import com.trace2learn.TraceLibrary.Toolbox;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 
-public class MainMenuActivity extends Activity {
+public class MainMenuActivity extends TraceBaseActivity {
 
     ImageView introduction;
     ImageView createPhrase;
@@ -49,7 +51,8 @@ public class MainMenuActivity extends Activity {
             public void onClick(View v) {
                 Intent i = new Intent(getApplicationContext(),
                         IntroductionActivity.class);
-                startActivity(i);            }
+                startActivity(i);
+            }
         });
         
         createPhrase.setOnClickListener(new OnClickListener() {
@@ -115,4 +118,5 @@ public class MainMenuActivity extends Activity {
                     e.getMessage());
         }
     }
+
 }

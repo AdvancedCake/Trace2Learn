@@ -1,6 +1,6 @@
 package com.trace2learn.TraceLibrary;
 
-import android.app.Activity;
+
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 
-public class IntroductionActivity extends Activity {
+public class IntroductionActivity extends TraceBaseActivity {
 
     private String           lessonName;
     private String           narrative;
