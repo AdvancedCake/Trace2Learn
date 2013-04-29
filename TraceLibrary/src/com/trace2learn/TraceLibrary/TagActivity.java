@@ -72,20 +72,6 @@ public class TagActivity extends TraceBaseActivity {
         addIdButton  = (Button)   findViewById(R.id.add_key_value_pair_button);
         listView     = (ListView) findViewById(R.id.list);
         
-        switch(type)
-        {
-        case CHARACTER:
-        case WORD:
-        	break;
-        case LESSON:
-            findViewById(R.id.id_headers).setVisibility(View.GONE);
-            findViewById(R.id.id_views).setVisibility(View.GONE);
-        	break;
-        default:
-        	Log.e("Tag", "Unsupported Type");
-        	finish();
-        	break;
-        }
 
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();     
@@ -125,9 +111,6 @@ public class TagActivity extends TraceBaseActivity {
                 break;
             case WORD:
                 currentTags = mDbHelper.getWordTags(stringid);
-                break;
-            case LESSON:
-                currentTags = mDbHelper.getLessonTags(stringid);
                 break;
             default:
                 Log.e("Tag", "Unsupported Type");
@@ -253,9 +236,6 @@ public class TagActivity extends TraceBaseActivity {
                         table = DbAdapter.WORDTAG_TABLE;
                     }
                     break;
-                case LESSON:
-                    table = DbAdapter.LESSONTAG_TABLE;
-                    break;
                 default:
                     Log.e("Tag", "Unsupported Type");
                     return false;
@@ -328,7 +308,6 @@ public class TagActivity extends TraceBaseActivity {
                 switch(type){
                 	case CHARACTER:
                 	case WORD:
-                	case LESSON:
                 		result = mDbHelper.swapTags(table, stringid, tag, other);
                 		break;
                 	default:
@@ -408,9 +387,6 @@ public class TagActivity extends TraceBaseActivity {
                     break;
                 case WORD:
                     mDbHelper.createWordTags(stringid, input);
-                    break;
-                case LESSON:
-                    mDbHelper.createLessonTags(stringid, input);
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");
