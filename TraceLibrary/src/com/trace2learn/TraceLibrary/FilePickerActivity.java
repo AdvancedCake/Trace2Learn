@@ -97,7 +97,11 @@ public class FilePickerActivity extends ListActivity {
         } catch (Exception e) {
             showToast("This is not a valid " + getString(R.string.app_name) +
                     " file!");
-            Log.e("Import", e.getMessage());
+            String message = e.getMessage();
+            if (message == null) {
+                message = "No error message";
+            }
+            Log.e("Import", message);
         }
     }
     

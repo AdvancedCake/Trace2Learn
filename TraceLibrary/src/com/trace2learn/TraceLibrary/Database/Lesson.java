@@ -40,8 +40,16 @@ public class Lesson extends LessonItem {
         this.isUserDefined = isUserDefined;
     }
 
-    public synchronized void addWord(String word) {
-        _words.add(word);
+    public synchronized void addWord(String wordId) {
+        _words.add(wordId);
+    }
+    
+    public synchronized void addWord(LessonWord word) {
+        if (wordObjects == null) {
+            wordObjects = new ArrayList<LessonItem>();
+        }
+        wordObjects.add(word);
+        _words.add(word.getStringId());
     }
 
     public synchronized List<String> getWordIds() {
@@ -57,9 +65,11 @@ public class Lesson extends LessonItem {
     }
 
     public synchronized List<LessonItem> getWords() {
-        if (_db == null) {
-            Log.e("Fetch Words", "DbAdapter is null");
-        } else if (wordObjects == null) {
+        if (wordObjects == null) {
+            if (_db == null) {
+                Log.e("Lesson.getWords", "DbAdapter is null");
+                return null;
+            }
             wordObjects = _db.getWordsFromLesson(_stringid);
         }
         return wordObjects;
@@ -231,9 +241,8 @@ public class Lesson extends LessonItem {
             NodeList words = elem.getElementsByTagName("word");
             for (int i = 0; i < words.getLength(); i++) {
                 LessonWord word = LessonWord.importFromXml((Element) words.item(i));
-                String word_id = word.getStringId();
-                lesson.addWord(word_id);
-                Log.i("Import Lesson", "  word: " + word_id);
+                lesson.addWord(word);
+                Log.i("Import Lesson", "  word: " + word.getStringId());
             }
 
             return lesson;

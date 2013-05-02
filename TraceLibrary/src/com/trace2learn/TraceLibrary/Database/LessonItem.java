@@ -14,17 +14,12 @@ import android.util.Log;
 
 public abstract class LessonItem implements Comparable<LessonItem> {
 	
-	private final String logTAG = "LessonItem";
-	
 	/** The tag cache*/
 	protected List<String> _tags;
 	
 	/** The (Key, Value) cache */
 	protected LinkedHashMap<String, String> keyValues;
-	
-	/** The id of the item */
-	//protected long _id; // TODO remove this when string IDs are working.
-	
+		
 	/** The stringid of the item */
 	protected String _stringid;
 	
@@ -141,7 +136,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 			keyValues = db.getKeyValues(_stringid, _type);
 			break;
 		case LESSON:
-			Log.e(logTAG, "(Key, Value) pairs are NOT supported for LESSON");
+			Log.e("Update IDs", "(Key, Value) pairs are NOT supported for LESSON");
 			break;
 		}
 	}
