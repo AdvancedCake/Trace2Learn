@@ -26,34 +26,15 @@
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/id_headers"
+        android:layout_above="@+id/id_views"
         android:layout_below="@+id/title" >
     </ListView>
-
-    <LinearLayout
-        android:id="@+id/id_headers"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/id_views"
-        android:orientation="horizontal" >
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_key"
-            android:width="137sp" />
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_value" />
-    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/id_views"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/TextView2"
+        android:layout_above="@+id/LinearLayout1"
         android:orientation="horizontal" >
 
         <EditText
@@ -61,7 +42,9 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:hint="@string/editkey_hint"
             android:inputType="text" >
+
         </EditText>
 
         <EditText
@@ -69,6 +52,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:hint="@string/editvaue_hint"
             android:inputType="text" />
 
         <Button
@@ -78,13 +62,6 @@
             android:onClick="onAddKeyValuePairButtonClick"
             android:text="@string/add" />
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/TextView2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/LinearLayout1"
-        android:text="@string/addtag_header" />
 
     <LinearLayout
         android:id="@+id/LinearLayout1"
@@ -98,6 +75,7 @@
             android:layout_width="0dip"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:hint="@string/edittag_hint"
             android:inputType="text" />
 
         <Button

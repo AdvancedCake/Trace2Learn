@@ -7,35 +7,37 @@
     <uses-sdk android:minSdkVersion="8" />
 
     <application>
-        <activity android:name="ViewCharacterActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.ViewCharacterActivity" >
         </activity>
         <activity
-            android:name="CreateWordActivity"
+            android:name="com.trace2learn.TraceLibrary.CreateWordActivity"
             android:windowSoftInputMode="stateHidden" >
         </activity>
-        <activity android:name="CreateLessonActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.CreateLessonActivity" >
         </activity>
-        <activity android:name="TagActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.TagActivity" >
         </activity>
-        <activity android:name="TestTagDbActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.TestTagDbActivity" >
         </activity>
-        <activity android:name="BrowseCharactersActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.BrowseCharactersActivity" >
         </activity>
-        <activity android:name="BrowseWordsActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.BrowseWordsActivity" >
         </activity>
-        <activity android:name="BrowseLessonsActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.BrowseLessonsActivity" >
         </activity>
-        <activity android:name="PhrasePracticeActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.PhrasePracticeActivity" >
         </activity>
-        <activity android:name="ShoppingCartActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.ShoppingCartActivity" >
         </activity>
-        <activity android:name="FilePickerActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.FilePickerActivity" >
         </activity>
-        <activity android:name="ChooseLessonCategoryActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.ChooseLessonCategoryActivity" >
         </activity>
-        <activity android:name="LessonNarrativeActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.LessonNarrativeActivity" >
         </activity>
-        <activity android:name="IntroductionActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.IntroductionActivity" >
+        </activity>
+        <activity android:name="com.trace2learn.TraceLibrary.Statistics" >
         </activity>
     </application>
 

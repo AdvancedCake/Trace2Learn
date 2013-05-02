@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    
+    <ImageView
+        android:id="@+id/exit_button"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="5dp"
+        android:contentDescription="@string/exit"
+        android:src="@drawable/exit_button" />
+    
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="40dp"
+        android:text="@string/app_name"
+        android:textColor="@color/header"
+        android:textSize="30sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/subTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/title"
+        android:layout_centerHorizontal="true"
+        android:text="@string/app_subtitle"
+        android:textColor="@color/header"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/subTitle"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="30dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/aboutCredits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/logo"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="30dp"
+        android:gravity="center_horizontal"
+        android:text="@string/aboutCredits"
+        android:textColor="@color/header"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+</RelativeLayout>

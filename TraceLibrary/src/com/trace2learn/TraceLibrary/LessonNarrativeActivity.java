@@ -2,7 +2,6 @@ package com.trace2learn.TraceLibrary;
 
 import java.util.SortedSet;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,7 +23,7 @@ import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 
-public class LessonNarrativeActivity extends Activity {
+public class LessonNarrativeActivity extends TraceBaseActivity {
 
     private Intent                    intent;
     private String                    lessonId;

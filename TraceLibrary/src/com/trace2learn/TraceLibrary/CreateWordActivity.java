@@ -10,7 +10,6 @@ import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -38,7 +37,7 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-public class CreateWordActivity extends Activity {
+public class CreateWordActivity extends TraceBaseActivity {
     
     private DbAdapter             dba;
     private LessonWord            newWord;

@@ -8,7 +8,6 @@ import java.util.Map;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -23,7 +22,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
-public class TagActivity extends Activity {
+public class TagActivity extends TraceBaseActivity {
 
     private static final String[] menuItems = { "Move Up",
                                                 "Move Down",
@@ -73,20 +72,6 @@ public class TagActivity extends Activity {
         addIdButton  = (Button)   findViewById(R.id.add_key_value_pair_button);
         listView     = (ListView) findViewById(R.id.list);
         
-        switch(type)
-        {
-        case CHARACTER:
-        case WORD:
-        	break;
-        case LESSON:
-            findViewById(R.id.id_headers).setVisibility(View.GONE);
-            findViewById(R.id.id_views).setVisibility(View.GONE);
-        	break;
-        default:
-        	Log.e("Tag", "Unsupported Type");
-        	finish();
-        	break;
-        }
 
         mDbHelper = new DbAdapter(this);
         mDbHelper.open();     
@@ -126,9 +111,6 @@ public class TagActivity extends Activity {
                 break;
             case WORD:
                 currentTags = mDbHelper.getWordTags(stringid);
-                break;
-            case LESSON:
-                currentTags = mDbHelper.getLessonTags(stringid);
                 break;
             default:
                 Log.e("Tag", "Unsupported Type");
@@ -254,9 +236,6 @@ public class TagActivity extends Activity {
                         table = DbAdapter.WORDTAG_TABLE;
                     }
                     break;
-                case LESSON:
-                    table = DbAdapter.LESSONTAG_TABLE;
-                    break;
                 default:
                     Log.e("Tag", "Unsupported Type");
                     return false;
@@ -329,7 +308,6 @@ public class TagActivity extends Activity {
                 switch(type){
                 	case CHARACTER:
                 	case WORD:
-                	case LESSON:
                 		result = mDbHelper.swapTags(table, stringid, tag, other);
                 		break;
                 	default:
@@ -409,9 +387,6 @@ public class TagActivity extends Activity {
                     break;
                 case WORD:
                     mDbHelper.createWordTags(stringid, input);
-                    break;
-                case LESSON:
-                    mDbHelper.createLessonTags(stringid, input);
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");

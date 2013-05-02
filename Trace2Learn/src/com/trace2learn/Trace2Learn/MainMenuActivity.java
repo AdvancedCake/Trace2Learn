@@ -6,7 +6,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,6 +19,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+
 import com.trace2learn.TraceLibrary.BrowseCharactersActivity;
 import com.trace2learn.TraceLibrary.BrowseLessonsActivity;
 import com.trace2learn.TraceLibrary.BrowseWordsActivity;
@@ -31,7 +31,8 @@ import com.trace2learn.TraceLibrary.Toolbox;
 import com.trace2learn.TraceLibrary.ViewCharacterActivity;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 
-public class MainMenuActivity extends ListActivity {
+
+public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActivity {
 
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -146,4 +147,6 @@ public class MainMenuActivity extends ListActivity {
             e.printStackTrace();
         }
     }
+
+
 }

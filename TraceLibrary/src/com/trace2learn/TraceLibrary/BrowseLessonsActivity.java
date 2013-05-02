@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedSet;
 
-import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,8 +25,9 @@ import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 
-public class BrowseLessonsActivity extends ListActivity {
-	private DbAdapter dba;
+public class BrowseLessonsActivity extends TraceListActivity {
+
+	private DbAdapter dba; 
 	private ArrayList<Lesson> items;
 	private LessonListAdapter adapter;
 	

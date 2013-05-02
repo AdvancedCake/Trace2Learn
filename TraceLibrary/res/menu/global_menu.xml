@@ -1,0 +1,8 @@
+
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/menuGoHome"
+          android:title="@string/menuGoHome" />
+    <item android:id="@+id/menuStats" android:title="@string/menuStats"></item>
+    <item android:id="@+id/menuAbout" android:title="@string/menuAbout"></item>
+</menu>

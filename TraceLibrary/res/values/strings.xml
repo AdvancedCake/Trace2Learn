@@ -62,5 +62,19 @@
     <string name="create_phrase">Build a Phrase</string>
     <string name="browse_collections">Browse Collections</string>
     <string name="app_subtitle">for Traditional Chinese</string>
+    <string name="stats">Statistics</string>
+    <string name="statsCharacters">Characters:"</string>
+    <string name="statsPhrases">Phrases:</string>
+    <string name="statsCollections">Collections:</string>
+    <string name="statsStrokes">Strokes:</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menuGoHome">Main Menu</string>
+    <string name="menuStats">Statistics</string>
+    <string name="menuAbout">About</string>
+    <string name="aboutCredits">created by\nRobert Li\nJoe Varadi\n</string>
+    <string name="editkey_hint">key</string>
+    <string name="editvaue_hint">value</string>
+    <string name="edittag_hint">enter any tag or description</string>
 
 </resources>
