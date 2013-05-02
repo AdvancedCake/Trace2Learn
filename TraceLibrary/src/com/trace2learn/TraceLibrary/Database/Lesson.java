@@ -244,6 +244,7 @@ public class Lesson extends LessonItem {
                 lesson.addWord(word);
                 Log.i("Import Lesson", "  word: " + word.getStringId());
             }
+            // TODO need to sort words by lesson order!
 
             return lesson;
         } catch (Exception e) {

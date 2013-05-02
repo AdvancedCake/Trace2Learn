@@ -79,7 +79,8 @@ public class DbAdapter {
     
     private static final String DATABASE_CREATE_WORDS = 
     		"CREATE TABLE Words (_id TEXT PRIMARY KEY," +
-    		"sort INTEGER);";
+    		"sort INTEGER" +
+    		"userDefined INTEGER);";
     
     private static final String DATABASE_CREATE_WORDS_DETAILS =
             "CREATE TABLE WordsDetails (_id TEXT," +
@@ -167,7 +168,7 @@ public class DbAdapter {
     public static final String LESSONTAG_TABLE       = "LessonTag";
     
     
-    private static final int DATABASE_VERSION = 20130420;
+    private static final int DATABASE_VERSION = 20130502;
 
     
     private final Context mCtx;
@@ -796,7 +797,7 @@ public class DbAdapter {
                 deleteWord(wordId);
             }
     	}
-    	else{
+    	else {
     		wordId = makeUniqueId();
     		initialWordsValues.put(WORDS_ID, wordId);
     	}
@@ -1278,13 +1279,13 @@ public class DbAdapter {
      * @param les lesson to be added to the database
      * @return true if lesson is added to DB.  False on error.
      */
-    public boolean addLesson(Lesson les)
-    {
+    public boolean addLesson(Lesson les) {
+        
     	mDb.beginTransaction();
     	
     	// add to LESSON_TABLE
     	ContentValues initialLessonValues = new ContentValues();
-    	String id = "";
+    	String id;
     	if (les.getStringId() != null) { // id already initialized, keep it
     	    id = les.getStringId();
             if (getLessonById(id) != null) {
@@ -1306,13 +1307,18 @@ public class DbAdapter {
     	
     	// Attempt the insert
     	long rowid = mDb.insert(LESSONS_TABLE, null, initialLessonValues);
-    	if(rowid == -1)
-    	{
+    	if (rowid == -1) {
     		// error
     		Log.e(LESSONS_TABLE, "cannot add new character to table " + LESSONS_TABLE);
     		mDb.endTransaction();
     		return false;
     	}
+    	
+    	// Get sort value
+    	les.setSort(rowid);
+    	initialLessonValues.put("sort", les.getSort());
+    	mDb.update(LESSONS_TABLE, initialLessonValues,
+    	        LESSONS_ID + "='" + id + "'", null);
     	
     	les.setStringId(id);
 

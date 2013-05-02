@@ -1,6 +1,7 @@
 package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -61,10 +62,12 @@ public class BrowseLessonsActivity extends TraceListActivity {
         items = new ArrayList<Lesson>(); 
         List<String> ids = dba.getAllLessonIds();
         for(String id : ids){
-        	Lesson le = dba.getLessonById(id);
-        	le.setTagList(dba.getLessonTags(id));
-        	items.add(le);
+        	Lesson lesson = dba.getLessonById(id);
+        	lesson.setTagList(dba.getLessonTags(id));
+        	items.add(lesson);
         }
+        Collections.sort(items);
+        
         LayoutInflater vi = (LayoutInflater) getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
