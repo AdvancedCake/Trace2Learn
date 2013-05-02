@@ -29,9 +29,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	/** Reference to the database in which the item is stored */
 	protected DbAdapter _db;
 	
-	/** The last time the item was synched with the database */
-	protected Date _lastUpdate;
-	
 	/** Identifier for type of character **/
 	protected ItemType _type;
 	
@@ -47,8 +44,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		_stringid = null;
 		_tags = new ArrayList<String>();
 		keyValues = new LinkedHashMap<String, String>();
-		
-		_lastUpdate = new Date(0);
 	}
 	
     /**
@@ -59,6 +54,11 @@ public abstract class LessonItem implements Comparable<LessonItem> {
         if (this._type != other._type) {
             return other._type.ordinal() - this._type.ordinal();
         }
+        
+        if (this._type == ItemType.LESSON) {
+            return ((Lesson) this).compareTo((Lesson) other));
+        }
+        
         return Double.compare(this._sort, other._sort);
     }
 	

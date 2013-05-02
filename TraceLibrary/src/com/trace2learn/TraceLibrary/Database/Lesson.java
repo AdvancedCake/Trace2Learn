@@ -261,4 +261,11 @@ public class Lesson extends LessonItem {
 
         return ((Lesson) other).getStringId().equals(_stringid);
     }
+    
+    public int compareTo(Lesson other) {
+        if (this.isUserDefined == other.isUserDefined) {
+            return Double.compare(this._sort, other._sort);
+        }
+        return this.isUserDefined ? -1 : 1;
+    }
 }
