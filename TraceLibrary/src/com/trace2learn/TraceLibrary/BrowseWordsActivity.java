@@ -57,6 +57,8 @@ public class BrowseWordsActivity extends TraceListActivity {
 
     private boolean isAdmin;
     
+    private boolean newCollection = false; // has a new Collection been created?
+    
     // Lesson popup views
     private View layout;
     private PopupWindow window;
@@ -248,7 +250,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             else{
                 Toolbox.showToast(context, "Successfully deleted");
                 startActivity(getIntent()); 
-                finish();
+                close();
                 return true;
             }
         }
@@ -368,7 +370,9 @@ public class BrowseWordsActivity extends TraceListActivity {
         }
     }
 
-    public void lessonPopupOnClickNewLesson(View view){
+    public void lessonPopupOnClickNewLesson(View view) {
+        newCollection = true;
+        
         Context  context  = getApplicationContext();
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
         
@@ -391,7 +395,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         if (requestCode == RequestCode.EDIT_TAGS.ordinal() 
                 && resultCode == RESULT_OK) {
             startActivity(getIntent());
-            finish();
+            close();
         } else if (requestCode == RequestCode.PHRASE_PRACTICE.ordinal() && 
                 resultCode == RESULT_OK) {
             int next = data.getExtras().getInt("next");
@@ -484,6 +488,20 @@ public class BrowseWordsActivity extends TraceListActivity {
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+    }
+    
+    @Override
+    public void onBackPressed() {
+        close();
+    }
+
+    private void close() {
+        if (newCollection) {
+            setResult(RESULT_OK);
+        } else {
+            setResult(RESULT_CANCELED);
+        }
+        finish();
     }
 
 }

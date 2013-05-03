@@ -52,7 +52,8 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	}
 	
 	private enum RequestCode {
-	    ASSIGN_CATEGORIES;
+	    ASSIGN_CATEGORIES,
+	    BROWSE_WORDS;
 	}
 
 	@Override
@@ -99,7 +100,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
 		Lesson le = ((Lesson)li);
         Intent i = new Intent(this, BrowseWordsActivity.class);
 		i.putExtra("ID", le.getStringId());
-		startActivity(i);
+		startActivityForResult(i, RequestCode.BROWSE_WORDS.ordinal());
 	}
 
 	private void getItemInfo(String lessonId) {
@@ -246,6 +247,10 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	            resultCode == RESULT_OK) {
 	        startActivity(getIntent());
 	        finish();
+	    } else if (requestCode == RequestCode.BROWSE_WORDS.ordinal() &&
+	            resultCode == RESULT_OK) {
+	        startActivity(getIntent());
+            finish();
 	    }
 	}
 
