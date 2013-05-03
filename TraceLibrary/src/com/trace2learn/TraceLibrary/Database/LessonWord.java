@@ -15,6 +15,7 @@ import android.util.Log;
 public class LessonWord extends LessonItem {
 	
 	private List<String> _characters;
+	private int lessonOrder;
 	
 	public LessonWord() {
         this(null);
@@ -98,7 +99,6 @@ public class LessonWord extends LessonItem {
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
 	{
-		// TODO add animation code
 		draw(canvas, paint, left, top, width, height);
 	}
 	
@@ -131,6 +131,10 @@ public class LessonWord extends LessonItem {
 			character.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
 			i++;
 		}
+	}
+	
+	public int getLessonOrder() {
+	    return lessonOrder;
 	}
 	
 	/**
@@ -176,10 +180,16 @@ public class LessonWord extends LessonItem {
 	 */
 	public static LessonWord importFromXml(Element elem) {
         try {
-            String id = elem.getAttribute("id");
+            String id    = elem.getAttribute("id");
+            String order = elem.getAttribute("position");
             
-            LessonWord w = new LessonWord();
-            w._stringid = id;
+            LessonWord w = new LessonWord(id);
+            try {
+                w.lessonOrder = Integer.parseInt(order);
+            } catch(NumberFormatException e) {
+                Log.e("LessonWord.importFromXml",
+                        "Bad position attribute: -" + order + "-");
+            }
             
             NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {
@@ -206,7 +216,7 @@ public class LessonWord extends LessonItem {
 
             return w;
         } catch (Exception e) {
-            Log.e("Import Word", e.getMessage());
+            Log.e("LessonWord.importFromXml", e.getMessage());
             return null;
         }
 	}

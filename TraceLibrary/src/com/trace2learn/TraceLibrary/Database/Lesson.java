@@ -1,6 +1,8 @@
 package com.trace2learn.TraceLibrary.Database;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -244,7 +246,13 @@ public class Lesson extends LessonItem {
                 lesson.addWord(word);
                 Log.i("Import Lesson", "  word: " + word.getStringId());
             }
-            // TODO need to sort words by lesson order!
+            Collections.sort(lesson.wordObjects, new Comparator<LessonItem>() {
+                @Override
+                public int compare(LessonItem l, LessonItem r) {
+                    return ((LessonWord) l).getLessonOrder() -
+                            ((LessonWord) r).getLessonOrder();
+                }
+            });
 
             return lesson;
         } catch (Exception e) {

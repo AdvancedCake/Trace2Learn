@@ -40,12 +40,11 @@ public class DbAdapter {
     public static final String WORDKEYVALUES_KEY = "key";
     public static final String WORDKEYVALUES_VALUE = "value";
 
-    private static final String TAG = "TagsDbAdapter";
     private DatabaseHelper mDbHelper;
     private SQLiteDatabase mDb;
     
     private static final HashMap<LessonCategory, String> categoryColumns =
-            new HashMap<LessonCategory, String>(); // TODO
+            new HashMap<LessonCategory, String>();
 
     /**
      * Database creation sql statement
@@ -196,8 +195,9 @@ public class DbAdapter {
 
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVer, int newVer) {
-            Log.w(TAG, "Upgrading database from version " + oldVer + " to "
-                    + newVer + ", which will destroy all old data");
+            Log.w("DbAdapter.onUpgrade",
+                    "Upgrading database from version " + oldVer + " to " +
+                    newVer + ", which will destroy all old data");
             db.execSQL(DATABASE_DROP_CHAR);
             db.execSQL(DATABASE_DROP_CHARTAG);
             db.execSQL(DATABASE_DROP_CHARKEYVALUES);
@@ -381,13 +381,15 @@ public class DbAdapter {
     		idColumn = WORDTAG_ID;
     		break;
     	default:
-    		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
+    		Log.e("DbAdapter.createKeyValue",
+    		        "This type does NOT support (Key, Value) pairs.");
     		return false;
     	}
     	
 	    	// find new sort value
 	        Cursor cur = mDb.query(table, new String[] {"sort"}, 
-	                               "_id='" + stringId + "'", null, null, null, "sort DESC", "1");
+	                "_id='" + stringId + "'",
+	                null, null, null, "sort DESC", "1");
 	        int sort = 1;
 	        if (cur != null) {
 	            if (cur.moveToFirst()) {
@@ -430,7 +432,9 @@ public class DbAdapter {
      * @return true if deleted, false otherwise
      */
     public boolean deleteWordTag(String id, String tag) {
-        return mDb.delete(WORDTAG_TABLE, WORDTAG_ID + "='" + id + "' AND " + WORDTAG_TAG + "='" + tag + "'", null) > 0;
+        return mDb.delete(WORDTAG_TABLE,
+                WORDTAG_ID + "='" + id + "' AND " + WORDTAG_TAG + "='" + tag + "'",
+                null) > 0;
     }
    
     /**
@@ -440,7 +444,8 @@ public class DbAdapter {
      * @param key text of key to delete
      * @return true if deleted, false otherwise
      */
-    public boolean deleteKeyValue(String stringId, LessonItem.ItemType itemType, String key) {
+    public boolean deleteKeyValue(String stringId, LessonItem.ItemType itemType,
+            String key) {
     	String table = "";
     	String idColumn = "";
     	String keyColumn = "";
@@ -457,7 +462,8 @@ public class DbAdapter {
     		idColumn = WORDTAG_ID;
     		break;
     	default:
-    		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
+    		Log.e("DbAdapter.deleteKeyValue",
+    		        "This type does NOT support (Key, Value) pairs.");
     		return false;
     	}
         return mDb.delete(table, idColumn + "='" + stringId + "' AND " + keyColumn +
@@ -949,7 +955,8 @@ public class DbAdapter {
     		idColumn = WORDKEYVALUES_ID;
     		break;
     	default:
-    		Log.e(TAG, "This type does NOT support (Key, Value) pairs.");
+    		Log.e("DbAdapter.getKeyValues",
+    		        "This type does NOT support (Key, Value) pairs.");
     		return null;
     	}
     	Cursor mCursor = mDb.query(true, table, new String[] {keyColumn, valueColumn}, idColumn + "='" + stringId + "'", null,
