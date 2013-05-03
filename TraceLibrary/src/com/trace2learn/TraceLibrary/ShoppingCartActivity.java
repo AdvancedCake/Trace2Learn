@@ -355,6 +355,7 @@ public class ShoppingCartActivity extends Activity {
                 // to ensure that all character dependencies are met
                 List<LessonCharacter> dependencies = new ArrayList<LessonCharacter>();
 
+                Collections.sort(cart);
                 String xml = "<ttw name=\"" + filename + "\">\n";
                 for (LessonItem item : cart) {
                     if (item == allChars) {
