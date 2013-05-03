@@ -69,12 +69,13 @@
     <string name="statsStrokes">Strokes:</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="menuGoHome">Main Menu</string>
+    <string name="menuGoHome">Home</string>
     <string name="menuStats">Statistics</string>
     <string name="menuAbout">About</string>
     <string name="aboutCredits">created by\nRobert Li\nJoe Varadi\n</string>
     <string name="editkey_hint">key</string>
     <string name="editvaue_hint">value</string>
     <string name="edittag_hint">enter any tag or description</string>
+    <string name="chartLabel">Distribution of # of Strokes per Character</string>
 
 </resources>

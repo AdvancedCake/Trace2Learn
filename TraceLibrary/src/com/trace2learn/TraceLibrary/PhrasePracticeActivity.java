@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -14,6 +15,7 @@ import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Vibrator;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
@@ -409,7 +411,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
                 // this is the end of the word
                 if (lessonID != null) {
                 	// disabling following, as we need more elegant navigation, see issue #2 (Joe V)
-                    if (phraseIndex < collectionSize && false) { // still more words
+                    if (phraseIndex < collectionSize) { // still more words
                         // shutdown and notify parent activity
                         Bundle bundle = new Bundle();
                         bundle.putInt("next", phraseIndex);
@@ -417,6 +419,10 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
                         intent.putExtras(bundle);
                         setResult(RESULT_OK, intent);
                         finish();
+                        
+                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+                        v.vibrate(500);                        
+                        
                     } else if (phraseIndex == collectionSize) {
                         // the last word in the collection
                         Toolbox.showToast(getApplicationContext(),

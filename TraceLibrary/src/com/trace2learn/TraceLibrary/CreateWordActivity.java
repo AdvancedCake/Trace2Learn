@@ -80,7 +80,7 @@ public class CreateWordActivity extends TraceBaseActivity {
         currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        
+
         getViews();
         getHandlers();
         
@@ -181,6 +181,15 @@ public class CreateWordActivity extends TraceBaseActivity {
             @Override
             public void onClick(View v) {
                 Context context = getApplicationContext();
+                Toolbox.showToast(context, "New word length " + newWord.length());
+                if(newWord.length() == 1) {
+                	// optimization - if word is a single character,
+                	// than copy all character tags to the new word
+                	LessonCharacter lc = newWord.getCharacters().get(0);
+                	Log.wtf("create word, tags:  ", lc.getTagsToString());
+                	newWord.setTagList(lc.getTags());
+                	newWord.setKeyValues(lc.getKeyValues());
+                }
                 if(newWord.length() > 0 && dba.addWord(newWord)){
                     Toolbox.showToast(context, "Word saved");
                     initiatePopupWindow();
