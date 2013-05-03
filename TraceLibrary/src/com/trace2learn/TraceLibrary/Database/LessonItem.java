@@ -1,7 +1,6 @@
 package com.trace2learn.TraceLibrary.Database;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,28 +13,20 @@ import android.util.Log;
 
 public abstract class LessonItem implements Comparable<LessonItem> {
 	
-	private final String logTAG = "LessonItem";
-	
 	/** The tag cache*/
 	protected List<String> _tags;
 	
 	/** The (Key, Value) cache */
 	protected LinkedHashMap<String, String> keyValues;
-	
-	/** The id of the item */
-	//protected long _id; // TODO remove this when string IDs are working.
-	
+		
 	/** The stringid of the item */
 	protected String _stringid;
 	
 	/** The sort order of the item */
-	protected double _sort;
+	protected long _sort;
 	
 	/** Reference to the database in which the item is stored */
 	protected DbAdapter _db;
-	
-	/** The last time the item was synched with the database */
-	protected Date _lastUpdate;
 	
 	/** Identifier for type of character **/
 	protected ItemType _type;
@@ -52,8 +43,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		_stringid = null;
 		_tags = new ArrayList<String>();
 		keyValues = new LinkedHashMap<String, String>();
-		
-		_lastUpdate = new Date(0);
 	}
 	
     /**
@@ -64,6 +53,11 @@ public abstract class LessonItem implements Comparable<LessonItem> {
         if (this._type != other._type) {
             return other._type.ordinal() - this._type.ordinal();
         }
+        
+        if (this._type == ItemType.LESSON) {
+            return ((Lesson) this).compareTo((Lesson) other);
+        }
+        
         return Double.compare(this._sort, other._sort);
     }
 	
@@ -94,11 +88,11 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		keyValues.putAll(kv);
 	}	
 	
-    public void setSort(double sort) {
+    public void setSort(long sort) {
         _sort = sort;
     }
     
-    public double getSort() {
+    public long getSort() {
         return _sort;
     }
     
@@ -141,7 +135,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 			keyValues = db.getKeyValues(_stringid, _type);
 			break;
 		case LESSON:
-			Log.e(logTAG, "(Key, Value) pairs are NOT supported for LESSON");
+			Log.e("Update IDs", "(Key, Value) pairs are NOT supported for LESSON");
 			break;
 		}
 	}

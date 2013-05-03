@@ -1,6 +1,8 @@
 package com.trace2learn.TraceLibrary.Database;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -40,8 +42,16 @@ public class Lesson extends LessonItem {
         this.isUserDefined = isUserDefined;
     }
 
-    public synchronized void addWord(String word) {
-        _words.add(word);
+    public synchronized void addWord(String wordId) {
+        _words.add(wordId);
+    }
+    
+    public synchronized void addWord(LessonWord word) {
+        if (wordObjects == null) {
+            wordObjects = new ArrayList<LessonItem>();
+        }
+        wordObjects.add(word);
+        _words.add(word.getStringId());
     }
 
     public synchronized List<String> getWordIds() {
@@ -57,9 +67,11 @@ public class Lesson extends LessonItem {
     }
 
     public synchronized List<LessonItem> getWords() {
-        if (_db == null) {
-            Log.e("Fetch Words", "DbAdapter is null");
-        } else if (wordObjects == null) {
+        if (wordObjects == null) {
+            if (_db == null) {
+                Log.e("Lesson.getWords", "DbAdapter is null");
+                return null;
+            }
             wordObjects = _db.getWordsFromLesson(_stringid);
         }
         return wordObjects;
@@ -200,9 +212,9 @@ public class Lesson extends LessonItem {
             String  name        = elem.getAttribute("name");
             boolean userDefined = elem.getAttribute("author").equals("user");
 
-            Log.i("Import Lesson", "id: " + id);
-            Log.i("Import Lesson", "  name: " + name);
-            Log.i("Import Lesson", "  user-defined: " + userDefined);
+            Log.i("Lesson.importFromXml", "id: " + id);
+            Log.i("Lesson.importFromXml", "  name: " + name);
+            Log.i("Lesson.importFromXml", "  user-defined: " + userDefined);
 
             Lesson lesson = new Lesson(id, userDefined);
             lesson.setName(name);
@@ -225,21 +237,27 @@ public class Lesson extends LessonItem {
                 if (cat != null) {
                     lesson.addCategory(cat);
                 }
-                Log.i("Import Lesson", "  category: " + str);
+                Log.i("Lesson.importFromXml", "  category: " + str);
             }
 
             NodeList words = elem.getElementsByTagName("word");
             for (int i = 0; i < words.getLength(); i++) {
                 LessonWord word = LessonWord.importFromXml((Element) words.item(i));
-                String word_id = word.getStringId();
-                lesson.addWord(word_id);
-                Log.i("Import Lesson", "  word: " + word_id);
+                lesson.addWord(word);
+                Log.i("Lesson.importFromXml", "  word: " + word.getStringId());
             }
+            Collections.sort(lesson.wordObjects, new Comparator<LessonItem>() {
+                @Override
+                public int compare(LessonItem l, LessonItem r) {
+                    return ((LessonWord) l).getLessonOrder() -
+                            ((LessonWord) r).getLessonOrder();
+                }
+            });
 
             return lesson;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Import lesson", e.getMessage());
+            Log.e("Lesson.importFromXml", e.getMessage());
             return null;
         }
     }
@@ -251,5 +269,12 @@ public class Lesson extends LessonItem {
         }
 
         return ((Lesson) other).getStringId().equals(_stringid);
+    }
+    
+    public int compareTo(Lesson other) {
+        if (this.isUserDefined == other.isUserDefined) {
+            return Double.compare(this._sort, other._sort);
+        }
+        return this.isUserDefined ? -1 : 1;
     }
 }

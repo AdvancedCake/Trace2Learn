@@ -39,8 +39,7 @@ public class CharacterCreationPane extends DrawingPane {
 	 * @param newY - the y coordinate of the sample point
 	 */
 	@Override
-	protected void updateStroke(float newX, float newY)
-	{
+	protected void updateStroke(float newX, float newY) {
 		_currentStroke.addPoint(newX, newY);
 	}
 
@@ -57,8 +56,7 @@ public class CharacterCreationPane extends DrawingPane {
 	}
 
 	@Override
-	protected void onDraw(Canvas canvas)
-	{
+	protected void onDraw(Canvas canvas) {
 		canvas.drawColor(_bg);
 
 		// Consider using a bitmap buffer so only new strokes are drawn.
@@ -71,21 +69,23 @@ public class CharacterCreationPane extends DrawingPane {
 	 * character if the pane is revisited
 	 * @return a copy of the on screen character
 	 */
-	public LessonCharacter getCharacter()
-	{
+	public LessonCharacter getCharacter() {
 		return _character;
 	}
 	
-	public void setCharacter(LessonCharacter character)
-	{
+	public void setCharacter(LessonCharacter character) {
 		_character = character;
 		invalidate();
 	}
 	
-	public void clearPane()
-	{
+	public void clearPane() {
 		_character.clearStrokes();
 		invalidate();
+	}
+	
+	public void undoLastStroke() {
+	    _character.removeLastStroke();
+	    invalidate();
 	}
 	
 }

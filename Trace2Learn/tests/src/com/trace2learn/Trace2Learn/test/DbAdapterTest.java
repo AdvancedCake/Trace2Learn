@@ -130,8 +130,8 @@ public class DbAdapterTest extends AndroidTestCase {
         LessonCharacter b = new LessonCharacter();
         db.addCharacter(a);
         db.addCharacter(b);
-        double aOrigSort = a.getSort();
-        double bOrigSort = b.getSort();
+        long aOrigSort = a.getSort();
+        long bOrigSort = b.getSort();
         assertFalse(aOrigSort == bOrigSort);
         
         assertTrue(db.swapCharacters(a.getStringId(), aOrigSort,
@@ -151,8 +151,8 @@ public class DbAdapterTest extends AndroidTestCase {
         LessonWord b = new LessonWord();
         db.addWord(a);
         db.addWord(b);
-        double aOrigSort = a.getSort();
-        double bOrigSort = b.getSort();
+        long aOrigSort = a.getSort();
+        long bOrigSort = b.getSort();
         assertFalse(aOrigSort == bOrigSort);
         
         assertTrue(db.swapWords(a.getStringId(), aOrigSort,
@@ -177,14 +177,14 @@ public class DbAdapterTest extends AndroidTestCase {
         lesson.addWord(b.getStringId());
         db.addLesson(lesson);
         
-        List<String> exp1 = Arrays.asList(new String[] {a.getStringId(), b.getStringId()});
-        assertEquals(exp1, db.getWordsFromLessonId(lesson.getStringId()));
+        List<LessonItem> exp1 = Arrays.asList(new LessonItem[] {a, b});
+        assertEquals(exp1, db.getWordsFromLesson(lesson.getStringId()));
         assertEquals(exp1, lesson.getWordIds());
         
         db.swapWordsInLesson(lesson.getStringId(), a.getStringId(), b.getStringId());
         
-        List<String> exp2 = Arrays.asList(new String[] {b.getStringId(), a.getStringId()});
-        assertEquals(exp2, db.getWordsFromLessonId(lesson.getStringId()));
+        List<LessonItem> exp2 = Arrays.asList(new LessonItem[] {b, a});
+        assertEquals(exp2, db.getWordsFromLesson(lesson.getStringId()));
         
         Lesson lesson2 = db.getLessonById(lesson.getStringId());
         assertEquals(exp2, lesson2.getWordIds());

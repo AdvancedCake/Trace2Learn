@@ -203,7 +203,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
 	      Log.e("Move result", Boolean.toString(result));
 	      if (result) {
 	          // success, so update the local copy
-	          double temp = lc.getSort();
+	          long temp = lc.getSort();
 	          lc.setSort(other.getSort());
 	          other.setSort(temp);
 	          Collections.sort(display);

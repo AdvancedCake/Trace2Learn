@@ -1,6 +1,7 @@
 package com.trace2learn.TraceLibrary;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.SortedSet;
 
@@ -30,12 +31,15 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	private DbAdapter dba; 
 	private ArrayList<Lesson> items;
 	private LessonListAdapter adapter;
+    private LayoutInflater vi;
 	
 	private boolean isAdmin;
 	
 	private enum ContextMenuItem {
 	    DELETE              (1, "Delete"),
 	    ASSIGN_CATEGORIES   (1, "Assign Categories"),
+        MOVE_UP             (1, "Move Up"),
+        MOVE_DOWN           (1, "Move Down"),
 	    TOGGLE_USER_DEFINED (2, "Toggle User-Defined");
 	    
 	    public final String text;
@@ -48,7 +52,8 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	}
 	
 	private enum RequestCode {
-	    ASSIGN_CATEGORIES;
+	    ASSIGN_CATEGORIES,
+	    BROWSE_WORDS;
 	}
 
 	@Override
@@ -61,12 +66,12 @@ public class BrowseLessonsActivity extends TraceListActivity {
         items = new ArrayList<Lesson>(); 
         List<String> ids = dba.getAllLessonIds();
         for(String id : ids){
-        	Lesson le = dba.getLessonById(id);
-        	le.setTagList(dba.getLessonTags(id));
-        	items.add(le);
+        	Lesson lesson = dba.getLessonById(id);
+        	lesson.setTagList(dba.getLessonTags(id));
+        	items.add(lesson);
         }
-        LayoutInflater vi = (LayoutInflater) getSystemService(
-                Context.LAYOUT_INFLATER_SERVICE);
+        
+        vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
         setListAdapter(adapter);
         registerForContextMenu(getListView());
@@ -95,7 +100,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
 		Lesson le = ((Lesson)li);
         Intent i = new Intent(this, BrowseWordsActivity.class);
 		i.putExtra("ID", le.getStringId());
-		startActivity(i);
+		startActivityForResult(i, RequestCode.BROWSE_WORDS.ordinal());
 	}
 
 	private void getItemInfo(String lessonId) {
@@ -173,14 +178,63 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	  else if (menuItemIndex == ContextMenuItem.TOGGLE_USER_DEFINED.ordinal()) {
 	      le.setUserDefined(!le.isUserDefined());
 	      boolean result = dba.saveLessonUserDefined(le.getStringId(),
-	              le.isUserDefined());
+	              le.isUserDefined(), -1 * le.getSort());
 	      if (result) {
-	          adapter.notifyDataSetChanged();
+	          le.setSort(-1 * le.getSort());
+	          Collections.sort(items);
+	          adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
+	          setListAdapter(adapter);
 	          return true;
 	      } else {
 	          Toolbox.showToast(context, "Could not edit the collection");
 	          return false;
 	      }
+	  }
+	  
+	  // Move
+	  else if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal() ||
+	           menuItemIndex == ContextMenuItem.MOVE_DOWN.ordinal()) {
+	      int otherPos;
+          if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal()) {
+              otherPos = info.position - 1;
+          } else {
+              otherPos = info.position + 1;
+          }
+          
+          // Check that other item exists
+          if (otherPos < 0) {
+              Toolbox.showToast(context, "Cannot move this collection up");
+              return false;
+          } else if (otherPos >= items.size()) {
+              Toolbox.showToast(context, "Cannot move this collection down");
+              return false;
+          }
+          
+          Lesson other = items.get(otherPos);
+          
+          // Check that both are user-defined or admin defined
+          if (le.isUserDefined() != other.isUserDefined()) {
+              Toolbox.showToast(context, "Cannot move this collection");
+              return false;
+          }
+          
+          Log.i("BrowseLessons.move", "Attempting to swap " +
+                  le.getLessonName() + " and " + other.getLessonName());
+          boolean result = dba.swapLessons(le.getStringId(), le.getSort(),
+                                           other.getStringId(), other.getSort());
+          if (result) { // success, so update the local copy
+              Log.i("BrowseLessons.move", "Success");
+              long temp = le.getSort();
+              le.setSort(other.getSort());
+              other.setSort(temp);
+              Collections.sort(items);
+              adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
+              setListAdapter(adapter);
+              return true;
+          }
+          Log.e("BrowseLessons.move", "Failure");
+          Toolbox.showToast(context, "Move failed");
+          return false;
 	  }
 	  
 	  return false;
@@ -193,6 +247,10 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	            resultCode == RESULT_OK) {
 	        startActivity(getIntent());
 	        finish();
+	    } else if (requestCode == RequestCode.BROWSE_WORDS.ordinal() &&
+	            resultCode == RESULT_OK) {
+	        startActivity(getIntent());
+            finish();
 	    }
 	}
 

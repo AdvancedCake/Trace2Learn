@@ -34,10 +34,10 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	private boolean isChanged = false;
 
 	public enum Mode {
-		CREATION, DISPLAY, ANIMATE, SAVE, INVALID, TRACE;
+		CREATION, DISPLAY, INVALID, TRACE;
 	}
 
-	private static enum requestCodeENUM { EditTag };
+	private static enum requestCodeENUM { EDIT_TAG };
 
 	
 	@Override
@@ -108,10 +108,11 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 			_characterViewSlot.removeAllViews();
 			_characterViewSlot.addView(_creationPane);
             left1.setVisibility(View.VISIBLE);
-            left2.setVisibility(View.INVISIBLE);
+            left2.setVisibility(View.VISIBLE);
             right2.setVisibility(View.INVISIBLE);
             right1.setVisibility(View.VISIBLE);
 			left1.setText(R.string.clear);
+			left2.setText(R.string.undo);
 			right1.setText(R.string.save);
 		}
 	}
@@ -208,7 +209,6 @@ public class ViewCharacterActivity extends TraceBaseActivity {
                 break;
 	        case DISPLAY:
 	        case TRACE:
-            case ANIMATE: // not sure when this mode is used
                 setCharacterCreationPane();
                 right2.setVisibility(View.VISIBLE);
                 right2.setText(R.string.cancel);
@@ -216,7 +216,15 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	    }
 	}
 
-	public void onLeft2ButtonClick(View view) { // not used
+	public void onLeft2ButtonClick(View view) { // "undo"
+	    switch (_currentMode) {
+	        case CREATION: // undo
+	            _creationPane.undoLastStroke();
+	            break;
+	        case DISPLAY:
+	        case TRACE:
+	            break;
+	    }
 	}
 
     public void onRight2ButtonClick(View view) { // "practice" or "cancel"
@@ -226,7 +234,6 @@ public class ViewCharacterActivity extends TraceBaseActivity {
                 break;
             case DISPLAY:
             case TRACE:
-            case ANIMATE: // not sure when this mode is used
                 // "practice"
                 setCharacterTracePane();
                 break;
@@ -248,7 +255,6 @@ public class ViewCharacterActivity extends TraceBaseActivity {
                 break;
             case DISPLAY:
             case TRACE:
-            case ANIMATE: // not sure when this mode is used
                 // "playback"
                 setCharacterDisplayPane();
                 break;
@@ -275,7 +281,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 			i.putExtra("ID", id_to_pass);
 			i.putExtra("TYPE", character.getItemType().toString());
 
-			startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
+			startActivityForResult(i, requestCodeENUM.EDIT_TAG.ordinal());
 		} else {
 			_tagText.setText("Error: Save the character before adding tags");
 		}
@@ -283,7 +289,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    if (requestCode == requestCodeENUM.EditTag.ordinal()) {
+	    if (requestCode == requestCodeENUM.EDIT_TAG.ordinal()) {
 	        isChanged = resultCode == RESULT_OK;
 	        close();
 	    }
