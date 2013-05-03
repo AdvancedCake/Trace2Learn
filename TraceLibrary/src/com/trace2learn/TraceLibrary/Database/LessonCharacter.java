@@ -18,50 +18,29 @@ public class LessonCharacter extends LessonItem {
 
 	private List<Stroke> _strokes;
 	
-	public LessonCharacter()
-	{
+	public LessonCharacter() {
 		_type = ItemType.CHARACTER;
 		_strokes = new ArrayList<Stroke>();
 		_stringid = null;
 	}
 	
-	public LessonCharacter(String id)
-	{
+	public LessonCharacter(String id) {
 		this();
 		_stringid = id;
 	}
 	
-	public synchronized void addStroke(Stroke stroke)
-	{
+	public synchronized void addStroke(Stroke stroke) {
 		_strokes.add(stroke);
 	}
 	
-	public synchronized List<Stroke> getStrokes()
-	{
+	public synchronized List<Stroke> getStrokes() {
 		List<Stroke> l = new ArrayList<Stroke>();
 		l.addAll(_strokes);
 		return l;
 	}
 	
-	public synchronized Stroke getStroke(int i)
-	{
+	public synchronized Stroke getStroke(int i) {
 		return _strokes.get(i);
-	}
-	
-	@Override
-	public synchronized void update(DbAdapter db)
-	{
-		super.update(db);
-		updateStrokes(db);
-	}
-	
-	/**
-	 * Update the strokes to match the ones in the database
-	 */
-	protected synchronized void updateStrokes(DbAdapter db)
-	{
-		// TODO add a get stroke method.
-		// Do we need this?
 	}
 	
 	/**
@@ -69,8 +48,7 @@ public class LessonCharacter extends LessonItem {
 	 * @param stroke - The stroke to be removed from the character
 	 * @return - true if the stroke was removed, false otherwise
 	 */
-	public synchronized boolean removeStroke(Stroke stroke)
-	{
+	public synchronized boolean removeStroke(Stroke stroke) {
 		return _strokes.remove(stroke);
 	}
 	
@@ -79,16 +57,21 @@ public class LessonCharacter extends LessonItem {
 	 * @param i - the index of the stroke to be removed
 	 * @return - the stroke that was removed from the character
 	 */
-	public synchronized Stroke removeStroke(int i)
-	{
+	public synchronized Stroke removeStroke(int i) {
 		return _strokes.remove(i);
+	}
+	
+	public synchronized Stroke removeLastStroke() {
+	    if (_strokes.size() == 0) {
+	        return null;
+	    }
+	    return _strokes.remove(_strokes.size() - 1);
 	}
 	
 	/**
 	 * removes all of the strokes from the character
 	 */
-	public synchronized void clearStrokes()
-	{
+	public synchronized void clearStrokes()	{
 		_strokes.clear();
 	}
 
@@ -99,29 +82,24 @@ public class LessonCharacter extends LessonItem {
 	 * @param oldIndex - the original ordering of the stroke
 	 * @param newIndex - the new position of the stroke in the order
 	 */
-	public synchronized void reorderStroke(int oldIndex, int newIndex)
-	{
-		if(oldIndex < 0 || oldIndex >= _strokes.size())
-		{
+	public synchronized void reorderStroke(int oldIndex, int newIndex) {
+		if (oldIndex < 0 || oldIndex >= _strokes.size()) {
 			throw new IndexOutOfBoundsException("Index: " + oldIndex + " is not within the bounds of a " + _strokes.size() + " length list");
 		}
-		if(newIndex < 0 || newIndex >= _strokes.size())
-		{
+		if (newIndex < 0 || newIndex >= _strokes.size()) {
 			throw new IndexOutOfBoundsException("Index: " + newIndex + " is not within the bounds of a " + _strokes.size() + " length list");
 		}
 		
 		Stroke movedStroke = _strokes.get(oldIndex);
 		
-		if(oldIndex < newIndex)
-		{
+		if (oldIndex < newIndex) {
 			for(int i = oldIndex; i + 1 <= newIndex; i++)
 			{
 				_strokes.set(i, _strokes.get(i+1));
 			}
 			_strokes.set(newIndex, movedStroke);
 		}
-		else if(oldIndex > newIndex)
-		{
+		else if (oldIndex > newIndex) {
 			for(int i = oldIndex; i - 1 >= newIndex; i--)
 			{
 				_strokes.set(i, _strokes.get(i-1));
@@ -146,8 +124,7 @@ public class LessonCharacter extends LessonItem {
 	 * @param height - the height of the bounding box in which the item should be drawn
 	 */
 	@Override
-	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
-	{
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height) {
 		Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
 		Log.i("DRAW", "Strokes: " + _strokes.size());
@@ -175,8 +152,7 @@ public class LessonCharacter extends LessonItem {
 	 * @param time - the time in the animation from 0 to 1
 	 */
 	@Override
-	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time)
-	{
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time) {
 		Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
 		Log.i("DRAW", "Strokes: " + _strokes.size());
