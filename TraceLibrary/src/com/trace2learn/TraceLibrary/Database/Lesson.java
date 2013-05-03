@@ -212,9 +212,9 @@ public class Lesson extends LessonItem {
             String  name        = elem.getAttribute("name");
             boolean userDefined = elem.getAttribute("author").equals("user");
 
-            Log.i("Import Lesson", "id: " + id);
-            Log.i("Import Lesson", "  name: " + name);
-            Log.i("Import Lesson", "  user-defined: " + userDefined);
+            Log.i("Lesson.importFromXml", "id: " + id);
+            Log.i("Lesson.importFromXml", "  name: " + name);
+            Log.i("Lesson.importFromXml", "  user-defined: " + userDefined);
 
             Lesson lesson = new Lesson(id, userDefined);
             lesson.setName(name);
@@ -237,14 +237,14 @@ public class Lesson extends LessonItem {
                 if (cat != null) {
                     lesson.addCategory(cat);
                 }
-                Log.i("Import Lesson", "  category: " + str);
+                Log.i("Lesson.importFromXml", "  category: " + str);
             }
 
             NodeList words = elem.getElementsByTagName("word");
             for (int i = 0; i < words.getLength(); i++) {
                 LessonWord word = LessonWord.importFromXml((Element) words.item(i));
                 lesson.addWord(word);
-                Log.i("Import Lesson", "  word: " + word.getStringId());
+                Log.i("Lesson.importFromXml", "  word: " + word.getStringId());
             }
             Collections.sort(lesson.wordObjects, new Comparator<LessonItem>() {
                 @Override
@@ -257,7 +257,7 @@ public class Lesson extends LessonItem {
             return lesson;
         } catch (Exception e) {
             e.printStackTrace();
-            Log.e("Import lesson", e.getMessage());
+            Log.e("Lesson.importFromXml", e.getMessage());
             return null;
         }
     }

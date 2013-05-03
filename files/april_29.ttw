@@ -169,158 +169,6 @@ Sometimes, two characters will produce two different meanings if you change the 
 <character id="13" position="1" />
 </word>
 </lesson>
-<lesson id="357288040566226_22042013014949386" name="4: Easy as 1-2-3" author="admin">
-<narrative>We’ll look at one more set of pictographs – the characters for numbers.  With the exception of the first three, these are all abstract symbols.</narrative>
-<category category="Shape and Structure" />
-<category category="Meaning" />
-<word id="357288040566226_22042013014917994" position="0">
-<tag tag="one" />
-<id key="pinyin" value="yi1" />
-<character id="357288040566226_22042013014347634" position="0" />
-</word>
-<word id="357288040566226_22042013020236598" position="1">
-<tag tag="two" />
-<id key="pinyin" value="er4" />
-<character id="357288040566226_22042013020134271" position="0" />
-</word>
-<word id="357288040566226_22042013020410043" position="2">
-<tag tag="three" />
-<id key="pinyin" value="san1" />
-<character id="357288040566226_22042013020332362" position="0" />
-</word>
-<word id="357288040566226_24042013010918946" position="3">
-<tag tag="four" />
-<id key="pinyin" value="si4" />
-<character id="357288040566226_24042013010708024" position="0" />
-</word>
-<word id="357288040566226_24042013014953008" position="4">
-<tag tag="five" />
-<id key="pinyin" value="wu3" />
-<character id="357288040566226_24042013014928762" position="0" />
-</word>
-<word id="357288040566226_24042013064557864" position="5">
-<tag tag="six" />
-<id key="pinyin" value="liu4" />
-<character id="357288040566226_24042013064547797" position="0" />
-</word>
-<word id="357288040566226_24042013065228003" position="6">
-<tag tag="seven" />
-<id key="pinyin" value="qi1" />
-<character id="357288040566226_24042013064949927" position="0" />
-</word>
-<word id="357288040566226_24042013065348542" position="7">
-<tag tag="eight" />
-<id key="pinyin" value="ba1" />
-<character id="357288040566226_24042013065052719" position="0" />
-</word>
-<word id="357288040566226_24042013065713493" position="8">
-<tag tag="nine" />
-<id key="pinyin" value="jiu3" />
-<character id="357288040566226_24042013065703775" position="0" />
-</word>
-<word id="357288040566226_24042013065751150" position="9">
-<tag tag="ten" />
-<id key="pinyin" value="shi2" />
-<character id="357288040566226_24042013065742770" position="0" />
-</word>
-<word id="357288040566226_24042013065822071" position="10">
-<tag tag="eleven" />
-<id key="pinyin" value="shi2yi1" />
-<id key="sound" value="eleven" />
-<character id="357288040566226_24042013065742770" position="0" />
-<character id="357288040566226_22042013014347634" position="1" />
-</word>
-<word id="357288040566226_24042013065906287" position="11">
-<tag tag="twelve" />
-<id key="pinyin" value="shi2er4" />
-<id key="sound" value="twelve" />
-<character id="357288040566226_24042013065742770" position="0" />
-<character id="357288040566226_22042013020134271" position="1" />
-</word>
-<word id="357288040566226_24042013065930265" position="12">
-<tag tag="thirteen" />
-<id key="pinyin" value="shi2san1" />
-<id key="sound" value="thirteen" />
-<character id="357288040566226_24042013065742770" position="0" />
-<character id="357288040566226_22042013020332362" position="1" />
-</word>
-<word id="357288040566226_24042013070048710" position="13">
-<tag tag="fourteen" />
-<id key="pinyin" value="shi2si4" />
-<id key="sound" value="fourteen" />
-<character id="357288040566226_24042013065742770" position="0" />
-<character id="357288040566226_24042013010708024" position="1" />
-</word>
-<word id="357288040566226_24042013070130320" position="14">
-<tag tag="fifteen" />
-<id key="pinyin" value="shi2wu3" />
-<id key="sound" value="fifteen" />
-<character id="357288040566226_24042013065742770" position="0" />
-<character id="357288040566226_24042013014928762" position="1" />
-</word>
-<word id="357288040566226_24042013070205635" position="15">
-<tag tag="twenty" />
-<id key="pinyin" value="er4shi 2" />
-<id key="sound" value="twenty" />
-<character id="357288040566226_22042013020134271" position="0" />
-<character id="357288040566226_24042013065742770" position="1" />
-</word>
-<word id="357288040566226_25042013100524330" position="16">
-<tag tag="two (of something)" />
-<id key="pinyin" value="liang3" />
-<character id="357288040566226_25042013100447502" position="0" />
-</word>
-<word id="357288040566226_27042013055418611" position="17">
-<tag tag="thirty" />
-<id key="pinyin" value="san1shi2" />
-<id key="sound" value="thirty" />
-<character id="357288040566226_22042013020332362" position="0" />
-<character id="357288040566226_24042013065742770" position="1" />
-</word>
-<word id="357288040566226_27042013055737543" position="18">
-<tag tag="one hundred" />
-<id key="pinyin" value="yi1bai3" />
-<id key="sound" value="one_hundred" />
-<character id="357288040566226_22042013014347634" position="0" />
-<character id="357288040566226_25042013082456289" position="1" />
-</word>
-<word id="357288040566226_27042013060037871" position="19">
-<tag tag="two hundred" />
-<id key="pinyin" value="liang3bai3" />
-<id key="sound" value="two_hundred" />
-<character id="357288040566226_25042013100447502" position="0" />
-<character id="357288040566226_25042013082456289" position="1" />
-</word>
-<word id="357288040566226_28042013075259924" position="20">
-<tag tag="one thousand" />
-<id key="pinyin" value="yi1qian1" />
-<id key="sound" value="one_thousand" />
-<character id="357288040566226_22042013014347634" position="0" />
-<character id="357288040566226_27042013055327322" position="1" />
-</word>
-<word id="357288040566226_28042013075520038" position="21">
-<tag tag="two thousand" />
-<id key="pinyin" value="liang3qian1" />
-<id key="sound" value="two_thousand" />
-<character id="357288040566226_25042013100447502" position="0" />
-<character id="357288040566226_27042013055327322" position="1" />
-</word>
-<word id="357288040566226_28042013080650439" position="22">
-<tag tag="ten thousand" />
-<id key="pinyin" value="yi1wan4" />
-<id key="sound" value="ten_thousand" />
-<character id="357288040566226_22042013014347634" position="0" />
-<character id="357288040566226_28042013080535242" position="1" />
-</word>
-<word id="357288040566226_28042013080751576" position="23">
-<tag tag="one million" />
-<id key="pinyin" value="yi1bai3wan4" />
-<id key="sound" value="one_million" />
-<character id="357288040566226_22042013014347634" position="0" />
-<character id="357288040566226_25042013082456289" position="1" />
-<character id="357288040566226_28042013080535242" position="2" />
-</word>
-</lesson>
 <lesson id="357288040566226_25032013011312598" name="3: Beyond Pictures" author="admin">
 <narrative> An interesting thing about the characters in lesson 1 is that they are all pictographs, meaning that they are derived from pictures of the objects they depict.  Even 工, which represents a concept (&quot;work&quot;) rather than an object, derives from a picture of a tool used for work - a carpenter&apos;s square.  Similarly, 文 (“script”) depicts the interlocking lines of written characters.
 
@@ -498,6 +346,158 @@ Abstract pictographs are known as 指事 (zhi3shi4).</narrative>
 <character id="357288040566226_17032013103226409" position="0" />
 <character id="357288040566226_25032013125157423" position="1" />
 <character id="10" position="2" />
+</word>
+</lesson>
+<lesson id="357288040566226_22042013014949386" name="4: Easy as 1-2-3" author="admin">
+<narrative>We’ll look at one more set of pictographs – the characters for numbers.  With the exception of the first three, these are all abstract symbols.</narrative>
+<category category="Shape and Structure" />
+<category category="Meaning" />
+<word id="357288040566226_22042013014917994" position="0">
+<tag tag="one" />
+<id key="pinyin" value="yi1" />
+<character id="357288040566226_22042013014347634" position="0" />
+</word>
+<word id="357288040566226_22042013020236598" position="1">
+<tag tag="two" />
+<id key="pinyin" value="er4" />
+<character id="357288040566226_22042013020134271" position="0" />
+</word>
+<word id="357288040566226_22042013020410043" position="2">
+<tag tag="three" />
+<id key="pinyin" value="san1" />
+<character id="357288040566226_22042013020332362" position="0" />
+</word>
+<word id="357288040566226_24042013010918946" position="3">
+<tag tag="four" />
+<id key="pinyin" value="si4" />
+<character id="357288040566226_24042013010708024" position="0" />
+</word>
+<word id="357288040566226_24042013014953008" position="4">
+<tag tag="five" />
+<id key="pinyin" value="wu3" />
+<character id="357288040566226_24042013014928762" position="0" />
+</word>
+<word id="357288040566226_24042013064557864" position="5">
+<tag tag="six" />
+<id key="pinyin" value="liu4" />
+<character id="357288040566226_24042013064547797" position="0" />
+</word>
+<word id="357288040566226_24042013065228003" position="6">
+<tag tag="seven" />
+<id key="pinyin" value="qi1" />
+<character id="357288040566226_24042013064949927" position="0" />
+</word>
+<word id="357288040566226_24042013065348542" position="7">
+<tag tag="eight" />
+<id key="pinyin" value="ba1" />
+<character id="357288040566226_24042013065052719" position="0" />
+</word>
+<word id="357288040566226_24042013065713493" position="8">
+<tag tag="nine" />
+<id key="pinyin" value="jiu3" />
+<character id="357288040566226_24042013065703775" position="0" />
+</word>
+<word id="357288040566226_24042013065751150" position="9">
+<tag tag="ten" />
+<id key="pinyin" value="shi2" />
+<character id="357288040566226_24042013065742770" position="0" />
+</word>
+<word id="357288040566226_24042013065822071" position="10">
+<tag tag="eleven" />
+<id key="pinyin" value="shi2yi1" />
+<id key="sound" value="eleven" />
+<character id="357288040566226_24042013065742770" position="0" />
+<character id="357288040566226_22042013014347634" position="1" />
+</word>
+<word id="357288040566226_24042013065906287" position="11">
+<tag tag="twelve" />
+<id key="pinyin" value="shi2er4" />
+<id key="sound" value="twelve" />
+<character id="357288040566226_24042013065742770" position="0" />
+<character id="357288040566226_22042013020134271" position="1" />
+</word>
+<word id="357288040566226_24042013065930265" position="12">
+<tag tag="thirteen" />
+<id key="pinyin" value="shi2san1" />
+<id key="sound" value="thirteen" />
+<character id="357288040566226_24042013065742770" position="0" />
+<character id="357288040566226_22042013020332362" position="1" />
+</word>
+<word id="357288040566226_24042013070048710" position="13">
+<tag tag="fourteen" />
+<id key="pinyin" value="shi2si4" />
+<id key="sound" value="fourteen" />
+<character id="357288040566226_24042013065742770" position="0" />
+<character id="357288040566226_24042013010708024" position="1" />
+</word>
+<word id="357288040566226_24042013070130320" position="14">
+<tag tag="fifteen" />
+<id key="pinyin" value="shi2wu3" />
+<id key="sound" value="fifteen" />
+<character id="357288040566226_24042013065742770" position="0" />
+<character id="357288040566226_24042013014928762" position="1" />
+</word>
+<word id="357288040566226_24042013070205635" position="15">
+<tag tag="twenty" />
+<id key="pinyin" value="er4shi 2" />
+<id key="sound" value="twenty" />
+<character id="357288040566226_22042013020134271" position="0" />
+<character id="357288040566226_24042013065742770" position="1" />
+</word>
+<word id="357288040566226_25042013100524330" position="16">
+<tag tag="two (of something)" />
+<id key="pinyin" value="liang3" />
+<character id="357288040566226_25042013100447502" position="0" />
+</word>
+<word id="357288040566226_27042013055418611" position="17">
+<tag tag="thirty" />
+<id key="pinyin" value="san1shi2" />
+<id key="sound" value="thirty" />
+<character id="357288040566226_22042013020332362" position="0" />
+<character id="357288040566226_24042013065742770" position="1" />
+</word>
+<word id="357288040566226_27042013055737543" position="18">
+<tag tag="one hundred" />
+<id key="pinyin" value="yi1bai3" />
+<id key="sound" value="one_hundred" />
+<character id="357288040566226_22042013014347634" position="0" />
+<character id="357288040566226_25042013082456289" position="1" />
+</word>
+<word id="357288040566226_27042013060037871" position="19">
+<tag tag="two hundred" />
+<id key="pinyin" value="liang3bai3" />
+<id key="sound" value="two_hundred" />
+<character id="357288040566226_25042013100447502" position="0" />
+<character id="357288040566226_25042013082456289" position="1" />
+</word>
+<word id="357288040566226_28042013075259924" position="20">
+<tag tag="one thousand" />
+<id key="pinyin" value="yi1qian1" />
+<id key="sound" value="one_thousand" />
+<character id="357288040566226_22042013014347634" position="0" />
+<character id="357288040566226_27042013055327322" position="1" />
+</word>
+<word id="357288040566226_28042013075520038" position="21">
+<tag tag="two thousand" />
+<id key="pinyin" value="liang3qian1" />
+<id key="sound" value="two_thousand" />
+<character id="357288040566226_25042013100447502" position="0" />
+<character id="357288040566226_27042013055327322" position="1" />
+</word>
+<word id="357288040566226_28042013080650439" position="22">
+<tag tag="ten thousand" />
+<id key="pinyin" value="yi1wan4" />
+<id key="sound" value="ten_thousand" />
+<character id="357288040566226_22042013014347634" position="0" />
+<character id="357288040566226_28042013080535242" position="1" />
+</word>
+<word id="357288040566226_28042013080751576" position="23">
+<tag tag="one million" />
+<id key="pinyin" value="yi1bai3wan4" />
+<id key="sound" value="one_million" />
+<character id="357288040566226_22042013014347634" position="0" />
+<character id="357288040566226_25042013082456289" position="1" />
+<character id="357288040566226_28042013080535242" position="2" />
 </word>
 </lesson>
 <lesson id="357288040566226_29042013103426506" name="5: Characters as Building Blocks" author="admin">

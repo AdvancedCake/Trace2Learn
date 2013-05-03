@@ -713,7 +713,7 @@ public class DbAdapter {
     					CHAR_ID + " = '"+ id + "'", null, null, null, null, null);
     	mCursor.moveToFirst();
     	if (mCursor.getCount() > 0) {
-    		double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
+    		long sort = mCursor.getLong(mCursor.getColumnIndexOrThrow("sort"));
     		c.setSort(sort);
     	}
     	mCursor.close();
@@ -770,7 +770,7 @@ public class DbAdapter {
                 mDb.query(true, WORDS_TABLE, new String[] {"sort"},
                         WORDS_ID + "='" + id + "'", null, null, null, null, null);
         mCursor.moveToFirst();
-        double sort = mCursor.getDouble(mCursor.getColumnIndexOrThrow("sort"));
+        long sort = mCursor.getLong(mCursor.getColumnIndexOrThrow("sort"));
         w.setSort(sort);
         
         w.setDatabase(this);
@@ -1322,7 +1322,12 @@ public class DbAdapter {
     	}
     	
     	// Get sort value
-    	les.setSort(rowid);
+    	if (les.isUserDefined()) {
+    	    // new collections should be on top
+    	    les.setSort(-1 * rowid);
+    	} else {
+    	    les.setSort(rowid);
+    	}
     	initialLessonValues.put("sort", les.getSort());
     	mDb.update(LESSONS_TABLE, initialLessonValues,
     	        LESSONS_ID + "='" + id + "'", null);
@@ -1391,9 +1396,9 @@ public class DbAdapter {
      * @return ids list of all lesson ids
      */
     public List<String> getAllLessonIds() {
-        Cursor mCursor =
-                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID}, null, null,
-                        null, null, LESSONS_ID + " ASC", null);
+        Cursor mCursor = mDb.query(true, LESSONS_TABLE,
+                new String[] {LESSONS_ID},
+                null, null, null, null, "userDefined DESC, sort ASC", null);
         List<String> ids = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -1416,8 +1421,9 @@ public class DbAdapter {
      * @return id if found, null if not
      */
     public String deleteLesson(String id){
-        Cursor mCursor =
-                mDb.query(true, LESSONS_TABLE, new String[] {LESSONS_ID}, LESSONS_ID + "='" + id + "'", null, null, null, null, null);
+        Cursor mCursor = mDb.query(true, LESSONS_TABLE,
+                new String[] {LESSONS_ID}, LESSONS_ID + "='" + id + "'",
+                null, null, null, null, null);
         int rowsDeleted=0;
         if (mCursor == null) {
             return null;
@@ -1429,10 +1435,12 @@ public class DbAdapter {
             rowsDeleted += mDb.delete(LESSONS_DETAILS_TABLE, "LessonId = '" + id + "'", null);
             rowsDeleted += mDb.delete(LESSONTAG_TABLE, LESSONTAG_ID + "='" + id + "'", null);
         }
-        if(rowsDeleted>0)
+        
+        if (rowsDeleted > 0) {
             return id;
-        else
+        } else {
             return null;
+        }
     }
     
     /**
@@ -1441,7 +1449,7 @@ public class DbAdapter {
      */
     public Lesson getLessonById(String id) {
         String[] columns = new String[] {LESSONS_ID, "name", "narrative",
-                "userDefined", "catShapeAndStructure", "catMeaning",
+                "userDefined", "sort", "catShapeAndStructure", "catMeaning",
                 "catPhonetic", "catGrammar"};
     	Cursor mCursor = mDb.query(true, LESSONS_TABLE, columns,
     	        LESSONS_ID + "='" + id + "'", null, null, null, null, null);
@@ -1457,6 +1465,7 @@ public class DbAdapter {
         Lesson le = new Lesson(userDefined);
         le.setName(mCursor.getString(mCursor.getColumnIndexOrThrow("name")));
     	le.setNarrative(mCursor.getString(mCursor.getColumnIndexOrThrow("narrative")));
+    	le.setSort(mCursor.getInt(mCursor.getColumnIndexOrThrow("sort")));
     	if (mCursor.getInt(mCursor.getColumnIndexOrThrow("catShapeAndStructure")) == 1) {
             le.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);
         }
@@ -1473,9 +1482,10 @@ public class DbAdapter {
 
     	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
     	// but it is for data consistency.
-    	mCursor =
-    			mDb.query(true, LESSONS_DETAILS_TABLE, new String[] { "LessonId", "WordId", "LessonOrder"}, "LessonId" + "='" + id + "'", null,
-    					null, null, "LessonOrder ASC", null);
+    	mCursor = mDb.query(true, LESSONS_DETAILS_TABLE,
+    	        new String[] { "LessonId", "WordId", "LessonOrder"},
+    	        "LessonId" + "='" + id + "'",
+    	        null, null, null, "LessonOrder ASC", null);
     	mCursor.moveToFirst();
     	do {
     		if(mCursor.getCount()==0){
@@ -1510,9 +1520,11 @@ public class DbAdapter {
                 LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
     
-    public boolean saveLessonUserDefined(String lessonId, boolean userDefined) {
+    public boolean saveLessonUserDefined(String lessonId, boolean userDefined,
+            long sort) {
         ContentValues values = new ContentValues();
         values.put("userDefined", userDefined);
+        values.put("sort", sort);
         return mDb.update(LESSONS_TABLE, values,
                 LESSONS_ID + "='" + lessonId + "'", null) == 1;
     }
@@ -1562,7 +1574,7 @@ public class DbAdapter {
      * @param bSort sort value of second word
      * @return true if the transaction was successful, false otherwise
      */
-    public boolean swapWords(String aId, double aSort, String bId, double bSort) {
+    public boolean swapWords(String aId, long aSort, String bId, long bSort) {
         mDb.beginTransaction();
         ContentValues aValues = new ContentValues();
         ContentValues bValues = new ContentValues();
@@ -1656,6 +1668,34 @@ public class DbAdapter {
             return false;
         }
         
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        return true;
+    }
+    
+    public boolean swapLessons(String aId, long aSort, String bId, long bSort) {
+        mDb.beginTransaction();
+        ContentValues aValues = new ContentValues();
+        ContentValues bValues = new ContentValues();
+        aValues.put(LESSONS_ID, aId);
+        bValues.put(LESSONS_ID, bId);
+        aValues.put("sort", bSort);
+        bValues.put("sort", aSort);
+        Log.d("DbAdapter.swapLessons", aId + " and " + bId);
+        
+        int result;
+        result = mDb.update(LESSONS_TABLE, aValues, LESSONS_ID + "='" + aId + "'", null);
+        if (result != 1) {
+            Log.e("DbAdapter.swapLessons", "id " + aId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
+        result = mDb.update(LESSONS_TABLE, bValues, LESSONS_ID + "='" + bId + "'", null);
+        if (result != 1) {
+            Log.e("DbAdapter.swapLessons", "id " + bId + ": write failed");
+            mDb.endTransaction();
+            return false;
+        }
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;

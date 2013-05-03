@@ -285,7 +285,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                 if (result) {
                     // success, so update the local copy
                     Log.i("Move", "Success");
-                    double temp = lw.getSort();
+                    long temp = lw.getSort();
                     lw.setSort(other.getSort());
                     other.setSort(temp);
                     Collections.sort(display);

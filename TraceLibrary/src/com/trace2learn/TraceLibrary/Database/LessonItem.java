@@ -23,7 +23,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	protected String _stringid;
 	
 	/** The sort order of the item */
-	protected double _sort;
+	protected long _sort;
 	
 	/** Reference to the database in which the item is stored */
 	protected DbAdapter _db;
@@ -88,11 +88,11 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		keyValues.putAll(kv);
 	}	
 	
-    public void setSort(double sort) {
+    public void setSort(long sort) {
         _sort = sort;
     }
     
-    public double getSort() {
+    public long getSort() {
         return _sort;
     }
     

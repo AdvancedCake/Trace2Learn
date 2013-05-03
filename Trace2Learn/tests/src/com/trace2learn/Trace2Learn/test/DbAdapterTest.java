@@ -130,8 +130,8 @@ public class DbAdapterTest extends AndroidTestCase {
         LessonCharacter b = new LessonCharacter();
         db.addCharacter(a);
         db.addCharacter(b);
-        double aOrigSort = a.getSort();
-        double bOrigSort = b.getSort();
+        long aOrigSort = a.getSort();
+        long bOrigSort = b.getSort();
         assertFalse(aOrigSort == bOrigSort);
         
         assertTrue(db.swapCharacters(a.getStringId(), aOrigSort,
@@ -151,8 +151,8 @@ public class DbAdapterTest extends AndroidTestCase {
         LessonWord b = new LessonWord();
         db.addWord(a);
         db.addWord(b);
-        double aOrigSort = a.getSort();
-        double bOrigSort = b.getSort();
+        long aOrigSort = a.getSort();
+        long bOrigSort = b.getSort();
         assertFalse(aOrigSort == bOrigSort);
         
         assertTrue(db.swapWords(a.getStringId(), aOrigSort,
