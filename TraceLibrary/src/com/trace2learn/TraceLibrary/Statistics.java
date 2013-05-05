@@ -55,6 +55,7 @@ public class Statistics extends TraceBaseActivity {
         String txt = "";
         int totalStrokes = 0;
         int maxStrokes = 0;
+        int maxTally = 0;
  		
         List<String> lids = dba.getAllLessonIds();
         txt += lids.size();
@@ -85,6 +86,7 @@ public class Statistics extends TraceBaseActivity {
         	else {
         		int prevTally = strokeDistrib.get(numStrokes);
         		strokeDistrib.put(numStrokes, prevTally+1);
+        		if(prevTally+1 > maxTally) maxTally = prevTally+1;
         	}
         }
         txt = "";
@@ -114,20 +116,26 @@ public class Statistics extends TraceBaseActivity {
         XYSeriesRenderer distribRenderer = new XYSeriesRenderer();
         distribRenderer.setColor(Color.MAGENTA);
         distribRenderer.setFillPoints(true);
-        distribRenderer.setLineWidth(1);
-        distribRenderer.setDisplayChartValues(false);
+        distribRenderer.setDisplayChartValues(true);
         distribRenderer.setChartValuesTextAlign(Align.CENTER);
-
+        // make chart value labels dynamically sized depending on device
+        distribRenderer.setChartValuesTextSize(getResources().getDimension(R.dimen.barchart_values_text_size));
+        distribRenderer.setLineWidth(1);        
+        
         // Creating a XYMultipleSeriesRenderer to customize the whole chart
         XYMultipleSeriesRenderer multiRenderer = new XYMultipleSeriesRenderer();
         multiRenderer.setXLabelsColor(Color.WHITE);
         multiRenderer.setXTitle("Stroke Count");
         multiRenderer.setXAxisMin(0);
         multiRenderer.setXAxisMax(maxStrokes+1);
+        multiRenderer.setYAxisMin(0);
+        multiRenderer.setYAxisMax(maxTally+1);
         // render vertically, to achieve horizontal bar chart
         multiRenderer.setOrientation(Orientation.VERTICAL);
         multiRenderer.setBarSpacing(0.2);
         multiRenderer.setShowLegend(false);
+        multiRenderer.setAxisTitleTextSize(getResources().getDimension(R.dimen.barchart_values_text_size));
+        multiRenderer.setLabelsTextSize(getResources().getDimension(R.dimen.barchart_values_text_size));
         multiRenderer.addSeriesRenderer(distribRenderer);
         
         GraphicalView chartView = 
@@ -137,11 +145,9 @@ public class Statistics extends TraceBaseActivity {
         	chartLayout.addView(chartView);
         }
         catch (Exception e) {
-        	Log.i("Statistics chart data: ", e.toString());
+        	Log.i("Statistics chart data exception: ", e.toString());
         }
-        
-        Log.i("Statistics chart data: ", "done!");
-        
+                
 	}
 
     private void getViews() {

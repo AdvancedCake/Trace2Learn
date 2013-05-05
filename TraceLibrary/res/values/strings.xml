@@ -77,5 +77,7 @@
     <string name="editvaue_hint">value</string>
     <string name="edittag_hint">enter any tag or description</string>
     <string name="chartLabel">Distribution of # of Strokes per Character</string>
-
+    <string name="go_next">Next Phrase</string>
+    <string name="go_prev">Previous Phrase</string>
+    
 </resources>

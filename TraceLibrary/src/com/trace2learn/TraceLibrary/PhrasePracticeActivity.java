@@ -59,6 +59,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private Gallery      gallery;
     private ViewAnimator animator;
     private ImageView    soundIcon;
+    private ImageView    prevIcon;
+    private ImageView    nextIcon;
 
     private ArrayList<SquareLayout>          displayLayouts;
     private ArrayList<SquareLayout>          traceLayouts;
@@ -128,6 +130,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         animator    = (ViewAnimator) findViewById(R.id.view_slot);
         gallery     = (Gallery)      findViewById(R.id.gallery);
         soundIcon   = (ImageView)    findViewById(R.id.sound_button);
+        prevIcon	= (ImageView)    findViewById(R.id.go_prev);
+        nextIcon	= (ImageView)    findViewById(R.id.go_next);
     }
 
     private void getHandlers() {
@@ -186,8 +190,51 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
                 playSound();
             }
         });
+        
+        nextIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToNextPhrase();
+            }
+        });    
+        
+        prevIcon.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                moveToPrevPhrase();
+            }
+        });
     }
-
+    
+    private void moveToNextPhrase() {
+        if (phraseIndex < collectionSize) { // not at end of collection yet
+            // shutdown and notify parent activity
+            Bundle bundle = new Bundle();
+            bundle.putInt("next", phraseIndex);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
+            finish();
+            
+            Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+            v.vibrate(300);
+        }
+    }
+    
+    private void moveToPrevPhrase() {
+        if (phraseIndex > 1) { // not at beginning of collection yet
+            // shutdown and notify parent activity
+            Bundle bundle = new Bundle();
+            bundle.putInt("next", phraseIndex-2);
+            Intent intent = new Intent();
+            intent.putExtras(bundle);
+            setResult(RESULT_OK, intent);
+            finish();
+            
+            Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
+            v.vibrate(300);
+        }
+    }    
     /**
      * Initialize the display mode, if the activity was started with intent to
      * display a character, that character should be displayed
@@ -410,18 +457,9 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             } else {
                 // this is the end of the word
                 if (lessonID != null) {
-                	// disabling following, as we need more elegant navigation, see issue #2 (Joe V)
                     if (phraseIndex < collectionSize) { // still more words
-                        // shutdown and notify parent activity
-                        Bundle bundle = new Bundle();
-                        bundle.putInt("next", phraseIndex);
-                        Intent intent = new Intent();
-                        intent.putExtras(bundle);
-                        setResult(RESULT_OK, intent);
-                        finish();
-                        
-                        Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
-                        v.vibrate(500);                        
+                       
+                    	// TODO: animate the 'next' icon, to remind user to proceed to next phrase
                         
                     } else if (phraseIndex == collectionSize) {
                         // the last word in the collection

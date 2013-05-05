@@ -70,7 +70,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 					{
 						_handler.post(_update);
 						try {
-							Thread.sleep(20);
+							Thread.sleep(120);
 						} catch (InterruptedException e) {
 							break;
 						}
@@ -177,7 +177,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 		return _currentStroke;
 	}
 	
-	public void animate()
+	public void animateChar()
 	{
 		long ticks = System.currentTimeMillis() - _lastTick;
 		_elapsedTime += ticks/1000F;
@@ -187,7 +187,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	@Override
 	public void onDraw(Canvas canvas)
 	{
-		animate();
+		animateChar();
 		
 		float time = _elapsedTime/_animationLength;
 		

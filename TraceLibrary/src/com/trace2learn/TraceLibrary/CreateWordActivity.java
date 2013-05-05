@@ -181,12 +181,11 @@ public class CreateWordActivity extends TraceBaseActivity {
             @Override
             public void onClick(View v) {
                 Context context = getApplicationContext();
-                Toolbox.showToast(context, "New word length " + newWord.length());
-                if(newWord.length() == 1) {
-                	// optimization - if word is a single character,
-                	// than copy all character tags to the new word
-                	LessonCharacter lc = newWord.getCharacters().get(0);
-                	Log.wtf("create word, tags:  ", lc.getTagsToString());
+
+            	// optimization - if word is a single character,
+            	// than copy all character tags to the new word
+                if(newWord.length() == 1){
+                	LessonCharacter lc = dba.getCharacterById(newWord.getCharacterId(0));
                 	newWord.setTagList(lc.getTags());
                 	newWord.setKeyValues(lc.getKeyValues());
                 }
