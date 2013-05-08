@@ -536,7 +536,7 @@ public class ShoppingCartActivity extends Activity {
                     int count = lesson.getNumWords();
                     nameView.setText(lesson.getLessonName());
                     if (lesson != allChars) {
-                        sizeView.setText(count + (count == 1 ? " word" : " words"));
+                        sizeView.setText(count + (count == 1 ? " phrase" : " phrases"));
                     } else {
                         sizeView.setText("");
                     }

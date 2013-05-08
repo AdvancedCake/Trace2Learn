@@ -63,7 +63,7 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 
         int count = item.getNumWords();
         nameView.setText(item.getLessonName());
-        sizeView.setText(count + (count == 1 ? " word" : " words"));
+        sizeView.setText(count + (count == 1 ? " phrase" : " phrases"));
         
         // Display category icons
         int i = 0;
@@ -90,12 +90,10 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
             nameView.setTextColor(userColor);
             sizeView.setTextColor(userColor);
             nameView.setTypeface(null, Typeface.ITALIC);
-            sizeView.setTypeface(null, Typeface.ITALIC);
         } else { // admin-created
             nameView.setTextColor(defaultColor);
             sizeView.setTextColor(defaultColor);
             nameView.setTypeface(null, Typeface.NORMAL);
-            sizeView.setTypeface(null, Typeface.NORMAL);
         }
 
         // Set onClick listener for info button
