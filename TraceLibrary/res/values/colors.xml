@@ -2,5 +2,6 @@
 <resources>
 
     <color name="header">#00CCFF</color>
+    <color name="user_collection">#666699</color>
 
 </resources>

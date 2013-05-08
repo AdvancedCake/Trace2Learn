@@ -27,7 +27,7 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
     private LayoutInflater vi;
     
     private int defaultColor = -1;
-    private int userColor    = 0xFF666699;
+    private int userColor;
 
     public LessonListAdapter(Context context, List<Lesson> objects,
             LayoutInflater vi, Handler handler) {
@@ -35,6 +35,8 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
         this.items = new ArrayList<Lesson>(objects);
         this.vi = vi;
         this.handler = handler;
+        this.userColor = context.getResources().getColor(
+                R.color.user_collection);
     }
 
     /**
