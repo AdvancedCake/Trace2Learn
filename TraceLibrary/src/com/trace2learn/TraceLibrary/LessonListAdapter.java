@@ -27,7 +27,7 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
     private LayoutInflater vi;
     
     private int defaultColor = -1;
-    private int userColor    = 0xFF666699;
+    private int userColor;
 
     public LessonListAdapter(Context context, List<Lesson> objects,
             LayoutInflater vi, Handler handler) {
@@ -35,6 +35,8 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
         this.items = new ArrayList<Lesson>(objects);
         this.vi = vi;
         this.handler = handler;
+        this.userColor = context.getResources().getColor(
+                R.color.user_collection);
     }
 
     /**
@@ -63,7 +65,7 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 
         int count = item.getNumWords();
         nameView.setText(item.getLessonName());
-        sizeView.setText(count + (count == 1 ? " word" : " words"));
+        sizeView.setText(count + (count == 1 ? " phrase" : " phrases"));
         
         // Display category icons
         int i = 0;
@@ -90,12 +92,10 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
             nameView.setTextColor(userColor);
             sizeView.setTextColor(userColor);
             nameView.setTypeface(null, Typeface.ITALIC);
-            sizeView.setTypeface(null, Typeface.ITALIC);
         } else { // admin-created
             nameView.setTextColor(defaultColor);
             sizeView.setTextColor(defaultColor);
             nameView.setTypeface(null, Typeface.NORMAL);
-            sizeView.setTypeface(null, Typeface.NORMAL);
         }
 
         // Set onClick listener for info button
