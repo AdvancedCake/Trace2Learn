@@ -20,8 +20,8 @@
     <string name="tag1">Tagged</string>
     <string name="li_preview_description">Preview</string>
     <string name="charplace">Placeholder</string>
-    <string name="practice">Practice</string>
-    <string name="animate">Playback</string>
+    <string name="practice">TraceMe!</string>
+    <string name="animate">ShowMe!</string>
     <string name="apply">Apply</string>
     <string name="filter">Filter</string>
     <string name="clear_filter">Clear Filter</string>

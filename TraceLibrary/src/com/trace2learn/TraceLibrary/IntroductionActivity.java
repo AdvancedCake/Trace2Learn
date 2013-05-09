@@ -43,6 +43,9 @@ public class IntroductionActivity extends TraceBaseActivity {
         		+ "The application is organized into collections that start with the basics and build on each other, gradually introducing new patterns along the way.  "
         		+ "Characters and phrases are grouped together in different ways, according to their shape, their meaning, their sound and the role they play in the language.  "
         		+ "The collections offer one set of associations.  TraceMe! for Traditional Chinese also encourages you to discover the associations that make sense to you, and lets you build your own collections.\n\n"
+        		+ "Start by browsing the existing collections.  You can press down on any phrase to add it to a new custom collection.  "
+        		+ "Collections that you create will appear in a different color, and you will be able to reorder or delete them.  "
+        		+ "You can also use the catalog of characters to create your own phrases.\n\n"
         		+ "Each collection is tagged according to one or more pattern types that it builds on:";
         
         nameView.setText(lessonName);
