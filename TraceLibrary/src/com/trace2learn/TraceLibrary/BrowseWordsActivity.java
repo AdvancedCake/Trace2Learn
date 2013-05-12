@@ -52,12 +52,12 @@ public class BrowseWordsActivity extends TraceListActivity {
 
     private LayoutInflater vi;
     
-    private String  lessonID;
+    private String  lessonId;
     private boolean userDefined;
 
     private boolean isAdmin;
     
-    private boolean newCollection = false; // has a new Collection been created?
+    private boolean collectionsChanged = false; // does the browse collections page need to be refreshed?
     
     // Lesson popup views
     private View layout;
@@ -69,7 +69,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         EDIT_TAGS     (2, "Edit Tags"),
         MOVE_UP       (1, "Move Up"),
         MOVE_DOWN     (1, "Move Down"),
-        DELETE        (1, "Delete");
+        DELETE        (1, "Remove from Collection");
         
         public final String text;
         public final int    privilege; // 0: anyone, 1: owner, 2: admin
@@ -119,8 +119,8 @@ public class BrowseWordsActivity extends TraceListActivity {
      * Populate the source list with words
      */
     private void getWords() {
-        lessonID = this.getIntent().getStringExtra("ID");
-        if(lessonID == null) {
+        lessonId = this.getIntent().getStringExtra("ID");
+        if (lessonId == null) {
             userDefined = false;
             List<String> ids = dba.getAllWordIds();
             source = new ArrayList<LessonItem>(ids.size());
@@ -131,7 +131,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             Collections.sort(source);
             lessonName.setText(R.string.all_words);
         } else {
-            Lesson les = dba.getLessonById(lessonID);
+            Lesson les = dba.getLessonById(lessonId);
             String name = les.getLessonName();
             userDefined = les.isUserDefined();
             int size = les.length();
@@ -187,7 +187,7 @@ public class BrowseWordsActivity extends TraceListActivity {
 
         bun.putString("mode", mode);
         bun.putString("wordId", li.getStringId());
-        bun.putString("lessonID", lessonID);
+        bun.putString("lessonID", lessonId);
         bun.putInt("index", position + 1);
         bun.putInt("collectionSize", display.size());
 
@@ -208,8 +208,13 @@ public class BrowseWordsActivity extends TraceListActivity {
                 // admin only option
                 continue;
             }
+            
             int ord = item.ordinal();
-            menu.add(Menu.NONE, ord, ord, item.text);
+            if (item.equals(ContextMenuItem.DELETE) && lessonId == null) {
+                menu.add(Menu.NONE, ord, ord, "Delete");
+            } else {
+                menu.add(Menu.NONE, ord, ord, item.text);
+            }
         }
     }
 
@@ -239,19 +244,30 @@ public class BrowseWordsActivity extends TraceListActivity {
         }
 
         // Delete
-        else if(menuItemIndex == ContextMenuItem.DELETE.ordinal()){
+        else if(menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
             String id = lw.getStringId();
-            Boolean success = dba.deleteWord(id);
-            Log.d("Result",success.toString());
-            if(!success){
-                Toolbox.showToast(context, "Could not delete the phrase");
-                return false;
-            }
-            else{
-                Toolbox.showToast(context, "Successfully deleted");
-                startActivity(getIntent()); 
-                close();
-                return true;
+            if (lessonId == null) { // browsing all phrases - delete the phrase
+                Boolean success = dba.deleteWord(id);
+                if (!success) {
+                    Toolbox.showToast(context, "Could not delete the phrase");
+                    return false;
+                } else {
+                    Toolbox.showToast(context, "Successfully deleted");
+                    startActivity(getIntent()); 
+                    close();
+                    return true;
+                }
+            } else { // remove from this lesson
+                Boolean success = dba.removeWordFromLesson(lessonId, id);
+                if (!success) {
+                    Toolbox.showToast(context, "Could not remove the phrase");
+                    return false;
+                } else {
+                    Toolbox.showToast(context, "Successfully removed");
+                    startActivity(getIntent()); 
+                    close();
+                    return true;
+                }
             }
         }
 
@@ -279,7 +295,7 @@ public class BrowseWordsActivity extends TraceListActivity {
 
             LessonWord other = (LessonWord) display.get(otherPos);
             boolean result;
-            if (lessonID == null) { // browsing all words
+            if (lessonId == null) { // browsing all words
                 Log.i("Move", "Attempting to swap " + lw.getStringId() +
                         " and " + other.getStringId());
                 result = dba.swapWords(lw.getStringId(), lw.getSort(), 
@@ -298,7 +314,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             } else { // viewing a specific lesson
                 Log.i("Move", "Attempting to swap " + lw.getStringId() +
                         " and " + other.getStringId());
-                result = dba.swapWordsInLesson(lessonID, lw.getStringId(), 
+                result = dba.swapWordsInLesson(lessonId, lw.getStringId(), 
                                                other.getStringId());
                 if (result) {
                     // success, so update the local copy
@@ -371,7 +387,7 @@ public class BrowseWordsActivity extends TraceListActivity {
     }
 
     public void lessonPopupOnClickNewLesson(View view) {
-        newCollection = true;
+        collectionsChanged = true;
         
         Context  context  = getApplicationContext();
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
@@ -496,7 +512,7 @@ public class BrowseWordsActivity extends TraceListActivity {
     }
 
     private void close() {
-        if (newCollection) {
+        if (collectionsChanged) {
             setResult(RESULT_OK);
         } else {
             setResult(RESULT_CANCELED);

@@ -1397,6 +1397,19 @@ public class DbAdapter {
     }
     
     /**
+     * Removes the word from the lesson, if it exists.
+     * @param lessonId The ID of the lesson
+     * @param wordId The ID of the word
+     * @return true if the word was removed, false otherwise
+     */
+    public boolean removeWordFromLesson(String lessonId, String wordId) {
+        int count = mDb.delete(LESSONS_DETAILS_TABLE,
+                "LessonId=\"" + lessonId + "\" AND WordId=\"" + wordId + "\"",
+                null);
+        return count > 0;
+    }
+    
+    /**
      * Return a list of lesson ids from the database
      * @return ids list of all lesson ids
      */
