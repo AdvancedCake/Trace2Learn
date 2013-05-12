@@ -5,11 +5,9 @@ import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
-//import android.widget.PopupWindow;
-//import android.view.Gravity;
 
 import com.trace2learn.TraceLibrary.R;
-import com.trace2learn.TraceLibrary.Statistics;;
+import com.trace2learn.TraceLibrary.Statistics;
 
 /**
  * Common base class for all list activities - implements global menu options
@@ -42,9 +40,13 @@ public abstract class TraceListActivity extends ListActivity {
             startActivity(i2);
             return true;
         }
-        //case R.id.menuAbout:
+        else if(item.getItemId() == R.id.menuAbout) {
+        	Toolbox.showAboutPopup(this);
+        }
 
         return super.onOptionsItemSelected(item);
 
     }
+    
+    
 }

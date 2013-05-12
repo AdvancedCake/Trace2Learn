@@ -2,13 +2,11 @@ package com.trace2learn.TraceLibrary;
 
 
 import android.app.Activity;
-
 import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MenuInflater;
-//import android.widget.PopupWindow;
-//import android.view.Gravity;
+
 
 import com.trace2learn.TraceLibrary.R;
 
@@ -43,8 +41,10 @@ public abstract class TraceBaseActivity extends Activity {
             startActivity(i2);
             return true;
         }
-        //case R.id.menuAbout:
-
+        else if(item.getItemId() == R.id.menuAbout) {
+        	Toolbox.showAboutPopup(this);
+        }
+        
         return super.onOptionsItemSelected(item);
 
     }

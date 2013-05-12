@@ -5,9 +5,15 @@ import java.util.Locale;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
+import android.view.Display;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.PopupWindow;
 import android.widget.Toast;
 
 
@@ -27,6 +33,8 @@ public class Toolbox {
     public static final float VOLUME = 1;
     
     public static final Locale locale = Locale.getDefault();
+    
+    public static PopupWindow popup;
     
     /**
      * If query is less than or equal to exact characters long, containsMatch
@@ -76,4 +84,33 @@ public class Toolbox {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
+    public static void showAboutPopup(Activity parentActivity){
+        try {
+            Display display = parentActivity.getWindowManager().getDefaultDisplay(); 
+            int height = display.getHeight();  // deprecated in API 13
+            int width = display.getWidth();  // deprecated in API 13
+            
+            LayoutInflater inflater = (LayoutInflater) parentActivity.getSystemService(
+                    Context.LAYOUT_INFLATER_SERVICE);
+            View about = inflater.inflate(R.layout.about,
+                    (ViewGroup) parentActivity.findViewById(R.id.about_layout));
+            
+            // create a popup scaled to display size
+            popup = new PopupWindow(about, width, (int) (height * .8), true);
+            
+            // display the popup in the center
+            popup .showAtLocation(about, Gravity.CENTER, 0, 0);
+
+            View exitButton = about.findViewById(R.id.exit_button);
+            exitButton.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    popup.dismiss();
+                }
+            });
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }    
 }
