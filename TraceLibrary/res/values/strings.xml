@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
     <string name="app_name">Trace2Learn</string>
@@ -79,5 +78,8 @@
     <string name="chartLabel">Distribution of # of Strokes per Character</string>
     <string name="go_next">Next Phrase</string>
     <string name="go_prev">Previous Phrase</string>
-    
+    <string name="ok">OK</string>
+    <string name="phrase_deleted">Phrase Deleted</string>
+    <string name="phrase_deleted_text">The phrase is no longer part of any collection, and will be deleted.</string>
+
 </resources>

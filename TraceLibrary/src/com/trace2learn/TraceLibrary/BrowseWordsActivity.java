@@ -229,13 +229,14 @@ public class BrowseWordsActivity extends TraceListActivity {
         Context context = getApplicationContext();
         
         // Add to Collection
-        if(menuItemIndex == ContextMenuItem.ADD_TO_LESSON.ordinal()){
+        if (menuItemIndex == ContextMenuItem.ADD_TO_LESSON.ordinal()) {
+            collectionsChanged = true;
             initiatePopupWindow();
             return true;
         }
 
         // Edit Tags
-        else if(menuItemIndex == ContextMenuItem.EDIT_TAGS.ordinal()){
+        else if (menuItemIndex == ContextMenuItem.EDIT_TAGS.ordinal()) {
             Intent i = new Intent(this, TagActivity.class);
             i.putExtra("ID", lw.getStringId());
             i.putExtra("TYPE", "WORD");
@@ -244,7 +245,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         }
 
         // Delete
-        else if(menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
+        else if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
             String id = lw.getStringId();
             if (lessonId == null) { // browsing all phrases - delete the phrase
                 Boolean success = dba.deleteWord(id);
@@ -258,14 +259,33 @@ public class BrowseWordsActivity extends TraceListActivity {
                     return true;
                 }
             } else { // remove from this lesson
+                collectionsChanged = true;
                 Boolean success = dba.removeWordFromLesson(lessonId, id);
                 if (!success) {
                     Toolbox.showToast(context, "Could not remove the phrase");
                     return false;
                 } else {
                     Toolbox.showToast(context, "Successfully removed");
-                    startActivity(getIntent()); 
-                    close();
+                    
+                    // check if phrase is part of any other collections
+                    if (!isAdmin && !dba.isWordInLesson(id)) {
+                        dba.deleteWord(id);
+                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                        builder.setTitle(R.string.phrase_deleted);
+                        builder.setMessage(R.string.phrase_deleted_text);
+                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                startActivity(getIntent());
+                                close();
+                            }
+                        });
+                        builder.show();
+                    } else {
+                        startActivity(getIntent());
+                        close();
+                    }
+
                     return true;
                 }
             }
@@ -387,8 +407,6 @@ public class BrowseWordsActivity extends TraceListActivity {
     }
 
     public void lessonPopupOnClickNewLesson(View view) {
-        collectionsChanged = true;
-        
         Context  context  = getApplicationContext();
         EditText editText = (EditText)layout.findViewById(R.id.newcollection);
         

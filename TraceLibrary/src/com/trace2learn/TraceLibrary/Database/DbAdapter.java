@@ -1374,6 +1374,7 @@ public class DbAdapter {
     	}
     	
     	if (mCursor.getCount() == 0) {
+    	    mCursor.close();
     	    return new ArrayList<LessonItem>();
     	}
     	
@@ -1407,6 +1408,17 @@ public class DbAdapter {
                 "LessonId=\"" + lessonId + "\" AND WordId=\"" + wordId + "\"",
                 null);
         return count > 0;
+    }
+    
+    public boolean isWordInLesson(String wordId) {
+        Cursor cursor = mDb.query(LESSONS_DETAILS_TABLE,
+                new String[] {"LessonId"},
+                "WordId=\"" + wordId + "\"", null, null, null, null, null);
+        boolean ret = cursor != null && cursor.getCount() > 0;
+        if (cursor != null) {
+            cursor.close();
+        }
+        return ret;
     }
     
     /**
