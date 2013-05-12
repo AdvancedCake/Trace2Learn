@@ -225,7 +225,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         if (phraseIndex > 1) { // not at beginning of collection yet
             // shutdown and notify parent activity
             Bundle bundle = new Bundle();
-            bundle.putInt("next", phraseIndex-2);
+            bundle.putInt("next", phraseIndex - 2);
             Intent intent = new Intent();
             intent.putExtras(bundle);
             setResult(RESULT_OK, intent);

@@ -166,7 +166,12 @@ public class Statistics extends TraceBaseActivity {
                 finish();
             }
         });
-        
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        dba.close();
     }
     	
 }
