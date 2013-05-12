@@ -1367,9 +1367,14 @@ public class DbAdapter {
     	        new String[] {"WordId"}, "LessonId='" + lessonId + "'",
     	        null, null, null, "LessonOrder ASC", null);
     	List<String> ids = new ArrayList<String>();
-    	if (mCursor == null | mCursor.getCount() == 0) {
-    	    Log.e("Get Words From Lesson", "Cursor is empty");
+    	if (mCursor == null) {
+    	    Log.e("DbAdapter.getWordsFromLesson",
+    	            "Cursor is null. lessonId = " + lessonId);
     		return null;
+    	}
+    	
+    	if (mCursor.getCount() == 0) {
+    	    return new ArrayList<LessonItem>();
     	}
     	
     	mCursor.moveToFirst();
