@@ -24,6 +24,7 @@ public class Toolbox {
     public static final String PREFS_IS_ADMIN    = "isAdmin";
     public static final String PREFS_QUIZ_MODE   = "quizMode";
     public static final String PREFS_FIRST_START = "firstStart";
+    public static final String PREFS_PHRASE_MODE = "phraseMode";
     
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";

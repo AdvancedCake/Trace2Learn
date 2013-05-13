@@ -171,7 +171,7 @@ public class BrowseWordsActivity extends TraceListActivity {
     @Override  
     protected void onListItemClick(ListView l, View v, int position, long id) {  
         super.onListItemClick(l, v, position, id);
-        clickOnItem(display.get(position), position, "trace"); // start in trace mode
+        clickOnItem(display.get(position), position);
     }  
  
     /**
@@ -181,11 +181,10 @@ public class BrowseWordsActivity extends TraceListActivity {
      * @param position the index of the word in the lesson or list
      * @param mode the mode to open, "trace" or "display"
      */
-    private void clickOnItem(LessonItem li, int position, String mode){
+    private void clickOnItem(LessonItem li, int position) {
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
-        bun.putString("mode", mode);
         bun.putString("wordId", li.getStringId());
         bun.putString("lessonID", lessonId);
         bun.putInt("index", position + 1);
@@ -434,7 +433,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                 resultCode == RESULT_OK) {
             int next = data.getExtras().getInt("next");
             if (next < display.size()) {
-                clickOnItem(display.get(next), next, "trace");
+                clickOnItem(display.get(next), next);
             }
         }
     }

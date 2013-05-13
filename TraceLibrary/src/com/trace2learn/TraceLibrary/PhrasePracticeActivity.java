@@ -73,7 +73,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private int       soundId;
 
     private enum Mode {
-        CREATION, DISPLAY, ANIMATE, SAVE, TRACE;
+        DISPLAY, TRACE;
     }
 
     @Override
@@ -98,6 +98,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
 
         dba = new DbAdapter(this);
         dba.open();
+        
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
 
         initializeMode();
     }
@@ -266,7 +268,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
                         " of " + collectionSize);
             }
 
-            String mode = bun.getString("mode");
+            // Activity Mode
+            String mode = prefs.getString(Toolbox.PREFS_PHRASE_MODE, "trace"); 
             if (mode.equals("display")) {
                 setDisplayPane();
             } else if (mode.equals("trace")) {
@@ -274,7 +277,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             }
             
             // Quiz Mode
-            prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
             quizMode = prefs.getBoolean(Toolbox.PREFS_QUIZ_MODE, true);
             setQuizMode(quizMode);
             
@@ -347,8 +349,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         int child = animator.getDisplayedChild();
         playbackPanes.get(child).setAnimated(true);
 
-        if (currentMode != Mode.DISPLAY) 
-        {
+        if (currentMode != Mode.DISPLAY) {
             int curInd = animator.getDisplayedChild();
             animator.removeAllViews();
             for(SquareLayout disp : this.displayLayouts)
@@ -357,6 +358,11 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             }
             animator.setDisplayedChild(curInd);
             currentMode = Mode.DISPLAY;
+            
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(Toolbox.PREFS_PHRASE_MODE, "display");
+            editor.commit();
+            
             playButton.setText(Html.fromHtml("<b>" +
                     getString(R.string.animate) + "</b>"));
             traceButton.setText(getString(R.string.practice));
@@ -370,8 +376,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         int child = animator.getDisplayedChild();
         this.tracePanes.get(child).clearPane();
 
-        if (currentMode != Mode.TRACE) 
-        {
+        if (currentMode != Mode.TRACE) {
             int curInd = animator.getDisplayedChild();
             animator.removeAllViews();
             for(SquareLayout trace : this.traceLayouts)
@@ -380,6 +385,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             }
             animator.setDisplayedChild(curInd);
             currentMode = Mode.TRACE;
+            
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putString(Toolbox.PREFS_PHRASE_MODE, "trace");
+            editor.commit();
+
+            
             traceButton.setText(Html.fromHtml("<b>" +
                     getString(R.string.practice) + "</b>"));
             playButton.setText(getString(R.string.animate));
