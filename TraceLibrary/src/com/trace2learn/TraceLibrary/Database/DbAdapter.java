@@ -617,42 +617,28 @@ public class DbAdapter {
     	
     }
     
-    public boolean deleteCharacter(String id){
-    	Cursor mCursor =
-                mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, CHAR_ID + "='" + id + "'", null,
-                        null, null, null, null);
-    	 if (mCursor == null) {
-             return false;
-         }
-         mCursor.close();
-    	 
-    	 mCursor = mDb.query(true, WORDS_DETAILS_TABLE, new String[] {"CharId"}, "CharId ='" + id, null,
-                 null, null, null, null);
-    	 if(mCursor.getCount()>0){
+    /**
+     * Deletes the given character if it is not being used in a phrase.
+     * @param charId The character's ID
+     * @return true if the character was deleted, false otherwise.
+     */
+    public boolean deleteCharacter(String charId) {
+    	Cursor mCursor = mDb.query(true, WORDS_DETAILS_TABLE,
+    	         new String[] {"CharId"},
+    	         "CharId ='" + charId + "'",
+    	         null, null, null, null, null);
+    	 if (mCursor.getCount() > 0) {
     		 //Some word is using the character
     	     mCursor.close();
-    		 return false;
+    	     return false;
     	 }
-    	 else{
-    	     mCursor.close();
+    	 mCursor.close();
 
-    	     mDb.delete(CHAR_TABLE, CHAR_ID + "='" + id + "'", null);
-    		 mDb.delete(CHAR_DETAILS_TABLE, "CharId = '" + id + "'", null);
-    		 mCursor =  mDb.query(true, WORDS_DETAILS_TABLE, new String[] {WORDS_ID}, "CharId ='" + id + "'", null,
-                     null, null, null, null);
-    		 mCursor.moveToFirst();
-    		 do {
- 	        	if(mCursor.getCount()==0){
- 	        		break;
- 	        	}
- 	        	String wordId = (mCursor.getString(mCursor.getColumnIndexOrThrow(WORDS_ID)));
- 	        	mDb.delete(WORDS_TABLE, WORDS_ID + "='" + wordId + "'", null);
- 	         }
- 	         while(mCursor.moveToNext());
-    		 mDb.delete(WORDS_DETAILS_TABLE, "CharId='"+id + "'", null);
-    		 mDb.delete(CHARTAG_TABLE, CHAR_ID + "='" + id + "'", null);
-    		 mDb.delete(CHARKEYVALUES_TABLE, CHAR_ID + "='" + id + "'", null);
-    	 }
+    	 mDb.delete(CHAR_TABLE,          CHAR_ID + "='" + charId + "'", null);
+    	 mDb.delete(CHARTAG_TABLE,       CHAR_ID + "='" + charId + "'", null);
+    	 mDb.delete(CHARKEYVALUES_TABLE, CHAR_ID + "='" + charId + "'", null);
+    	 mDb.delete(CHAR_DETAILS_TABLE,  "CharId='" + charId + "'", null);
+         
     	 mCursor.close();
     	 return true;
     }
@@ -875,20 +861,21 @@ public class DbAdapter {
     	return true;
     }
     
-    public boolean deleteWord(String id){
-    	Cursor mCursor =
-                mDb.query(true, WORDS_TABLE, new String[] {WORDS_ID}, WORDS_ID + "='" + id + "'", null,
-                        null, null, null, null);
+    public boolean deleteWord(String wordId) {
+    	Cursor mCursor = mDb.query(true, WORDS_TABLE,
+    	        new String[] {WORDS_ID},
+    	        WORDS_ID + "='" + wordId + "'",
+    	        null, null, null, null, null);
     	 if (mCursor == null) {
              return false;
          }
     	 
-		 mDb.delete(WORDS_TABLE, WORDS_ID + "='" + id + "'", null);
-		 mDb.delete(WORDS_DETAILS_TABLE, "_id = '" + id + "'", null);
-		 mDb.delete(WORDTAG_TABLE, "_id='"+id+"'", null);
-		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId='"+id+ "'", null);
-		 mDb.delete(WORDKEYVALUES_TABLE, WORDS_ID + "='" + id + "'", null);
-    	 
+		 mDb.delete(WORDS_TABLE,           WORDS_ID + "='" + wordId + "'", null);
+		 mDb.delete(WORDS_DETAILS_TABLE,   WORDS_ID + "='" + wordId + "'", null);
+		 mDb.delete(WORDTAG_TABLE,         WORDS_ID + "='" + wordId + "'", null);
+		 mDb.delete(WORDKEYVALUES_TABLE,   WORDS_ID + "='" + wordId + "'", null);
+		 mDb.delete(LESSONS_DETAILS_TABLE, "WordId='" + wordId + "'", null);
+         
 		 mCursor.close();
 
 		 return true;

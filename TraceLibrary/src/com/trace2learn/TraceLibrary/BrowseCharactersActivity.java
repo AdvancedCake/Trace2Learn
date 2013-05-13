@@ -163,11 +163,10 @@ public class BrowseCharactersActivity extends TraceListActivity {
 		  String id = lc.getStringId();
 		  boolean result = dba.deleteCharacter(id);
 		  Log.d("Result", Boolean.toString(result));
-		  if(result==false){
-			  Toolbox.showToast(context, "Character is used by a word: cannot delete");
+		  if (result == false) {
+			  Toolbox.showToast(context, "This character belongs to a phrase!");
 			  return false;
-		  }
-		  else{
+		  } else {
 			  Toolbox.showToast(context, "Successfully deleted");
 			  startActivity(getIntent()); 
 			  finish();
@@ -298,7 +297,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
         
         AlertDialog dialog = builder.create();
         
-        // show the keyboard TODO
+        // show the keyboard
         dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         dialog.show();
 
