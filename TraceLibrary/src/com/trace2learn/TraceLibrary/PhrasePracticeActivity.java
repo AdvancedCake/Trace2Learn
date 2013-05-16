@@ -304,7 +304,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         animator.setDisplayedChild(position);
         tracePanes.get(position).clearPane();
         gallery.setSelection(position);
-        updateTags();
     }
 
     private void setWord(LessonWord word) {
