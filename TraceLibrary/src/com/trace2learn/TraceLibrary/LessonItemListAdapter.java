@@ -40,11 +40,11 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		if (v == null) {
 			v = _vi.inflate(R.layout.lesson_item_desc, null);
 		}
-		LessonItem item = _items.get(position);
-		ImageView image = (ImageView)v.findViewById(R.id.li_image);
-		TextView text = (TextView)v.findViewById(R.id.idView);
-		TextView text2 = (TextView)v.findViewById(R.id.tagView);
-		Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
+		LessonItem item   = _items.get(position);
+		ImageView  image  = (ImageView)v.findViewById(R.id.li_image);
+		TextView   text   = (TextView)v.findViewById(R.id.idView);
+		TextView   text2  = (TextView)v.findViewById(R.id.tagView);
+		Bitmap     bitmap = BitmapFactory.buildBitmap(item, 64);
 		image.setImageBitmap(bitmap);
 		
 		// text
@@ -52,15 +52,17 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		{
 		case CHARACTER:
 		case WORD:
-			text.setText(item.getKeyValuesToString());
+	        text.setText(item.getTagsToString());
+	        if (item.hasKey(Toolbox.PINYIN_KEY)) {
+	            text2.setText("(" + item.getValue(Toolbox.PINYIN_KEY) + ")");
+	        }
 			break;
 		case LESSON:
-			text.setText(((Lesson)item).getLessonName());
-			break;		
+			text.setText(((Lesson) item).getLessonName());
+			text2.setText(item.getTagsToString());
+			break;
 		}
 		
-		// text2
-		text2.setText(item.getTagsToString());
 		return v;
 	}
 		
