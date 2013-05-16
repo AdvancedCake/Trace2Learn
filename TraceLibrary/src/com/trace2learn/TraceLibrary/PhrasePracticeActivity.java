@@ -406,11 +406,10 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             sb.append(word.getTagsToString());
 
             // display the pinyin value, if it exists
-            HashMap<String, String> map = word.getKeyValues();
-            if (map.containsKey(Toolbox.PINYIN_KEY)) {
+            if (word.hasKey(Toolbox.PINYIN_KEY)) {
                 if (sb.length() > 0) sb.append("\n");
                 sb.append("(");
-                sb.append(map.get(Toolbox.PINYIN_KEY));
+                sb.append(word.getValue(Toolbox.PINYIN_KEY));
                 sb.append(")");
             }
 
