@@ -39,7 +39,7 @@
         android:layout_alignTop="@+id/gallery"
         android:contentDescription="@string/go_prev"
         android:src="@drawable/prev" />
-        
+
     <HorizontalScrollView
         android:id="@+id/tag_list_scroll_view"
         android:layout_width="wrap_content"
@@ -51,7 +51,7 @@
         <TextView
             android:id="@+id/tag_list"
             android:layout_width="wrap_content"
-            android:layout_height="45dp"
+            android:layout_height="48dp"
             android:gravity="center"
             android:maxLines="2"
             android:scrollHorizontally="true"
@@ -73,6 +73,7 @@
             android:id="@+id/character_view_slot"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical" >
         </com.trace2learn.TraceLibrary.SquareLayout>
     </ViewAnimator>
@@ -121,6 +122,5 @@
         android:layout_alignTop="@+id/view_slot"
         android:contentDescription="@string/play_sound"
         android:src="@drawable/sound_button" />
-
 
 </RelativeLayout>

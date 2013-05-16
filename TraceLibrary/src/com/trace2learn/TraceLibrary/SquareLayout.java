@@ -19,13 +19,6 @@ public class SquareLayout extends LinearLayout {
 	 */
 	@Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-    	if(widthMeasureSpec > heightMeasureSpec)
-    	{
-    		super.onMeasure(heightMeasureSpec, heightMeasureSpec);
-    	}
-    	else
-    	{
-    		super.onMeasure(widthMeasureSpec, widthMeasureSpec);
-    	}
+	    super.onMeasure(widthMeasureSpec, widthMeasureSpec);
     }
 }
