@@ -303,7 +303,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private void setSelectedCharacter(int position) {
         animator.setDisplayedChild(position);
         tracePanes.get(position).clearPane();
-        // update thumbnail gallery (fix for issue #18)
         gallery.setSelection(position);
         updateTags();
     }
