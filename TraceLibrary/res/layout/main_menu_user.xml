@@ -47,23 +47,23 @@
         android:src="@drawable/menu_button_introduction" />
 
     <ImageView
-        android:id="@+id/create_phrase"
+        android:id="@+id/browse_collections"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
         android:layout_below="@+id/introduction"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="20dp"
-        android:contentDescription="@string/create_phrase"
-        android:src="@drawable/menu_button_build_phrase" />
-
-    <ImageView
-        android:id="@+id/browse_collections"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_below="@+id/create_phrase"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
         android:contentDescription="@string/browse_collections"
         android:src="@drawable/menu_button_browse_collections" />
+
+    <ImageView
+        android:id="@+id/create_phrase"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_below="@+id/browse_collections"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:contentDescription="@string/create_phrase"
+        android:src="@drawable/menu_button_build_phrase" />
 
 </RelativeLayout>
