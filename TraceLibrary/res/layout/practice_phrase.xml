@@ -21,8 +21,8 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/phrase_title"
         android:layout_centerHorizontal="true"
-        android:layout_toLeftOf="@+id/go_next"
-        android:layout_toRightOf="@+id/go_prev" >
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp" >
 
         <LinearLayout
             android:id="@+id/thumbnail_gallery"
