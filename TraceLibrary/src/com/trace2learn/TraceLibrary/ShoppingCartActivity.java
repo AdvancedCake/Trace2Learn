@@ -472,21 +472,21 @@ public class ShoppingCartActivity extends Activity {
 
         @Override
         public int getItemViewType(int position) {
-            return _items.get(position).getItemType().ordinal();
+            return items.get(position).getItemType().ordinal();
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            LessonItem item = _items.get(position);
+            LessonItem item = items.get(position);
             View v = convertView;
             if (v == null) {
                 switch (item.getItemType()) {
                     case CHARACTER:
                     case WORD:
-                        v = _vi.inflate(R.layout.shopping_cart_item, null);
+                        v = vi.inflate(R.layout.shopping_cart_item, null);
                         break;
                     case LESSON:
-                        v = _vi.inflate(R.layout.shopping_cart_lesson, null);
+                        v = vi.inflate(R.layout.shopping_cart_lesson, null);
                         break;
                 }
             }

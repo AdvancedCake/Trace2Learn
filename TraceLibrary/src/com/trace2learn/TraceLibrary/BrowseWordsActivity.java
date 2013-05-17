@@ -335,7 +335,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                     lw.setSort(other.getSort());
                     other.setSort(temp);
                     Collections.sort(display);
-                    adapter._items = display;
+                    adapter.items = display;
                     adapter.notifyDataSetChanged();
                     return true;
                 }
@@ -357,7 +357,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                     arr[otherIndex] = temp;
                     
                     display = new ArrayList<LessonItem>(Arrays.asList(arr)); 
-                    adapter._items = display;
+                    adapter.items = display;
                     adapter.notifyDataSetChanged();
                     
                     return true;

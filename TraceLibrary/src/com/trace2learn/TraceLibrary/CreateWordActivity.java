@@ -60,6 +60,8 @@ public class CreateWordActivity extends TraceBaseActivity {
     
     private boolean isAdmin;
     
+    private int thumbBg;
+    
     // Lesson popup views
     private PopupWindow window;
     private View        layout;
@@ -92,6 +94,8 @@ public class CreateWordActivity extends TraceBaseActivity {
         filterStatus.setVisibility(View.GONE);
 
         newWord = new LessonWord();
+        
+        thumbBg = getResources().getColor(R.color.thumb_background);
 
         getChars();
         displayAllChars();
@@ -123,6 +127,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 String charId = item.getStringId();
                 newWord.addCharacter(charId);
                 ImageView iv = new ImageView(getApplicationContext());
+                iv.setBackgroundColor(thumbBg);
                 iv.setImageBitmap(BitmapFactory.buildBitmap(item, 64, 64));
                 thumbnails.addView(iv);
             }

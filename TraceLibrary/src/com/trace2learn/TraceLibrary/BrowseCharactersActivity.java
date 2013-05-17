@@ -206,7 +206,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
 	          lc.setSort(other.getSort());
 	          other.setSort(temp);
 	          Collections.sort(display);
-	          adapter._items = display;
+	          adapter.items = display;
               adapter.notifyDataSetChanged();
               return true;
 	      }

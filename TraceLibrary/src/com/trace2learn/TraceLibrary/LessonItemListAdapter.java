@@ -7,7 +7,6 @@ import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,17 @@ import android.widget.TextView;
 
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
-	protected List<LessonItem> _items;
+	protected List<LessonItem> items;
 	
-	protected LayoutInflater _vi;
+	private LayoutInflater vi;
+	private int thumbBg;
 	
 	public LessonItemListAdapter(Context context,
 	        List<LessonItem> objects, LayoutInflater vi) {
 		super(context, 0, objects);
-		_items = new ArrayList<LessonItem>(objects);
-		_vi = vi;
+		items = new ArrayList<LessonItem>(objects);
+		this.vi = vi;
+		thumbBg = context.getResources().getColor(R.color.thumb_background);
 	}
 	
 	/**
@@ -38,14 +39,14 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
 		if (v == null) {
-			v = _vi.inflate(R.layout.lesson_item_desc, null);
+			v = vi.inflate(R.layout.lesson_item_desc, null);
 		}
-		LessonItem item   = _items.get(position);
+		LessonItem item   = items.get(position);
 		ImageView  image  = (ImageView)v.findViewById(R.id.li_image);
 		TextView   text   = (TextView)v.findViewById(R.id.idView);
 		TextView   text2  = (TextView)v.findViewById(R.id.tagView);
-		Bitmap     bitmap = BitmapFactory.buildBitmap(item, 64);
-		image.setImageBitmap(bitmap);
+		image.setBackgroundColor(thumbBg);
+		image.setImageBitmap(BitmapFactory.buildBitmap(item, 64));
 		
 		// text
 		switch (item.getItemType())
@@ -66,6 +67,6 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		
 	public void add(LessonItem lessonItem) {
 		super.add(lessonItem);
-		_items.add(lessonItem);
+		items.add(lessonItem);
 	}
 }
