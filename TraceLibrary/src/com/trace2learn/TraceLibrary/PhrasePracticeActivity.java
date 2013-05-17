@@ -7,7 +7,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
@@ -18,11 +17,9 @@ import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
-import android.widget.Gallery;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 import android.widget.ViewAnimator;
@@ -41,11 +38,10 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private int     collectionSize;
     private String  lessonName;
     private boolean quizMode;
+    private int     currentChar;
 
     private LessonWord                 word;
     private ArrayList<LessonCharacter> characters;
-    private ArrayList<Bitmap>          bitmaps;
-    private ImageAdapter               imgAdapter;
 
     private TextView     tagView;
     private TextView     titleView;
@@ -53,7 +49,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private Button       traceButton;
     private ToggleButton quizToggle;
     private ImageView    quizIcon;
-    private Gallery      gallery;
+    private LinearLayout thumbnails;
     private ViewAnimator animator;
     private ImageView    soundIcon;
     private ImageView    prevIcon;
@@ -68,6 +64,9 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     
     private SoundPool soundPool;
     private int       soundId;
+    
+    private int thumbBg;
+    private int thumbBgSelected;
 
     private enum Mode {
         DISPLAY, TRACE;
@@ -82,21 +81,19 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         getHandlers();
 
         characters = new ArrayList<LessonCharacter>();
-        bitmaps    = new ArrayList<Bitmap>();
-        imgAdapter = new ImageAdapter(this, bitmaps);
 
         displayLayouts = new ArrayList<SquareLayout>();
         traceLayouts   = new ArrayList<SquareLayout>();
         playbackPanes  = new ArrayList<CharacterPlaybackPane>();
         tracePanes     = new ArrayList<CharacterTracePane>();
 
-        gallery.setSpacing(0);
-        gallery.setAdapter(imgAdapter);
-
         dba = new DbAdapter(this);
         dba.open();
         
         prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        
+        thumbBg         = getResources().getColor(R.color.thumb_background);
+        thumbBgSelected = getResources().getColor(R.color.thumb_background_selected);
 
         initializeMode();
     }
@@ -127,7 +124,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         quizToggle  = (ToggleButton) findViewById(R.id.quiz_toggle);
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
         animator    = (ViewAnimator) findViewById(R.id.view_slot);
-        gallery     = (Gallery)      findViewById(R.id.gallery);
+        thumbnails  = (LinearLayout) findViewById(R.id.thumbnail_gallery);
         soundIcon   = (ImageView)    findViewById(R.id.sound_button);
         prevIcon	= (ImageView)    findViewById(R.id.go_prev);
         nextIcon	= (ImageView)    findViewById(R.id.go_next);
@@ -174,14 +171,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             }
         });
 
-        // Clicking on a character in the phrase
-        gallery.setOnItemClickListener(new OnItemClickListener() {
-            public void onItemClick(AdapterView<?> parent, View view,
-                    int position, long id) {
-                setSelectedCharacter(position);
-            }
-        });
-        
         // Clicking on the sound icon
         soundIcon.setOnClickListener(new OnClickListener() {
             @Override
@@ -243,7 +232,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         Context context = getApplicationContext();
         if (bun != null && bun.containsKey("wordId")) {
             characters.clear();
-            bitmaps.clear();
             tracePanes.clear();
             playbackPanes.clear();
             traceLayouts.clear();
@@ -298,9 +286,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     }
 
     private void setSelectedCharacter(int position) {
+        thumbnails.getChildAt(currentChar).setBackgroundColor(thumbBg);
+        
+        currentChar = position;
         animator.setDisplayedChild(position);
         tracePanes.get(position).clearPane();
-        gallery.setSelection(position);
+        thumbnails.getChildAt(position).setBackgroundColor(thumbBgSelected);
     }
 
     private void setWord(LessonWord word) {
@@ -309,11 +300,24 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     }
 
     private void setCharacterList(List<String> ids) {
+        Context context = getApplicationContext();
+        int index = 0;
         for(String id : ids) {
             LessonCharacter ch = dba.getCharacterById(id);
-            Bitmap bmp = BitmapFactory.buildBitmap(ch, 64, 64);
+            ImageView iv = new ImageView(context);
+            iv.setBackgroundColor(thumbBg);
+            iv.setImageBitmap(BitmapFactory.buildBitmap(ch, 64, 64));
+            final int i = index;
+            index++;
+            iv.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    setSelectedCharacter(i);
+                }
+            });
             this.characters.add(ch);
-            this.bitmaps.add(bmp);
+            this.thumbnails.addView(iv);
+            
             SquareLayout disp = new SquareLayout(animator.getContext());
             CharacterPlaybackPane dispPane = new CharacterPlaybackPane(
                     disp.getContext(), false, 2);
@@ -333,8 +337,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             this.traceLayouts.add(trace);
             this.tracePanes.add(tracePane);
         }
-        imgAdapter.update(bitmaps);
-        imgAdapter.notifyDataSetChanged();
     }
 
     /**

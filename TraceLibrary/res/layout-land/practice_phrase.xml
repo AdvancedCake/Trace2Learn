@@ -45,31 +45,32 @@
             android:layout_gravity="right"
             android:layout_weight="1" >
 
-		    <Gallery
-		        android:id="@+id/gallery"
-		        android:layout_height="wrap_content"
-		        android:layout_width="fill_parent"
-		        android:layout_below="@+id/phrase_title"
-		        android:layout_centerHorizontal="true" />
-		
-		    <ImageView
-		        android:id="@+id/go_next"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
-		        android:layout_alignParentRight="true"
-		        android:layout_alignTop="@+id/gallery"
-		        android:contentDescription="@string/go_next"
-		        android:src="@drawable/next" />
-		
-		    <ImageView
-		        android:id="@+id/go_prev"
-		        android:layout_width="40dp"
-		        android:layout_height="40dp"
-		        android:layout_alignParentLeft="true"
-		        android:layout_alignTop="@+id/gallery"
-		        android:contentDescription="@string/go_prev"
-		        android:src="@drawable/prev" />
-                
+            <LinearLayout
+                android:id="@+id/thumbnail_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/phrase_title"
+                android:layout_centerHorizontal="true" >
+            </LinearLayout>
+
+            <ImageView
+                android:id="@+id/go_next"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentRight="true"
+                android:layout_alignTop="@+id/thumbnail_gallery"
+                android:contentDescription="@string/go_next"
+                android:src="@drawable/next" />
+
+            <ImageView
+                android:id="@+id/go_prev"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentLeft="true"
+                android:layout_alignTop="@+id/thumbnail_gallery"
+                android:contentDescription="@string/go_prev"
+                android:src="@drawable/prev" />
+
             <HorizontalScrollView
                 android:id="@+id/tag_list_scroll_view"
                 android:layout_width="wrap_content"
@@ -94,7 +95,7 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/gallery"
+                android:layout_below="@+id/thumbnail_gallery"
                 android:contentDescription="@string/play_sound"
                 android:src="@drawable/sound_button" />
 

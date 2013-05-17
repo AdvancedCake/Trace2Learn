@@ -15,19 +15,20 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
-    <Gallery
-        android:id="@+id/gallery"
-        android:layout_width="fill_parent"
+    <LinearLayout
+        android:id="@+id/thumbnail_gallery"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/phrase_title"
-        android:layout_centerHorizontal="true" />
+        android:layout_centerHorizontal="true" >
+    </LinearLayout>
 
     <ImageView
         android:id="@+id/go_next"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/gallery"
+        android:layout_alignTop="@+id/thumbnail_gallery"
         android:contentDescription="@string/go_next"
         android:src="@drawable/next" />
 
@@ -36,7 +37,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/gallery"
+        android:layout_alignTop="@+id/thumbnail_gallery"
         android:contentDescription="@string/go_prev"
         android:src="@drawable/prev" />
 
@@ -66,7 +67,7 @@
         android:layout_above="@+id/tag_list_scroll_view"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/gallery" >
+        android:layout_below="@+id/thumbnail_gallery" >
 
         <com.trace2learn.TraceLibrary.SquareLayout
             xmlns:android="http://schemas.android.com/apk/res/android"

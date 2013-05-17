@@ -10,7 +10,7 @@ import android.graphics.Color;
 
 public class BitmapFactory {
 	
-	private static final int _default_width = 64;
+	private static final int _default_width  = 64;
 	private static final int _default_height = 64;
 	
 	public static Bitmap buildBitmap(LessonItem item)
@@ -45,11 +45,9 @@ public class BitmapFactory {
 	 * @param height - The height of the bitmap to be created
 	 * @return
 	 */
-	public static Bitmap buildBitmap(LessonItem item, int width, int height)
-	{
+	public static Bitmap buildBitmap(LessonItem item, int width, int height) {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawColor(Color.BLUE);
         item.draw(canvas);
         return bitmap;
 	}
