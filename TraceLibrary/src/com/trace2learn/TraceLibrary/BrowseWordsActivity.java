@@ -225,7 +225,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         Log.e("MenuIndex",Integer.toString(menuItemIndex));
         Log.e("ListIndex",Integer.toString(info.position));
 
-        Context context = getApplicationContext();
+        final Context context = getApplicationContext();
         
         // Add to Collection
         if (menuItemIndex == ContextMenuItem.ADD_TO_LESSON.ordinal()) {
@@ -245,7 +245,7 @@ public class BrowseWordsActivity extends TraceListActivity {
 
         // Delete
         else if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
-            String id = lw.getStringId();
+            final String id = lw.getStringId();
             if (lessonId == null) { // browsing all phrases - delete the phrase
                 Boolean success = dba.deleteWord(id);
                 if (!success) {
@@ -258,34 +258,43 @@ public class BrowseWordsActivity extends TraceListActivity {
                     return true;
                 }
             } else { // remove from this lesson
-                collectionsChanged = true;
-                Boolean success = dba.removeWordFromLesson(lessonId, id);
-                if (!success) {
-                    Toolbox.showToast(context, "Could not remove the phrase");
-                    return false;
-                } else {
-                    Toolbox.showToast(context, "Successfully removed");
-                    
-                    // check if phrase is part of any other collections
-                    if (!isAdmin && !dba.isWordInLesson(id)) {
-                        dba.deleteWord(id);
-                        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                        builder.setTitle(R.string.phrase_deleted);
-                        builder.setMessage(R.string.phrase_deleted_text);
-                        builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
+                // check if phrase is part of any other collections
+                if (!dba.isWordInManyLessons(id)) { // phrase is only in this collection
+                    AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                    builder.setTitle(R.string.phrase_deleted);
+                    builder.setMessage(R.string.phrase_deleted_text);
+                    builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            collectionsChanged = true;
+                            Boolean success = dba.deleteWord(id);
+                            if (!success) {
+                                Toolbox.showToast(context, "Could not remove the phrase");
+                            } else {
+                                Toolbox.showToast(context, "Successfully removed");
                                 startActivity(getIntent());
                                 close();
                             }
-                        });
-                        builder.show();
+                        }
+                    });
+                    builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {}
+                    });
+                    builder.show();
+                    return true;
+                } else {
+                    collectionsChanged = true;
+                    Boolean success = dba.removeWordFromLesson(lessonId, id);
+                    if (!success) {
+                        Toolbox.showToast(context, "Could not remove the phrase");
+                        return false;
                     } else {
+                        Toolbox.showToast(context, "Successfully removed");
                         startActivity(getIntent());
                         close();
+                        return true;
                     }
-
-                    return true;
                 }
             }
         }
