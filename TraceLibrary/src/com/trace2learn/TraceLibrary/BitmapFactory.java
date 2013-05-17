@@ -6,7 +6,6 @@ import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 
 public class BitmapFactory {
 	

@@ -5,17 +5,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.Lesson;
-import com.trace2learn.TraceLibrary.Database.LessonCharacter;
-import com.trace2learn.TraceLibrary.Database.LessonItem;
-import com.trace2learn.TraceLibrary.Database.LessonWord;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.text.Editable;
 import android.util.Log;
@@ -32,10 +26,17 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Gallery;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.Lesson;
+import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class CreateWordActivity extends TraceBaseActivity {
     
@@ -44,18 +45,16 @@ public class CreateWordActivity extends TraceBaseActivity {
     private List<LessonItem>      source;  // list of all characters
     private List<LessonItem>      display; // list of items being displayed
     private LessonItemListAdapter charAdapter;
-    private ArrayList<Bitmap>     currentChars;
-    private ImageAdapter          imgAdapter;
     
     // Activity views
-    private Gallery  gallery;
-    private ListView charList;
-    private TextView filterStatus;
-    private Button   clearButton;
-    private Button   delButton;
-    private Button   cancelButton;
-    private Button   saveButton;
-    private Button   filterButton;
+    private LinearLayout thumbnails;
+    private ListView     charList;
+    private TextView     filterStatus;
+    private Button       clearButton;
+    private Button       deleteButton;
+    private Button       cancelButton;
+    private Button       saveButton;
+    private Button       filterButton;
     
     private LayoutInflater vi;
     
@@ -77,7 +76,6 @@ public class CreateWordActivity extends TraceBaseActivity {
         super.onCreate(savedInstanceState);
         filtered = false;
         numChars = 0;
-        currentChars = new ArrayList<Bitmap>();
         setContentView(R.layout.create_word);
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -92,10 +90,6 @@ public class CreateWordActivity extends TraceBaseActivity {
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         filterStatus.setVisibility(View.GONE);
-        
-        imgAdapter = new ImageAdapter(this, currentChars);
-        gallery.setSpacing(0);
-        gallery.setAdapter(imgAdapter);
 
         newWord = new LessonWord();
 
@@ -110,14 +104,14 @@ public class CreateWordActivity extends TraceBaseActivity {
     }
     
     private void getViews() {
-        gallery      = (Gallery)  findViewById(R.id.gallery);
-        charList     = (ListView) findViewById(R.id.charList);
-        filterStatus = (TextView) findViewById(R.id.filterStatus);
-        clearButton  = (Button)   findViewById(R.id.clearButton);
-        delButton    = (Button)   findViewById(R.id.delButton);
-        cancelButton = (Button)   findViewById(R.id.cancelButton);
-        saveButton   = (Button)   findViewById(R.id.saveButton);
-        filterButton = (Button)   findViewById(R.id.filterButton);
+        thumbnails   = (LinearLayout) findViewById(R.id.thumbnail_gallery);
+        charList     = (ListView)     findViewById(R.id.charList);
+        filterStatus = (TextView)     findViewById(R.id.filterStatus);
+        clearButton  = (Button)       findViewById(R.id.clearButton);
+        deleteButton = (Button)       findViewById(R.id.delButton);
+        cancelButton = (Button)       findViewById(R.id.cancelButton);
+        saveButton   = (Button)       findViewById(R.id.saveButton);
+        filterButton = (Button)       findViewById(R.id.filterButton);
     }
     
     private void getHandlers() {
@@ -128,11 +122,9 @@ public class CreateWordActivity extends TraceBaseActivity {
                 LessonItem item = (LessonCharacter) charList.getItemAtPosition(position);
                 String charId = item.getStringId();
                 newWord.addCharacter(charId);
-                Bitmap bitmap = BitmapFactory.buildBitmap(item, 64, 64);
-                currentChars.add(bitmap);
-                imgAdapter.update(currentChars);
-                imgAdapter.notifyDataSetChanged();
-                gallery.setSelection(numChars / 2);
+                ImageView iv = new ImageView(getApplicationContext());
+                iv.setImageBitmap(BitmapFactory.buildBitmap(item, 64, 64));
+                thumbnails.addView(iv);
             }
         });
         
@@ -142,14 +134,12 @@ public class CreateWordActivity extends TraceBaseActivity {
             public void onClick(View v) {
                 numChars = 0;
                 newWord.clearCharacters();
-                currentChars.clear();
-                imgAdapter.update(currentChars);
-                imgAdapter.notifyDataSetChanged();
+                thumbnails.removeAllViews();
             }
         });
         
         // delete button - deletes the last character in the word
-        delButton.setOnClickListener(new OnClickListener() {
+        deleteButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (numChars == 0) {
@@ -157,10 +147,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 }
                 numChars--;
                 newWord.removeLastCharacter();
-                currentChars.remove(currentChars.size() - 1);
-                imgAdapter.update(currentChars);
-                imgAdapter.notifyDataSetChanged();
-                gallery.setSelection(numChars / 2);
+                thumbnails.removeViewAt(numChars);
             }
         });
         
