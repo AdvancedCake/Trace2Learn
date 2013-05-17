@@ -199,7 +199,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		    }
 		}
 		
-		if (sb.charAt(0) == ',') {
+		if (sb.length() > 0 && sb.charAt(0) == ',') {
 		    return sb.substring(2);
 		}
 		return sb.toString();
