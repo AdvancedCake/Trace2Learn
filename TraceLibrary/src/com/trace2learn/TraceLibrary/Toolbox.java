@@ -97,7 +97,7 @@ public class Toolbox {
                     (ViewGroup) parentActivity.findViewById(R.id.about_layout));
             
             // create a popup scaled to display size
-            popup = new PopupWindow(about, width, (int) (height * .8), true);
+            popup = new PopupWindow(about, (int) (width * .8), (int) (height * .7), true);
             
             // display the popup in the center
             popup .showAtLocation(about, Gravity.CENTER, 0, 0);

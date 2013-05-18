@@ -7,6 +7,7 @@ import java.util.Map;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -117,6 +118,21 @@ public class TagActivity extends TraceBaseActivity {
         }
         for (String tag : currentTags) {
             viewSource.add(tag);
+        }
+        
+		// always pre-populate key
+		keyEntry.setText(Toolbox.PINYIN_KEY);
+        // pre-populate pinyin key-value, for words only
+        if(type == ItemType.WORD){
+    		// retrieve chars that make up word
+    		LessonWord currWord = mDbHelper.getWordById(stringid);
+    		List<String> chars = currWord.getCharacterIds();
+    		for(int i = 0; i < chars.size(); i++){
+    			Map<String,String> charkeys = mDbHelper.getKeyValues(chars.get(i), ItemType.CHARACTER);
+    			if(charkeys.containsKey(Toolbox.PINYIN_KEY)){
+    				valueEntry.setText( valueEntry.getText().toString() + charkeys.get(Toolbox.PINYIN_KEY) );
+    			}
+    		}
         }
         
         adapter = new ArrayAdapter<String>(this,
