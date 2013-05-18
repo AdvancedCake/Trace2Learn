@@ -5,6 +5,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.trace2learn.TraceLibrary.Toolbox;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
@@ -186,10 +188,21 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	public synchronized String getKeyValuesToString()
 	{
 		StringBuilder sb = new StringBuilder();
+
+		if (keyValues.containsKey(Toolbox.PINYIN_KEY)) {
+		    sb.append("(" + keyValues.get(Toolbox.PINYIN_KEY) + ")");
+		}
+		
 		for (Map.Entry<String, String> entry : keyValues.entrySet()) {
-			sb.append(", " + entry.getKey() + ": " + entry.getValue());
-		}    	
-		return new String(sb.length()>0 ? sb.substring(2) : "");
+		    if (!entry.getKey().equals(Toolbox.PINYIN_KEY)) {
+	            sb.append(", " + entry.getKey() + ": " + entry.getValue());    
+		    }
+		}
+		
+		if (sb.charAt(0) == ',') {
+		    return sb.substring(2);
+		}
+		return sb.toString();
 	}
 	
 	public synchronized String getValue(String key) {

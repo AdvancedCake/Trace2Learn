@@ -86,15 +86,15 @@ public class MainMenuActivity extends TraceBaseActivity {
     private void checkFirstStart() {
         boolean firstStart = prefs.getBoolean(Toolbox.PREFS_FIRST_START, true);
         if (firstStart) {
-            initializeDatabase();
+             if (initializeDatabase()) {
+                 // Log previously started
+                 editor.putBoolean(Toolbox.PREFS_FIRST_START, false);
+                 editor.commit();
+             }
         }
-        
-        // Log previously started
-        editor.putBoolean(Toolbox.PREFS_FIRST_START, false);
-        editor.commit();
     }
     
-    private void initializeDatabase() {
+    private boolean initializeDatabase() {
         Log.i("Initialize DB", "Attempting to import database");
 
         String dbPath = getDatabasePath(
@@ -102,7 +102,7 @@ public class MainMenuActivity extends TraceBaseActivity {
 
         try {
             // Open the .db file in your assets directory
-            InputStream is = getBaseContext().getAssets().open("initial.db");
+            InputStream is = getBaseContext().getAssets().open("initial.jet");
 
             // Copy the database into the destination
             File out = new File(dbPath);
@@ -119,9 +119,12 @@ public class MainMenuActivity extends TraceBaseActivity {
             os.close();
             is.close();
             Log.i("Initialize DB", "Database successfully imported");
+            return true;
         } catch (Exception e) {
             Log.e("Initialize DB", e.getClass().getName() + ": " +
                     e.getMessage());
+            e.printStackTrace();
+            return false;
         }
     }
 

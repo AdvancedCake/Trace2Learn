@@ -53,9 +53,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		case CHARACTER:
 		case WORD:
 	        text.setText(item.getTagsToString());
-	        if (item.hasKey(Toolbox.PINYIN_KEY)) {
-	            text2.setText("(" + item.getValue(Toolbox.PINYIN_KEY) + ")");
-	        }
+	        text2.setText(item.getKeyValuesToString());
 			break;
 		case LESSON:
 			text.setText(((Lesson) item).getLessonName());
