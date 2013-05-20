@@ -31,7 +31,6 @@
             android:layout_weight="1" >
 
             <com.trace2learn.TraceLibrary.SquareLayout
-                xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/character_view_slot"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

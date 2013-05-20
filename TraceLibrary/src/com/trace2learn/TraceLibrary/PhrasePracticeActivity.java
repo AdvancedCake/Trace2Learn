@@ -329,7 +329,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
 
             SquareLayout trace = new SquareLayout(animator.getContext());
             CharacterTracePane tracePane = new CharacterTracePane(
-                    disp.getContext());
+                    disp.getContext()); // TODO should this be trace.getcontext?
             tracePane.setTemplate(ch);
             tracePane.addMoveToNextHandler(moveToNext);
             trace.addView(tracePane);
@@ -349,8 +349,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         if (currentMode != Mode.DISPLAY) {
             int curInd = animator.getDisplayedChild();
             animator.removeAllViews();
-            for(SquareLayout disp : this.displayLayouts)
-            {
+            for(SquareLayout disp : this.displayLayouts) {
                 animator.addView(disp);
             }
             animator.setDisplayedChild(curInd);
