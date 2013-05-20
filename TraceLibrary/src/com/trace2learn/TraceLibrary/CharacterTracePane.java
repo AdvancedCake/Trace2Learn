@@ -33,7 +33,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 	
 	Thread _refreshTimer;
 	
-	protected Handler _handler; // what is this for???
+	protected Handler _handler;
 	private Handler moveToNext;
 	
 	public CharacterTracePane(Context context) {
@@ -94,7 +94,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 		}
 	}
 	
-	public void animate()
+	public void updateTemplateTime()
 	{
 		if(_template != null)
 		{
@@ -150,7 +150,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 	@Override
 	public void onDraw(Canvas canvas)
 	{	
-		animate();
+		updateTemplateTime();
 		Log.i("DRAW", "TIME: " + _strokeTime);
 		_style.setStrokeWidth(canvas.getHeight()*_heightToStroke);
 		canvas.drawColor(_backgroundColor);

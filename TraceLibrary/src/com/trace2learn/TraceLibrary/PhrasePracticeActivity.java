@@ -18,11 +18,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
-import android.widget.ViewAnimator;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
@@ -50,13 +50,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private ToggleButton quizToggle;
     private ImageView    quizIcon;
     private LinearLayout thumbnails;
-    private ViewAnimator animator;
+//    private ViewAnimator animator;
+    private FrameLayout  charSlot;
     private ImageView    soundIcon;
     private ImageView    prevIcon;
     private ImageView    nextIcon;
 
-    private ArrayList<SquareLayout>          displayLayouts;
-    private ArrayList<SquareLayout>          traceLayouts;
     private ArrayList<CharacterPlaybackPane> playbackPanes;
     private ArrayList<CharacterTracePane>    tracePanes;
     
@@ -82,8 +81,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
 
         characters = new ArrayList<LessonCharacter>();
 
-        displayLayouts = new ArrayList<SquareLayout>();
-        traceLayouts   = new ArrayList<SquareLayout>();
         playbackPanes  = new ArrayList<CharacterPlaybackPane>();
         tracePanes     = new ArrayList<CharacterTracePane>();
 
@@ -123,7 +120,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         traceButton = (Button)       findViewById(R.id.trace_button);
         quizToggle  = (ToggleButton) findViewById(R.id.quiz_toggle);
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
-        animator    = (ViewAnimator) findViewById(R.id.view_slot);
+//        animator    = (ViewAnimator) findViewById(R.id.view_slot);
+        charSlot    = (FrameLayout)  findViewById(R.id.character_slot);
         thumbnails  = (LinearLayout) findViewById(R.id.thumbnail_gallery);
         soundIcon   = (ImageView)    findViewById(R.id.sound_button);
         prevIcon	= (ImageView)    findViewById(R.id.go_prev);
@@ -234,8 +232,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             characters.clear();
             tracePanes.clear();
             playbackPanes.clear();
-            traceLayouts.clear();
-            displayLayouts.clear();
             
             String wordId = bun.getString("wordId");
             word = dba.getWordById(wordId);
@@ -286,12 +282,19 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     }
 
     private void setSelectedCharacter(int position) {
+        charSlot.removeAllViews();
         thumbnails.getChildAt(currentChar).setBackgroundColor(thumbBg);
         
         currentChar = position;
-        animator.setDisplayedChild(position);
-        tracePanes.get(position).clearPane();
-        thumbnails.getChildAt(position).setBackgroundColor(thumbBgSelected);
+        if (currentMode == Mode.DISPLAY) {
+            playbackPanes.get(currentChar).setAnimated(true);
+            charSlot.addView(playbackPanes.get(currentChar));
+        } else if (currentMode == Mode.TRACE) {
+            tracePanes.get(currentChar).clearPane();
+            charSlot.addView(tracePanes.get(currentChar));
+        }
+
+        thumbnails.getChildAt(currentChar).setBackgroundColor(thumbBgSelected);
     }
 
     private void setWord(LessonWord word) {
@@ -318,23 +321,16 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             this.characters.add(ch);
             this.thumbnails.addView(iv);
             
-            SquareLayout disp = new SquareLayout(animator.getContext());
             CharacterPlaybackPane dispPane = new CharacterPlaybackPane(
-                    disp.getContext(), false, 2);
+                    context, false, 2);
             dispPane.setCharacter(ch);
-            disp.addView(dispPane);
-
-            this.displayLayouts.add(disp);
             this.playbackPanes.add(dispPane);
 
-            SquareLayout trace = new SquareLayout(animator.getContext());
             CharacterTracePane tracePane = new CharacterTracePane(
-                    disp.getContext()); // TODO should this be trace.getcontext?
+                    context); // TODO should this be trace.getcontext?
             tracePane.setTemplate(ch);
             tracePane.addMoveToNextHandler(moveToNext);
-            trace.addView(tracePane);
 
-            this.traceLayouts.add(trace);
             this.tracePanes.add(tracePane);
         }
     }
@@ -343,17 +339,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
      * Switches the display mode to display
      */
     private synchronized void setDisplayPane() {
-        int child = animator.getDisplayedChild();
-        playbackPanes.get(child).setAnimated(true);
+        playbackPanes.get(currentChar).setAnimated(true);
 
         if (currentMode != Mode.DISPLAY) {
-            int curInd = animator.getDisplayedChild();
-            animator.removeAllViews();
-            for(SquareLayout disp : this.displayLayouts) {
-                animator.addView(disp);
-            }
-            animator.setDisplayedChild(curInd);
             currentMode = Mode.DISPLAY;
+            charSlot.removeAllViews();
+            charSlot.addView(playbackPanes.get(currentChar));
             
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(Toolbox.PREFS_PHRASE_MODE, "display");
@@ -369,18 +360,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
      * Switches the display mode to display
      */
     private synchronized void setCharacterTracePane() {
-        int child = animator.getDisplayedChild();
-        this.tracePanes.get(child).clearPane();
+        this.tracePanes.get(currentChar).clearPane();
 
         if (currentMode != Mode.TRACE) {
-            int curInd = animator.getDisplayedChild();
-            animator.removeAllViews();
-            for(SquareLayout trace : this.traceLayouts)
-            {
-                animator.addView(trace);
-            }
-            animator.setDisplayedChild(curInd);
             currentMode = Mode.TRACE;
+            charSlot.removeAllViews();
+            charSlot.addView(tracePanes.get(currentChar));
             
             SharedPreferences.Editor editor = prefs.edit();
             editor.putString(Toolbox.PREFS_PHRASE_MODE, "trace");
@@ -457,9 +442,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     Handler moveToNext = new Handler() {
         @Override
         public void handleMessage(Message m) {
-            int index = animator.getDisplayedChild();
-            if (index + 1 < characters.size()) {
-                setSelectedCharacter(index + 1);
+            if (currentChar + 1 < characters.size()) {
+                setSelectedCharacter(currentChar + 1);
             } else {
                 // this is the end of the word
                 if (lessonID != null) {
