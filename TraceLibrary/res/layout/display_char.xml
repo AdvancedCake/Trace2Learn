@@ -5,24 +5,13 @@
     android:layout_height="fill_parent"
     android:gravity="bottom" >
 
-    <RelativeLayout
-        android:id="@+id/view_slot"
+    <FrameLayout
+        android:id="@+id/character_slot"
         android:layout_width="match_parent"
-        android:layout_height="0dip"
+        android:layout_height="wrap_content"
         android:layout_above="@+id/tag_list_scroll_view"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true" >
-
-        <com.trace2learn.TraceLibrary.SquareLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/character_view_slot"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:orientation="vertical" >
-        </com.trace2learn.TraceLibrary.SquareLayout>
-    </RelativeLayout>
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="30dp" />
 
     <HorizontalScrollView
         android:id="@+id/tag_list_scroll_view"

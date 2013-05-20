@@ -1,33 +1,33 @@
 package com.trace2learn.TraceLibrary;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.LessonCharacter;
-
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.FrameLayout;
 import android.widget.TextView;
+
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
 public class ViewCharacterActivity extends TraceBaseActivity {
 
-	private LinearLayout _characterViewSlot;
-	private CharacterCreationPane _creationPane;
-	private CharacterPlaybackPane _playbackPane;	
-	private CharacterTracePane _tracePane;
+	private FrameLayout charSlot;
+	private CharacterCreationPane creationPane;
+	private CharacterPlaybackPane playbackPane;	
+	private CharacterTracePane tracePane;
 	private Button left1;
 	private Button left2;
 	private Button right1;
 	private Button right2;
 	
-	private TextView _tagText;
+	private TextView tagText;
 
-	private DbAdapter _dbHelper;
+	private DbAdapter dbHelper;
 
-	private Mode _currentMode = Mode.INVALID;
+	private Mode currentMode = Mode.INVALID;
 
 	private String id_to_pass = null;
 	
@@ -47,10 +47,10 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 
 		setContentView(R.layout.display_char);
 
-		_characterViewSlot = (LinearLayout) findViewById(R.id.character_view_slot);
-		_creationPane = new CharacterCreationPane(this);
-		_playbackPane = new CharacterPlaybackPane(this, false, 2);
-		_tracePane = new CharacterTracePane(this);
+		charSlot = (FrameLayout) findViewById(R.id.character_slot);
+		creationPane = new CharacterCreationPane(this);
+		playbackPane = new CharacterPlaybackPane(this, false, 2);
+		tracePane = new CharacterTracePane(this);
 		
         left1  = (Button) findViewById(R.id.left1Button);
         left2  = (Button) findViewById(R.id.left2Button);
@@ -59,10 +59,10 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 
 		setCharacter(new LessonCharacter());
 
-		_tagText = (TextView) this.findViewById(R.id.tag_list);
+		tagText = (TextView) this.findViewById(R.id.tag_list);
 
-		_dbHelper = new DbAdapter(this);
-		_dbHelper.open();
+		dbHelper = new DbAdapter(this);
+		dbHelper.open();
 
 		initializeMode();
 
@@ -71,7 +71,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        _dbHelper.close();
+        dbHelper.close();
     };
 
 	/**
@@ -83,7 +83,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("mode")) {
 			String mode = bun.getString("mode");
-            setCharacter(_dbHelper.getCharacterById(bun.getString("charId")));
+            setCharacter(dbHelper.getCharacterById(bun.getString("charId")));
             id_to_pass = bun.getString("charId");
             updateTags();
             
@@ -102,11 +102,11 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	 */
 	private synchronized void setCharacterCreationPane() 
 	{
-		if (_currentMode != Mode.CREATION) 
+		if (currentMode != Mode.CREATION) 
 		{
-			_currentMode = Mode.CREATION;
-			_characterViewSlot.removeAllViews();
-			_characterViewSlot.addView(_creationPane);
+			currentMode = Mode.CREATION;
+			charSlot.removeAllViews();
+			charSlot.addView(creationPane);
             left1.setVisibility(View.VISIBLE);
             left2.setVisibility(View.VISIBLE);
             right2.setVisibility(View.INVISIBLE);
@@ -122,14 +122,14 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	 */
 	private synchronized void setCharacterDisplayPane()
 	{
-		_playbackPane.setAnimated(true);
-		if (_currentMode != Mode.DISPLAY) 
+		playbackPane.setAnimated(true);
+		if (currentMode != Mode.DISPLAY) 
 		{
-			LessonCharacter curChar = _creationPane.getCharacter();
+			LessonCharacter curChar = creationPane.getCharacter();
 			setCharacter(curChar);
-			_currentMode = Mode.DISPLAY;
-			_characterViewSlot.removeAllViews();
-			_characterViewSlot.addView(_playbackPane);
+			currentMode = Mode.DISPLAY;
+			charSlot.removeAllViews();
+			charSlot.addView(playbackPane);
             left1.setVisibility(View.VISIBLE);
             left2.setVisibility(View.INVISIBLE);
             right2.setVisibility(View.VISIBLE);
@@ -146,14 +146,14 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	 */
 	private synchronized void setCharacterTracePane()
 	{
-		_tracePane.clearPane();
-		if (_currentMode != Mode.TRACE) 
+		tracePane.clearPane();
+		if (currentMode != Mode.TRACE) 
 		{
-			LessonCharacter curChar = _creationPane.getCharacter();
+			LessonCharacter curChar = creationPane.getCharacter();
 			setCharacter(curChar);
-			_currentMode = Mode.TRACE;
-			_characterViewSlot.removeAllViews();
-			_characterViewSlot.addView(_tracePane);
+			currentMode = Mode.TRACE;
+			charSlot.removeAllViews();
+			charSlot.addView(tracePane);
             left1.setVisibility(View.VISIBLE);
             left2.setVisibility(View.INVISIBLE);
             right2.setVisibility(View.VISIBLE);
@@ -172,16 +172,16 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 
 	private void setCharacter(LessonCharacter character)
 	{
-		_creationPane.setCharacter(character);
-		_playbackPane.setCharacter(character);
-		_tracePane.setTemplate(character);
+		creationPane.setCharacter(character);
+		playbackPane.setCharacter(character);
+		tracePane.setTemplate(character);
 	}
 
 	private void updateTags()
 	{
 		if (id_to_pass !=null)
 		{
-			LessonCharacter ch = _dbHelper.getCharacterById(id_to_pass);
+			LessonCharacter ch = dbHelper.getCharacterById(id_to_pass);
 			
 			StringBuilder sb = new StringBuilder();
 			sb.append(ch.getKeyValuesToString());
@@ -190,7 +190,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 			}
 			sb.append(ch.getTagsToString());
 			
-			_tagText.setText(sb.toString());
+			tagText.setText(sb.toString());
 			setCharacter(ch); // why here? doesn't match with the method name
 		}
 	}
@@ -203,9 +203,9 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	}
 
 	public void onLeft1ButtonClick(View view) { // either "Clear" or "Edit"
-	    switch (_currentMode) {
+	    switch (currentMode) {
 	        case CREATION: // clear
-                _creationPane.clearPane();
+                creationPane.clearPane();
                 break;
 	        case DISPLAY:
 	        case TRACE:
@@ -217,9 +217,9 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	}
 
 	public void onLeft2ButtonClick(View view) { // "undo"
-	    switch (_currentMode) {
+	    switch (currentMode) {
 	        case CREATION: // undo
-	            _creationPane.undoLastStroke();
+	            creationPane.undoLastStroke();
 	            break;
 	        case DISPLAY:
 	        case TRACE:
@@ -228,7 +228,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	}
 
     public void onRight2ButtonClick(View view) { // "practice" or "cancel"
-        switch (_currentMode) {
+        switch (currentMode) {
             case CREATION: // "cancel"
                 initializeMode();
                 break;
@@ -241,9 +241,9 @@ public class ViewCharacterActivity extends TraceBaseActivity {
     }
 
     public void onRight1ButtonClick(View view) { // "save" or "playback"
-        switch (_currentMode) {
+        switch (currentMode) {
             case CREATION: // "save"
-                LessonCharacter character = _creationPane.getCharacter();
+                LessonCharacter character = creationPane.getCharacter();
                 if(character.getNumStrokes() == 0){
                     Toolbox.showToast(getApplicationContext(),
                             "Please add a stroke");
@@ -264,16 +264,16 @@ public class ViewCharacterActivity extends TraceBaseActivity {
     private void saveChar(LessonCharacter character) {
         String id = character.getStringId();
         if(id == null)
-            _dbHelper.addCharacter(character);
+            dbHelper.addCharacter(character);
         else
-            _dbHelper.modifyCharacter(character);
+            dbHelper.modifyCharacter(character);
         Log.e("Adding to DB", character.getStringId());
         id_to_pass = character.getStringId();
         Toolbox.showToast(getApplicationContext(), "Character saved");
     }
     
 	public void createTags() {
-		LessonCharacter character = _creationPane.getCharacter();
+		LessonCharacter character = creationPane.getCharacter();
 		if (id_to_pass != null) {
 			Log.e("Passing this CharID", id_to_pass);
 			Intent i = new Intent(this, TagActivity.class);
@@ -283,7 +283,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 
 			startActivityForResult(i, requestCodeENUM.EDIT_TAG.ordinal());
 		} else {
-			_tagText.setText("Error: Save the character before adding tags");
+			tagText.setText("Error: Save the character before adding tags");
 		}
 	}
 

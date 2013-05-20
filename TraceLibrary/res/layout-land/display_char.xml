@@ -3,27 +3,21 @@
     android:id="@+id/LinearLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:baselineAligned="false"
     android:orientation="horizontal" >
 
-    <ViewAnimator
-        android:id="@+id/view_slot"
-        android:layout_width="wrap_content"
-        android:layout_height="fill_parent"
-        android:layout_gravity="left" >
-
-        <com.trace2learn.TraceLibrary.SquareLayout
-            xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/character_view_slot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical" >
-        </com.trace2learn.TraceLibrary.SquareLayout>
-    </ViewAnimator>
+    <FrameLayout
+        android:id="@+id/character_slot"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="left"
+        android:layout_weight="1" />
 
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right" >
+        android:layout_gravity="right"
+        android:layout_weight="1" >
 
         <HorizontalScrollView
             android:id="@+id/tag_list_scroll_view"
