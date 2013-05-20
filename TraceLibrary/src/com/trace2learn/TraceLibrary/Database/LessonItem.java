@@ -185,8 +185,7 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 		return new LinkedHashMap<String, String>(keyValues);
 	}	
 	
-	public synchronized String getKeyValuesToString()
-	{
+	public synchronized String getKeyValuesToString() {
 		StringBuilder sb = new StringBuilder();
 
 		if (keyValues.containsKey(Toolbox.PINYIN_KEY)) {

@@ -110,7 +110,7 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/thumbnail_gallery_scroll_view"
+        android:layout_below="@+id/thumbnail_gallery"
         android:contentDescription="@string/play_sound"
         android:src="@drawable/sound_button" />
 

@@ -1377,7 +1377,6 @@ public class DbAdapter {
             LessonWord word = getWordById(id);
             if (word != null) {
                 words.add(word);
-                System.out.println(word.getTagsToString());
             }
         }
 

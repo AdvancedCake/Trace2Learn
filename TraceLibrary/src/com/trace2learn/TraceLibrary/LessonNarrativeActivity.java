@@ -89,7 +89,6 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         
         if (!lesson.isUserDefined() &&
                 !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false)) {
-            System.out.println("lol");
             // Lesson is admin, but user is not admin
             editButton.setVisibility(View.GONE);
         }
