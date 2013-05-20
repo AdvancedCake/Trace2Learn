@@ -129,7 +129,7 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
             if (out.exists()) {
                 out.delete();
             }
-            OutputStream os = new FileOutputStream(outPath + "/database.db"); // TODO custom name
+            OutputStream os = new FileOutputStream(outPath + "/initial.jet"); // TODO custom name
             byte[] buffer = new byte[1024];
             int length;
             while ((length = is.read(buffer)) > 0){
