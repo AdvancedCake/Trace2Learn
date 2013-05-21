@@ -481,14 +481,14 @@ public class BrowseWordsActivity extends TraceListActivity {
                 topLoop: for (LessonItem item : display) {
                     List<String> tags = item.getTags();
                     for (String tag : tags) {
-                        if (Toolbox.containsMatch(2, tag, search)) {
+                        if (Toolbox.containsMatch(1, tag, search)) {
                             newList.add(item);
                             continue topLoop;
                         }
                     }
                     Collection<String> values = item.getKeyValues().values();
                     for (String value : values) {
-                        if (Toolbox.containsMatch(2, value, search)) {
+                        if (Toolbox.containsMatch(1, value, search)) {
                             newList.add(item);
                             continue topLoop;
                         }
