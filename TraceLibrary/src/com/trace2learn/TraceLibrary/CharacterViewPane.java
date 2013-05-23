@@ -12,10 +12,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.View;
 
-/**
- * @author Ryan
- *
- */
 public abstract class CharacterViewPane extends View {
 
 	protected Paint _paint;

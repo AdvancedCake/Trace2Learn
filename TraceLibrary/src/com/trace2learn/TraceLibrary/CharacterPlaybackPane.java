@@ -6,10 +6,6 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
 
-/**
- * @author Ryan
- * This class displays a character which is animated stroke by stroke.
- */
 public class CharacterPlaybackPane extends CharacterDisplayPane {
 
 	protected int _currentStroke = 0;

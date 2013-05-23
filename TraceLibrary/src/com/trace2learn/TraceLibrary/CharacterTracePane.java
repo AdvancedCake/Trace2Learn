@@ -12,10 +12,6 @@ import android.graphics.Paint;
 import android.os.Handler;
 import android.util.Log;
 
-/**
- * @author Ryan
- *
- */
 public class CharacterTracePane extends CharacterCreationPane {
 
 	protected LessonCharacter _template;
@@ -148,8 +144,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 	}
 	
 	@Override
-	public void onDraw(Canvas canvas)
-	{	
+	public void onDraw(Canvas canvas) {	
 		updateTemplateTime();
 		Log.i("DRAW", "TIME: " + _strokeTime);
 		_style.setStrokeWidth(canvas.getHeight()*_heightToStroke);
