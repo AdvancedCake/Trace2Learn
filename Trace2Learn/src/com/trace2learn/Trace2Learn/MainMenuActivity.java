@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
@@ -45,7 +46,8 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
         "Browse All Collections",
         "Export To File",
         "Import From File",
-        "Download SQLite Database"
+        "Export SQLite Database",
+        "Integrity Check"
     };
 
     @Override
@@ -100,20 +102,22 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
                     Intent intent = new Intent(c, FilePickerActivity.class);
                     startActivity(intent);
                 }
-                else if (clicked.equals(APPS[7])) { // "Download SQLite DB"
-                    downloadDatabase();
+                else if (clicked.equals(APPS[7])) { // "Export SQLite DB"
+                    exportDatabase();
                 }
+                else if (clicked.equals(APPS[8])) { // "Integrity Chek"
+                    integrityCheck();
+                }
+
             }
         }
-                );
+        	);
     }
 
-    /**
-     * 
-     */
-    private void downloadDatabase() {
+
+    private void exportDatabase() {
         try {
-            Log.i("Download DB", "Attempting to download database");
+            Log.i("Export DB", "Attempting to export database");
             // Open the .db file
             String dbPath = getDatabasePath(
                     DbAdapter.DATABASE_NAME).getAbsolutePath();
@@ -125,7 +129,7 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
                     "/data/" + getString(R.string.file_dir_name);
             File out = new File(outPath);
             out.mkdirs();
-            out = new File(outPath + "/database.db");
+            out = new File(outPath + "/initial.jet");
             if (out.exists()) {
                 out.delete();
             }
@@ -139,14 +143,30 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
 
             os.close();
             is.close();
-            Log.i("Download DB", "Database downloaded");
-            Toolbox.showToast(getApplicationContext(), "Database downloaded");
+            Log.i("Export DB", "Successful");
+            Toolbox.showToast(getApplicationContext(), "Database exported");
         } catch (Exception e) {
-            Log.e("Download DB", e.getClass().getName() + ": " +
+            Log.e("Export DB", e.getClass().getName() + ": " +
                     e.getMessage());
             e.printStackTrace();
         }
     }
 
+    private void integrityCheck() {
+    	// TODO: check for following
+    	// - flag characters without id tag
+    	// - flag characters without pinyin tag 
+    	// - flag phrases that don't belong to any collection
+    	// - flag phrases without pinyin tag
+    	
+        // Initialize database adapter
+        DbAdapter dba = new DbAdapter(this);
+        dba.open();
+        
+        String msg = "";
+ 		                
+        List<String> wids = dba.getAllWordIds();
+    	
+    }
 
 }
