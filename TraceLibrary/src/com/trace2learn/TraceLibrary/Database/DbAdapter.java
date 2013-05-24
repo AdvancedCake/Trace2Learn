@@ -643,6 +643,65 @@ public class DbAdapter {
     	 return true;
     }
     
+    /**
+     * Get all LessonCharacters from the database.
+     * 
+     * @return A list of LessonCharacters.
+     */
+    public List<LessonItem> getAllChars() {
+        List<LessonItem> chars = new ArrayList<LessonItem>();
+        Cursor cursor = mDb.rawQuery("SELECT b.CharId, a.sort, b.Stroke, b.PointX, b.PointY " +
+        		"FROM " + CHAR_TABLE + " a INNER JOIN " + CHAR_DETAILS_TABLE + " b " +
+        		"ON a." + CHAR_ID + "=b.CharId " +
+        		"ORDER BY b.CharId ASC, b.Stroke ASC, b.OrderPoint ASC", null);
+        if (cursor == null) {
+            return chars;
+        }
+        
+        int idColumn     = cursor.getColumnIndexOrThrow("CharId");
+        int sortColumn   = cursor.getColumnIndexOrThrow("sort");
+        int strokeColumn = cursor.getColumnIndexOrThrow("Stroke");
+        int pointXColumn = cursor.getColumnIndexOrThrow("PointX");
+        int pointYColumn = cursor.getColumnIndexOrThrow("PointY");
+        
+        String          currentId = null;
+        LessonCharacter currentCharacter = null;
+        int             currentStrokeNumber = -1;
+        Stroke          currentStroke = null;
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(idColumn);
+            if (!id.equals(currentId)) {
+                if (currentCharacter != null) {
+                    currentCharacter.addStroke(currentStroke);
+                    currentStrokeNumber = -1;
+                    currentStroke = null;
+                    chars.add(currentCharacter);
+                }
+                currentCharacter = new LessonCharacter(id);
+                currentCharacter.setSort(cursor.getLong(sortColumn));
+                currentCharacter.setTagList(getCharacterTags(id));
+                currentCharacter.setKeyValues(getKeyValues(id,
+                        ItemType.CHARACTER));
+                currentId = id;
+            }
+
+            int stroke = cursor.getInt(strokeColumn);
+            if (stroke != currentStrokeNumber) {
+                if (currentStroke != null) {
+                    currentCharacter.addStroke(currentStroke);
+                }
+                currentStroke = new Stroke();
+                currentStrokeNumber = stroke;
+            }
+
+            currentStroke.addPoint(cursor.getFloat(pointXColumn),
+                    cursor.getFloat(pointYColumn));
+        }
+        
+        cursor.close();
+        return chars;
+    }
+    
     
     /**
      * Get a LessonCharacter from the database
@@ -708,12 +767,47 @@ public class DbAdapter {
     	c.setTagList(getCharacterTags(id));
 
     	// get keyValues as well
-    	c.setKeyValues(getKeyValues(id, LessonItem.ItemType.CHARACTER));
+    	c.setKeyValues(getKeyValues(id, ItemType.CHARACTER));
     	
     	return c;
     }
     
-
+    public List<LessonItem> getAllWords() {
+        List<LessonItem> words = new ArrayList<LessonItem>();
+        Cursor cursor = mDb.rawQuery("SELECT a." + WORDS_ID + ", a.sort, b.CharId " +
+        		"FROM " + WORDS_TABLE + " a INNER JOIN " + WORDS_DETAILS_TABLE + " b " +
+                "ON a. " + WORDS_ID + "=b." + WORDS_ID + " " +
+                "ORDER BY a." + WORDS_ID + " ASC, b.WordOrder ASC", null);
+        if (cursor == null) {
+            return words;
+        }
+        
+        int idColumn     = cursor.getColumnIndexOrThrow(WORDS_ID);
+        int sortColumn   = cursor.getColumnIndexOrThrow("sort");
+        int charIdColumn = cursor.getColumnIndexOrThrow("CharId");
+        
+        String currentId = null;
+        LessonWord currentWord = null;
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(idColumn);
+            if (!id.equals(currentId)) {
+                if (currentWord != null) {
+                    words.add(currentWord);
+                }
+                currentWord = new LessonWord(id);
+                currentWord.setSort(cursor.getLong(sortColumn));
+                currentWord.setTagList(getWordTags(id));
+                currentWord.setKeyValues(getKeyValues(id, ItemType.WORD));
+                currentWord.setDatabase(this);
+                currentId = id;
+            }
+            
+            currentWord.addCharacter(cursor.getString(charIdColumn));
+        }
+        
+        cursor.close();
+        return words;
+    }
 
     /**
      * Get a LessonWord from the database
@@ -767,7 +861,7 @@ public class DbAdapter {
     	w.setTagList(getWordTags(id));
 
     	// get keyValues as well
-    	w.setKeyValues(getKeyValues(id, LessonItem.ItemType.WORD));        
+    	w.setKeyValues(getKeyValues(id, ItemType.WORD));        
 
         return w;
     }
@@ -921,7 +1015,7 @@ public class DbAdapter {
      * @throws SQLException if the item could not be found/retrieved
      */
     public LinkedHashMap<String, String> getKeyValues(String stringId, 
-            LessonItem.ItemType itemType) throws SQLException {
+            ItemType itemType) throws SQLException {
     	String table = ""; 
     	String keyColumn = ""; 
     	String valueColumn = ""; 
@@ -1031,7 +1125,7 @@ public class DbAdapter {
      * @return a Cursor
      * @throws SQLException
      */
-    public Cursor getAllChars(String tag) throws SQLException {
+    public Cursor searchCharsByTag(String tag) throws SQLException {
         Cursor mCursor;
         mCursor = mDb.query(true, CHARTAG_TABLE, 
                 new String[] {CHARTAG_ID}, 
@@ -1496,8 +1590,7 @@ public class DbAdapter {
         }
     	mCursor.close();
 
-    	//SUSPECT: grab its details (step one might not be necessary and might cause slow downs
-    	// but it is for data consistency.
+    	//SUSPECT: grab its details
     	mCursor = mDb.query(true, LESSONS_DETAILS_TABLE,
     	        new String[] { "LessonId", "WordId", "LessonOrder"},
     	        "LessonId" + "='" + id + "'",

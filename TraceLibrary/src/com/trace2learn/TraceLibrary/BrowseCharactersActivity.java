@@ -80,12 +80,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
      * Populate the source list with characters
      */
     private void getChars() {
-        List<String> ids = dba.getAllCharIds();
-        source = new ArrayList<LessonItem>(ids.size());
-        for (String id : ids) {
-            LessonCharacter character = dba.getCharacterById(id);
-            source.add(character);
-        }
+        source = dba.getAllChars();
     }
     
     /**

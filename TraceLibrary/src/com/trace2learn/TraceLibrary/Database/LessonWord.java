@@ -28,8 +28,8 @@ public class LessonWord extends LessonItem {
 	}		
 	
 	//takes the id of a character, adds the id to internal characterid list
-	public void addCharacter(String character){
-		_characters.add(character);
+	public void addCharacter(String charId){
+		_characters.add(charId);
 	}
 	
 	public List<String> getCharacterIds(){

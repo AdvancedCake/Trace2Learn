@@ -12,6 +12,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Debug;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -122,13 +123,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         lessonId = this.getIntent().getStringExtra("ID");
         if (lessonId == null) {
             userDefined = false;
-            List<String> ids = dba.getAllWordIds();
-            source = new ArrayList<LessonItem>(ids.size());
-            for(String id : ids){
-                LessonWord word = dba.getWordById(id);
-                source.add(word);
-            }
-            Collections.sort(source);
+            source = dba.getAllWords();
             lessonName.setText(R.string.all_words);
         } else {
             Lesson les = dba.getLessonById(lessonId);
