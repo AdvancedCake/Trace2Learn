@@ -1,4 +1,4 @@
-package com.trace2learn.Trace2Learn;
+package com.trace2learn.TraceLibrary;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,20 +20,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-
-import com.trace2learn.TraceLibrary.BrowseCharactersActivity;
-import com.trace2learn.TraceLibrary.BrowseLessonsActivity;
-import com.trace2learn.TraceLibrary.BrowseWordsActivity;
-import com.trace2learn.TraceLibrary.CreateWordActivity;
-import com.trace2learn.TraceLibrary.FilePickerActivity;
 import com.trace2learn.TraceLibrary.R;
-import com.trace2learn.TraceLibrary.ShoppingCartActivity;
-import com.trace2learn.TraceLibrary.Toolbox;
-import com.trace2learn.TraceLibrary.ViewCharacterActivity;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 
-
-public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActivity {
+public class MainAdminActivity extends TraceListActivity {
 
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -61,7 +51,7 @@ public class MainMenuActivity extends com.trace2learn.TraceLibrary.TraceListActi
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, true);
         editor.commit();
 
-        setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu,APPS));
+        setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu, APPS));
 
         ListView listView = getListView();
         listView.setTextFilterEnabled(true);

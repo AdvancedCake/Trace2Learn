@@ -10,7 +10,7 @@
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="40dp"
-        android:text="@string/app_name"
+        android:text="@string/user_app_name"
         android:textColor="@color/header"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -33,7 +33,7 @@
         android:layout_below="@+id/subTitle"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
-        android:contentDescription="@string/app_name"
+        android:contentDescription="@string/user_app_name"
         android:src="@drawable/logo" />
 
     <ImageView

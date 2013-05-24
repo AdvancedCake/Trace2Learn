@@ -1,4 +1,4 @@
-package com.trace2learn.TraceMe;
+package com.trace2learn.TraceLibrary;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,17 +12,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.trace2learn.TraceLibrary.BrowseLessonsActivity;
-import com.trace2learn.TraceLibrary.CreateWordActivity;
-import com.trace2learn.TraceLibrary.IntroductionActivity;
-import com.trace2learn.TraceLibrary.R;
-import com.trace2learn.TraceLibrary.TraceBaseActivity;
-
-import com.trace2learn.TraceLibrary.Toolbox;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 
-public class MainMenuActivity extends TraceBaseActivity {
+public class MainUserActivity extends TraceBaseActivity {
 
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
@@ -45,7 +39,14 @@ public class MainMenuActivity extends TraceBaseActivity {
         checkFirstStart();
 
         // Set user permissions
+        boolean isFullVer = getApplicationContext().getPackageName().equals("com.trace2learn.TraceMe");
+        editor.putBoolean(Toolbox.PREFS_IS_FULL_VER, isFullVer);
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, false);
+        editor.commit();
+        
+        if (!isFullVer) {
+            ((TextView) findViewById(R.id.title)).setText(R.string.user_app_name_free);
+        }
     }
     
     private void getViews() {

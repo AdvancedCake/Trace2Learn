@@ -1,6 +1,8 @@
 <resources>
 
-    <string name="app_name">Trace2Learn</string>
+    <string name="admin_app_name">Trace2Learn</string>
+    <string name="user_app_name">TraceMe!</string>
+    <string name="user_app_name_free">TraceMe! Free</string>
     <string name="file_dir_name">Trace2Learn</string>
     <string name="insert_tag">Insert a new tag</string>
     <string name="character">Character</string>

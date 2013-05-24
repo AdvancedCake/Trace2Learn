@@ -84,7 +84,7 @@ public class FilePickerActivity extends ListActivity {
             Element root = doc.getDocumentElement();
             if (!root.getNodeName().equals("ttw")) {
                 showToast("This is not a valid " +
-                        getString(R.string.app_name) + " file!");
+                        getString(R.string.admin_app_name) + " file!");
                 return;
             }
             String name = root.getAttribute("name");
@@ -95,8 +95,8 @@ public class FilePickerActivity extends ListActivity {
             showToast("Imported " + name + " successfully");
             finish();
         } catch (Exception e) {
-            showToast("This is not a valid " + getString(R.string.app_name) +
-                    " file!");
+            showToast("This is not a valid " +
+                    getString(R.string.admin_app_name) + " file!");
             String message = e.getMessage();
             if (message == null) {
                 message = "No error message";
