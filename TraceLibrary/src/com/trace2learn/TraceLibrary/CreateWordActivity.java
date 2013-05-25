@@ -51,7 +51,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     private ListView     charList;
     private TextView     filterStatus;
     private Button       clearButton;
-    private Button       deleteButton;
+    private Button       undoButton;
     private Button       cancelButton;
     private Button       saveButton;
     private Button       filterButton;
@@ -112,7 +112,7 @@ public class CreateWordActivity extends TraceBaseActivity {
         charList     = (ListView)     findViewById(R.id.charList);
         filterStatus = (TextView)     findViewById(R.id.filterStatus);
         clearButton  = (Button)       findViewById(R.id.clearButton);
-        deleteButton = (Button)       findViewById(R.id.delButton);
+        undoButton   = (Button)       findViewById(R.id.undoButton);
         cancelButton = (Button)       findViewById(R.id.cancelButton);
         saveButton   = (Button)       findViewById(R.id.saveButton);
         filterButton = (Button)       findViewById(R.id.filterButton);
@@ -144,7 +144,7 @@ public class CreateWordActivity extends TraceBaseActivity {
         });
         
         // delete button - deletes the last character in the word
-        deleteButton.setOnClickListener(new OnClickListener() {
+        undoButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (numChars == 0) {

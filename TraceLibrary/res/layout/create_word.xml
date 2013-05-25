@@ -39,12 +39,12 @@
         android:text="@string/clear" />
 
     <Button
-        android:id="@+id/delButton"
+        android:id="@+id/undoButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_toRightOf="@+id/clearButton"
-        android:text="@string/delete" />
+        android:text="@string/undo" />
 
     <Button
         android:id="@+id/saveButton"
