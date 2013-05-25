@@ -30,6 +30,7 @@ public class Toolbox {
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
     public static final String SOUND_KEY  = "sound";
+    public static final String ID_KEY  = "id";
     
     // Sound Playback
     public static final float VOLUME = 1;

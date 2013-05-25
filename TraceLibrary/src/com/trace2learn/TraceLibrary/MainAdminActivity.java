@@ -6,8 +6,11 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
+import java.util.Hashtable;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -22,6 +25,8 @@ import android.widget.TextView;
 
 import com.trace2learn.TraceLibrary.R;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class MainAdminActivity extends TraceListActivity {
 
@@ -145,18 +150,42 @@ public class MainAdminActivity extends TraceListActivity {
     private void integrityCheck() {
     	// TODO: check for following
     	// - flag characters without id tag
-    	// - flag characters without pinyin tag 
+    	// - flag characters without pinyin tag
+    	// - flag duplicate pinyin tags
     	// - flag phrases that don't belong to any collection
     	// - flag phrases without pinyin tag
     	
         // Initialize database adapter
         DbAdapter dba = new DbAdapter(this);
-        dba.open();
+        dba.open();        
+        String msg = ""; 		                
+        Hashtable<String, String> idMap = new Hashtable<String, String> ();
+        List<String> cids = dba.getAllCharIds();
+        for(String id : cids){
+        	LessonCharacter ch = dba.getCharacterById(id);
+        	if(!ch.hasKey(Toolbox.PINYIN_KEY))
+        		msg = msg + "Missing pinyin for " + ch.getTagsToString() + "\n";
+        	if(!ch.hasKey(Toolbox.ID_KEY))
+        		msg = msg + "Missing id for " + ch.getTagsToString() + "\n";
+        	// store id on map & check uniqueness
+        	else {
+        		if(idMap.contains(ch.getValue(Toolbox.ID_KEY))) 
+        			msg = msg + "Repeat id for " + ch.getKeyValuesToString() + "\n";
+        		idMap.put(ch.getValue(Toolbox.ID_KEY),"found");
+        	}	
+        }
         
-        String msg = "";
- 		                
-        List<String> wids = dba.getAllWordIds();
-    	
-    }
+        if(msg == "") msg = "No issues found!";
+        
+        AlertDialog dlg = new AlertDialog.Builder(this).create();
+        dlg.setTitle("Integrity Alert");
+        dlg.setMessage(msg);
+        dlg.setButton("OK", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                }
+        });	
+        dlg.setIcon(R.drawable.logo);
+        dlg.show();
+    }        
 
 }
