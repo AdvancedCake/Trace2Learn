@@ -12,7 +12,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -103,16 +102,9 @@ public class BrowseWordsActivity extends TraceListActivity {
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         getViews();
-        getWords();
+        getHandlers();
         
-        // set handler for info button - must be called after getViews and getWords
-        infoButton.setOnClickListener(new OnClickListener() {
-            public void onClick(View v) {
-                Intent i = new Intent(v.getContext(), LessonNarrativeActivity.class);
-                i.putExtra("ID", lessonId);
-                startActivity(i);            }
-        });        
-
+        getWords();
         displayAllWords();
         registerForContextMenu(list);
         
@@ -121,10 +113,20 @@ public class BrowseWordsActivity extends TraceListActivity {
     
     private void getViews() {
         list = getListView();
-        lessonName   = (TextView) findViewById(R.id.lesson_name);
-        filterButton = (Button)   findViewById(R.id.filterButton);
-        filterStatus = (TextView) findViewById(R.id.filterStatus);
-        infoButton = (ImageView) findViewById(R.id.infoButton);
+        lessonName   = (TextView)  findViewById(R.id.lesson_name);
+        filterButton = (Button)    findViewById(R.id.filterButton);
+        filterStatus = (TextView)  findViewById(R.id.filterStatus);
+        infoButton   = (ImageView) findViewById(R.id.infoButton);
+    }
+    
+    private void getHandlers() {
+        // set handler for info button - must be called after getViews and getWords
+        infoButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), LessonNarrativeActivity.class);
+                i.putExtra("ID", lessonId);
+                startActivity(i);            }
+        });        
     }
     
     /**

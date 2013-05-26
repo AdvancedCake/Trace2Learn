@@ -28,14 +28,12 @@ public class Toolbox {
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
     public static final String SOUND_KEY  = "sound";
-    public static final String ID_KEY  = "id";
+    public static final String ID_KEY     = "id";
     
     // Sound Playback
     public static final float VOLUME = 1;
     
     public static final Locale locale = Locale.getDefault();
-    
-    public static PopupWindow popup;
     
     /**
      * If query is less than or equal to exact characters long, containsMatch
