@@ -4,14 +4,12 @@ import java.util.Locale;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.app.AlertDialog;
 import android.content.Context;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.LayoutInflater;
+import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.PopupWindow;
 import android.widget.Toast;
@@ -89,28 +87,19 @@ public class Toolbox {
 
     public static void showAboutPopup(Activity parentActivity){
         try {
-            Display display = parentActivity.getWindowManager().getDefaultDisplay(); 
-            int height = display.getHeight();  // deprecated in API 13
-            int width = display.getWidth();  // deprecated in API 13
-            
-            LayoutInflater inflater = (LayoutInflater) parentActivity.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-            View about = inflater.inflate(R.layout.about,
-                    (ViewGroup) parentActivity.findViewById(R.id.about_layout));
-            
-            // create a popup scaled to display size
-            popup = new PopupWindow(about, (int) (width * .8), (int) (height * .7), true);
-            
-            // display the popup in the center
-            popup .showAtLocation(about, Gravity.CENTER, 0, 0);
 
-            View exitButton = about.findViewById(R.id.exit_button);
-            exitButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    popup.dismiss();
-                }
-            });
+            AlertDialog dlg = new AlertDialog.Builder(parentActivity).create();
+            Resources rc = parentActivity.getResources();
+            dlg.setIcon(R.drawable.logo);
+            dlg.setTitle(rc.getString(R.string.user_app_name) + "\n\n" + rc.getString(R.string.app_subtitle));
+            dlg.setMessage(rc.getText(R.string.aboutCredits));
+            dlg.setButton("M'kay", new DialogInterface.OnClickListener() {
+                public void onClick(DialogInterface dialog, int which) {
+                    }
+            });	
+            dlg.show();        	
+        	
+            
             
         } catch (Exception e) {
             e.printStackTrace();

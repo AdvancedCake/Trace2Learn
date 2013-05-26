@@ -12,9 +12,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Message;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.View.OnClickListener;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -32,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.ImageView;
 
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
@@ -44,11 +47,12 @@ public class BrowseWordsActivity extends TraceListActivity {
     private List<LessonItem> display; // list of items being displayed
     private LessonItemListAdapter adapter;
 
-    private ListView list;
-    private TextView lessonName;
-    private Button   filterButton;
-    private TextView filterStatus;
-    private boolean  filtered;
+    private ListView	list;
+    private TextView	lessonName;
+    private Button		filterButton;
+    private TextView	filterStatus;
+    private ImageView	infoButton;
+    private boolean		filtered;
 
     private LayoutInflater vi;
     
@@ -99,10 +103,17 @@ public class BrowseWordsActivity extends TraceListActivity {
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         getViews();
-        
         getWords();
-        displayAllWords();
+        
+        // set handler for info button - must be called after getViews and getWords
+        infoButton.setOnClickListener(new OnClickListener() {
+            public void onClick(View v) {
+                Intent i = new Intent(v.getContext(), LessonNarrativeActivity.class);
+                i.putExtra("ID", lessonId);
+                startActivity(i);            }
+        });        
 
+        displayAllWords();
         registerForContextMenu(list);
         
         filtered = false;
@@ -113,6 +124,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         lessonName   = (TextView) findViewById(R.id.lesson_name);
         filterButton = (Button)   findViewById(R.id.filterButton);
         filterStatus = (TextView) findViewById(R.id.filterStatus);
+        infoButton = (ImageView) findViewById(R.id.infoButton);
     }
     
     /**
@@ -124,6 +136,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             userDefined = false;
             source = dba.getAllWords();
             lessonName.setText(R.string.all_words);
+            infoButton.setVisibility(View.GONE);
         } else {
             Lesson les = dba.getLessonById(lessonId);
             String name = les.getLessonName();

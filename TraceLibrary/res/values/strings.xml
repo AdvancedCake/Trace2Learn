@@ -73,7 +73,7 @@
     <string name="menuGoHome">Home</string>
     <string name="menuStats">Statistics</string>
     <string name="menuAbout">About</string>
-    <string name="aboutCredits">created by\nRobert Li\nJoe Varadi\n</string>
+    <string name="aboutCredits">created by\nJoe Varadi\nRobert Li\n</string>
     <string name="editkey_hint">key</string>
     <string name="editvaue_hint">value</string>
     <string name="edittag_hint">enter any tag or description</string>

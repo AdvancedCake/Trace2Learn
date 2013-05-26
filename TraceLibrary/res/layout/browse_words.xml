@@ -15,6 +15,16 @@
         android:textSize="20sp"
         android:textStyle="bold" />
 
+    <ImageView
+        android:id="@+id/infoButton"
+        android:layout_alignParentRight="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="2dp"
+        android:layout_alignTop="@+id/lesson_name"
+        android:contentDescription="@string/info"
+        android:src="@drawable/info_button" />
+    
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"

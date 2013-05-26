@@ -152,7 +152,6 @@ public class MainAdminActivity extends TraceListActivity {
     	// - flag characters without id tag
     	// - flag characters without pinyin tag
     	// - flag duplicate pinyin tags
-    	// - flag phrases that don't belong to any collection
     	// - flag phrases without pinyin tag
     	
         // Initialize database adapter
@@ -173,6 +172,13 @@ public class MainAdminActivity extends TraceListActivity {
         			msg = msg + "Repeat id for " + ch.getKeyValuesToString() + "\n";
         		idMap.put(ch.getValue(Toolbox.ID_KEY),"found");
         	}	
+        }
+        
+        List<String> wids = dba.getAllWordIds();
+        for(String wid : wids){
+        	LessonWord wd = dba.getWordById(wid);
+        	if(!wd.hasKey(Toolbox.PINYIN_KEY))
+        		msg = msg + "Missing pinyin for phrase " + wd.getTagsToString() + "\n";        	
         }
         
         if(msg == "") msg = "No issues found!";
