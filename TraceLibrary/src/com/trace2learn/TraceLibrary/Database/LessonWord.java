@@ -221,13 +221,4 @@ public class LessonWord extends LessonItem {
         }
 	}
 
-	@Override
-	public boolean equals(Object other) {
-	    if (!(other instanceof LessonWord)) {
-	        return false;
-	    }
-
-	    return ((LessonWord) other).getStringId() == _stringid;
-	}
-
 }

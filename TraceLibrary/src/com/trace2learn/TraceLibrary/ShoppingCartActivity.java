@@ -27,8 +27,6 @@ import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -230,13 +228,11 @@ public class ShoppingCartActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 String search = filterText.getText().toString();
                 if (search.equals("")) {
-                    hideKeyboard(filterText);
+                    Toolbox.hideKeyboard(getParent(), filterText);
                     return;
                 }
 
                 // Filter action: keep matching items from display list
-                // Note that it should be partial match for search terms 3
-                // characters or more.
                 List<LessonItem> newList = new ArrayList<LessonItem>();
                 switch (type) {
                     case CHARACTER:
@@ -276,19 +272,18 @@ public class ShoppingCartActivity extends Activity {
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
-                hideKeyboard(filterText);
+                Toolbox.hideKeyboard(getParent(), filterText);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                hideKeyboard(filterText);
+                Toolbox.hideKeyboard(getParent(), filterText);
             }
         });
 
         AlertDialog dialog = builder.create();
 
-        // show the keyboard
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        Toolbox.showKeyboard(dialog);
         dialog.show();
 
     }
@@ -304,16 +299,6 @@ public class ShoppingCartActivity extends Activity {
         filterButton.setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
-    }
-
-    /**
-     * Hides the keyboard
-     * @param view The current view
-     */
-    private void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
     /**
@@ -378,10 +363,8 @@ public class ShoppingCartActivity extends Activity {
                     if (item instanceof Lesson) {
                         Lesson lesson = (Lesson) item;
                         List<LessonItem> words = lesson.getWords();
-
                         for (LessonItem word : words) {
                             List<LessonCharacter> characters = ((LessonWord) word).getCharacters();
-
                             for (LessonCharacter character : characters) {
                                 if (!cart.contains(character) &&
                                         !dependencies.contains(character)) {
@@ -409,8 +392,7 @@ public class ShoppingCartActivity extends Activity {
 
         AlertDialog dialog = builder.create();
 
-        // show the keyboard
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        Toolbox.showKeyboard(dialog);
         dialog.show();
 
     }

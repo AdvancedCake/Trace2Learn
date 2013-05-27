@@ -248,13 +248,4 @@ public class LessonCharacter extends LessonItem {
         }
 	}
 	
-	@Override
-	public boolean equals(Object other) {
-	    if (!(other instanceof LessonCharacter)) {
-	        return false;
-	    }
-	    
-	    return ((LessonCharacter) other).getStringId() == _stringid;
-	}
-	
 }

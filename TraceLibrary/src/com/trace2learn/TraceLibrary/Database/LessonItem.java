@@ -208,6 +208,22 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	    return keyValues.get(key);
 	}
 	
+	@Override
+	public boolean equals(Object other) {
+	    if (!getClass().isInstance(other)) {
+	        return false;
+	    }
+	    return ((LessonItem) other).getStringId().equals(_stringid);
+	}
+	
+	@Override
+	public int hashCode() {
+	    if (_stringid == null) {
+	        return super.hashCode();
+	    }
+	    return _stringid.hashCode();
+	}
+	
 	/** 
 	 * The ratio for determining how large a stroke should be given the size
 	 * of the canvas
