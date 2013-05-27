@@ -159,10 +159,12 @@ public abstract class LessonItem implements Comparable<LessonItem> {
 	
 	public synchronized String getTagsToString()
 	{
+		// use semicolon delimiter for tags
 		StringBuilder sb = new StringBuilder();
 		for(String tag : _tags){
-			sb.append(", "+tag);
+			sb.append("; "+tag);
 		}
+		// strip leading delimiter
 		return new String(sb.length()>0 ? sb.substring(2) : "");
 	}
 	

@@ -178,7 +178,9 @@ public class MainAdminActivity extends TraceListActivity {
         for(String wid : wids){
         	LessonWord wd = dba.getWordById(wid);
         	if(!wd.hasKey(Toolbox.PINYIN_KEY))
-        		msg = msg + "Missing pinyin for phrase " + wd.getTagsToString() + "\n";        	
+        		msg = msg + "Missing pinyin for phrase " + 
+        				wd.getKeyValuesToString() + "/" +
+        				wd.getTagsToString() + "\n";        	
         }
         
         if(msg == "") msg = "No issues found!";
