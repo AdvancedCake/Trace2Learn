@@ -261,15 +261,6 @@ public class Lesson extends LessonItem {
             return null;
         }
     }
-
-    @Override
-    public boolean equals(Object other) {
-        if (!(other instanceof Lesson)) {
-            return false;
-        }
-
-        return ((Lesson) other).getStringId().equals(_stringid);
-    }
     
     public int compareTo(Lesson other) {
         if (this.isUserDefined == other.isUserDefined) {
