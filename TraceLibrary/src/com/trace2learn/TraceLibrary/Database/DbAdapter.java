@@ -776,7 +776,7 @@ public class DbAdapter {
         List<LessonItem> words = new ArrayList<LessonItem>();
         Cursor cursor = mDb.rawQuery("SELECT a." + WORDS_ID + ", a.sort, b.CharId " +
         		"FROM " + WORDS_TABLE + " a INNER JOIN " + WORDS_DETAILS_TABLE + " b " +
-                "ON a. " + WORDS_ID + "=b." + WORDS_ID + " " +
+                "ON a." + WORDS_ID + "=b." + WORDS_ID + " " +
                 "ORDER BY a." + WORDS_ID + " ASC, b.WordOrder ASC", null);
         if (cursor == null) {
             return words;
@@ -1523,6 +1523,60 @@ public class DbAdapter {
         mCursor.close();
 
         return ids;
+    }
+    
+    public List<Lesson> getAllUserLessons() {
+        List<Lesson> lessons = new ArrayList<Lesson>();
+        Cursor cursor = mDb.rawQuery("SELECT a." + LESSONS_ID + ", a.name, a.sort, a.narrative, a.catShapeAndStructure, a.catMeaning, a.catPhonetic, a.catGrammar, b.WordId " +
+        		"FROM " + LESSONS_TABLE + " a INNER JOIN " + LESSONS_DETAILS_TABLE + " b " +
+        		"ON a." + LESSONS_ID + "=b.LessonId " +
+        		"WHERE a.userDefined=1 " +
+        		"ORDER BY a." + LESSONS_ID + " ASC, b.LessonOrder ASC", null);
+        if (cursor == null) {
+            return lessons;
+        }
+        
+        int idColumn                   = cursor.getColumnIndexOrThrow(LESSONS_ID);
+        int nameColumn                 = cursor.getColumnIndexOrThrow("name");
+        int sortColumn                 = cursor.getColumnIndexOrThrow("sort");
+        int narrativeColumn            = cursor.getColumnIndexOrThrow("narrative");
+        int catShapeAndStructureColumn = cursor.getColumnIndexOrThrow("catShapeAndStructure");
+        int catMeaningColumn           = cursor.getColumnIndexOrThrow("catMeaning");
+        int catPhoneticColumn          = cursor.getColumnIndexOrThrow("catPhonetic");
+        int catGrammarColumn           = cursor.getColumnIndexOrThrow("catGrammar");
+        int wordIdColumn               = cursor.getColumnIndexOrThrow("WordId");
+        
+        String currentId = null;
+        Lesson currentLesson = null;
+        while (cursor.moveToNext()) {
+            String id = cursor.getString(idColumn);
+            if (!id.equals(currentId)) {
+                if (currentLesson != null) {
+                    lessons.add(currentLesson);
+                }
+                currentLesson = new Lesson(id, true);
+                currentLesson.setName(cursor.getString(nameColumn));
+                currentLesson.setSort(cursor.getLong(sortColumn));
+                currentLesson.setNarrative(cursor.getString(narrativeColumn));
+                if (cursor.getInt(catShapeAndStructureColumn) == 1) {
+                    currentLesson.addCategory(LessonCategory.SHAPE_AND_STRUCTURE);
+                }
+                if (cursor.getInt(catMeaningColumn) == 1) {
+                    currentLesson.addCategory(LessonCategory.MEANING);
+                }
+                if (cursor.getInt(catPhoneticColumn) == 1) {
+                    currentLesson.addCategory(LessonCategory.PHONETIC);
+                }
+                if (cursor.getInt(catGrammarColumn) == 1) {
+                    currentLesson.addCategory(LessonCategory.GRAMMAR);
+                }
+                currentId = id;
+            }
+            currentLesson.addWord(cursor.getString(wordIdColumn));
+        }
+        
+        cursor.close();
+        return lessons;
     }
     
     /**
