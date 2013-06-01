@@ -699,8 +699,10 @@ public class DbAdapter {
         }
         
         // Add last char
-        currentCharacter.addStroke(currentStroke);
-        chars.add(currentCharacter);
+        if (currentCharacter != null) {
+            currentCharacter.addStroke(currentStroke);
+            chars.add(currentCharacter);
+        }
         
         cursor.close();
         return chars;
@@ -810,7 +812,9 @@ public class DbAdapter {
         }
         
         // Add last word
-        words.add(currentWord);
+        if (currentWord != null) {
+            words.add(currentWord);
+        }
         
         cursor.close();
         return words;
