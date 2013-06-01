@@ -3,16 +3,17 @@ package com.trace2learn.TraceLibrary;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.trace2learn.TraceLibrary.Database.Lesson;
-import com.trace2learn.TraceLibrary.Database.LessonItem;
-
 import android.content.Context;
+import android.graphics.drawable.BitmapDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.trace2learn.TraceLibrary.Database.Lesson;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 
@@ -38,11 +39,18 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
 		View v = convertView;
+		ImageView image;
 		if (v == null) {
 			v = vi.inflate(R.layout.lesson_item_desc, null);
+			image = (ImageView) v.findViewById(R.id.li_image);
+		} else {
+	        image = (ImageView) v.findViewById(R.id.li_image);
+	        BitmapDrawable bd = (BitmapDrawable) image.getDrawable();
+	        if (bd != null) {
+	            bd.getBitmap().recycle();
+	        }
 		}
 		LessonItem item   = items.get(position);
-		ImageView  image  = (ImageView)v.findViewById(R.id.li_image);
 		TextView   text   = (TextView)v.findViewById(R.id.idView);
 		TextView   text2  = (TextView)v.findViewById(R.id.tagView);
 		image.setBackgroundColor(thumbBg);
