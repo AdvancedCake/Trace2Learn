@@ -698,6 +698,10 @@ public class DbAdapter {
                     cursor.getFloat(pointYColumn));
         }
         
+        // Add last char
+        currentCharacter.addStroke(currentStroke);
+        chars.add(currentCharacter);
+        
         cursor.close();
         return chars;
     }
@@ -804,6 +808,9 @@ public class DbAdapter {
             
             currentWord.addCharacter(cursor.getString(charIdColumn));
         }
+        
+        // Add last word
+        words.add(currentWord);
         
         cursor.close();
         return words;
