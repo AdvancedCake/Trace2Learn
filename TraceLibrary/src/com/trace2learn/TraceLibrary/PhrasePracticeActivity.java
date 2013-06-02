@@ -24,13 +24,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class PhrasePracticeActivity extends TraceBaseActivity {
-
-    private DbAdapter dba;
 
     private Mode    currentMode = null;
     private String  lessonID = null;
@@ -83,9 +80,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
 
         playbackPanes  = new ArrayList<CharacterPlaybackPane>();
         tracePanes     = new ArrayList<CharacterTracePane>();
-
-        dba = new DbAdapter(this);
-        dba.open();
         
         prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
@@ -107,7 +101,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
         if (soundPool != null) {
             soundPool.release();
         }
@@ -120,7 +113,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         traceButton = (Button)       findViewById(R.id.trace_button);
         quizToggle  = (ToggleButton) findViewById(R.id.quiz_toggle);
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
-//        animator    = (ViewAnimator) findViewById(R.id.view_slot);
         charSlot    = (FrameLayout)  findViewById(R.id.character_slot);
         thumbnails  = (LinearLayout) findViewById(R.id.thumbnail_gallery);
         soundIcon   = (ImageView)    findViewById(R.id.sound_button);
@@ -234,7 +226,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             playbackPanes.clear();
             
             String wordId = bun.getString("wordId");
-            word = dba.getWordById(wordId);
+            word = Toolbox.dba.getWordById(wordId);
             setWord(word);
             updateTags();
 
@@ -244,7 +236,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             } else {
                 phraseIndex = bun.getInt("index");
                 collectionSize = bun.getInt("collectionSize");
-                lessonName = dba.getLessonById(lessonID).getLessonName();
+                lessonName = Toolbox.dba.getLessonById(lessonID).getLessonName();
                 titleView.setText(lessonName + " - " + phraseIndex + 
                         " of " + collectionSize);
             }
@@ -306,7 +298,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         Context context = getApplicationContext();
         int index = 0;
         for(String id : ids) {
-            LessonCharacter ch = dba.getCharacterById(id);
+            LessonCharacter ch = Toolbox.dba.getCharacterById(id);
             ImageView iv = new ImageView(context);
             iv.setBackgroundColor(thumbBg);
             iv.setImageBitmap(BitmapFactory.buildBitmap(ch, 64, 64));

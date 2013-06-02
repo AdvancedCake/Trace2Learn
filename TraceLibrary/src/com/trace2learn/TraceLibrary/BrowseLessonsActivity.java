@@ -21,14 +21,12 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 public class BrowseLessonsActivity extends TraceListActivity {
 
-	private DbAdapter dba; 
 	private ArrayList<Lesson> items;
 	private LessonListAdapter adapter;
     private LayoutInflater vi;
@@ -59,15 +57,13 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	@Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.browse_lessons);
-        dba = new DbAdapter(this);
-        dba.open(); //opening the connection to database        
+        setContentView(R.layout.browse_lessons);   
         
         items = new ArrayList<Lesson>(); 
-        List<String> ids = dba.getAllLessonIds();
+        List<String> ids = Toolbox.dba.getAllLessonIds();
         for(String id : ids){
-        	Lesson lesson = dba.getLessonById(id);
-        	lesson.setTagList(dba.getLessonTags(id));
+        	Lesson lesson = Toolbox.dba.getLessonById(id);
+        	lesson.setTagList(Toolbox.dba.getLessonTags(id));
         	items.add(lesson);
         }
         
@@ -85,7 +81,6 @@ public class BrowseLessonsActivity extends TraceListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     };
 
 	@Override  
@@ -141,7 +136,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	  // Delete lesson
 	  if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
 		  String id = le.getStringId();
-		  String result = dba.deleteLesson(id);
+		  String result = Toolbox.dba.deleteLesson(id);
 		  Log.e("Result", result);
 		  if (result == null) {
 			  Toolbox.showToast(context, "Could not delete the collection");
@@ -177,7 +172,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
 	  // Toggle User-Defined
 	  else if (menuItemIndex == ContextMenuItem.TOGGLE_USER_DEFINED.ordinal()) {
 	      le.setUserDefined(!le.isUserDefined());
-	      boolean result = dba.saveLessonUserDefined(le.getStringId(),
+	      boolean result = Toolbox.dba.saveLessonUserDefined(le.getStringId(),
 	              le.isUserDefined(), -1 * le.getSort());
 	      if (result) {
 	          le.setSort(-1 * le.getSort());
@@ -220,7 +215,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
           
           Log.i("BrowseLessons.move", "Attempting to swap " +
                   le.getLessonName() + " and " + other.getLessonName());
-          boolean result = dba.swapLessons(le.getStringId(), le.getSort(),
+          boolean result = Toolbox.dba.swapLessons(le.getStringId(), le.getSort(),
                                            other.getStringId(), other.getSort());
           if (result) { // success, so update the local copy
               Log.i("BrowseLessons.move", "Success");

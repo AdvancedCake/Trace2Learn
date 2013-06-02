@@ -10,7 +10,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
@@ -51,7 +50,6 @@ public class ShoppingCartActivity extends Activity {
     private Button filterButton;
     private TextView filterStatus;
 
-    private DbAdapter dba;
     private LayoutInflater vi;
     
     private Lesson allChars = new Lesson();
@@ -79,8 +77,6 @@ public class ShoppingCartActivity extends Activity {
             }
         });
 
-        dba = new DbAdapter(this);
-        dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         getType();
@@ -94,7 +90,6 @@ public class ShoppingCartActivity extends Activity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     };
 
     /**
@@ -143,10 +138,10 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with characters
      */
     private void getChars() {
-        List<String> ids = dba.getAllCharIds();
+        List<String> ids = Toolbox.dba.getAllCharIds();
         source = new ArrayList<LessonItem>(ids.size());
         for (String id : ids) {
-            LessonCharacter character = dba.getCharacterById(id);
+            LessonCharacter character = Toolbox.dba.getCharacterById(id);
             source.add(character);
         }
     }
@@ -155,10 +150,10 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with words
      */
     private void getWords() {
-        List<String> ids = dba.getAllWordIds();
+        List<String> ids = Toolbox.dba.getAllWordIds();
         source = new ArrayList<LessonItem>(ids.size());
         for(String id : ids){
-            LessonWord word = dba.getWordById(id);
+            LessonWord word = Toolbox.dba.getWordById(id);
             source.add(word);
         }
     }
@@ -167,11 +162,11 @@ public class ShoppingCartActivity extends Activity {
      * Populate the list with lessons
      */
     private void getLessons() {
-        List<String> ids = dba.getAllLessonIds();
+        List<String> ids = Toolbox.dba.getAllLessonIds();
         source = new ArrayList<LessonItem>(ids.size());
         for(String id : ids){
-            Lesson le = dba.getLessonById(id);
-            le.setTagList(dba.getLessonTags(id));
+            Lesson le = Toolbox.dba.getLessonById(id);
+            le.setTagList(Toolbox.dba.getLessonTags(id));
             source.add(le);
         }
     }
@@ -344,10 +339,10 @@ public class ShoppingCartActivity extends Activity {
                 String xml = "<ttw name=\"" + filename + "\">\n";
                 for (LessonItem item : cart) {
                     if (item == allChars) {
-                        List<String> ids = dba.getAllCharIds();
+                        List<String> ids = Toolbox.dba.getAllCharIds();
                         source = new ArrayList<LessonItem>(ids.size());
                         for (String id : ids) {
-                            LessonCharacter character = dba.getCharacterById(id);
+                            LessonCharacter character = Toolbox.dba.getCharacterById(id);
                             if (!cart.contains(character) &&
                                     !dependencies.contains(character)) {
                                 dependencies.add(character);

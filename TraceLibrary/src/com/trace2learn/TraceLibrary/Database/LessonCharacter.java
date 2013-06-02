@@ -2,11 +2,14 @@ package com.trace2learn.TraceLibrary.Database;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
+
+import com.trace2learn.TraceLibrary.Toolbox;
 
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -19,28 +22,61 @@ public class LessonCharacter extends LessonItem {
 	private List<Stroke> _strokes;
 	
 	public LessonCharacter() {
-		_type = ItemType.CHARACTER;
-		_strokes = new ArrayList<Stroke>();
-		_stringid = null;
+		this(null, true);
 	}
 	
 	public LessonCharacter(String id) {
-		this();
-		_stringid = id;
+	    this(id, true);
 	}
 	
-	public synchronized void addStroke(Stroke stroke) {
+	public LessonCharacter(boolean init) {
+	    this(null, init);
+	}
+	
+	public LessonCharacter(String id, boolean init) {
+        _type = ItemType.CHARACTER;
+        _strokes = new ArrayList<Stroke>();
+		_stringid = id;
+        initialized = init;
+	}
+	
+    @SuppressWarnings("unchecked")
+	protected synchronized void initialize() {
+        Object[] details = Toolbox.dba.getCharacterDetails(_stringid);
+        _strokes    = (List<Stroke>) details[0];
+        _tags       = (List<String>) details[1];
+        keyValues   = (LinkedHashMap<String, String>) details[2];
+        initialized = true;
+	}
+	
+    public synchronized void addStroke(Stroke stroke) {
+	    synchronized (this) {
+            if (!initialized) {
+    	        initialize();
+    	    }
+	    }
 		_strokes.add(stroke);
 	}
 	
 	public synchronized List<Stroke> getStrokes() {
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        // TODO Why do we make a copy of _strokes??
 		List<Stroke> l = new ArrayList<Stroke>();
 		l.addAll(_strokes);
 		return l;
 	}
 	
 	public synchronized Stroke getStroke(int i) {
-		return _strokes.get(i);
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        return _strokes.get(i);
 	}
 	
 	/**
@@ -49,7 +85,12 @@ public class LessonCharacter extends LessonItem {
 	 * @return - true if the stroke was removed, false otherwise
 	 */
 	public synchronized boolean removeStroke(Stroke stroke) {
-		return _strokes.remove(stroke);
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        return _strokes.remove(stroke);
 	}
 	
 	/**
@@ -58,11 +99,22 @@ public class LessonCharacter extends LessonItem {
 	 * @return - the stroke that was removed from the character
 	 */
 	public synchronized Stroke removeStroke(int i) {
-		return _strokes.remove(i);
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        return _strokes.remove(i);
 	}
 	
 	public synchronized Stroke removeLastStroke() {
-	    if (_strokes.size() == 0) {
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+	    
+        if (_strokes.size() == 0) {
 	        return null;
 	    }
 	    return _strokes.remove(_strokes.size() - 1);
@@ -72,7 +124,12 @@ public class LessonCharacter extends LessonItem {
 	 * removes all of the strokes from the character
 	 */
 	public synchronized void clearStrokes()	{
-		_strokes.clear();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        _strokes.clear();
 	}
 
 	/**
@@ -83,7 +140,13 @@ public class LessonCharacter extends LessonItem {
 	 * @param newIndex - the new position of the stroke in the order
 	 */
 	public synchronized void reorderStroke(int oldIndex, int newIndex) {
-		if (oldIndex < 0 || oldIndex >= _strokes.size()) {
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        
+	    if (oldIndex < 0 || oldIndex >= _strokes.size()) {
 			throw new IndexOutOfBoundsException("Index: " + oldIndex + " is not within the bounds of a " + _strokes.size() + " length list");
 		}
 		if (newIndex < 0 || newIndex >= _strokes.size()) {
@@ -110,7 +173,12 @@ public class LessonCharacter extends LessonItem {
 	}
 
 	public synchronized int getNumStrokes() {
-		return _strokes.size();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+        return _strokes.size();
 	}
 	
 	/**
@@ -125,7 +193,12 @@ public class LessonCharacter extends LessonItem {
 	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height) {
-		Matrix matrix = new Matrix();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+	    Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
 		Log.i("DRAW", "Strokes: " + _strokes.size());
 		matrix.postScale(width, height);
@@ -153,6 +226,11 @@ public class LessonCharacter extends LessonItem {
 	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time) {
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
 		Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
 		Log.i("DRAW", "Strokes: " + _strokes.size());
@@ -180,6 +258,12 @@ public class LessonCharacter extends LessonItem {
 	 * @return an XML string
 	 */
 	public String toXml() {
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
+	    
 	    String xml = "<character id=\"" + _stringid + "\">\n";
 	    
 	    for (String tag : _tags) {
@@ -214,7 +298,7 @@ public class LessonCharacter extends LessonItem {
             String id = elem.getAttribute("id");
             Log.i("Import Character", "id: " + id);
             
-            LessonCharacter c = new LessonCharacter(id);
+            LessonCharacter c = new LessonCharacter(id, true);
             
             NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {

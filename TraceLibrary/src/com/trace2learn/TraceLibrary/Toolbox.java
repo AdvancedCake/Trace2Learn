@@ -1,10 +1,11 @@
 package com.trace2learn.TraceLibrary;
 
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 
 public class Toolbox {
@@ -23,6 +27,7 @@ public class Toolbox {
     public static final String PREFS_FIRST_START = "firstStart";
     public static final String PREFS_PHRASE_MODE = "phraseMode";
     public static final String PREFS_IS_FULL_VER = "isFullVersion";
+    public static final String PREFS_LAST_VER_NUMBER = "lastVersionNumber";
     
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
@@ -31,6 +36,12 @@ public class Toolbox {
     
     // Sound Playback
     public static final float VOLUME = 1;
+    
+    // Character Cache
+    public static List<LessonItem> characters;
+    
+    public static DbAdapter dba;
+    public static boolean dbaOpened = false;
     
     public static final Locale locale = Locale.getDefault();
     
@@ -101,5 +112,15 @@ public class Toolbox {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }    
+    }
+    
+    public static void initDba(Context context) {
+        if (dbaOpened) {
+            return;
+        }
+        dbaOpened = true;
+        dba = new DbAdapter(context);
+        dba.open();
+        characters = Toolbox.dba.getAllChars();
+    }
 }

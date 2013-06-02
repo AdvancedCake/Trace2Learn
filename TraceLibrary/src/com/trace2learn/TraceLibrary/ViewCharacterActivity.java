@@ -9,7 +9,6 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
 public class ViewCharacterActivity extends TraceBaseActivity {
@@ -24,8 +23,6 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	private Button right2;
 	
 	private TextView tagText;
-
-	private DbAdapter dbHelper;
 
 	private Mode currentMode = Mode.INVALID;
 
@@ -57,12 +54,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
         right2 = (Button) findViewById(R.id.right2Button);
         right1 = (Button) findViewById(R.id.right1Button);
 
-		setCharacter(new LessonCharacter());
-
 		tagText = (TextView) this.findViewById(R.id.tag_list);
-
-		dbHelper = new DbAdapter(this);
-		dbHelper.open();
 
 		initializeMode();
 
@@ -71,7 +63,6 @@ public class ViewCharacterActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dbHelper.close();
     };
 
 	/**
@@ -83,7 +74,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 		Bundle bun = getIntent().getExtras();
 		if (bun != null && bun.containsKey("mode")) {
 			String mode = bun.getString("mode");
-            setCharacter(dbHelper.getCharacterById(bun.getString("charId")));
+            setCharacter(Toolbox.dba.getCharacterById(bun.getString("charId")));
             id_to_pass = bun.getString("charId");
             updateTags();
             
@@ -93,6 +84,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 			    setCharacterDisplayPane();
 			}
 		} else { // creation mode
+		    setCharacter(new LessonCharacter(true));
 			setCharacterCreationPane();
 		}
 	}
@@ -181,7 +173,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 	{
 		if (id_to_pass !=null)
 		{
-			LessonCharacter ch = dbHelper.getCharacterById(id_to_pass);
+			LessonCharacter ch = Toolbox.dba.getCharacterById(id_to_pass);
 			
 			StringBuilder sb = new StringBuilder();
 			sb.append(ch.getKeyValuesToString());
@@ -264,9 +256,9 @@ public class ViewCharacterActivity extends TraceBaseActivity {
     private void saveChar(LessonCharacter character) {
         String id = character.getStringId();
         if(id == null)
-            dbHelper.addCharacter(character);
+            Toolbox.dba.addCharacter(character);
         else
-            dbHelper.modifyCharacter(character);
+            Toolbox.dba.modifyCharacter(character);
         Log.e("Adding to DB", character.getStringId());
         id_to_pass = character.getStringId();
         Toolbox.showToast(getApplicationContext(), "Character saved");

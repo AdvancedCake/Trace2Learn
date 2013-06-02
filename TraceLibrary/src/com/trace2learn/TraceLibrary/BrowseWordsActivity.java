@@ -35,13 +35,11 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class BrowseWordsActivity extends TraceListActivity {
-    private DbAdapter dba;
     private List<LessonItem> source;  // list of all words
     private List<LessonItem> display; // list of items being displayed
     private LessonItemListAdapter adapter;
@@ -92,8 +90,6 @@ public class BrowseWordsActivity extends TraceListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_words);
-        dba = new DbAdapter(this);
-        dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
         // Set admin privilege
@@ -136,11 +132,11 @@ public class BrowseWordsActivity extends TraceListActivity {
         lessonId = this.getIntent().getStringExtra("ID");
         if (lessonId == null) {
             userDefined = false;
-            source = dba.getAllWords();
+            source = Toolbox.dba.getAllWords();
             lessonName.setText(R.string.all_words);
             infoButton.setVisibility(View.GONE);
         } else {
-            Lesson les = dba.getLessonById(lessonId);
+            Lesson les = Toolbox.dba.getLessonById(lessonId);
             String name = les.getLessonName();
             userDefined = les.isUserDefined();
             int size = les.length();
@@ -173,7 +169,6 @@ public class BrowseWordsActivity extends TraceListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     };
 
 
@@ -256,7 +251,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         else if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
             final String id = lw.getStringId();
             if (lessonId == null) { // browsing all phrases - delete the phrase
-                Boolean success = dba.deleteWord(id);
+                Boolean success = Toolbox.dba.deleteWord(id);
                 if (!success) {
                     Toolbox.showToast(context, "Could not delete the phrase");
                     return false;
@@ -268,7 +263,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                 }
             } else { // remove from this lesson
                 // check if phrase is part of any other collections
-                if (!dba.isWordInManyLessons(id)) { // phrase is only in this collection
+                if (!Toolbox.dba.isWordInManyLessons(id)) { // phrase is only in this collection
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
                     builder.setTitle(R.string.phrase_deleted);
                     builder.setMessage(R.string.phrase_deleted_text);
@@ -276,7 +271,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             collectionsChanged = true;
-                            Boolean success = dba.deleteWord(id);
+                            Boolean success = Toolbox.dba.deleteWord(id);
                             if (!success) {
                                 Toolbox.showToast(context, "Could not remove the phrase");
                             } else {
@@ -294,7 +289,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                     return true;
                 } else {
                     collectionsChanged = true;
-                    Boolean success = dba.removeWordFromLesson(lessonId, id);
+                    Boolean success = Toolbox.dba.removeWordFromLesson(lessonId, id);
                     if (!success) {
                         Toolbox.showToast(context, "Could not remove the phrase");
                         return false;
@@ -335,7 +330,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             if (lessonId == null) { // browsing all words
                 Log.i("Move", "Attempting to swap " + lw.getStringId() +
                         " and " + other.getStringId());
-                result = dba.swapWords(lw.getStringId(), lw.getSort(), 
+                result = Toolbox.dba.swapWords(lw.getStringId(), lw.getSort(), 
                                        other.getStringId(), other.getSort());
                 if (result) {
                     // success, so update the local copy
@@ -351,7 +346,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             } else { // viewing a specific lesson
                 Log.i("Move", "Attempting to swap " + lw.getStringId() +
                         " and " + other.getStringId());
-                result = dba.swapWordsInLesson(lessonId, lw.getStringId(), 
+                result = Toolbox.dba.swapWordsInLesson(lessonId, lw.getStringId(), 
                                                other.getStringId());
                 if (result) {
                     // success, so update the local copy
@@ -395,9 +390,9 @@ public class BrowseWordsActivity extends TraceListActivity {
             // create a 300px width and 470px height PopupWindow
             List<String> allLessons;
             if (isAdmin) {
-                allLessons = dba.getAllLessonNames();
+                allLessons = Toolbox.dba.getAllLessonNames();
             } else {
-                allLessons = dba.getAllUserLessonNames();
+                allLessons = Toolbox.dba.getAllUserLessonNames();
             }
             Log.e("numLessons", Integer.toString(allLessons.size()));
             final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
@@ -412,7 +407,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                     String name = ((String)lessonList.getItemAtPosition(position));
                     Log.e("name",name);
-                    String success = dba.addWordToLesson(name, lw.getStringId());
+                    String success = Toolbox.dba.addWordToLesson(name, lw.getStringId());
                     Log.e("adding phrase",success);
                     Toolbox.showToast(getApplicationContext(), "Successfully Added");
                     window.dismiss();
@@ -435,7 +430,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         Lesson lesson = new Lesson(!isAdmin);
         lesson.setName(name);
         lesson.addWord(lw.getStringId());
-        dba.addLesson(lesson);
+        Toolbox.dba.addLesson(lesson);
         Toolbox.showToast(context, "Successfully Created");
         window.dismiss();
     }

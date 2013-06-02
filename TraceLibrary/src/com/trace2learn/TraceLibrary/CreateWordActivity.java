@@ -32,7 +32,6 @@ import android.widget.ListView;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
@@ -40,7 +39,6 @@ import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class CreateWordActivity extends TraceBaseActivity {
     
-    private DbAdapter             dba;
     private LessonWord            newWord;
     private List<LessonItem>      source;  // list of all characters
     private List<LessonItem>      display; // list of items being displayed
@@ -60,7 +58,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     
     private boolean isAdmin;
     
-    private int thumbBg;
+    private int thumbBgColor;
     
     // Lesson popup views
     private PopupWindow window;
@@ -84,9 +82,6 @@ public class CreateWordActivity extends TraceBaseActivity {
         getViews();
         getHandlers();
         
-        dba = new DbAdapter(this);
-        dba.open();
-
         SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
                 MODE_PRIVATE);
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
@@ -95,7 +90,7 @@ public class CreateWordActivity extends TraceBaseActivity {
 
         newWord = new LessonWord();
         
-        thumbBg = getResources().getColor(R.color.thumb_background);
+        thumbBgColor = getResources().getColor(R.color.thumb_background);
 
         getChars();
         displayAllChars();
@@ -104,7 +99,6 @@ public class CreateWordActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     }
     
     private void getViews() {
@@ -127,7 +121,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 String charId = item.getStringId();
                 newWord.addCharacter(charId);
                 ImageView iv = new ImageView(getApplicationContext());
-                iv.setBackgroundColor(thumbBg);
+                iv.setBackgroundColor(thumbBgColor);
                 iv.setImageBitmap(BitmapFactory.buildBitmap(item, 64, 64));
                 thumbnails.addView(iv);
             }
@@ -177,11 +171,11 @@ public class CreateWordActivity extends TraceBaseActivity {
             	// optimization - if word is a single character,
             	// than copy all character tags to the new word
                 if(newWord.length() == 1){
-                	LessonCharacter lc = dba.getCharacterById(newWord.getCharacterId(0));
+                	LessonCharacter lc = Toolbox.dba.getCharacterById(newWord.getCharacterId(0));
                 	newWord.setTagList(lc.getTags());
                 	newWord.setKeyValues(lc.getKeyValues());
                 }
-                if(newWord.length() > 0 && dba.addWord(newWord)){
+                if(newWord.length() > 0 && Toolbox.dba.addWord(newWord)){
                     Toolbox.showToast(context, "Word saved");
                     initiatePopupWindow();
                     return;
@@ -201,7 +195,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     }
     
     private void getChars() {
-        source = dba.getAllChars();
+        source = Toolbox.characters;
     }
 
     /**
@@ -236,9 +230,9 @@ public class CreateWordActivity extends TraceBaseActivity {
             // create a 300px width and 470px height PopupWindow
             List<String> allLessons;
             if (isAdmin) {
-                allLessons = dba.getAllLessonNames();
+                allLessons = Toolbox.dba.getAllLessonNames();
             } else {
-                allLessons = dba.getAllUserLessonNames();
+                allLessons = Toolbox.dba.getAllUserLessonNames();
             }
             Log.e("numLessons", Integer.toString(allLessons.size()));
             final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
@@ -253,7 +247,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
                     String name = ((String)lessonList.getItemAtPosition(position));
                     Log.e("name",name);
-                    String success = dba.addWordToLesson(name, newWord.getStringId());
+                    String success = Toolbox.dba.addWordToLesson(name, newWord.getStringId());
                     Log.e("adding word",success);
                     window.dismiss();
                     createTags();
@@ -276,7 +270,7 @@ public class CreateWordActivity extends TraceBaseActivity {
         Lesson lesson = new Lesson(!isAdmin);
         lesson.setName(name);
         lesson.addWord(newWord.getStringId());
-        dba.addLesson(lesson);
+        Toolbox.dba.addLesson(lesson);
         window.dismiss();
         createTags();
     }

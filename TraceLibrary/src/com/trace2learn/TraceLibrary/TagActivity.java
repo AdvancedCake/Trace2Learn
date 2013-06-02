@@ -34,8 +34,6 @@ public class TagActivity extends TraceBaseActivity {
     private static final String TagDeleteSuccessMsg = "Deleted the tag successfully.";
     private static final String TagDeleteErrorMsg = "Failed to delete the tag.";
 
-    private DbAdapter mDbHelper;
-
     //Controls
     private EditText tagEntry;
     private EditText keyEntry;
@@ -73,10 +71,6 @@ public class TagActivity extends TraceBaseActivity {
         addIdButton  = (Button)   findViewById(R.id.add_key_value_pair_button);
         listView     = (ListView) findViewById(R.id.list);
         
-
-        mDbHelper = new DbAdapter(this);
-        mDbHelper.open();     
-
         Log.e("ID",stringid);
         Log.e("TYPE",type.toString());
         
@@ -89,7 +83,7 @@ public class TagActivity extends TraceBaseActivity {
         case WORD:
             currentKeys = new ArrayList<String>();
             currentKeyVals = new ArrayList<String>();
-            keyValMap = mDbHelper.getKeyValues(stringid, type);
+            keyValMap = Toolbox.dba.getKeyValues(stringid, type);
             for(Map.Entry<String, String> entry : keyValMap.entrySet()) {
                 String k = entry.getKey();
                 String v = entry.getValue();
@@ -108,10 +102,10 @@ public class TagActivity extends TraceBaseActivity {
         switch(type)
         {
             case CHARACTER:
-                currentTags = mDbHelper.getCharacterTags(stringid);
+                currentTags = Toolbox.dba.getCharacterTags(stringid);
                 break;
             case WORD:
-                currentTags = mDbHelper.getWordTags(stringid);
+                currentTags = Toolbox.dba.getWordTags(stringid);
                 break;
             default:
                 Log.e("Tag", "Unsupported Type");
@@ -125,10 +119,10 @@ public class TagActivity extends TraceBaseActivity {
         // pre-populate pinyin key-value, for words only
         if(type == ItemType.WORD){
     		// retrieve chars that make up word
-    		LessonWord currWord = mDbHelper.getWordById(stringid);
+    		LessonWord currWord = Toolbox.dba.getWordById(stringid);
     		List<String> chars = currWord.getCharacterIds();
     		for(int i = 0; i < chars.size(); i++){
-    			Map<String,String> charkeys = mDbHelper.getKeyValues(chars.get(i), ItemType.CHARACTER);
+    			Map<String,String> charkeys = Toolbox.dba.getKeyValues(chars.get(i), ItemType.CHARACTER);
     			if(charkeys.containsKey(Toolbox.PINYIN_KEY)){
     				valueEntry.setText( valueEntry.getText().toString() + charkeys.get(Toolbox.PINYIN_KEY) );
     			}
@@ -150,7 +144,6 @@ public class TagActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mDbHelper.close();
     };
 
     @Override
@@ -182,21 +175,21 @@ public class TagActivity extends TraceBaseActivity {
             {
                 case CHARACTER:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(stringid,
+                        isSqlQuerySuccessful = Toolbox.dba.deleteKeyValue(stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteCharTag(stringid,
+                        isSqlQuerySuccessful = Toolbox.dba.deleteCharTag(stringid,
                                 selectedItem);
                     }
                     break;
                 case WORD:
                     if (isID) {
-                        isSqlQuerySuccessful = mDbHelper.deleteKeyValue(stringid,
+                        isSqlQuerySuccessful = Toolbox.dba.deleteKeyValue(stringid,
                                 type, currentKeys.get(position));
                     }
                     else {
-                        isSqlQuerySuccessful = mDbHelper.deleteWordTag(stringid,
+                        isSqlQuerySuccessful = Toolbox.dba.deleteWordTag(stringid,
                                 selectedItem);
                     }
                     break;
@@ -273,7 +266,7 @@ public class TagActivity extends TraceBaseActivity {
                 String key   = currentKeys.get(position);
                 String other = currentKeys.get(otherPos);
                 
-                result = mDbHelper.swapKeyValues(table, stringid, key, other);
+                result = Toolbox.dba.swapKeyValues(table, stringid, key, other);
                 
                 Log.e("Move result", Boolean.toString(result));
                 if (!result) {
@@ -326,7 +319,7 @@ public class TagActivity extends TraceBaseActivity {
                 switch(type){
                 	case CHARACTER:
                 	case WORD:
-                		result = mDbHelper.swapTags(table, stringid, tag, other);
+                		result = Toolbox.dba.swapTags(table, stringid, tag, other);
                 		break;
                 	default:
                 		Log.e("Tag", "Unsupported Type");
@@ -401,10 +394,10 @@ public class TagActivity extends TraceBaseActivity {
             switch(type)
             {
                 case CHARACTER:
-                    mDbHelper.createCharTags(stringid, input);
+                    Toolbox.dba.createCharTags(stringid, input);
                     break;
                 case WORD:
-                    mDbHelper.createWordTags(stringid, input);
+                    Toolbox.dba.createWordTags(stringid, input);
                     break;
                 default:
                     Log.e("Tag", "Unsupported Type");
@@ -435,7 +428,7 @@ public class TagActivity extends TraceBaseActivity {
                 return;
             }
 
-            mDbHelper.createKeyValue(stringid, type, keyInput, valueInput);
+            Toolbox.dba.createKeyValue(stringid, type, keyInput, valueInput);
             // added it to db
             keyValMap.put(keyInput, valueInput);
             currentKeys.add(keyInput);

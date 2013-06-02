@@ -5,7 +5,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import android.app.AlertDialog;
@@ -29,7 +28,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 public class BrowseCharactersActivity extends TraceListActivity {
-	private DbAdapter dba;
 	private List<LessonItem> source;  // list of all characters
 	private List<LessonItem> display; // list of items being displayed
 	private LessonItemListAdapter adapter;
@@ -56,8 +54,6 @@ public class BrowseCharactersActivity extends TraceListActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_chars);
-        dba = new DbAdapter(this);
-        dba.open();
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         
         getViews();
@@ -80,7 +76,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
      * Populate the source list with characters
      */
     private void getChars() {
-        source = dba.getAllChars();
+        source = Toolbox.characters;
     }
     
     /**
@@ -103,7 +99,6 @@ public class BrowseCharactersActivity extends TraceListActivity {
 	@Override
 	protected void onDestroy() {
         super.onDestroy();
-	    dba.close();
 	};
 	
 	@Override  
@@ -156,7 +151,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
 	  // delete
 	  else if (menuItemIndex == menuItemsInd.Delete.ordinal()) {
 		  String id = lc.getStringId();
-		  boolean result = dba.deleteCharacter(id);
+		  boolean result = Toolbox.dba.deleteCharacter(id);
 		  Log.d("Result", Boolean.toString(result));
 		  if (result == false) {
 			  Toolbox.showToast(context, "This character belongs to a phrase!");
@@ -192,7 +187,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
 	      }
 	      
 	      LessonCharacter other = (LessonCharacter) display.get(otherPos);
-	      boolean result = dba.swapCharacters(lc.getStringId(), lc.getSort(), 
+	      boolean result = Toolbox.dba.swapCharacters(lc.getStringId(), lc.getSort(), 
 	                                          other.getStringId(), other.getSort());
 	      Log.e("Move result", Boolean.toString(result));
 	      if (result) {
