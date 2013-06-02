@@ -16,8 +16,7 @@ public class CharacterCreationPane extends DrawingPane {
 	
 	public CharacterCreationPane(Context c) {
 		super(c);
-
-		_character = new LessonCharacter();
+		_character = new LessonCharacter(true);
 		
 	}
 

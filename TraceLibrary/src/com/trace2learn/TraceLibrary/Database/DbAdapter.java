@@ -654,64 +654,28 @@ public class DbAdapter {
     }
     
     /**
-     * Get all LessonCharacters from the database.
+     * Get all LessonCharacters from the database. Only grabs their ids and
+     * sort values, and sets initialized to false.
      * 
      * @return A list of LessonCharacters.
      */
     public List<LessonItem> getAllChars() {
         List<LessonItem> chars = new ArrayList<LessonItem>();
-        Cursor cursor = mDb.rawQuery("SELECT b.CharId, a.sort, b.Stroke, b.PointX, b.PointY " +
-                "FROM " + CHAR_TABLE + " a INNER JOIN " + CHAR_DETAILS_TABLE + " b " +
-                "ON a." + CHAR_ID + "=b.CharId " +
-                "ORDER BY b.CharId ASC, b.Stroke ASC, b.OrderPoint ASC", null);
+        Cursor cursor = mDb.query(CHAR_TABLE, new String[] {CHAR_ID, "sort"},
+                null, null, null, null, CHAR_ID + " ASC");
         if (cursor == null) {
             return chars;
         }
         
-        int idColumn     = cursor.getColumnIndexOrThrow("CharId");
+        int idColumn     = cursor.getColumnIndexOrThrow(CHAR_ID);
         int sortColumn   = cursor.getColumnIndexOrThrow("sort");
-        int strokeColumn = cursor.getColumnIndexOrThrow("Stroke");
-        int pointXColumn = cursor.getColumnIndexOrThrow("PointX");
-        int pointYColumn = cursor.getColumnIndexOrThrow("PointY");
         
-        String          currentId = null;
-        LessonCharacter currentCharacter = null;
-        int             currentStrokeNumber = -1;
-        Stroke          currentStroke = null;
+        LessonCharacter c;
         while (cursor.moveToNext()) {
-            String id = cursor.getString(idColumn);
-            if (!id.equals(currentId)) {
-                if (currentCharacter != null) {
-                    currentCharacter.addStroke(currentStroke);
-                    currentStrokeNumber = -1;
-                    currentStroke = null;
-                    chars.add(currentCharacter);
-                }
-                currentCharacter = new LessonCharacter(id);
-                currentCharacter.setSort(cursor.getLong(sortColumn));
-                currentCharacter.setTagList(getCharacterTags(id));
-                currentCharacter.setKeyValues(getKeyValues(id,
-                        ItemType.CHARACTER));
-                currentId = id;
-            }
-
-            int stroke = cursor.getInt(strokeColumn);
-            if (stroke != currentStrokeNumber) {
-                if (currentStroke != null) {
-                    currentCharacter.addStroke(currentStroke);
-                }
-                currentStroke = new Stroke();
-                currentStrokeNumber = stroke;
-            }
-
-            currentStroke.addPoint(cursor.getFloat(pointXColumn),
-                    cursor.getFloat(pointYColumn));
-        }
-        
-        // Add last char
-        if (currentCharacter != null) {
-            currentCharacter.addStroke(currentStroke);
-            chars.add(currentCharacter);
+            c = new LessonCharacter(cursor.getString(idColumn), false);
+            c.setDatabase(this);
+            c.setSort(cursor.getLong(sortColumn));
+            chars.add(c);
         }
         
         cursor.close();
@@ -729,7 +693,6 @@ public class DbAdapter {
         Cursor mCursor =
                 mDb.query(true, CHAR_TABLE, new String[] {CHAR_ID}, CHAR_ID + "='" + id + "'", null,
                         null, null, null, null);
-        LessonCharacter c = new LessonCharacter();
         //if the character doesn't exists
         if (mCursor == null) {
             return null;
@@ -739,6 +702,9 @@ public class DbAdapter {
         }
         mCursor.close();
 
+        LessonCharacter c = new LessonCharacter(id, true);
+        c.setDatabase(this);
+        
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
         mCursor =
@@ -766,7 +732,6 @@ public class DbAdapter {
             while(mCursor.moveToNext());
             c.addStroke(s);
         }
-        c.setStringId(id);
         mCursor.close();
 
         mCursor =
@@ -786,6 +751,66 @@ public class DbAdapter {
         c.setKeyValues(getKeyValues(id, ItemType.CHARACTER));
         
         return c;
+    }
+    
+    /**
+     * Get the strokes, tags, and key-value pairs for a character in the
+     * database.
+     * 
+     * @param id ID of the character
+     * @return An array [List&lt;Stroke&gt; strokes, List&lt;String&gt; tags,
+     * LinkedHashMap&lt;String, String&gt; key-value pairs].
+     */
+    public Object[] getCharacterDetails(String id) {
+        mDb.beginTransaction();
+        
+        Object[] ret = new Object[3];
+        ret[0] = getCharacterStrokes(id);
+        ret[1] = getCharacterTags(id);
+        ret[2] = getKeyValues(id, ItemType.CHARACTER);
+        
+        mDb.setTransactionSuccessful();
+        mDb.endTransaction();
+        
+        return ret;
+    }
+    
+    public List<Stroke> getCharacterStrokes(String id) {
+        Cursor cursor = mDb.query(CHAR_DETAILS_TABLE,
+                new String[] {"CharId", "Stroke", "PointX", "PointY"},
+                "CharId=?", new String[] {id},
+                null, null, "Stroke ASC, OrderPoint ASC");
+        List<Stroke> strokes = new ArrayList<Stroke>();
+        if (cursor == null) {
+            return strokes;
+        }
+        
+        int strokeColumn = cursor.getColumnIndexOrThrow("Stroke");
+        int pointXColumn = cursor.getColumnIndexOrThrow("PointX");
+        int pointYColumn = cursor.getColumnIndexOrThrow("PointY");
+        
+        Stroke currentStroke = null;
+        int currentStrokeNumber = -1;
+        while (cursor.moveToNext()) {
+            int strokeNumber = cursor.getInt(strokeColumn);
+            if (currentStrokeNumber != strokeNumber) {
+                if (currentStroke != null) {
+                    strokes.add(currentStroke);
+                }
+                currentStroke = new Stroke();
+                currentStrokeNumber = strokeNumber;
+            }
+            
+            currentStroke.addPoint(cursor.getFloat(pointXColumn),
+                                   cursor.getFloat(pointYColumn));
+        }
+        
+        if (currentStroke != null) {
+            strokes.add(currentStroke);
+        }
+        
+        cursor.close();
+        return strokes;
     }
     
     public List<LessonItem> getAllWords() {

@@ -41,6 +41,11 @@ public class Lesson extends LessonItem {
         this._stringid     = id;
         this.isUserDefined = isUserDefined;
     }
+    
+    protected void initialize() {
+        // Not needed unless we ever pull lessons without associated details
+        initialized = true;
+    }
 
     public synchronized void addWord(String wordId) {
         _words.add(wordId);

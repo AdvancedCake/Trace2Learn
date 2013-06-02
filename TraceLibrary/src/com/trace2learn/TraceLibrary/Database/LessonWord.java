@@ -25,7 +25,12 @@ public class LessonWord extends LessonItem {
         _type       = ItemType.WORD;
         _characters = new ArrayList<String>();
 		_stringid   = id;
-	}		
+	}
+	
+    protected void initialize() {
+        // Not needed unless we ever pull lessons without associated details
+        initialized = true;
+    }
 	
 	//takes the id of a character, adds the id to internal characterid list
 	public void addCharacter(String charId){
@@ -44,21 +49,15 @@ public class LessonWord extends LessonItem {
 	 * Gets a list of the Characters that make up the word
 	 * @return
 	 */
-	public List<LessonCharacter> getCharacters()
-	{
+	public List<LessonCharacter> getCharacters() {
 		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_characters.size());
-		for(String id : _characters)
-		{
-			if(_db == null) 
-			{
-				chars.add(new LessonCharacter(id));
-			}
-			else
-			{
+		for(String id : _characters) {
+			if(_db == null) {
+				chars.add(new LessonCharacter(id, false));
+			} else {
 				LessonCharacter ch = _db.getCharacterById(id);
 				chars.add(ch);
 			}
-			
 		}
 		return chars;
 	}
@@ -113,19 +112,14 @@ public class LessonWord extends LessonItem {
 	 * @param height - the height of the bounding box in which the item should be drawn
 	 */
 	@Override
-	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height)
-	{
+	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height) {
 		int i = 0;
 		float charWidth = width/length();
-		for(String id : _characters)
-		{
+		for(String id : _characters) {
 			LessonCharacter character;
-			if(_db == null)
-			{
-				character = new LessonCharacter(id);
-			}
-			else
-			{
+			if(_db == null) {
+				character = new LessonCharacter(id, false);
+			} else {
 				character = _db.getCharacterById(id);
 			}
 			character.draw(canvas, paint, left + charWidth*i, top, charWidth, height);

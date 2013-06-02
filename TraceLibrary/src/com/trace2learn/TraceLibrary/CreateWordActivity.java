@@ -3,6 +3,7 @@ package com.trace2learn.TraceLibrary;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -60,7 +61,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     
     private boolean isAdmin;
     
-    private int thumbBg;
+    private int thumbBgColor;
     
     // Lesson popup views
     private PopupWindow window;
@@ -75,6 +76,9 @@ public class CreateWordActivity extends TraceBaseActivity {
     //initializes the list if all characters in the database
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Date d = new Date();
+        long start = d.getTime();
+        
         super.onCreate(savedInstanceState);
         filtered = false;
         numChars = 0;
@@ -95,10 +99,17 @@ public class CreateWordActivity extends TraceBaseActivity {
 
         newWord = new LessonWord();
         
-        thumbBg = getResources().getColor(R.color.thumb_background);
+        thumbBgColor = getResources().getColor(R.color.thumb_background);
 
         getChars();
         displayAllChars();
+
+        d = new Date();
+        long end = d.getTime();
+        
+        System.out.println("Start create: " + start);
+        System.out.println("End create: " + end);
+        System.out.println("Elapsed create: " + (end - start));
     }
     
     @Override
@@ -127,7 +138,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 String charId = item.getStringId();
                 newWord.addCharacter(charId);
                 ImageView iv = new ImageView(getApplicationContext());
-                iv.setBackgroundColor(thumbBg);
+                iv.setBackgroundColor(thumbBgColor);
                 iv.setImageBitmap(BitmapFactory.buildBitmap(item, 64, 64));
                 thumbnails.addView(iv);
             }
@@ -201,7 +212,18 @@ public class CreateWordActivity extends TraceBaseActivity {
     }
     
     private void getChars() {
+        Date d = new Date();
+        long start = d.getTime();
+        
         source = dba.getAllChars();
+        
+        d = new Date();
+        long end = d.getTime();
+        
+        System.out.println("Start: " + start);
+        System.out.println("End: " + end);
+        System.out.println("Elapsed: " + (end - start));
+        System.out.println("Got " + source.size() + " chars");
     }
 
     /**

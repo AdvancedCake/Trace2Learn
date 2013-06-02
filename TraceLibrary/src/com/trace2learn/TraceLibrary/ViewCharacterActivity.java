@@ -57,8 +57,6 @@ public class ViewCharacterActivity extends TraceBaseActivity {
         right2 = (Button) findViewById(R.id.right2Button);
         right1 = (Button) findViewById(R.id.right1Button);
 
-		setCharacter(new LessonCharacter());
-
 		tagText = (TextView) this.findViewById(R.id.tag_list);
 
 		dbHelper = new DbAdapter(this);
@@ -93,6 +91,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 			    setCharacterDisplayPane();
 			}
 		} else { // creation mode
+		    setCharacter(new LessonCharacter(true));
 			setCharacterCreationPane();
 		}
 	}
