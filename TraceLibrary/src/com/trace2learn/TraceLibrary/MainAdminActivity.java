@@ -55,6 +55,11 @@ public class MainAdminActivity extends TraceListActivity {
         // Set admin permissions
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, true);
         editor.commit();
+        
+        // Character Cache
+        Toolbox.dba = new DbAdapter(getApplicationContext());
+        Toolbox.dba.open();
+        Toolbox.characters = Toolbox.dba.getAllChars();
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu, APPS));
 
@@ -108,7 +113,11 @@ public class MainAdminActivity extends TraceListActivity {
         }
         	);
     }
-
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
 
     private void exportDatabase() {
         try {
@@ -154,14 +163,11 @@ public class MainAdminActivity extends TraceListActivity {
     	// - flag duplicate pinyin tags
     	// - flag phrases without pinyin tag
     	
-        // Initialize database adapter
-        DbAdapter dba = new DbAdapter(this);
-        dba.open();        
         String msg = ""; 		                
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
-        List<String> cids = dba.getAllCharIds();
+        List<String> cids = Toolbox.dba.getAllCharIds();
         for(String id : cids){
-        	LessonCharacter ch = dba.getCharacterById(id);
+        	LessonCharacter ch = Toolbox.dba.getCharacterById(id);
         	if(!ch.hasKey(Toolbox.PINYIN_KEY))
         		msg = msg + "Missing pinyin for " + ch.getTagsToString() + "\n";
         	if(!ch.hasKey(Toolbox.ID_KEY))
@@ -174,9 +180,9 @@ public class MainAdminActivity extends TraceListActivity {
         	}	
         }
         
-        List<String> wids = dba.getAllWordIds();
+        List<String> wids = Toolbox.dba.getAllWordIds();
         for(String wid : wids){
-        	LessonWord wd = dba.getWordById(wid);
+        	LessonWord wd = Toolbox.dba.getWordById(wid);
         	if(!wd.hasKey(Toolbox.PINYIN_KEY))
         		msg = msg + "Missing pinyin for phrase " + 
         				wd.getKeyValuesToString() + "/" +

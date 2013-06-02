@@ -10,6 +10,8 @@ import java.util.TreeSet;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.trace2learn.TraceLibrary.Toolbox;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
@@ -73,11 +75,7 @@ public class Lesson extends LessonItem {
 
     public synchronized List<LessonItem> getWords() {
         if (wordObjects == null) {
-            if (_db == null) {
-                Log.e("Lesson.getWords", "DbAdapter is null");
-                return null;
-            }
-            wordObjects = _db.getWordsFromLesson(_stringid);
+            wordObjects = Toolbox.dba.getWordsFromLesson(_stringid);
         }
         return wordObjects;
     }
@@ -188,11 +186,7 @@ public class Lesson extends LessonItem {
         synchronized (_words) {
             int word_position = 0;
             for (String word_id : _words) {
-                if (_db == null) {
-                    Log.d("Lesson.toXml()", "_db is null");
-                    return null;
-                } 
-                LessonWord w = _db.getWordById(word_id);
+                LessonWord w = Toolbox.dba.getWordById(word_id);
                 Log.d("Lesson.toXml()", " " + word_id);
                 if (w == null) Log.d("Lesson.toXml()", "word is null");
                 else sb.append(w.toXml(word_position++));

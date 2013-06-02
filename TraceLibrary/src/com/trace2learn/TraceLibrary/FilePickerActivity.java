@@ -18,7 +18,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
@@ -30,16 +29,12 @@ public class FilePickerActivity extends ListActivity {
     private File currentDir;
     private FileArrayAdapter adapter;
     private TextView currentView;
-    private DbAdapter dba;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.file_picker);
         currentView = (TextView) findViewById(R.id.current_dir);
-        
-        dba = new DbAdapter(this);
-        dba.open();
         
         String path = Environment.getExternalStorageDirectory().getAbsolutePath() +
                 "/data/" + getString(R.string.file_dir_name);
@@ -52,7 +47,6 @@ public class FilePickerActivity extends ListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     };
 
     @Override
@@ -118,8 +112,8 @@ public class FilePickerActivity extends ListActivity {
             // only want direct children
             if (e.getParentNode().getNodeName().equals("ttw")) {
                 LessonCharacter character = LessonCharacter.importFromXml(e);
-                if (dba.getCharacterById(character.getStringId()) == null) {
-                    dba.addCharacter(character);
+                if (Toolbox.dba.getCharacterById(character.getStringId()) == null) {
+                    Toolbox.dba.addCharacter(character);
                 }
             }
         }
@@ -139,17 +133,17 @@ public class FilePickerActivity extends ListActivity {
             if (e.getParentNode().getNodeName().equals("ttw")) {
                 Lesson lesson = Lesson.importFromXml(e);
                 
-                if (dba.getLessonById(lesson.getStringId()) == null) {
+                if (Toolbox.dba.getLessonById(lesson.getStringId()) == null) {
                     // add all of the words
                     List<LessonItem> words = lesson.getWords();
                     for (LessonItem word : words) {
-                        if (dba.getWordById(word.getStringId()) == null) {
-                            dba.addWord((LessonWord) word);
+                        if (Toolbox.dba.getWordById(word.getStringId()) == null) {
+                            Toolbox.dba.addWord((LessonWord) word);
                         }
                     }
                     
                     // add the lesson
-                    dba.addLesson(lesson);
+                    Toolbox.dba.addLesson(lesson);
                 }
             }
         }

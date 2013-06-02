@@ -1,10 +1,11 @@
 package com.trace2learn.TraceLibrary;
 
+import java.util.List;
 import java.util.Locale;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
@@ -12,6 +13,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 
 public class Toolbox {
@@ -31,6 +35,11 @@ public class Toolbox {
     
     // Sound Playback
     public static final float VOLUME = 1;
+    
+    // Character Cache
+    public static List<LessonItem> characters;
+    
+    public static DbAdapter dba;
     
     public static final Locale locale = Locale.getDefault();
     

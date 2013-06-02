@@ -16,7 +16,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 
 public class ChooseLessonCategoryActivity extends TraceBaseActivity {
@@ -79,13 +78,7 @@ public class ChooseLessonCategoryActivity extends TraceBaseActivity {
     }
     
     private boolean writeToDb() {
-        DbAdapter dba = new DbAdapter(getApplicationContext());
-        dba.open();
-        
-        boolean result = dba.saveLessonCategories(lessonId, selections);
-        
-        dba.close();
-        return result;
+        return Toolbox.dba.saveLessonCategories(lessonId, selections);
     }
     
     @Override

@@ -26,9 +26,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     /** The sort order of the item */
     protected long _sort;
     
-    /** Reference to the database in which the item is stored */
-    protected DbAdapter _db;
-    
     protected boolean initialized;
     
     /** Identifier for type of character **/
@@ -71,9 +68,6 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     
     public void setStringId(String id) {
         _stringid = id;
-    }
-    public void setDatabase(DbAdapter db) {
-        _db = db;
     }
     
     public String getStringId() {

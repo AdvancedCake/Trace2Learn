@@ -9,6 +9,8 @@ import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.trace2learn.TraceLibrary.Toolbox;
+
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
@@ -40,7 +42,7 @@ public class LessonCharacter extends LessonItem {
 	
     @SuppressWarnings("unchecked")
 	protected synchronized void initialize() {
-        Object[] details = _db.getCharacterDetails(_stringid);
+        Object[] details = Toolbox.dba.getCharacterDetails(_stringid);
         _strokes    = (List<Stroke>) details[0];
         _tags       = (List<String>) details[1];
         keyValues   = (LinkedHashMap<String, String>) details[2];

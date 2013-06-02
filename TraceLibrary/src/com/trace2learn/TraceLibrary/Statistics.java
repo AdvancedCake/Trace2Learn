@@ -1,6 +1,5 @@
 package com.trace2learn.TraceLibrary;
 
-
 import java.util.List;
 import java.util.LinkedHashMap;
 
@@ -23,13 +22,9 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer.Orientation;
 import org.achartengine.renderer.XYSeriesRenderer;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
 public class Statistics extends TraceBaseActivity {
-
-    
-    private DbAdapter dba;
     
     private TextView		countCollections;
     private TextView		countPhrases;
@@ -48,25 +43,21 @@ public class Statistics extends TraceBaseActivity {
         getViews();
         getHandlers();
         
-        // Initialize database adapter
-        dba = new DbAdapter(this);
-        dba.open();
-        
         String txt = "";
         int totalStrokes = 0;
         int maxStrokes = 0;
         int maxTally = 0;
  		
-        List<String> lids = dba.getAllLessonIds();
+        List<String> lids = Toolbox.dba.getAllLessonIds();
         txt += lids.size();
         countCollections.setText(txt);
                 
-        List<String> wids = dba.getAllWordIds();
+        List<String> wids = Toolbox.dba.getAllWordIds();
         txt = "";
         txt += wids.size();
         countPhrases.setText(txt);
 
-        List<String> cids = dba.getAllCharIds();
+        List<String> cids = Toolbox.dba.getAllCharIds();
         txt = "";
         txt += cids.size();
         countCharacters.setText(txt);
@@ -75,7 +66,7 @@ public class Statistics extends TraceBaseActivity {
         // of stroke counts across characters
         LinkedHashMap<Integer, Integer> strokeDistrib = new LinkedHashMap<Integer, Integer>();
         for(String id : cids){
-        	LessonCharacter ch = dba.getCharacterById(id);
+        	LessonCharacter ch = Toolbox.dba.getCharacterById(id);
         	int numStrokes = ch.getNumStrokes();
         	totalStrokes += numStrokes;
         	if(numStrokes > maxStrokes) maxStrokes = numStrokes;
@@ -171,7 +162,6 @@ public class Statistics extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     }
     	
 }

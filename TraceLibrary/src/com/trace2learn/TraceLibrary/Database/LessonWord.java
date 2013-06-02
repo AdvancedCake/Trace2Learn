@@ -8,6 +8,8 @@ import java.util.Map;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import com.trace2learn.TraceLibrary.Toolbox;
+
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.Log;
@@ -52,12 +54,8 @@ public class LessonWord extends LessonItem {
 	public List<LessonCharacter> getCharacters() {
 		ArrayList<LessonCharacter> chars = new ArrayList<LessonCharacter>(_characters.size());
 		for(String id : _characters) {
-			if(_db == null) {
-				chars.add(new LessonCharacter(id, false));
-			} else {
-				LessonCharacter ch = _db.getCharacterById(id);
-				chars.add(ch);
-			}
+		    LessonCharacter ch = Toolbox.dba.getCharacterById(id);
+		    chars.add(ch);
 		}
 		return chars;
 	}
@@ -116,12 +114,7 @@ public class LessonWord extends LessonItem {
 		int i = 0;
 		float charWidth = width/length();
 		for(String id : _characters) {
-			LessonCharacter character;
-			if(_db == null) {
-				character = new LessonCharacter(id, false);
-			} else {
-				character = _db.getCharacterById(id);
-			}
+			LessonCharacter character = Toolbox.dba.getCharacterById(id);
 			character.draw(canvas, paint, left + charWidth*i, top, charWidth, height);
 			i++;
 		}

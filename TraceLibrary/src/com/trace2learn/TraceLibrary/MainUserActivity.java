@@ -44,9 +44,19 @@ public class MainUserActivity extends TraceBaseActivity {
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, false);
         editor.commit();
         
+        // Character Cache
+        Toolbox.dba = new DbAdapter(getApplicationContext());
+        Toolbox.dba.open();
+        Toolbox.characters = Toolbox.dba.getAllChars();
+        
         if (!isFullVer) {
             ((TextView) findViewById(R.id.title)).setText(R.string.user_app_name_free);
         }
+    }
+    
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
     
     private void getViews() {
@@ -98,8 +108,7 @@ public class MainUserActivity extends TraceBaseActivity {
     private boolean initializeDatabase() {
         Log.i("Initialize DB", "Attempting to import database");
 
-        String dbPath = getDatabasePath(
-                DbAdapter.DATABASE_NAME).getAbsolutePath();
+        String dbPath = getDatabasePath(DbAdapter.DATABASE_NAME).getAbsolutePath();
 
         try {
             // Open the .db file in your assets directory

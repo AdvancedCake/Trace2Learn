@@ -19,7 +19,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCategory;
 
@@ -32,7 +31,6 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
     private String                    narrative;
     private SortedSet<LessonCategory> categories;
     
-    private DbAdapter         dba;
     private SharedPreferences prefs;
     
     private TextView     nameView;
@@ -50,13 +48,11 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         
         // Initialize database adapter
-        dba = new DbAdapter(this);
-        dba.open();
         
         // Grab the extras
         intent     = getIntent();
         lessonId   = intent.getStringExtra("ID");
-        lesson     = dba.getLessonById(lessonId);
+        lesson     = Toolbox.dba.getLessonById(lessonId);
         lessonName = lesson.getLessonName();
         categories = lesson.getCategories();
         narrative  = lesson.getNarrative();
@@ -77,7 +73,6 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        dba.close();
     }
     
     private void getViews() {
@@ -156,7 +151,7 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
                 narrative = edit.getText().toString();
                 lesson.setNarrative(narrative);
                 narrativeView.setText(narrative);
-                dba.saveLessonNarrative(lessonId, narrative);
+                Toolbox.dba.saveLessonNarrative(lessonId, narrative);
             }
         });
         

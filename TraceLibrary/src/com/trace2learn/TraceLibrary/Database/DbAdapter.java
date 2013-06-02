@@ -2,6 +2,7 @@ package com.trace2learn.TraceLibrary.Database;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -21,6 +22,7 @@ import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
+import com.trace2learn.TraceLibrary.Toolbox;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
 public class DbAdapter {
@@ -535,8 +537,7 @@ public class DbAdapter {
      * @param c character to be added to the database
      * @return true if character is added to DB.  False on error.
      */
-    public boolean addCharacter(LessonCharacter c)
-    {
+    public boolean addCharacter(LessonCharacter c) {
         ContentValues initialCharValues = new ContentValues();
         String charId = c.getStringId();
         if (charId != null) { // id already initialized, keep it
@@ -620,7 +621,10 @@ public class DbAdapter {
                 pointNumber++;
             }
             strokeNumber++;
-        }         
+        }
+        
+        Toolbox.characters.add(c);
+        Collections.sort(Toolbox.characters);
         
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
@@ -674,7 +678,6 @@ public class DbAdapter {
         LessonCharacter c;
         while (cursor.moveToNext()) {
             c = new LessonCharacter(cursor.getString(idColumn), false);
-            c.setDatabase(this);
             c.setSort(cursor.getLong(sortColumn));
             chars.add(c);
         }
@@ -685,7 +688,7 @@ public class DbAdapter {
         return chars;
     }
 
-    private class CharDetailsTask extends AsyncTask<Void, Void, Void> {
+    private class CharDetailsTask extends AsyncTask<Void, Integer, Void> {
 
         private List<LessonItem> chars;
         
@@ -695,6 +698,9 @@ public class DbAdapter {
         
         @Override
         protected Void doInBackground(Void... arg) {
+            Log.i("CharDetailsTask", "Starting character load");
+            int i     = 0;
+            int count = chars.size();
             for (LessonItem c : chars) {
                 synchronized (c) {
                     if (!c.initialized) {
@@ -702,11 +708,21 @@ public class DbAdapter {
                     }
                 }
                 
+                if (i % 50 == 0) {
+                    publishProgress((int) ((i / (float) count) * 100));
+                }
+                i++;
+                
                 if (isCancelled()) {
                     break;
                 }
             }
             return null;
+        }
+        
+        @Override
+        protected void onProgressUpdate(Integer... values) {
+            Log.i("CharDetailsTask", "Character loading: " + values[0] + "%");
         }
         
         @Override
@@ -737,7 +753,6 @@ public class DbAdapter {
         mCursor.close();
 
         LessonCharacter c = new LessonCharacter(id, true);
-        c.setDatabase(this);
         
         //grab its details (step one might not be necessary and might cause slow downs
         // but it is for data consistency.
@@ -873,7 +888,6 @@ public class DbAdapter {
                 currentWord.setSort(cursor.getLong(sortColumn));
                 currentWord.setTagList(getWordTags(id));
                 currentWord.setKeyValues(getKeyValues(id, ItemType.WORD));
-                currentWord.setDatabase(this);
                 currentId = id;
             }
             
@@ -933,8 +947,6 @@ public class DbAdapter {
         long sort = mCursor.getLong(mCursor.getColumnIndexOrThrow("sort"));
         w.setSort(sort);
         
-        w.setDatabase(this);
-
         mCursor.close();
         
         // get tags as well
@@ -1516,8 +1528,6 @@ public class DbAdapter {
             wordNumber++;
         }
         
-        les.setDatabase(this);
-        
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;
@@ -1741,8 +1751,6 @@ public class DbAdapter {
         mCursor.close();
 
         le.setStringId(id);
-        le.setDatabase(this);
-        
         return le;
     }
     
@@ -1803,6 +1811,7 @@ public class DbAdapter {
             mDb.endTransaction();
             return false;
         }
+        Collections.sort(Toolbox.characters);
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;
