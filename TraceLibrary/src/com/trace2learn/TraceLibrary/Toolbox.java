@@ -88,7 +88,7 @@ public class Toolbox {
             AlertDialog dlg = new AlertDialog.Builder(parentActivity).create();
             Resources rc = parentActivity.getResources();
             dlg.setIcon(R.drawable.logo);
-            dlg.setTitle(rc.getString(R.string.user_app_name) + "\n\n" + rc.getString(R.string.app_subtitle));
+            dlg.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
             dlg.setMessage(rc.getText(R.string.aboutCredits));
             dlg.setButton("M'kay", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {

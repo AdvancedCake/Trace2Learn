@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.trace2learn.TraceLibrary.R;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class MainAdminActivity extends TraceListActivity {
@@ -148,7 +149,6 @@ public class MainAdminActivity extends TraceListActivity {
     }
 
     private void integrityCheck() {
-    	// TODO: check for following
     	// - flag characters without id tag
     	// - flag characters without pinyin tag
     	// - flag duplicate pinyin tags
@@ -157,7 +157,7 @@ public class MainAdminActivity extends TraceListActivity {
         // Initialize database adapter
         DbAdapter dba = new DbAdapter(this);
         dba.open();        
-        String msg = ""; 		                
+        String msg = ""; 		
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
         List<String> cids = dba.getAllCharIds();
         for(String id : cids){
@@ -177,9 +177,9 @@ public class MainAdminActivity extends TraceListActivity {
         List<String> wids = dba.getAllWordIds();
         for(String wid : wids){
         	LessonWord wd = dba.getWordById(wid);
-        	if(!wd.hasKey(Toolbox.PINYIN_KEY))
+        	if(!wd.hasKey(Toolbox.PINYIN_KEY)) 
         		msg = msg + "Missing pinyin for phrase " + 
-        				wd.getKeyValuesToString() + "/" +
+        				dba.getKeyValues(wid, ItemType.WORD) + "/" +
         				wd.getTagsToString() + "\n";        	
         }
         
