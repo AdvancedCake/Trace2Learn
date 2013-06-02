@@ -40,6 +40,7 @@ public class Toolbox {
     public static List<LessonItem> characters;
     
     public static DbAdapter dba;
+    public static boolean dbaOpened = false;
     
     public static final Locale locale = Locale.getDefault();
     
@@ -110,5 +111,15 @@ public class Toolbox {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }    
+    }
+    
+    public static void initDba(Context context) {
+        if (dbaOpened) {
+            return;
+        }
+        dbaOpened = true;
+        dba = new DbAdapter(context);
+        dba.open();
+        characters = Toolbox.dba.getAllChars();
+    }
 }

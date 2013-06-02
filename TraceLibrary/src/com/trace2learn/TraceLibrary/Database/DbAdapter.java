@@ -184,6 +184,8 @@ public class DbAdapter {
 
     
     private final Context mCtx;
+    
+    private boolean dbOpened;
 
     private static class DatabaseHelper extends SQLiteOpenHelper {
 
@@ -234,6 +236,7 @@ public class DbAdapter {
      */
     public DbAdapter(Context ctx) {
         this.mCtx = ctx;
+        dbOpened = false;
     }
     
     /**
@@ -246,6 +249,11 @@ public class DbAdapter {
      * @throws SQLException if the database could be neither opened or created
      */
     public DbAdapter open() throws SQLException {
+        if (dbOpened) {
+            return this;
+        }
+        dbOpened = true;
+        
         mDbHelper = new DatabaseHelper(mCtx);
         mDb = mDbHelper.getWritableDatabase();
         
@@ -1076,23 +1084,21 @@ public class DbAdapter {
      */
     public List<String> getCharacterTags(String charId) throws SQLException {
         //TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
-        //TODO: that would solve the duplicate code problem, but create the ugly switch case problem (Angela)
-        Cursor mCursor =
-            mDb.query(true, CHARTAG_TABLE, new String[] {CHARTAG_TAG}, CHARTAG_ID + "='" + charId + "'", null,
-                    null, null, "sort ASC", null);
+        Cursor cursor = mDb.query(CHARTAG_TABLE, new String[] {CHARTAG_TAG},
+                CHARTAG_ID + "=?", new String[] {charId},
+                null, null, "sort ASC");
         List<String> tags = new ArrayList<String>();
-        if (mCursor != null) {
-            mCursor.moveToFirst();
+        if (cursor == null) {
+            return tags;
         }
-        do {
-            if(mCursor.getCount()==0){
-                break;
-            }
-            tags.add(mCursor.getString(mCursor.getColumnIndexOrThrow(CHARTAG_TAG)));
+        
+        int tagColumn = cursor.getColumnIndexOrThrow(CHARTAG_TAG);
+        
+        while (cursor.moveToNext()) {
+            tags.add(cursor.getString(tagColumn));
         }
-        while(mCursor.moveToNext());
-        mCursor.close();
-
+        
+        cursor.close();
         return tags;
 
     }
@@ -1108,48 +1114,49 @@ public class DbAdapter {
      */
     public LinkedHashMap<String, String> getKeyValues(String stringId, 
             ItemType itemType) throws SQLException {
-        String table = ""; 
-        String keyColumn = ""; 
-        String valueColumn = ""; 
-        String idColumn = "";
+        String table   = ""; 
+        String key     = ""; 
+        String value   = ""; 
+        String id      = "";
         String orderBy = "sort ASC"; 
         switch (itemType)
         {
         case CHARACTER:
             table = CHARKEYVALUES_TABLE;
-            keyColumn = CHARKEYVALUES_KEY;
-            valueColumn = CHARKEYVALUES_VALUE;
-            idColumn = CHARKEYVALUES_ID;
+            key   = CHARKEYVALUES_KEY;
+            value = CHARKEYVALUES_VALUE;
+            id    = CHARKEYVALUES_ID;
             break;
         case WORD:
             table = WORDKEYVALUES_TABLE;
-            keyColumn = WORDKEYVALUES_KEY;
-            valueColumn = WORDKEYVALUES_VALUE;
-            idColumn = WORDKEYVALUES_ID;
+            key   = WORDKEYVALUES_KEY;
+            value = WORDKEYVALUES_VALUE;
+            id    = WORDKEYVALUES_ID;
             break;
         default:
             Log.e("DbAdapter.getKeyValues",
                     "This type does NOT support (Key, Value) pairs.");
             return null;
         }
-        Cursor mCursor = mDb.query(true, table, new String[] {keyColumn, valueColumn}, idColumn + "='" + stringId + "'", null,
-                            null, null, orderBy, null);
-            LinkedHashMap<String, String> keyValues = new LinkedHashMap<String, String>();
-            if (mCursor != null) {
-                mCursor.moveToFirst();
-            }
-            do {
-                if(mCursor.getCount()==0){
-                    break;
-                }
-                keyValues.put(mCursor.getString(mCursor.getColumnIndexOrThrow(keyColumn)),
-                                  mCursor.getString(mCursor.getColumnIndexOrThrow(valueColumn)));
-            }
-            while(mCursor.moveToNext());
-            mCursor.close();
-    
+        Cursor cursor = mDb.query(table, new String[] {key, value},
+                id + "=?", new String[] {stringId},
+                null, null, orderBy);
+        LinkedHashMap<String, String> keyValues = new LinkedHashMap<String, String>();
+        if (cursor == null) {
             return keyValues;
-    }    
+        }
+        
+        int keyColumn   = cursor.getColumnIndexOrThrow(key);
+        int valueColumn = cursor.getColumnIndexOrThrow(value);
+        
+        while (cursor.moveToNext()) {
+            keyValues.put(cursor.getString(keyColumn),
+                          cursor.getString(valueColumn));
+        }
+        
+        cursor.close();
+        return keyValues;
+    }
     
     /**
      * THIS METHOD DOES NOT WORK CORRECTLY.

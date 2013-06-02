@@ -45,9 +45,7 @@ public class MainUserActivity extends TraceBaseActivity {
         editor.commit();
         
         // Character Cache
-        Toolbox.dba = new DbAdapter(getApplicationContext());
-        Toolbox.dba.open();
-        Toolbox.characters = Toolbox.dba.getAllChars();
+        Toolbox.initDba(getApplicationContext());
         
         if (!isFullVer) {
             ((TextView) findViewById(R.id.title)).setText(R.string.user_app_name_free);

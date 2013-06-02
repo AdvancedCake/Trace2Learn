@@ -57,9 +57,7 @@ public class MainAdminActivity extends TraceListActivity {
         editor.commit();
         
         // Character Cache
-        Toolbox.dba = new DbAdapter(getApplicationContext());
-        Toolbox.dba.open();
-        Toolbox.characters = Toolbox.dba.getAllChars();
+        Toolbox.initDba(getApplicationContext());
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu, APPS));
 
