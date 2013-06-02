@@ -81,15 +81,19 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     }
     
     public void setTagList(List<String> tags) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         _tags.addAll(tags);
     }
     
     public void setKeyValues(Map<String, String> kv) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         keyValues.putAll(kv);
     }    
@@ -103,29 +107,37 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     }
     
     public synchronized boolean hasTag(String tag) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return _tags.contains(tag);
     }
     
     public synchronized void addTag(String tag) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         _tags.add(tag);
     }
     
     public synchronized List<String> getTags() {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return new ArrayList<String>(_tags);
     }    
     
     public synchronized String getTagsToString() {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         StringBuilder sb = new StringBuilder();
         for(String tag : _tags){
@@ -136,36 +148,46 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     }
     
     public synchronized boolean hasKey(String key) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return keyValues.containsKey(key);
     }
     
     public synchronized boolean hasKeyValue(String key, String value) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return keyValues.containsKey(key) && keyValues.containsValue(value);
     }
     
     public synchronized void addKeyValue(String key, String value) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         keyValues.put(key, value);
     }    
     
     public synchronized LinkedHashMap<String, String> getKeyValues() {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return new LinkedHashMap<String, String>(keyValues);
     }    
     
     public synchronized String getKeyValuesToString() {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         
         StringBuilder sb = new StringBuilder();
@@ -187,8 +209,10 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     }
     
     public synchronized String getValue(String key) {
-        if (!initialized) {
-            initialize();
+        synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return keyValues.get(key);
     }

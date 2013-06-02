@@ -27,7 +27,7 @@ public class LessonWord extends LessonItem {
 		_stringid   = id;
 	}
 	
-    protected void initialize() {
+    protected synchronized void initialize() {
         // Not needed unless we ever pull lessons without associated details
         initialized = true;
     }

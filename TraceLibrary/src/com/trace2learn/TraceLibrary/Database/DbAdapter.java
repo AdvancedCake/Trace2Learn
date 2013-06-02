@@ -17,6 +17,7 @@ import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.graphics.PointF;
+import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
@@ -679,7 +680,40 @@ public class DbAdapter {
         }
         
         cursor.close();
+        
+        (new CharDetailsTask(chars)).execute();
         return chars;
+    }
+
+    private class CharDetailsTask extends AsyncTask<Void, Void, Void> {
+
+        private List<LessonItem> chars;
+        
+        public CharDetailsTask(List<LessonItem> chars) {
+            this.chars = chars;
+        }
+        
+        @Override
+        protected Void doInBackground(Void... arg) {
+            for (LessonItem c : chars) {
+                synchronized (c) {
+                    if (!c.initialized) {
+                        c.initialize();
+                    }
+                }
+                
+                if (isCancelled()) {
+                    break;
+                }
+            }
+            return null;
+        }
+        
+        @Override
+        protected void onPostExecute(Void result) {
+            Log.i("CharDetailsTask", "All characters loaded");
+        }
+        
     }
     
     

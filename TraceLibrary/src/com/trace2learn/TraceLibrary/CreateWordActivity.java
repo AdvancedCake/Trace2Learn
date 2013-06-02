@@ -76,9 +76,6 @@ public class CreateWordActivity extends TraceBaseActivity {
     //initializes the list if all characters in the database
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        Date d = new Date();
-        long start = d.getTime();
-        
         super.onCreate(savedInstanceState);
         filtered = false;
         numChars = 0;
@@ -103,13 +100,6 @@ public class CreateWordActivity extends TraceBaseActivity {
 
         getChars();
         displayAllChars();
-
-        d = new Date();
-        long end = d.getTime();
-        
-        System.out.println("Start create: " + start);
-        System.out.println("End create: " + end);
-        System.out.println("Elapsed create: " + (end - start));
     }
     
     @Override
@@ -212,18 +202,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     }
     
     private void getChars() {
-        Date d = new Date();
-        long start = d.getTime();
-        
         source = dba.getAllChars();
-        
-        d = new Date();
-        long end = d.getTime();
-        
-        System.out.println("Start: " + start);
-        System.out.println("End: " + end);
-        System.out.println("Elapsed: " + (end - start));
-        System.out.println("Got " + source.size() + " chars");
     }
 
     /**

@@ -39,7 +39,7 @@ public class LessonCharacter extends LessonItem {
 	}
 	
     @SuppressWarnings("unchecked")
-	protected void initialize() {
+	protected synchronized void initialize() {
         Object[] details = _db.getCharacterDetails(_stringid);
         _strokes    = (List<Stroke>) details[0];
         _tags       = (List<String>) details[1];
@@ -48,15 +48,19 @@ public class LessonCharacter extends LessonItem {
 	}
 	
     public synchronized void addStroke(Stroke stroke) {
-	    if (!initialized) {
-	        initialize();
+	    synchronized (this) {
+            if (!initialized) {
+    	        initialize();
+    	    }
 	    }
 		_strokes.add(stroke);
 	}
 	
 	public synchronized List<Stroke> getStrokes() {
-        if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         // TODO Why do we make a copy of _strokes??
 		List<Stroke> l = new ArrayList<Stroke>();
@@ -65,8 +69,10 @@ public class LessonCharacter extends LessonItem {
 	}
 	
 	public synchronized Stroke getStroke(int i) {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return _strokes.get(i);
 	}
@@ -77,8 +83,10 @@ public class LessonCharacter extends LessonItem {
 	 * @return - true if the stroke was removed, false otherwise
 	 */
 	public synchronized boolean removeStroke(Stroke stroke) {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return _strokes.remove(stroke);
 	}
@@ -89,15 +97,19 @@ public class LessonCharacter extends LessonItem {
 	 * @return - the stroke that was removed from the character
 	 */
 	public synchronized Stroke removeStroke(int i) {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return _strokes.remove(i);
 	}
 	
 	public synchronized Stroke removeLastStroke() {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
 	    
         if (_strokes.size() == 0) {
@@ -110,8 +122,10 @@ public class LessonCharacter extends LessonItem {
 	 * removes all of the strokes from the character
 	 */
 	public synchronized void clearStrokes()	{
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         _strokes.clear();
 	}
@@ -124,8 +138,10 @@ public class LessonCharacter extends LessonItem {
 	 * @param newIndex - the new position of the stroke in the order
 	 */
 	public synchronized void reorderStroke(int oldIndex, int newIndex) {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         
 	    if (oldIndex < 0 || oldIndex >= _strokes.size()) {
@@ -155,8 +171,10 @@ public class LessonCharacter extends LessonItem {
 	}
 
 	public synchronized int getNumStrokes() {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
         return _strokes.size();
 	}
@@ -173,9 +191,11 @@ public class LessonCharacter extends LessonItem {
 	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height) {
-	    if (!initialized) {
-	        initialize();
-	    }
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
+        }
 	    Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
 		Log.i("DRAW", "Strokes: " + _strokes.size());
@@ -204,8 +224,10 @@ public class LessonCharacter extends LessonItem {
 	 */
 	@Override
 	public void draw(Canvas canvas, Paint paint, float left, float top, float width, float height, float time) {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
 		Matrix matrix = new Matrix();
 		Log.i("DRAW", "Scale: " + width + " " + height);
@@ -234,8 +256,10 @@ public class LessonCharacter extends LessonItem {
 	 * @return an XML string
 	 */
 	public String toXml() {
-	    if (!initialized) {
-            initialize();
+	    synchronized (this) {
+            if (!initialized) {
+                initialize();
+            }
         }
 	    
 	    String xml = "<character id=\"" + _stringid + "\">\n";

@@ -42,7 +42,7 @@ public class Lesson extends LessonItem {
         this.isUserDefined = isUserDefined;
     }
     
-    protected void initialize() {
+    protected synchronized void initialize() {
         // Not needed unless we ever pull lessons without associated details
         initialized = true;
     }
