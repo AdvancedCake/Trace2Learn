@@ -58,7 +58,7 @@ public class MainAdminActivity extends TraceListActivity {
         editor.commit();
         
         // Character Cache
-        Toolbox.initDba(getApplicationContext());
+        Toolbox.initDba(getApplicationContext(), true);
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu, APPS));
 
@@ -132,11 +132,11 @@ public class MainAdminActivity extends TraceListActivity {
                     "/data/" + getString(R.string.file_dir_name);
             File out = new File(outPath);
             out.mkdirs();
-            out = new File(outPath + "/initial.jet");
+            out = new File(outPath + "/" + Toolbox.INIT_DB_NAME);
             if (out.exists()) {
                 out.delete();
             }
-            OutputStream os = new FileOutputStream(outPath + "/initial.jet");
+            OutputStream os = new FileOutputStream(outPath + "/" + Toolbox.INIT_DB_NAME);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = is.read(buffer)) > 0){
