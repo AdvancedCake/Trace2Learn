@@ -27,12 +27,16 @@ public class Toolbox {
     public static final String PREFS_FIRST_START = "firstStart";
     public static final String PREFS_PHRASE_MODE = "phraseMode";
     public static final String PREFS_IS_FULL_VER = "isFullVersion";
+    public static final String PREFS_LAST_VER_NUMBER = "lastVersionNumber";
     
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
     public static final String SOUND_KEY  = "sound";
     public static final String ID_KEY     = "id";
     
+    // Initializing Database
+    public static final String INIT_DB_NAME = "initial.jet";
+
     // Sound Playback
     public static final float VOLUME = 1;
     
@@ -98,9 +102,9 @@ public class Toolbox {
             AlertDialog dlg = new AlertDialog.Builder(parentActivity).create();
             Resources rc = parentActivity.getResources();
             dlg.setIcon(R.drawable.logo);
-            dlg.setTitle(rc.getString(R.string.user_app_name) + "\n\n" + rc.getString(R.string.app_subtitle));
+            dlg.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
             dlg.setMessage(rc.getText(R.string.aboutCredits));
-            dlg.setButton("M'kay", new DialogInterface.OnClickListener() {
+            dlg.setButton("Sounds Good", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     }
             });	
@@ -113,13 +117,19 @@ public class Toolbox {
         }
     }
     
-    public static void initDba(Context context) {
+    public static void initDba(Context context, boolean initializeChars) {
         if (dbaOpened) {
             return;
         }
         dbaOpened = true;
         dba = new DbAdapter(context);
         dba.open();
-        characters = Toolbox.dba.getAllChars();
+        if (initializeChars) characters = Toolbox.dba.getAllChars();
+    }
+    
+    public static void resetDba() {
+    	dba.close();
+    	dba = null;
+    	dbaOpened = false;
     }
 }

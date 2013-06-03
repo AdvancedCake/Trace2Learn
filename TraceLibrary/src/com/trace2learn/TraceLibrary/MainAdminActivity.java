@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.trace2learn.TraceLibrary.R;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class MainAdminActivity extends TraceListActivity {
@@ -57,7 +58,7 @@ public class MainAdminActivity extends TraceListActivity {
         editor.commit();
         
         // Character Cache
-        Toolbox.initDba(getApplicationContext());
+        Toolbox.initDba(getApplicationContext(), true);
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu, APPS));
 
@@ -131,11 +132,11 @@ public class MainAdminActivity extends TraceListActivity {
                     "/data/" + getString(R.string.file_dir_name);
             File out = new File(outPath);
             out.mkdirs();
-            out = new File(outPath + "/initial.jet");
+            out = new File(outPath + "/" + Toolbox.INIT_DB_NAME);
             if (out.exists()) {
                 out.delete();
             }
-            OutputStream os = new FileOutputStream(outPath + "/initial.jet"); // TODO custom name
+            OutputStream os = new FileOutputStream(outPath + "/" + Toolbox.INIT_DB_NAME);
             byte[] buffer = new byte[1024];
             int length;
             while ((length = is.read(buffer)) > 0){
@@ -155,13 +156,13 @@ public class MainAdminActivity extends TraceListActivity {
     }
 
     private void integrityCheck() {
-    	// TODO: check for following
     	// - flag characters without id tag
     	// - flag characters without pinyin tag
     	// - flag duplicate pinyin tags
     	// - flag phrases without pinyin tag
     	
-        String msg = ""; 		                
+       
+        String msg = ""; 		
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
         List<String> cids = Toolbox.dba.getAllCharIds();
         for(String id : cids){
@@ -183,7 +184,7 @@ public class MainAdminActivity extends TraceListActivity {
         	LessonWord wd = Toolbox.dba.getWordById(wid);
         	if(!wd.hasKey(Toolbox.PINYIN_KEY))
         		msg = msg + "Missing pinyin for phrase " + 
-        				wd.getKeyValuesToString() + "/" +
+        				Toolbox.dba.getKeyValues(wid, ItemType.WORD) + "/" +
         				wd.getTagsToString() + "\n";        	
         }
         
