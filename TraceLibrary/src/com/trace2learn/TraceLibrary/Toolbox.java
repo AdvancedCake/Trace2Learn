@@ -132,4 +132,21 @@ public class Toolbox {
     	dba = null;
     	dbaOpened = false;
     }
+    
+    public static void promptAppUpgrade(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.upgrade_app);
+        builder.setMessage(R.string.upgrade_app_text);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Toolbox.showToast(context, "Yay!");
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        builder.show();
+    }
 }

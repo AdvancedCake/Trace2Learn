@@ -190,20 +190,7 @@ public class MainUserActivity extends TraceBaseActivity {
                     CreateWordActivity.class);
             startActivity(i);
         } else {
-            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setTitle(R.string.upgrade_app);
-            builder.setMessage(R.string.upgrade_app_text);
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Toolbox.showToast(getApplicationContext(), "Yay!");
-                }
-            });
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {}
-            });
-            builder.show();
+            Toolbox.promptAppUpgrade(getApplicationContext());
         }
     }
 

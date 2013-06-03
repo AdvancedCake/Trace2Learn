@@ -27,34 +27,35 @@ import com.trace2learn.TraceLibrary.Database.LessonItem;
 
 public class BrowseLessonsActivity extends TraceListActivity {
 
-	private ArrayList<Lesson> items;
-	private LessonListAdapter adapter;
+    private ArrayList<Lesson> items;
+    private LessonListAdapter adapter;
     private LayoutInflater vi;
-	
-	private boolean isAdmin;
-	
-	private enum ContextMenuItem {
-	    DELETE              (1, "Delete"),
-	    ASSIGN_CATEGORIES   (1, "Assign Categories"),
+    
+    private boolean isAdmin;
+    private boolean isFull;
+    
+    private enum ContextMenuItem {
+        DELETE              (1, "Delete"),
+        ASSIGN_CATEGORIES   (1, "Assign Categories"),
         MOVE_UP             (1, "Move Up"),
         MOVE_DOWN           (1, "Move Down"),
-	    TOGGLE_USER_DEFINED (2, "Toggle User-Defined");
-	    
-	    public final String text;
-	    public final int    privilege; // 0: anyone, 1: owner, 2: admin
-	    
-	    ContextMenuItem(int privilege, String text) {
-	        this.privilege = privilege;
-	        this.text      = text;
-	    }
-	}
-	
-	private enum RequestCode {
-	    ASSIGN_CATEGORIES,
-	    BROWSE_WORDS;
-	}
+        TOGGLE_USER_DEFINED (2, "Toggle User-Defined");
+        
+        public final String text;
+        public final int    privilege; // 0: anyone, 1: owner, 2: admin
+        
+        ContextMenuItem(int privilege, String text) {
+            this.privilege = privilege;
+            this.text      = text;
+        }
+    }
+    
+    private enum RequestCode {
+        ASSIGN_CATEGORIES,
+        BROWSE_WORDS;
+    }
 
-	@Override
+    @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_lessons);   
@@ -62,9 +63,9 @@ public class BrowseLessonsActivity extends TraceListActivity {
         items = new ArrayList<Lesson>(); 
         List<String> ids = Toolbox.dba.getAllLessonIds();
         for(String id : ids){
-        	Lesson lesson = Toolbox.dba.getLessonById(id);
-        	lesson.setTagList(Toolbox.dba.getLessonTags(id));
-        	items.add(lesson);
+            Lesson lesson = Toolbox.dba.getLessonById(id);
+            lesson.setTagList(Toolbox.dba.getLessonTags(id));
+            items.add(lesson);
         }
         
         vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -72,10 +73,11 @@ public class BrowseLessonsActivity extends TraceListActivity {
         setListAdapter(adapter);
         registerForContextMenu(getListView());
         
-        // Set admin privilege
+        // Set privileges
         SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
                 MODE_PRIVATE);
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
+        isFull  = prefs.getBoolean(Toolbox.PREFS_IS_FULL_VER, false);
     }
     
     @Override
@@ -83,113 +85,123 @@ public class BrowseLessonsActivity extends TraceListActivity {
         super.onDestroy();
     };
 
-	@Override  
-	protected void onListItemClick(ListView l, View v, int position, long id) {  
-	  super.onListItemClick(l, v, position, id);  
+    @Override  
+    protected void onListItemClick(ListView l, View v, int position, long id) {  
+      super.onListItemClick(l, v, position, id);  
 
-	  clickOnItem(items.get(position));
-	} 
+      clickOnItem(items.get(position));
+    } 
 
-	//when character is clicked, it starts the display mode for that char
-	private void clickOnItem(LessonItem li){
-		Lesson le = ((Lesson)li);
+    //when character is clicked, it starts the display mode for that char
+    private void clickOnItem(LessonItem item) {
+        Lesson lesson = (Lesson) item;
+        String name = lesson.getLessonName();
+        
+        try {
+            if (!isAdmin && !isFull && !lesson.isUserDefined() &&
+                    Integer.valueOf(name.substring(0, name.indexOf(':'))) > 10) {
+                Toolbox.promptAppUpgrade(getApplicationContext());
+                return;
+            }
+        } catch (Exception e) {}
+        
         Intent i = new Intent(this, BrowseWordsActivity.class);
-		i.putExtra("ID", le.getStringId());
-		startActivityForResult(i, RequestCode.BROWSE_WORDS.ordinal());
-	}
+        i.putExtra("ID", lesson.getStringId());
+        startActivityForResult(i, RequestCode.BROWSE_WORDS.ordinal());
+    }
 
-	private void getItemInfo(String lessonId) {
+    private void getItemInfo(String lessonId) {
         Intent i = new Intent(this, LessonNarrativeActivity.class);
         i.putExtra("ID", lessonId);
         startActivity(i);
-	}
+    }
 
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v,
-	        ContextMenuInfo menuInfo) {
-	    AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-	    Lesson le = items.get(info.position);
-	    
-	    menu.setHeaderTitle("Options");
-	    for (ContextMenuItem item : ContextMenuItem.values()) {
-	        if (!isAdmin && !le.isUserDefined() && item.privilege >= 1) {
-	            // user does not own the lesson
-	            continue;
-	        } else if (!isAdmin && item.privilege >= 2) {
-	            // admin only option
-	            continue;
-	        }
-	        int ord = item.ordinal();
-	        menu.add(Menu.NONE, ord, ord, item.text);
-	    }
-	}
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo) {
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        Lesson le = items.get(info.position);
+        
+        menu.setHeaderTitle("Options");
+        for (ContextMenuItem item : ContextMenuItem.values()) {
+            if (!isAdmin && !le.isUserDefined() && item.privilege >= 1) {
+                // user does not own the lesson
+                continue;
+            } else if (!isAdmin && item.privilege >= 2) {
+                // admin only option
+                continue;
+            }
+            int ord = item.ordinal();
+            menu.add(Menu.NONE, ord, ord, item.text);
+        }
+    }
 
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-	  AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-	  int menuItemIndex = item.getItemId();
-	  Lesson le = items.get(info.position);
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+      AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
+      int menuItemIndex = item.getItemId();
+      Lesson le = items.get(info.position);
       Context context = getApplicationContext();
-	  Log.e("MenuIndex",Integer.toString(menuItemIndex));
-	  Log.e("ListIndex",Integer.toString(info.position));
+      Log.e("MenuIndex",Integer.toString(menuItemIndex));
+      Log.e("ListIndex",Integer.toString(info.position));
 
-	  // Delete lesson
-	  if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
-		  String id = le.getStringId();
-		  String result = Toolbox.dba.deleteLesson(id);
-		  Log.e("Result", result);
-		  if (result == null) {
-			  Toolbox.showToast(context, "Could not delete the collection");
-			  return false;
-		  }
-		  else {
-			  Toolbox.showToast(context, "Successfully deleted");
-			  startActivity(getIntent()); 
-			  finish();
-			  return true;
-		  }
-	  }
-	  
-	  // Assign Categories
-	  else if (menuItemIndex == ContextMenuItem.ASSIGN_CATEGORIES.ordinal()) {
-	      Intent i = new Intent(context, ChooseLessonCategoryActivity.class);
-	      i.putExtra("ID",   le.getStringId());
-	      i.putExtra("name", le.getLessonName());
-	      
-	      boolean[] original = new boolean[] {false, false, false, false};
-	      SortedSet<LessonCategory> categories = le.getCategories();
-	      if (categories != null) {
-	          for (LessonCategory category : categories) {
-	              original[category.ordinal()] = true;
-	          }
-	      }
-	      i.putExtra("categories", original);
-	      
+      // Delete lesson
+      if (menuItemIndex == ContextMenuItem.DELETE.ordinal()) {
+          String id = le.getStringId();
+          String result = Toolbox.dba.deleteLesson(id);
+          Log.e("Result", result);
+          if (result == null) {
+              Toolbox.showToast(context, "Could not delete the collection");
+              return false;
+          }
+          else {
+              Toolbox.showToast(context, "Successfully deleted");
+              startActivity(getIntent()); 
+              finish();
+              return true;
+          }
+      }
+      
+      // Assign Categories
+      else if (menuItemIndex == ContextMenuItem.ASSIGN_CATEGORIES.ordinal()) {
+          Intent i = new Intent(context, ChooseLessonCategoryActivity.class);
+          i.putExtra("ID",   le.getStringId());
+          i.putExtra("name", le.getLessonName());
+          
+          boolean[] original = new boolean[] {false, false, false, false};
+          SortedSet<LessonCategory> categories = le.getCategories();
+          if (categories != null) {
+              for (LessonCategory category : categories) {
+                  original[category.ordinal()] = true;
+              }
+          }
+          i.putExtra("categories", original);
+          
           startActivityForResult(i, RequestCode.ASSIGN_CATEGORIES.ordinal());
           return true;
-	  }
-	  
-	  // Toggle User-Defined
-	  else if (menuItemIndex == ContextMenuItem.TOGGLE_USER_DEFINED.ordinal()) {
-	      le.setUserDefined(!le.isUserDefined());
-	      boolean result = Toolbox.dba.saveLessonUserDefined(le.getStringId(),
-	              le.isUserDefined(), -1 * le.getSort());
-	      if (result) {
-	          le.setSort(-1 * le.getSort());
-	          Collections.sort(items);
-	          adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
-	          setListAdapter(adapter);
-	          return true;
-	      } else {
-	          Toolbox.showToast(context, "Could not edit the collection");
-	          return false;
-	      }
-	  }
-	  
-	  // Move
-	  else if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal() ||
-	           menuItemIndex == ContextMenuItem.MOVE_DOWN.ordinal()) {
-	      int otherPos;
+      }
+      
+      // Toggle User-Defined
+      else if (menuItemIndex == ContextMenuItem.TOGGLE_USER_DEFINED.ordinal()) {
+          le.setUserDefined(!le.isUserDefined());
+          boolean result = Toolbox.dba.saveLessonUserDefined(le.getStringId(),
+                  le.isUserDefined(), -1 * le.getSort());
+          if (result) {
+              le.setSort(-1 * le.getSort());
+              Collections.sort(items);
+              adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
+              setListAdapter(adapter);
+              return true;
+          } else {
+              Toolbox.showToast(context, "Could not edit the collection");
+              return false;
+          }
+      }
+      
+      // Move
+      else if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal() ||
+               menuItemIndex == ContextMenuItem.MOVE_DOWN.ordinal()) {
+          int otherPos;
           if (menuItemIndex == ContextMenuItem.MOVE_UP.ordinal()) {
               otherPos = info.position - 1;
           } else {
@@ -230,31 +242,31 @@ public class BrowseLessonsActivity extends TraceListActivity {
           Log.e("BrowseLessons.move", "Failure");
           Toolbox.showToast(context, "Move failed");
           return false;
-	  }
-	  
-	  return false;
-	}
-	
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-	    super.onActivityResult(requestCode, resultCode, data);
-	    if (requestCode == RequestCode.ASSIGN_CATEGORIES.ordinal() &&
-	            resultCode == RESULT_OK) {
-	        startActivity(getIntent());
-	        finish();
-	    } else if (requestCode == RequestCode.BROWSE_WORDS.ordinal() &&
-	            resultCode == RESULT_OK) {
-	        startActivity(getIntent());
+      }
+      
+      return false;
+    }
+    
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RequestCode.ASSIGN_CATEGORIES.ordinal() &&
+                resultCode == RESULT_OK) {
+            startActivity(getIntent());
             finish();
-	    }
-	}
+        } else if (requestCode == RequestCode.BROWSE_WORDS.ordinal() &&
+                resultCode == RESULT_OK) {
+            startActivity(getIntent());
+            finish();
+        }
+    }
 
-	private Handler infoButtonHandler = new Handler() {
-	    @Override
-	    public void handleMessage(Message msg) {
-	        String lessonId = (String) msg.obj;
-	        getItemInfo(lessonId);
-	    }
-	};
+    private Handler infoButtonHandler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            String lessonId = (String) msg.obj;
+            getItemInfo(lessonId);
+        }
+    };
 
 }
