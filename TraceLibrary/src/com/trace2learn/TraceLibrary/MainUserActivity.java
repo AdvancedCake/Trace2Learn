@@ -83,9 +83,7 @@ public class MainUserActivity extends TraceBaseActivity {
         createPhrase.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),
-                        CreateWordActivity.class);
-                startActivity(i);
+                buildPhrase();
             }
         });
         
@@ -179,6 +177,33 @@ public class MainUserActivity extends TraceBaseActivity {
                     e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+    
+    /**
+     * Checks that this is the full version of the app, then starts the
+     * activity to build a phrase.
+     */
+    private void buildPhrase() {
+        if (prefs.getBoolean(Toolbox.PREFS_IS_FULL_VER, false)) {
+            Intent i = new Intent(getApplicationContext(),
+                    CreateWordActivity.class);
+            startActivity(i);
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setTitle(R.string.upgrade_app);
+            builder.setMessage(R.string.upgrade_app_text);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    Toolbox.showToast(getApplicationContext(), "Yay!");
+                }
+            });
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {}
+            });
+            builder.show();
         }
     }
 
