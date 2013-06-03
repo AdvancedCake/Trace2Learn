@@ -16,8 +16,8 @@
 
     <ImageView
         android:id="@+id/exit_button"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_margin="5dp"
@@ -46,7 +46,7 @@
             android:orientation="vertical" >
         
 	        <TextView
-	            android:id="@+id/narrative"
+	            android:id="@+id/narrative_top"
 	            android:layout_width="match_parent"
 	            android:layout_height="wrap_content"
 	            android:paddingLeft="4dp"
@@ -59,8 +59,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:orientation="vertical" >
-
             </LinearLayout>
+        
+	        <TextView
+	            android:id="@+id/narrative_bottom"
+	            android:layout_width="match_parent"
+	            android:layout_height="wrap_content"
+	            android:paddingLeft="4dp"
+	            android:paddingRight="4dp"
+	            android:textSize="16sp" />
+            
         </LinearLayout>
     </ScrollView>
 
