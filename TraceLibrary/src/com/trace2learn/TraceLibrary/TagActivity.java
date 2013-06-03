@@ -5,10 +5,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
-import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
-import com.trace2learn.TraceLibrary.Database.LessonWord;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -22,6 +18,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import com.trace2learn.TraceLibrary.Database.DbAdapter;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
+import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
+import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class TagActivity extends TraceBaseActivity {
 
@@ -458,6 +459,14 @@ public class TagActivity extends TraceBaseActivity {
         if (isChanged) {
             setResult(RESULT_OK);
             showToast("Tags saved");
+            if (type == ItemType.CHARACTER) {
+                for (LessonItem character : Toolbox.characters) {
+                    if (stringid.equals(character.getStringId())) {
+                        character.invalidate();
+                        break;
+                    }
+                }
+            }
         } else {
             setResult(RESULT_CANCELED);
         }

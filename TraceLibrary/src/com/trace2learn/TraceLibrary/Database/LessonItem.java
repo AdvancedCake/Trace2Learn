@@ -46,6 +46,10 @@ public abstract class LessonItem implements Comparable<LessonItem> {
     
     protected abstract void initialize();
     
+    public void invalidate() {
+        initialized = false;
+    }
+    
     /**
      * Comparison used for determining the display order of the LessonItems in
      * a list.
