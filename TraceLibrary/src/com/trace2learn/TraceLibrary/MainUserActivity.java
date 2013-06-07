@@ -190,7 +190,7 @@ public class MainUserActivity extends TraceBaseActivity {
                     CreateWordActivity.class);
             startActivity(i);
         } else {
-            Toolbox.promptAppUpgrade(getApplicationContext());
+            Toolbox.promptAppUpgrade(this);
         }
     }
 

@@ -100,7 +100,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
         try {
             if (!isAdmin && !isFull && !lesson.isUserDefined() &&
                     Integer.valueOf(name.substring(0, name.indexOf(':'))) > 10) {
-                Toolbox.promptAppUpgrade(getApplicationContext());
+                Toolbox.promptAppUpgrade(this);
                 return;
             }
         } catch (Exception e) {}
