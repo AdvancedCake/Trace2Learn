@@ -68,16 +68,16 @@ public class BrowseLessonsActivity extends TraceListActivity {
             items.add(lesson);
         }
         
-        vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
-        setListAdapter(adapter);
-        registerForContextMenu(getListView());
-        
         // Set privileges
         SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
                 MODE_PRIVATE);
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         isFull  = prefs.getBoolean(Toolbox.PREFS_IS_FULL_VER, false);
+        
+        vi = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        adapter = new LessonListAdapter(this, items, vi, infoButtonHandler, isFull);
+        setListAdapter(adapter);
+        registerForContextMenu(getListView());
     }
     
     @Override
@@ -189,7 +189,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
           if (result) {
               le.setSort(-1 * le.getSort());
               Collections.sort(items);
-              adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
+              adapter = new LessonListAdapter(this, items, vi, infoButtonHandler, isFull);
               setListAdapter(adapter);
               return true;
           } else {
@@ -235,7 +235,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
               le.setSort(other.getSort());
               other.setSort(temp);
               Collections.sort(items);
-              adapter = new LessonListAdapter(this, items, vi, infoButtonHandler);
+              adapter = new LessonListAdapter(this, items, vi, infoButtonHandler, isFull);
               setListAdapter(adapter);
               return true;
           }

@@ -55,6 +55,7 @@ public class MainAdminActivity extends TraceListActivity {
 
         // Set admin permissions
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, true);
+        editor.putBoolean(Toolbox.PREFS_IS_FULL_VER, true);
         editor.commit();
         
         // Character Cache

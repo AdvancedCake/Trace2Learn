@@ -3,6 +3,7 @@
 
     <color name="header">#00CCFF</color>
     <color name="user_collection">#666699</color>
+    <color name="locked_collection">#666666</color>
     <color name="thumb_background">#000080</color>
     <color name="thumb_background_selected">#0000FF</color>
 

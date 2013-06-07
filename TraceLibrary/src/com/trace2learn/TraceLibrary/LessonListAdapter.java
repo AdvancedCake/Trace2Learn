@@ -25,18 +25,24 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
 
     private Handler handler;
     private LayoutInflater vi;
+
+    boolean isFull;
     
     private int defaultColor = -1;
     private int userColor;
+    private int lockColor;
 
     public LessonListAdapter(Context context, List<Lesson> objects,
-            LayoutInflater vi, Handler handler) {
+            LayoutInflater vi, Handler handler, boolean isFull) {
         super(context, 0, objects);
-        this.items = new ArrayList<Lesson>(objects);
-        this.vi = vi;
-        this.handler = handler;
+        this.items     = new ArrayList<Lesson>(objects);
+        this.vi        = vi;
+        this.handler   = handler;
+        this.isFull    = isFull;
         this.userColor = context.getResources().getColor(
                 R.color.user_collection);
+        this.lockColor = context.getResources().getColor(
+        		R.color.locked_collection);
     }
 
     /**
@@ -63,8 +69,9 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
         ImageView    category4  = (ImageView) v.findViewById(R.id.category4);
         ImageView[]  categories = {category1, category2, category3, category4};
 
-        int count = item.getNumWords();
-        nameView.setText(item.getLessonName());
+        int    count = item.getNumWords();
+        String name  = item.getLessonName();
+        nameView.setText(name);
         sizeView.setText(count + (count == 1 ? " phrase" : " phrases"));
         
         // Display category icons
@@ -97,6 +104,15 @@ public class LessonListAdapter extends ArrayAdapter<Lesson> {
             sizeView.setTextColor(defaultColor);
             nameView.setTypeface(null, Typeface.NORMAL);
         }
+        
+        // Check if this is the full version of the app
+        try {
+			if (!isFull && !item.isUserDefined() &&
+					Integer.valueOf(name.substring(0, name.indexOf(':'))) > 10) {
+				nameView.setTextColor(lockColor);
+				sizeView.setTextColor(lockColor);
+			}
+		} catch (Exception e) {}
 
         // Set onClick listener for info button
         infoButton.setOnClickListener(new OnClickListener() {
