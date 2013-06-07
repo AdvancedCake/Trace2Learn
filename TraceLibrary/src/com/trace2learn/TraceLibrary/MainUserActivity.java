@@ -142,15 +142,15 @@ public class MainUserActivity extends TraceBaseActivity {
 		        	initMsg = initMsg + "Existing custom collections will be retained: " + userCollNames;
 	
 	        	// notify user of db upgrade
-	            AlertDialog dlg = new AlertDialog.Builder(this).create();
+	            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	            Resources rc = getResources();
-	            dlg.setIcon(R.drawable.logo);
-	            dlg.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
-	            dlg.setMessage(initMsg);
-	            dlg.setButton("Sounds Good", new DialogInterface.OnClickListener() {
+	            builder.setIcon(R.drawable.logo);
+	            builder.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
+	            builder.setMessage(initMsg);
+	            builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int which) {dialog.dismiss();}
 	            });	
-	            dlg.show();  
+	            builder.show();  
         	}
             
             // Open the db file in your assets directory
@@ -190,7 +190,7 @@ public class MainUserActivity extends TraceBaseActivity {
                     CreateWordActivity.class);
             startActivity(i);
         } else {
-            Toolbox.promptAppUpgrade(getApplicationContext());
+            Toolbox.promptAppUpgrade(this);
         }
     }
 

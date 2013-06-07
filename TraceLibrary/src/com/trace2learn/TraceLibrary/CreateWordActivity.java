@@ -9,30 +9,22 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.Editable;
 import android.util.Log;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 
-import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
@@ -56,18 +48,15 @@ public class CreateWordActivity extends TraceBaseActivity {
     
     private LayoutInflater vi;
     
-    private boolean isAdmin;
-    
     private int thumbBgColor;
-    
-    // Lesson popup views
-    private PopupWindow window;
-    private View        layout;
     
     private int     numChars;
     private boolean filtered;
     
-    private static enum requestCodeENUM { EditTag };
+    private enum RequestCode {
+        EDIT_TAG,
+        ADD_TO_COLLECTION;
+    }
     
     
     //initializes the list if all characters in the database
@@ -81,10 +70,6 @@ public class CreateWordActivity extends TraceBaseActivity {
 
         getViews();
         getHandlers();
-        
-        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
-                MODE_PRIVATE);
-        isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         
         filterStatus.setVisibility(View.GONE);
 
@@ -176,8 +161,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 	newWord.setKeyValues(lc.getKeyValues());
                 }
                 if(newWord.length() > 0 && Toolbox.dba.addWord(newWord)){
-                    Toolbox.showToast(context, "Word saved");
-                    initiatePopupWindow();
+                    addToCollection();
                     return;
                 }
                 Toolbox.showToast(context, "Word is empty!");
@@ -214,67 +198,13 @@ public class CreateWordActivity extends TraceBaseActivity {
         charAdapter = new LessonItemListAdapter(this, display, vi);
         charList.setAdapter(charAdapter);   
     }
-
-    private void initiatePopupWindow() {
-        try {
-            Display display = getWindowManager().getDefaultDisplay();
-            int height = display.getHeight();  // deprecated
-            
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-            layout = inflater.inflate(R.layout.add_to_collection_popup,
-                    (ViewGroup) findViewById(R.id.popup_layout));
-            layout.measure(View.MeasureSpec.UNSPECIFIED,
-                    View.MeasureSpec.UNSPECIFIED);
-            
-            // create a 300px width and 470px height PopupWindow
-            List<String> allLessons;
-            if (isAdmin) {
-                allLessons = Toolbox.dba.getAllLessonNames();
-            } else {
-                allLessons = Toolbox.dba.getAllUserLessonNames();
-            }
-            Log.e("numLessons", Integer.toString(allLessons.size()));
-            final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
-            lessonList.setAdapter(adapter);
-            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
-
-            // display the popup in the center
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-            lessonList.setOnItemClickListener(new OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-                    String name = ((String)lessonList.getItemAtPosition(position));
-                    Log.e("name",name);
-                    String success = Toolbox.dba.addWordToLesson(name, newWord.getStringId());
-                    Log.e("adding word",success);
-                    window.dismiss();
-                    createTags();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
     
-    public void lessonPopupOnClickNewLesson(View view) {
-        EditText editText = (EditText)layout.findViewById(R.id.newcollection);
-        Editable edit = editText.getText();
-        String name = edit.toString();
-        if (name.equals("")) {
-            Toolbox.showToast(getApplicationContext(),
-                    "You must name the collection!");
-            return;
-        }
-        Lesson lesson = new Lesson(!isAdmin);
-        lesson.setName(name);
-        lesson.addWord(newWord.getStringId());
-        Toolbox.dba.addLesson(lesson);
-        window.dismiss();
-        createTags();
+    private void addToCollection() {
+        Intent i = new Intent(getApplicationContext(), AddToCollectionActivity.class);
+        i.putExtra("word", newWord.getStringId());
+        startActivityForResult(i, RequestCode.ADD_TO_COLLECTION.ordinal());
     }
-    
+
     private void createTags() {
         String id = newWord.getStringId();
         if (id != null) {
@@ -284,7 +214,7 @@ public class CreateWordActivity extends TraceBaseActivity {
             i.putExtra("ID", id);
             i.putExtra("TYPE", newWord.getItemType().toString());
 
-            startActivityForResult(i, requestCodeENUM.EditTag.ordinal());
+            startActivityForResult(i, RequestCode.EDIT_TAG.ordinal());
         } else {
             Toolbox.showToast(getApplicationContext(),
                     "Error: Save the word before adding tags");
@@ -293,8 +223,15 @@ public class CreateWordActivity extends TraceBaseActivity {
     
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == requestCodeENUM.EditTag.ordinal()) {
+        if (requestCode == RequestCode.EDIT_TAG.ordinal()) {
             finish();
+        } else if (requestCode == RequestCode.ADD_TO_COLLECTION.ordinal()) {
+            if (resultCode == RESULT_OK) {
+                createTags();
+            } else {
+                Toolbox.dba.deleteWord(newWord.getStringId());
+                Toolbox.showToast(getApplicationContext(), "Phrase not saved");
+            }
         }
     }
     
