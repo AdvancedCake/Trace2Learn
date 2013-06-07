@@ -191,15 +191,15 @@ public class MainAdminActivity extends TraceListActivity {
         
         if(msg == "") msg = "No issues found!";
         
-        AlertDialog dlg = new AlertDialog.Builder(this).create();
-        dlg.setTitle("Integrity Alert");
-        dlg.setMessage(msg);
-        dlg.setButton("OK", new DialogInterface.OnClickListener() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Integrity Alert");
+        builder.setMessage(msg);
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
                 }
         });	
-        dlg.setIcon(R.drawable.logo);
-        dlg.show();
+        builder.setIcon(R.drawable.logo);
+        builder.show();
     }        
 
 }
