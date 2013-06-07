@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ public class MainUserActivity extends TraceBaseActivity {
     ImageView introduction;
     ImageView createPhrase;
     ImageView browseCollections;
+    ImageView upgrade;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MainUserActivity extends TraceBaseActivity {
         
         if (!isFullVer) {
             ((TextView) findViewById(R.id.title)).setText(R.string.user_app_name_free);
+            findViewById(R.id.upgrade).setVisibility(View.VISIBLE);
         }
     }
     
@@ -68,6 +71,7 @@ public class MainUserActivity extends TraceBaseActivity {
         introduction      = (ImageView) findViewById(R.id.introduction);
         createPhrase      = (ImageView) findViewById(R.id.create_phrase);
         browseCollections = (ImageView) findViewById(R.id.browse_collections);
+        upgrade           = (ImageView) findViewById(R.id.upgrade);
     }
     
     private void getHandlers() {
@@ -93,6 +97,16 @@ public class MainUserActivity extends TraceBaseActivity {
                 Intent i = new Intent(getApplicationContext(),
                         BrowseLessonsActivity.class);
                 startActivity(i);
+            }
+        });
+        
+        upgrade.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(Toolbox.APP_STORE_LINK));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
             }
         });
     }
