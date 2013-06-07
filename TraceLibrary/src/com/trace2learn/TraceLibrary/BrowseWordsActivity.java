@@ -16,22 +16,14 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
-import android.view.Display;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.ImageView;
 
@@ -44,12 +36,12 @@ public class BrowseWordsActivity extends TraceListActivity {
     private List<LessonItem> display; // list of items being displayed
     private LessonItemListAdapter adapter;
 
-    private ListView	list;
-    private TextView	lessonName;
-    private Button		filterButton;
-    private TextView	filterStatus;
-    private ImageView	infoButton;
-    private boolean		filtered;
+    private ListView    list;
+    private TextView    lessonName;
+    private Button      filterButton;
+    private TextView    filterStatus;
+    private ImageView   infoButton;
+    private boolean    filtered;
 
     private LayoutInflater vi;
     
@@ -59,11 +51,6 @@ public class BrowseWordsActivity extends TraceListActivity {
     private boolean isAdmin;
     
     private boolean collectionsChanged = false; // does the browse collections page need to be refreshed?
-    
-    // Lesson popup views
-    private View layout;
-    private PopupWindow window;
-    private LessonWord lw;
     
     private enum ContextMenuItem {
         ADD_TO_LESSON (0, "Add to Collection"),
@@ -83,7 +70,8 @@ public class BrowseWordsActivity extends TraceListActivity {
 
     private enum RequestCode {
         EDIT_TAGS,
-        PHRASE_PRACTICE;
+        PHRASE_PRACTICE,
+        ADD_TO_COLLECTION;
     }
 
     @Override
@@ -121,7 +109,8 @@ public class BrowseWordsActivity extends TraceListActivity {
             public void onClick(View v) {
                 Intent i = new Intent(v.getContext(), LessonNarrativeActivity.class);
                 i.putExtra("ID", lessonId);
-                startActivity(i);            }
+                startActivity(i);
+            }
         });        
     }
     
@@ -225,7 +214,7 @@ public class BrowseWordsActivity extends TraceListActivity {
     public boolean onContextItemSelected(MenuItem item) {
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        lw = (LessonWord) display.get(info.position);
+        LessonWord lw = (LessonWord) display.get(info.position);
         Log.e("MenuIndex",Integer.toString(menuItemIndex));
         Log.e("ListIndex",Integer.toString(info.position));
 
@@ -233,8 +222,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         
         // Add to Collection
         if (menuItemIndex == ContextMenuItem.ADD_TO_LESSON.ordinal()) {
-            collectionsChanged = true;
-            initiatePopupWindow();
+            addToCollection(lw.getStringId());
             return true;
         }
 
@@ -374,65 +362,11 @@ public class BrowseWordsActivity extends TraceListActivity {
 
         return false;
     }
-
-    private void initiatePopupWindow(){
-        try {
-            Display display = getWindowManager().getDefaultDisplay(); 
-            int height = display.getHeight();  // deprecated
-            
-            LayoutInflater inflater = (LayoutInflater) this.getSystemService(
-                    Context.LAYOUT_INFLATER_SERVICE);
-            layout = inflater.inflate(R.layout.add_to_collection_popup,
-                    (ViewGroup) findViewById(R.id.popup_layout));
-            layout.measure(View.MeasureSpec.UNSPECIFIED,
-                    View.MeasureSpec.UNSPECIFIED);
-            
-            // create a 300px width and 470px height PopupWindow
-            List<String> allLessons;
-            if (isAdmin) {
-                allLessons = Toolbox.dba.getAllLessonNames();
-            } else {
-                allLessons = Toolbox.dba.getAllUserLessonNames();
-            }
-            Log.e("numLessons", Integer.toString(allLessons.size()));
-            final ListView lessonList = (ListView) layout.findViewById(R.id.collectionlist);
-            ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, allLessons); 
-            lessonList.setAdapter(adapter);
-            window = new PopupWindow(layout, layout.getMeasuredWidth(), (int) (height * .8), true);
-            
-            // display the popup in the center
-            window.showAtLocation(layout, Gravity.CENTER, 0, 0);
-
-            lessonList.setOnItemClickListener(new OnItemClickListener() {
-                public void onItemClick(AdapterView<?> parent, View view, int position,long id) {     
-                    String name = ((String)lessonList.getItemAtPosition(position));
-                    Log.e("name",name);
-                    String success = Toolbox.dba.addWordToLesson(name, lw.getStringId());
-                    Log.e("adding phrase",success);
-                    Toolbox.showToast(getApplicationContext(), "Successfully Added");
-                    window.dismiss();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public void lessonPopupOnClickNewLesson(View view) {
-        Context  context  = getApplicationContext();
-        EditText editText = (EditText)layout.findViewById(R.id.newcollection);
-        
-        String name = editText.getText().toString();
-        if(name.equals("")){
-            Toolbox.showToast(context, "You must name the collection!");
-            return;
-        }
-        Lesson lesson = new Lesson(!isAdmin);
-        lesson.setName(name);
-        lesson.addWord(lw.getStringId());
-        Toolbox.dba.addLesson(lesson);
-        Toolbox.showToast(context, "Successfully Created");
-        window.dismiss();
+    
+    private void addToCollection(String word) {
+        Intent i = new Intent(getApplicationContext(), AddToCollectionActivity.class);
+        i.putExtra("word", word);
+        startActivityForResult(i, RequestCode.ADD_TO_COLLECTION.ordinal());
     }
 
     @Override
@@ -448,11 +382,13 @@ public class BrowseWordsActivity extends TraceListActivity {
             if (next < display.size()) {
                 clickOnItem(display.get(next), next);
             }
+        } else if (requestCode == RequestCode.ADD_TO_COLLECTION.ordinal()) {
+            collectionsChanged = (resultCode == RESULT_OK);
         }
     }
     
     // FILTER METHODS
-	
+    
     // depending on the state, shows the filter pop up or clears the filter
     public void onClickFilter(View view) {
         if (filtered) {
@@ -474,7 +410,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String search = filterText.getText().toString();
                 if (search.equals("")) {
-                    hideKeyboard(filterText);
+                    Toolbox.hideKeyboard(getParent(), filterText);
                     return;
                 }
 
@@ -505,19 +441,19 @@ public class BrowseWordsActivity extends TraceListActivity {
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
-                hideKeyboard(filterText);
+                Toolbox.hideKeyboard(getParent(), filterText);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                hideKeyboard(filterText);
+                Toolbox.hideKeyboard(getParent(), filterText);
             }
         });
         
         AlertDialog dialog = builder.create();
         
         // show the keyboard
-        dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+        Toolbox.showKeyboard(dialog);
         dialog.show();
 
     }
@@ -528,12 +464,6 @@ public class BrowseWordsActivity extends TraceListActivity {
         filterButton.setText(R.string.filter);
         filtered = false;
         filterStatus.setText(R.string.filter_none);
-    }
-    
-    private void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
     
     @Override
