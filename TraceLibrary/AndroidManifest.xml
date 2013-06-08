@@ -39,6 +39,8 @@
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.Statistics" >
         </activity>
+        <activity android:name="com.trace2learn.TraceLibrary.AddToCollectionActivity">
+        </activity>
     </application>
 
 </manifest>

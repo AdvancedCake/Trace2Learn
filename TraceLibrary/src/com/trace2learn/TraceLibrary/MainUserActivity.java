@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,6 +32,7 @@ public class MainUserActivity extends TraceBaseActivity {
     ImageView introduction;
     ImageView createPhrase;
     ImageView browseCollections;
+    ImageView upgrade;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,6 +58,7 @@ public class MainUserActivity extends TraceBaseActivity {
         
         if (!isFullVer) {
             ((TextView) findViewById(R.id.title)).setText(R.string.user_app_name_free);
+            findViewById(R.id.upgrade).setVisibility(View.VISIBLE);
         }
     }
     
@@ -68,6 +71,7 @@ public class MainUserActivity extends TraceBaseActivity {
         introduction      = (ImageView) findViewById(R.id.introduction);
         createPhrase      = (ImageView) findViewById(R.id.create_phrase);
         browseCollections = (ImageView) findViewById(R.id.browse_collections);
+        upgrade           = (ImageView) findViewById(R.id.upgrade);
     }
     
     private void getHandlers() {
@@ -83,9 +87,7 @@ public class MainUserActivity extends TraceBaseActivity {
         createPhrase.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent i = new Intent(getApplicationContext(),
-                        CreateWordActivity.class);
-                startActivity(i);
+                buildPhrase();
             }
         });
         
@@ -95,6 +97,16 @@ public class MainUserActivity extends TraceBaseActivity {
                 Intent i = new Intent(getApplicationContext(),
                         BrowseLessonsActivity.class);
                 startActivity(i);
+            }
+        });
+        
+        upgrade.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setData(Uri.parse(Toolbox.APP_STORE_LINK));
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                getApplicationContext().startActivity(intent);
             }
         });
     }
@@ -144,15 +156,15 @@ public class MainUserActivity extends TraceBaseActivity {
 		        	initMsg = initMsg + "Existing custom collections will be retained: " + userCollNames;
 	
 	        	// notify user of db upgrade
-	            AlertDialog dlg = new AlertDialog.Builder(this).create();
+	            AlertDialog.Builder builder = new AlertDialog.Builder(this);
 	            Resources rc = getResources();
-	            dlg.setIcon(R.drawable.logo);
-	            dlg.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
-	            dlg.setMessage(initMsg);
-	            dlg.setButton("Sounds Good", new DialogInterface.OnClickListener() {
+	            builder.setIcon(R.drawable.logo);
+	            builder.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
+	            builder.setMessage(initMsg);
+	            builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int which) {dialog.dismiss();}
 	            });	
-	            dlg.show();  
+	            builder.show();  
         	}
             
             // Open the db file in your assets directory
@@ -179,6 +191,20 @@ public class MainUserActivity extends TraceBaseActivity {
                     e.getMessage());
             e.printStackTrace();
             return false;
+        }
+    }
+    
+    /**
+     * Checks that this is the full version of the app, then starts the
+     * activity to build a phrase.
+     */
+    private void buildPhrase() {
+        if (prefs.getBoolean(Toolbox.PREFS_IS_FULL_VER, false)) {
+            Intent i = new Intent(getApplicationContext(),
+                    CreateWordActivity.class);
+            startActivity(i);
+        } else {
+            Toolbox.promptAppUpgrade(this);
         }
     }
 

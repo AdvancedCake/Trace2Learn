@@ -8,7 +8,9 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.Resources;
+import android.net.Uri;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
@@ -36,6 +38,9 @@ public class Toolbox {
     
     // Initializing Database
     public static final String INIT_DB_NAME = "initial.jet";
+    
+    // Link to apps in Play Store
+    public static final String APP_STORE_LINK = "market://search?q=pub:Rovio+Mobile+Inc.";
 
     // Sound Playback
     public static final float VOLUME = 1;
@@ -99,16 +104,16 @@ public class Toolbox {
     public static void showAboutPopup(Activity parentActivity){
         try {
 
-            AlertDialog dlg = new AlertDialog.Builder(parentActivity).create();
+            AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
             Resources rc = parentActivity.getResources();
-            dlg.setIcon(R.drawable.logo);
-            dlg.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
-            dlg.setMessage(rc.getText(R.string.aboutCredits));
-            dlg.setButton("Sounds Good", new DialogInterface.OnClickListener() {
+            builder.setIcon(R.drawable.logo);
+            builder.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
+            builder.setMessage(rc.getText(R.string.aboutCredits));
+            builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     }
-            });	
-            dlg.show();        	
+            });
+            builder.show();
         	
             
             
@@ -131,5 +136,24 @@ public class Toolbox {
     	dba.close();
     	dba = null;
     	dbaOpened = false;
+    }
+    
+    public static void promptAppUpgrade(final Context context) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(R.string.upgrade_app);
+        builder.setMessage(R.string.upgrade_app_text);
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            	Intent intent = new Intent(Intent.ACTION_VIEW);
+            	intent.setData(Uri.parse(APP_STORE_LINK));
+            	context.startActivity(intent);
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {}
+        });
+        builder.show();
     }
 }

@@ -83,5 +83,12 @@
     <string name="ok">OK</string>
     <string name="phrase_deleted">Phrase Deleted</string>
     <string name="phrase_deleted_text">The phrase is no longer part of any collection, and will be deleted.</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="upgrade_app">Upgrade!</string>
+    <string name="upgrade_app_text">This feature is available in the full app! Would you like to upgrade?</string>
+    <string name="add_to_collection">Add To Collection</string>
+    <string name="name">name</string>
+    <string name="create_new">Create New</string>
 
 </resources>

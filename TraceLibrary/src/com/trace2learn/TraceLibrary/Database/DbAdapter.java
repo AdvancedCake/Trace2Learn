@@ -1379,8 +1379,8 @@ public class DbAdapter {
     }
     
     public List<String> getAllLessonNames() {
-        Cursor mCursor = mDb.query(true, LESSONS_TABLE, new String[] {"name"},
-                null, null, null, null, null, null);
+        Cursor mCursor = mDb.query(LESSONS_TABLE, new String[] {"name"},
+                null, null, null, null, "sort ASC");
         List<String> names = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();
@@ -1398,8 +1398,8 @@ public class DbAdapter {
     }
     
     public List<String> getAllUserLessonNames() {
-        Cursor mCursor = mDb.query(true, LESSONS_TABLE, new String[] {"name"},
-                "userDefined=1", null, null, null, null, null);
+        Cursor mCursor = mDb.query(LESSONS_TABLE, new String[] {"name"},
+                "userDefined=1", null, null, null, "sort ASC");
         List<String> names = new ArrayList<String>();
         if (mCursor != null) {
             mCursor.moveToFirst();

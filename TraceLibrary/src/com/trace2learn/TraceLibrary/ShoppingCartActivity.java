@@ -213,6 +213,8 @@ public class ShoppingCartActivity extends Activity {
      * Displays the filter popup and contains the code to filter 
      */
     public void showFilterPopup() {
+        final Activity parent = getParent();
+        
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
 
@@ -223,7 +225,7 @@ public class ShoppingCartActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 String search = filterText.getText().toString();
                 if (search.equals("")) {
-                    Toolbox.hideKeyboard(getParent(), filterText);
+                    Toolbox.hideKeyboard(parent, filterText);
                     return;
                 }
 
@@ -267,12 +269,12 @@ public class ShoppingCartActivity extends Activity {
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
-                Toolbox.hideKeyboard(getParent(), filterText);
+                Toolbox.hideKeyboard(parent, filterText);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Toolbox.hideKeyboard(getParent(), filterText);
+                Toolbox.hideKeyboard(parent, filterText);
             }
         });
 

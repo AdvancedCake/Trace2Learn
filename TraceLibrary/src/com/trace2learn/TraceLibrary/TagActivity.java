@@ -458,7 +458,6 @@ public class TagActivity extends TraceBaseActivity {
     private void close() {
         if (isChanged) {
             setResult(RESULT_OK);
-            showToast("Tags saved");
             if (type == ItemType.CHARACTER) {
                 for (LessonItem character : Toolbox.characters) {
                     if (stringid.equals(character.getStringId())) {
