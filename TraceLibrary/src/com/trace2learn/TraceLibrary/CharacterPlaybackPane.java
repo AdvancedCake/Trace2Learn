@@ -31,7 +31,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	}
 	public CharacterPlaybackPane(Context context, boolean animated)
 	{
-		this(context, false, 60);
+		this(context, animated, 60);
 	}
 	
 	public CharacterPlaybackPane(Context context) {
