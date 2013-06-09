@@ -35,7 +35,7 @@ public class CharacterPlaybackPane extends CharacterDisplayPane {
 	}
 	
 	public CharacterPlaybackPane(Context context) {
-		this(context, false);
+		this(context, false, 60);
 	}
 	
 	public void setCharacter(LessonCharacter character)

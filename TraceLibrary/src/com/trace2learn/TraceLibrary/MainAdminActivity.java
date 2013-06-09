@@ -26,6 +26,7 @@ import android.widget.TextView;
 import com.trace2learn.TraceLibrary.R;
 import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
+import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
@@ -165,9 +166,9 @@ public class MainAdminActivity extends TraceListActivity {
        
         String msg = ""; 		
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
-        List<String> cids = Toolbox.dba.getAllCharIds();
-        for(String id : cids){
-        	LessonCharacter ch = Toolbox.dba.getCharacterById(id);
+        List<LessonItem> chars = Toolbox.characters;
+        for(LessonItem item: chars){
+        	LessonCharacter ch = (LessonCharacter)item;
         	if(!ch.hasKey(Toolbox.PINYIN_KEY))
         		msg = msg + "Missing pinyin for " + ch.getTagsToString() + "\n";
         	if(!ch.hasKey(Toolbox.ID_KEY))

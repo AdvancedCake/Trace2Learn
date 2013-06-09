@@ -57,6 +57,15 @@
         android:layout_above="@+id/tag_list_scroll_view"
         android:layout_below="@+id/thumbnail_gallery_scroll_view" />
 
+    <ImageView
+        android:id="@+id/sound_button"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignTop="@id/character_slot"
+        android:contentDescription="@string/play_sound"
+        android:src="@drawable/sound_button" />
+    
     <HorizontalScrollView
         android:id="@+id/tag_list_scroll_view"
         android:layout_width="wrap_content"
@@ -112,13 +121,5 @@
         android:textOff="@string/quizModeOff"
         android:textOn="@string/quizModeOn" />
 
-    <ImageView
-        android:id="@+id/sound_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_below="@+id/thumbnail_gallery"
-        android:contentDescription="@string/play_sound"
-        android:src="@drawable/sound_button" />
 
 </RelativeLayout>

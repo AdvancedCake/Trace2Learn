@@ -313,8 +313,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             this.characters.add(ch);
             this.thumbnails.addView(iv);
             
+            // duration of rendering is dynamic based on # of strokes, 2 strokes per second
+            // TODO: make speed a configurable setting, as slow/moderate/fast
+            int duration = ch.getNumStrokes() / 2 + 1;
+            
             CharacterPlaybackPane dispPane = new CharacterPlaybackPane(
-                    context, false, 2);
+                    context, false, duration);
             dispPane.setCharacter(ch);
             this.playbackPanes.add(dispPane);
 

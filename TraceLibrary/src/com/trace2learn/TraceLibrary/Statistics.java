@@ -22,6 +22,7 @@ import org.achartengine.renderer.XYMultipleSeriesRenderer;
 import org.achartengine.renderer.XYMultipleSeriesRenderer.Orientation;
 import org.achartengine.renderer.XYSeriesRenderer;
 
+import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
 public class Statistics extends TraceBaseActivity {
@@ -57,16 +58,16 @@ public class Statistics extends TraceBaseActivity {
         txt += wids.size();
         countPhrases.setText(txt);
 
-        List<String> cids = Toolbox.dba.getAllCharIds();
+        List<LessonItem> chars = Toolbox.characters;
         txt = "";
-        txt += cids.size();
+        txt += chars.size();
         countCharacters.setText(txt);
 
         // Count total strokes, and also keep track of the distribution
         // of stroke counts across characters
         LinkedHashMap<Integer, Integer> strokeDistrib = new LinkedHashMap<Integer, Integer>();
-        for(String id : cids){
-        	LessonCharacter ch = Toolbox.dba.getCharacterById(id);
+        for(LessonItem item : chars){
+        	LessonCharacter ch = (LessonCharacter) item;
         	int numStrokes = ch.getNumStrokes();
         	totalStrokes += numStrokes;
         	if(numStrokes > maxStrokes) maxStrokes = numStrokes;
@@ -96,7 +97,6 @@ public class Statistics extends TraceBaseActivity {
         }
 
         Log.i("Statistics chart data: ", "max strokes " + maxStrokes);
-        Log.i("Statistics chart data: ", "max X " + distribSeries.getMaxX());
 
         
         // Creating a data set
