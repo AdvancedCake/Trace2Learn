@@ -23,7 +23,7 @@ public class Lesson extends LessonItem {
     private List<LessonItem>          wordObjects;
     private SortedSet<LessonCategory> categories;
     private String                    narrative;
-    private boolean                   isUserDefined;
+    private boolean                  isUserDefined;
 
     public Lesson() {
         this(null, true);
@@ -165,34 +165,30 @@ public class Lesson extends LessonItem {
     public String toXml() {
         StringBuffer sb = new StringBuffer();
         sb.append("<lesson id=\"").append(_stringid).append("\" ");
-        sb.append("name=\"").append(name).append("\" ");
+        sb.append("name=\"").append(Toolbox.xmlEncode(name)).append("\" ");
         sb.append("author=\"").append(isUserDefined ? "user" : "admin").append("\">\n");
 
         if (narrative != null && narrative.length() > 0) {
-            String xmlNarrative = narrative.replace("\"", "&quot;")
-                                           .replace("'", "&apos;")
-                                           .replace("<", "&lt;")
-                                           .replace(">", "&gt;")
-                                           .replace("&", "&amp;");
+            String xmlNarrative = Toolbox.xmlEncode(narrative);
             sb.append("<narrative>").append(xmlNarrative).append("</narrative>\n");
         }
         
         if (categories != null && categories.size() > 0) {
             for (LessonCategory category : categories) {
-                sb.append("<category category=\"").append(category.name).append("\" />\n");
+                sb.append("<category category=\"").append(Toolbox.xmlEncode(category.name)).append("\" />\n");
             }
         }
         
-        synchronized (_words) {
-            int word_position = 0;
-            for (String word_id : _words) {
-                LessonWord w = Toolbox.dba.getWordById(word_id);
-                Log.d("Lesson.toXml()", " " + word_id);
-                if (w == null) Log.d("Lesson.toXml()", "word is null");
-                else sb.append(w.toXml(word_position++));
+        List<LessonItem> words = getWords();
+        int wordPosition = 0;
+        for (LessonItem word : words) {
+            if (word == null) {
+                Log.d("Lesson.toXml()", "word is null");
+            } else {
+                sb.append(((LessonWord) word).toXml(wordPosition++));
             }
         }
-
+        
         sb.append("</lesson>\n");	    	    
 
         return sb.toString();
@@ -208,7 +204,7 @@ public class Lesson extends LessonItem {
     public static Lesson importFromXml(Element elem) {
         try {
             String  id          = elem.getAttribute("id");
-            String  name        = elem.getAttribute("name");
+            String  name        = Toolbox.xmlDecode(elem.getAttribute("name"));
             boolean userDefined = elem.getAttribute("author").equals("user");
 
             Log.i("Lesson.importFromXml", "id: " + id);
@@ -221,17 +217,14 @@ public class Lesson extends LessonItem {
             NodeList narr = elem.getElementsByTagName("narrative");
             if (narr.getLength() > 0) {
                 String narrative = Parser.getNodeValue(narr.item(0));
-                narrative = narrative.replace("&quot;", "\"")
-                                     .replace("&apos;", "'")
-                                     .replace("&lt;", "<")
-                                     .replace("&gt;", ">")
-                                     .replace("&amp;", "&");
+                narrative = Toolbox.xmlDecode(narrative);
                 lesson.setNarrative(narrative);
             }
             
             NodeList cats = elem.getElementsByTagName("category");
             for (int i = 0; i < cats.getLength(); i++) {
                 String str = ((Element) cats.item(i)).getAttribute("category");
+                str = Toolbox.xmlDecode(str);
                 LessonCategory cat = LessonCategory.lookup(str);
                 if (cat != null) {
                     lesson.addCategory(cat);

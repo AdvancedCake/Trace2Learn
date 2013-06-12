@@ -156,4 +156,28 @@ public class Toolbox {
         });
         builder.show();
     }
+    
+    public static String xmlEncode(String src) {
+        return src.replace("&", "&amp;")
+                   .replace("\"", "&quot;")
+                   .replace("'", "&apos;")
+                   .replace("<", "&lt;")
+                   .replace(">", "&gt;");
+    }
+    
+    public static String xmlDecode(String xml) {
+        String out = xml;
+        while (out.contains("&amp;") ||
+                out.contains("&quot;") || 
+                out.contains("&apos;") ||
+                out.contains("&lt;") ||
+                out.contains("&gt;")) {
+            out = out.replace("&amp;", "&")
+                    .replace("&quot;", "\"")
+                    .replace("&apos;", "'")
+                    .replace("&lt;", "<")
+                    .replace("&gt;", ">");
+        }
+        return out;
+    }
 }
