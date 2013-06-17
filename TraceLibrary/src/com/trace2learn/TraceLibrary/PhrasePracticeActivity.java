@@ -169,6 +169,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             }
         });
         
+        // Clicking next icon
         nextIcon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -176,12 +177,38 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             }
         });    
         
+        // Clicking previous icon
         prevIcon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 moveToPrevPhrase();
             }
         });
+        
+        // handle swipe left/right gestures
+        charSlot.setOnTouchListener(new OnSwipeTouchListener(this.getApplicationContext()) {
+            public void onSwipeRight() {
+            	// L>R swipe, proceed to previous char or next phrase
+            	if (currentMode == Mode.DISPLAY) {
+            		if (currentChar > 0) 
+            			setSelectedCharacter(currentChar - 1);
+            		else
+            			moveToPrevPhrase();
+            	}
+            }
+            public void onSwipeLeft() {
+            	// R>L swipe, proceed to next char or next phrase
+            	if (currentMode == Mode.DISPLAY) {
+            		if (currentChar + 1 < characters.size()) 
+            			setSelectedCharacter(currentChar + 1);
+            		else
+            			moveToNextPhrase();
+            	}
+            }
+
+        });
+        
+        
     }
     
     private void moveToNextPhrase() {
@@ -195,7 +222,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             finish();
             
             Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
-            v.vibrate(300);
+            v.vibrate(300); //ms
         }
     }
     
@@ -210,7 +237,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             finish();
             
             Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
-            v.vibrate(300);
+            v.vibrate(300); //ms
         }
     }    
     /**
@@ -445,8 +472,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
                 if (lessonID != null) {
                     if (phraseIndex < collectionSize) { // still more words
                        
-                    	// TODO: animate the 'next' icon, to remind user to proceed to next phrase
-                        
                     } else if (phraseIndex == collectionSize) {
                         // the last word in the collection
                         Toolbox.showToast(getApplicationContext(),

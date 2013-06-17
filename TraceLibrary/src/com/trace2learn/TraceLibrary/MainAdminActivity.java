@@ -162,7 +162,7 @@ public class MainAdminActivity extends TraceListActivity {
     	// - flag characters without pinyin tag
     	// - flag duplicate pinyin tags
     	// - flag phrases without pinyin tag
-    	
+
        
         String msg = ""; 		
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
