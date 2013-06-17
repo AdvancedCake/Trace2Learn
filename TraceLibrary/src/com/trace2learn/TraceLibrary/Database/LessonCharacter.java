@@ -267,12 +267,12 @@ public class LessonCharacter extends LessonItem {
 	    String xml = "<character id=\"" + _stringid + "\">\n";
 	    
 	    for (String tag : _tags) {
-	        xml += "<tag tag=\"" + tag + "\" />\n";
+	        xml += "<tag tag=\"" + Toolbox.xmlEncode(tag) + "\" />\n";
 	    }
 	    
 	    for (Map.Entry<String, String> entry : keyValues.entrySet()) {
-	        xml += "<id key=\"" + entry.getKey() + "\" value=\"" +
-	                entry.getValue() + "\" />\n";
+	        xml += "<id key=\"" + Toolbox.xmlEncode(entry.getKey()) + "\" value=\"" +
+	                Toolbox.xmlEncode(entry.getValue()) + "\" />\n";
 	    }
 	    
 	    int numStrokes = _strokes.size();
@@ -303,14 +303,17 @@ public class LessonCharacter extends LessonItem {
             NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {
                 String tag = ((Element) tags.item(i)).getAttribute("tag");
+                tag = Toolbox.xmlDecode(tag);
                 c.addTag(tag);
                 Log.i("Import Character", "  tag: " + tag);
             }
             
             NodeList ids = elem.getElementsByTagName("id");
             for (int i = 0; i < ids.getLength(); i++) {
-                String key = ((Element) ids.item(i)).getAttribute("key");
+                String key   = ((Element) ids.item(i)).getAttribute("key");
                 String value = ((Element) ids.item(i)).getAttribute("value");
+                key   = Toolbox.xmlDecode(key);
+                value = Toolbox.xmlDecode(value);
                 c.addKeyValue(key, value);
                 Log.i("Import Character", "  key: " + key + ", value: " + value);
             }

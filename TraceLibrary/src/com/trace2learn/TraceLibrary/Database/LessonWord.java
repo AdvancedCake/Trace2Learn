@@ -136,12 +136,12 @@ public class LessonWord extends LessonItem {
 			xml = "<word id=\"" + _stringid + "\" position=\"" + word_position + "\">\n";
 
 	    for (String tag : _tags) {
-	        xml += "<tag tag=\"" + tag + "\" />\n";
+	        xml += "<tag tag=\"" + Toolbox.xmlEncode(tag) + "\" />\n";
 	    }
 
 	    for (Map.Entry<String, String> entry : keyValues.entrySet()) {
-	        xml += "<id key=\"" + entry.getKey() + "\" value=\"" +
-	                entry.getValue() + "\" />\n";
+	        xml += "<id key=\"" + Toolbox.xmlEncode(entry.getKey()) + "\" value=\"" +
+	                Toolbox.xmlEncode(entry.getValue()) + "\" />\n";
 	    }
 
 	    int numChars = _characters.size();
@@ -181,6 +181,7 @@ public class LessonWord extends LessonItem {
             NodeList tags = elem.getElementsByTagName("tag");
             for (int i = 0; i < tags.getLength(); i++) {
                 String tag = ((Element) tags.item(i)).getAttribute("tag");
+                tag = Toolbox.xmlDecode(tag);
                 w.addTag(tag);
             }
             
@@ -188,6 +189,8 @@ public class LessonWord extends LessonItem {
             for (int i = 0; i < ids.getLength(); i++) {
                 String key = ((Element) ids.item(i)).getAttribute("key");
                 String value = ((Element) ids.item(i)).getAttribute("value");
+                key = Toolbox.xmlDecode(key);
+                value = Toolbox.xmlDecode(value);
                 w.addKeyValue(key, value);
             }
             
