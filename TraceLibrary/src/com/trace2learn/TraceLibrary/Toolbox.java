@@ -46,7 +46,7 @@ public class Toolbox {
     public static final float VOLUME = 1;
     
     // Character Cache
-    public static List<LessonItem> characters;
+    private static List<LessonItem> characters;
     
     public static DbAdapter dba;
     public static boolean dbaOpened = false;
@@ -101,15 +101,20 @@ public class Toolbox {
         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    public static void showAboutPopup(Activity parentActivity){
+    public static void showAboutPopup(Activity parentActy){
         try {
 
-            AlertDialog.Builder builder = new AlertDialog.Builder(parentActivity);
-            Resources rc = parentActivity.getResources();
-            builder.setIcon(R.drawable.logo);
-            builder.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
-            builder.setMessage(rc.getText(R.string.aboutCredits));
-            builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(parentActy);
+            builder.setIcon(parentActy.getApplicationInfo().icon);
+            builder.setTitle(parentActy.getApplicationInfo().name);
+
+            Resources rc = parentActy.getResources();  
+            
+            String msg = (String) rc.getText(R.string.aboutCredits);
+            msg += "\n\nVersion ";
+            msg += parentActy.getPackageManager().getPackageInfo(parentActy.getPackageName(), 0).versionName;
+            builder.setMessage(msg);
+            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
                     }
             });
@@ -122,7 +127,7 @@ public class Toolbox {
         }
     }
     
-    public static void initDba(Context context, boolean initializeChars) {
+    public static void initDbAdapter(Context context, boolean initializeChars) {
         if (dbaOpened) {
             return;
         }
@@ -132,10 +137,16 @@ public class Toolbox {
         if (initializeChars) characters = Toolbox.dba.getAllChars();
     }
     
-    public static void resetDba() {
+    public static void resetDbAdapter() {
     	dba.close();
     	dba = null;
     	dbaOpened = false;
+    }
+    
+    public static List<LessonItem> getCachedCharacters() {
+    	if(characters == null || characters.size() == 0)
+    		characters = dba.getAllChars();
+    	return characters;
     }
     
     public static void promptAppUpgrade(final Context context) {

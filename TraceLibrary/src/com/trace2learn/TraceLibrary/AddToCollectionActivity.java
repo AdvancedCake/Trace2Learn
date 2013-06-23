@@ -108,6 +108,13 @@ public class AddToCollectionActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 Toolbox.hideKeyboard(parent, input);
                 String name = input.getText().toString();
+                
+                // don't allow end users to create collections starting with integers, this
+                // will guarantee no collision with admin-defined collections which are numbered
+                if(!isAdmin && name.matches("^[0-9].*")) {
+                	Toolbox.showToast(getApplicationContext(), "User collection names cannot start with a number");
+                	return;
+                }
                 if (name.length() == 0) {
                     Toolbox.showToast(getApplicationContext(), "Invalid name");
                     return;

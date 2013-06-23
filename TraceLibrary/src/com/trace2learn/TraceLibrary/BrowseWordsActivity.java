@@ -253,8 +253,8 @@ public class BrowseWordsActivity extends TraceListActivity {
                 // check if phrase is part of any other collections
                 if (!Toolbox.dba.isWordInManyLessons(id)) { // phrase is only in this collection
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle(R.string.phrase_deleted);
-                    builder.setMessage(R.string.phrase_deleted_text);
+                    builder.setTitle(R.string.phrase_deletion);
+                    builder.setMessage(R.string.phrase_deletion_text);
                     builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -410,7 +410,7 @@ public class BrowseWordsActivity extends TraceListActivity {
             public void onClick(DialogInterface dialog, int which) {
                 String search = filterText.getText().toString();
                 if (search.equals("")) {
-                    Toolbox.hideKeyboard(getParent(), filterText);
+                    hideKeyboard( filterText);
                     return;
                 }
 
@@ -441,12 +441,12 @@ public class BrowseWordsActivity extends TraceListActivity {
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
-                Toolbox.hideKeyboard(getParent(), filterText);
+                hideKeyboard(filterText);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Toolbox.hideKeyboard(getParent(), filterText);
+                hideKeyboard(filterText);
             }
         });
         
@@ -465,6 +465,10 @@ public class BrowseWordsActivity extends TraceListActivity {
         filtered = false;
         filterStatus.setText(R.string.filter_none);
     }
+    
+    private void hideKeyboard(View view) {
+        Toolbox.hideKeyboard(this, view);
+    }    
     
     @Override
     public void onBackPressed() {

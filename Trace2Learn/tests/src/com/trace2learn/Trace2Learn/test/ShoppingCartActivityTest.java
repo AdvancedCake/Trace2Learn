@@ -69,7 +69,7 @@ public class ShoppingCartActivityTest extends ActivityInstrumentationTestCase2<S
 		String inputStr = "<tag></tag>";
 		String filename = "export1";
 		
-		activity.writeStringToFile(inputStr, filename);
+		activity.writeStringToFile(inputStr, filename, /*append*/ false);
 		
 		String outputStr = readStringFromFile(filename + ".ttw");
 		

@@ -9,9 +9,7 @@ import android.test.AndroidTestCase;
 import android.util.Log;
 
 import com.trace2learn.TraceLibrary.Toolbox;
-import com.trace2learn.TraceLibrary.Database.DbAdapter;
 import com.trace2learn.TraceLibrary.Database.Lesson;
-import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 import com.trace2learn.TraceLibrary.Database.Parser;
 
@@ -33,15 +31,15 @@ public class LessonTest extends AndroidTestCase {
         }
     }
 
-    private LessonCharacter c1, c2;
+    //private LessonCharacter c1, c2;
     private LessonWord w1, w2;
     protected void setUp() throws Exception {
-        Toolbox.initDba(this.getContext(), false);
+        Toolbox.initDbAdapter(this.getContext(), false);
     }
 
     protected void tearDown()
     {
-        Toolbox.resetDba();
+        Toolbox.resetDbAdapter();
     }
 
     public void testTwoWords()

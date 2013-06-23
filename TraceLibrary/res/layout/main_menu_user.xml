@@ -15,22 +15,11 @@
         android:textSize="30sp"
         android:textStyle="bold" />
 
-    <TextView
-        android:id="@+id/subTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title"
-        android:layout_centerHorizontal="true"
-        android:text="@string/app_subtitle"
-        android:textColor="@color/header"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-
     <ImageView
         android:id="@+id/logo"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/subTitle"
+        android:layout_below="@id/title"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="30dp"
         android:contentDescription="@string/user_app_name"

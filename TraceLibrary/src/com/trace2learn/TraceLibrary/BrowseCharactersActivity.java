@@ -20,7 +20,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -76,7 +75,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
      * Populate the source list with characters
      */
     private void getChars() {
-        source = Toolbox.characters;
+        source = Toolbox.getCachedCharacters();
     }
     
     /**
@@ -302,9 +301,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
     }
     
     private void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        Toolbox.hideKeyboard(this, view);
     }
     
 }

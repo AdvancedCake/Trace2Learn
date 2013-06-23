@@ -213,7 +213,6 @@ public class ShoppingCartActivity extends Activity {
      * Displays the filter popup and contains the code to filter 
      */
     public void showFilterPopup() {
-        final Activity parent = getParent();
         
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
@@ -225,7 +224,7 @@ public class ShoppingCartActivity extends Activity {
             public void onClick(DialogInterface dialog, int which) {
                 String search = filterText.getText().toString();
                 if (search.equals("")) {
-                    Toolbox.hideKeyboard(parent, filterText);
+                    hideKeyboard(filterText);
                     return;
                 }
 
@@ -269,12 +268,12 @@ public class ShoppingCartActivity extends Activity {
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 filterStatus.setText("Filter: " + search);
-                Toolbox.hideKeyboard(parent, filterText);
+                hideKeyboard(filterText);
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                Toolbox.hideKeyboard(parent, filterText);
+                hideKeyboard(filterText);
             }
         });
 
@@ -355,8 +354,7 @@ public class ShoppingCartActivity extends Activity {
                     
                     xml += item.toXml();
 
-                    // if it's a lesson, we need to make sure dependencies are
-                    // met
+                    // if it's a lesson, we need to make sure dependencies are met
                     if (item instanceof Lesson) {
                         Lesson lesson = (Lesson) item;
                         List<LessonItem> words = lesson.getWords();
@@ -371,13 +369,26 @@ public class ShoppingCartActivity extends Activity {
                         }
                     }
                 }
+                
+                // write out contents so far - all lessons
+                writeStringToFile(xml, filename, /*append*/ false);
+                xml = "";
 
+                int counter = 1;
                 for (LessonCharacter character : dependencies) {
                     xml += character.toXml();
+                    
+                    // optimization:  write out contents after every 50 characters
+                    // to avoid out of memory crash that happens somewhere north of 500 characters
+                    if( (counter % 50) == 0) {
+                    	writeStringToFile(xml, filename, /*append*/ true);
+                    	xml = "";
+                    }                    
+                    counter++;
                 }
 
                 xml += "</ttw>\n";
-                writeStringToFile(xml, filename);
+                writeStringToFile(xml, filename, /*append*/ true);
             }
         });
 
@@ -400,7 +411,7 @@ public class ShoppingCartActivity extends Activity {
      * @param xml The string that you want to write to the device
      * @param filename the filename, ".ttw" will be automatically attached to the end
      */
-    public void writeStringToFile(String xml, String filename) {
+    public void writeStringToFile(String xml, String filename, boolean append) {
         if (filename == null || filename.length() == 0 || xml == null) {
             return;
         }
@@ -412,7 +423,7 @@ public class ShoppingCartActivity extends Activity {
         File outFile = new File(extFilesDir, filename + ".ttw");
 
         try {
-            FileWriter outFileWriter = new FileWriter(outFile, false);
+            FileWriter outFileWriter = new FileWriter(outFile, append);
 
             synchronized (xml) {
                 outFileWriter.write(xml);
@@ -437,7 +448,11 @@ public class ShoppingCartActivity extends Activity {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    private class ShoppingCartListAdapter extends LessonItemListAdapter {
+    private void hideKeyboard(View view) {
+        Toolbox.hideKeyboard(this, view);
+    }    
+    
+ class ShoppingCartListAdapter extends LessonItemListAdapter {
 
         public ShoppingCartListAdapter(Context context,
                 List<LessonItem> objects, LayoutInflater vi) {

@@ -631,8 +631,9 @@ public class DbAdapter {
             strokeNumber++;
         }
         
-        Toolbox.characters.add(c);
-        Collections.sort(Toolbox.characters);
+        Toolbox.getCachedCharacters().add(c);
+        // don't think we need to do this sort ... verify
+        // Collections.sort(Toolbox.characters);
         
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
@@ -1417,10 +1418,9 @@ public class DbAdapter {
     }
     
     /*
-     * returns theid of the word in table LESSONS_DETAILS_TABLE after being inserted
+     * returns the id of the word in table LESSONS_DETAILS_TABLE after being inserted
      * perhaps the return value should be changed, artifact of once using rowids for all ids
      */
-    //TODO what if two lessons have the same name? should use lesson ID instead
     public String addWordToLesson(String lessonName, String wordId){
         mDb.beginTransaction();
         // Find the lesson
@@ -1818,7 +1818,8 @@ public class DbAdapter {
             mDb.endTransaction();
             return false;
         }
-        Collections.sort(Toolbox.characters);
+        // don't think we need to do this sort ... verify
+        // Collections.sort(Toolbox.characters);
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;
@@ -2115,7 +2116,6 @@ public class DbAdapter {
         SimpleDateFormat dtFmt = new SimpleDateFormat("ddMMyyyyhhmmssSSS",
                 Locale.US);
         String sDate = dtFmt.format(new Date());
-        Log.d("uniqueID", sIMEI + "_" + sDate);
 
         return sIMEI + "_" + sDate;
     }

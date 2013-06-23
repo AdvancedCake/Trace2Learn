@@ -58,7 +58,7 @@ public class Statistics extends TraceBaseActivity {
         txt += wids.size();
         countPhrases.setText(txt);
 
-        List<LessonItem> chars = Toolbox.characters;
+        List<LessonItem> chars = Toolbox.getCachedCharacters();
         txt = "";
         txt += chars.size();
         countCharacters.setText(txt);

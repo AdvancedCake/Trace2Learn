@@ -1,18 +1,19 @@
 package com.trace2learn.TraceLibrary;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.List;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
-import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -53,11 +54,15 @@ public class MainUserActivity extends TraceBaseActivity {
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, false);
         editor.commit();
         
-        // Character Cache
-        Toolbox.initDba(getApplicationContext(), true);
-        
+        // init db - optimization: don't load all characters yet
+        Toolbox.initDbAdapter(getApplicationContext(), /*initializeChars*/false);
+
+        // set app title dynamically, read from the manifest file
+        String appTitle = getApplicationInfo().name;
+        ((TextView) findViewById(R.id.title)).setText(appTitle);
+
+        // show Upgrade button if free version
         if (!isFullVer) {
-            ((TextView) findViewById(R.id.title)).setText(R.string.user_app_name_free);
             findViewById(R.id.upgrade).setVisibility(View.VISIBLE);
         }
     }
@@ -115,9 +120,11 @@ public class MainUserActivity extends TraceBaseActivity {
 
     	// get currently installed app version
     	int newVersion = 0;
+    	String newVersionLabel = "";
     	try {
     		PackageInfo packageInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
         	newVersion = packageInfo.versionCode;
+        	newVersionLabel = packageInfo.versionName;
     	}
     	catch (Exception e){}
     	
@@ -127,7 +134,7 @@ public class MainUserActivity extends TraceBaseActivity {
         int lastVersion = prefs.getInt(Toolbox.PREFS_LAST_VER_NUMBER, 0);
         
         if (firstStart || newVersion > lastVersion) {
-             if (initializeDatabase(lastVersion, newVersion)) {
+             if (importDatabase(this, lastVersion, newVersion, newVersionLabel, null)) {
                  editor.putBoolean(Toolbox.PREFS_FIRST_START, false);
              }
              editor.putInt(Toolbox.PREFS_LAST_VER_NUMBER, newVersion);
@@ -135,41 +142,46 @@ public class MainUserActivity extends TraceBaseActivity {
         }
     }
     
-    private boolean initializeDatabase(int lastVersion, int newVersion) {
+    public static boolean importDatabase(Activity acty, int lastVersion, int newVersion, String newVersionLabel, File sourceFile) {
         Log.i("Initialize DB", "Attempting to import database");
 
-        String dbPath = getDatabasePath(DbAdapter.DATABASE_NAME).getAbsolutePath();
+        String dbPath = acty.getDatabasePath(DbAdapter.DATABASE_NAME).getAbsolutePath();
 
         try {
         	if(lastVersion > 0) {
 		        // check for any user-defined collections - need to temporarily initialize the old database
-		        Toolbox.initDba(getApplicationContext(), false);
+		        Toolbox.initDbAdapter(acty.getApplicationContext(), false);
 		        List<String> userCollNames = Toolbox.dba.getAllUserLessonNames();
 		        List<Lesson> userColls = Toolbox.dba.getAllUserLessons();
-		        Toolbox.resetDba();
+		        Toolbox.resetDbAdapter();
 		        
 		        String initMsg = "Installing the latest database" + "\n"
 		        		+ "Previous version: " + lastVersion + "\n"
-		        		+ "New version: " + newVersion + "\n";
+		        		+ "New version: " + newVersionLabel + "\n";
 		        
 		        if(userCollNames.size() > 0)
 		        	initMsg = initMsg + "Existing custom collections will be retained: " + userCollNames;
 	
 	        	// notify user of db upgrade
-	            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-	            Resources rc = getResources();
-	            builder.setIcon(R.drawable.logo);
-	            builder.setTitle(rc.getString(R.string.user_app_name) + " " + rc.getString(R.string.app_subtitle));
+	            AlertDialog.Builder builder = new AlertDialog.Builder(acty);
+	            builder.setIcon(acty.getApplicationInfo().icon);
+	            builder.setTitle(acty.getApplicationInfo().name);
 	            builder.setMessage(initMsg);
-	            builder.setPositiveButton("Sounds Good", new DialogInterface.OnClickListener() {
-	                public void onClick(DialogInterface dialog, int which) {dialog.dismiss();}
+	            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+	                public void onClick(DialogInterface dialog, int which) {
+	                	dialog.dismiss();
+	                }
 	            });	
 	            builder.show();  
         	}
             
-            // Open the db file in your assets directory
-            InputStream is = getBaseContext().getAssets().open(Toolbox.INIT_DB_NAME);
-
+            // Open the db path if specified, otherwise use /assets as default source
+        	InputStream is = null;
+        	if(sourceFile != null && sourceFile.exists())
+        		is = new FileInputStream(sourceFile);
+        	else
+        		is = acty.getBaseContext().getAssets().open(Toolbox.INIT_DB_NAME);
+ 
             // Copy the database into the destination
             File out = new File(dbPath);
             out.mkdirs();

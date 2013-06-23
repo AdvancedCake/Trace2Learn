@@ -9,7 +9,10 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ListActivity;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
@@ -29,6 +32,7 @@ public class FilePickerActivity extends ListActivity {
     private File currentDir;
     private FileArrayAdapter adapter;
     private TextView currentView;
+    private File sourceFile;
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,12 +62,16 @@ public class FilePickerActivity extends ListActivity {
             currentDir = new File(item.getPath());
             fill(currentDir);
         } else {
-            onFileClick(item);
+            importFromFile(item.getPath());
         }
     }
     
-    private void onFileClick(FileItem item) {
-        importFromFile(item.getPath());
+    private void setSourceFile(File f) {
+        sourceFile = f;
+    }
+    
+    private File getSourceFile() {
+    	return sourceFile;
     }
     
     /**
@@ -72,9 +80,41 @@ public class FilePickerActivity extends ListActivity {
      * @return 
      */
     public void importFromFile(String filepath) {
-        File f = new File(filepath);
+        
+    	final Activity acty = this;
+    	setSourceFile(new File(filepath));
+        
         try {
-            Document doc = Parser.parse(f);
+        	// handle binary database
+        	if(filepath.endsWith(".jet")){
+
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Reload database");
+                builder.setMessage("Import " + filepath + "?");
+                builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                		Toolbox.resetDbAdapter();
+                		boolean success = MainUserActivity.importDatabase(acty, 0, 0, "", getSourceFile());
+                		Toolbox.initDbAdapter(acty, /*initializeChars*/ false);
+                        if (!success) {
+                            Toolbox.showToast(acty, "Filed to import");
+                        } else {
+                            Toolbox.showToast(acty, "Successfully imported");
+
+                        }
+                    }
+                });
+                builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {}
+                });
+                builder.show();
+                return;
+        	}
+        	
+        	// handle XML file
+            Document doc = Parser.parse(getSourceFile());
             Element root = doc.getDocumentElement();
             if (!root.getNodeName().equals("ttw")) {
                 showToast("This is not a valid " +

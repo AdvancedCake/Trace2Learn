@@ -459,7 +459,7 @@ public class TagActivity extends TraceBaseActivity {
         if (isChanged) {
             setResult(RESULT_OK);
             if (type == ItemType.CHARACTER) {
-                for (LessonItem character : Toolbox.characters) {
+                for (LessonItem character : Toolbox.getCachedCharacters()) {
                     if (stringid.equals(character.getStringId())) {
                         character.invalidate();
                         break;

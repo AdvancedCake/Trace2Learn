@@ -1,8 +1,10 @@
 <resources>
 
-    <string name="admin_app_name">Trace2Learn</string>
-    <string name="user_app_name">TraceMe!</string>
-    <string name="user_app_name_free">TraceMe! Free</string>
+    <string name="admin_app_name">Admin Tracee</string>
+    <string name="user_app_name">Tracee</string>
+    <string name="user_app_name_trad">Tracee for Traditional Chinese</string>
+    <string name="user_app_name_simp">Tracee for Simplified Chinese</string>
+    <string name="user_app_name_free">Tracee Trial</string>
     <string name="file_dir_name">Trace2Learn</string>
     <string name="insert_tag">Insert a new tag</string>
     <string name="character">Character</string>
@@ -62,7 +64,6 @@
     <string name="introduction">Introduction</string>
     <string name="create_phrase">Build a Phrase</string>
     <string name="browse_collections">Browse Collections</string>
-    <string name="app_subtitle">for Traditional Chinese</string>
     <string name="stats">Statistics</string>
     <string name="statsCharacters">Characters:"</string>
     <string name="statsPhrases">Phrases:</string>
@@ -81,12 +82,12 @@
     <string name="go_next">Next Phrase</string>
     <string name="go_prev">Previous Phrase</string>
     <string name="ok">OK</string>
-    <string name="phrase_deleted">Phrase Deleted</string>
-    <string name="phrase_deleted_text">The phrase is no longer part of any collection, and will be deleted.</string>
+    <string name="phrase_deletion">Phrase Deletion</string>
+    <string name="phrase_deletion_text">The phrase is no longer part of any collection, and will be deleted.</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="upgrade_app">Upgrade!</string>
-    <string name="upgrade_app_text">This feature is available in the full app! Would you like to upgrade?</string>
+    <string name="upgrade_app_text">This feature is available in the full app!  Would you like to upgrade?</string>
     <string name="add_to_collection">Add To Collection</string>
     <string name="name">name</string>
     <string name="create_new">Create New</string>

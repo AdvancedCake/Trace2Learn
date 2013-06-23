@@ -15,7 +15,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -179,7 +178,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     }
     
     private void getChars() {
-        source = Toolbox.characters;
+        source = Toolbox.getCachedCharacters();
     }
 
     /**
@@ -308,8 +307,6 @@ public class CreateWordActivity extends TraceBaseActivity {
     }
     
     private void hideKeyboard(View view) {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        Toolbox.hideKeyboard(this, view);
     }
 }
