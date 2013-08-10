@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.HorizontalScrollView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
@@ -40,17 +41,17 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private LessonWord                 word;
     private ArrayList<LessonCharacter> characters;
 
-    private TextView     tagView;
-    private TextView     titleView;
-    private Button       playButton;
-    private Button       traceButton;
-    private ToggleButton quizToggle;
-    private ImageView    quizIcon;
-    private LinearLayout thumbnails;
-//    private ViewAnimator animator;
-    private FrameLayout  charSlot;
-    private ImageView    soundIcon;
-    private ImageView    prevIcon;
+    private TextView			tagView;
+    private TextView			titleView;
+    private Button				playButton;
+    private Button				traceButton;
+    private ToggleButton		quizToggle;
+    private ImageView			quizIcon;
+    private LinearLayout		thumbnails;
+    private HorizontalScrollView thumbscroll;
+    private FrameLayout  		charSlot;
+    private ImageView    		soundIcon;
+    private ImageView   		 prevIcon;
     private ImageView    nextIcon;
 
     private ArrayList<CharacterPlaybackPane> playbackPanes;
@@ -115,6 +116,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
         charSlot    = (FrameLayout)  findViewById(R.id.character_slot);
         thumbnails  = (LinearLayout) findViewById(R.id.thumbnail_gallery);
+        thumbscroll = (HorizontalScrollView) findViewById(R.id.thumbnail_gallery_scroll_view);
         soundIcon   = (ImageView)    findViewById(R.id.sound_button);
         prevIcon	= (ImageView)    findViewById(R.id.go_prev);
         nextIcon	= (ImageView)    findViewById(R.id.go_next);
@@ -173,7 +175,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         nextIcon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToNextPhrase();
+                moveToNextPhrase(/*swipe*/ false);
             }
         });    
         
@@ -181,7 +183,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         prevIcon.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                moveToPrevPhrase();
+                moveToPrevPhrase(/*swipe*/ false);
             }
         });
         
@@ -193,7 +195,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             		if (currentChar > 0) 
             			setSelectedCharacter(currentChar - 1);
             		else
-            			moveToPrevPhrase();
+            			moveToPrevPhrase(/*swipe*/ true);
             	}
             }
             public void onSwipeLeft() {
@@ -202,7 +204,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             		if (currentChar + 1 < characters.size()) 
             			setSelectedCharacter(currentChar + 1);
             		else
-            			moveToNextPhrase();
+            			moveToNextPhrase(/*swipe*/ true);
             	}
             }
 
@@ -211,9 +213,9 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         
     }
     
-    private void moveToNextPhrase() {
-        if (phraseIndex < collectionSize) { // not at end of collection yet
-            // shutdown and notify parent activity
+    private void moveToNextPhrase(boolean swipe) {
+        if (phraseIndex < collectionSize) { 
+        	// not at end of collection yet
             Bundle bundle = new Bundle();
             bundle.putInt("next", phraseIndex);
             Intent intent = new Intent();
@@ -224,11 +226,18 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
             v.vibrate(300); //ms
         }
+        else if(!swipe) {
+        	// if at end of collection, return to browse collections
+        	// but only if action is not a result of a swipe gesture
+        	Intent i = new Intent(this, BrowseLessonsActivity.class);
+        	startActivity(i);
+        }
+        	
     }
     
-    private void moveToPrevPhrase() {
-        if (phraseIndex > 1) { // not at beginning of collection yet
-            // shutdown and notify parent activity
+    private void moveToPrevPhrase(boolean swipe) {
+        if (phraseIndex > 1) { 
+        	// not at beginning of collection yet
             Bundle bundle = new Bundle();
             bundle.putInt("next", phraseIndex - 2);
             Intent intent = new Intent();
@@ -313,7 +322,10 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             charSlot.addView(tracePanes.get(currentChar));
         }
 
+        // set selected state, make sure it's visible in the thumbnail gallery
         thumbnails.getChildAt(currentChar).setBackgroundColor(thumbBgSelected);
+        // TODO move thumbscroll to ensure that new selection is visible
+
     }
 
     private void setWord(LessonWord word) {
@@ -328,7 +340,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             LessonCharacter ch = Toolbox.dba.getCharacterById(id);
             ImageView iv = new ImageView(context);
             iv.setBackgroundColor(thumbBg);
-            iv.setImageBitmap(BitmapFactory.buildBitmap(ch, 64, 64));
+            iv.setImageBitmap(BitmapFactory.buildBitmap(ch));
             final int i = index;
             index++;
             iv.setOnClickListener(new OnClickListener() {
@@ -349,8 +361,8 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             dispPane.setCharacter(ch);
             this.playbackPanes.add(dispPane);
 
-            CharacterTracePane tracePane = new CharacterTracePane(
-                    context); // TODO should this be trace.getcontext?
+            CharacterTracePane tracePane = new CharacterTracePane(context);
+            
             tracePane.setTemplate(ch);
             tracePane.addMoveToNextHandler(moveToNext);
 

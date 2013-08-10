@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -75,7 +76,8 @@ public class BrowseCharactersActivity extends TraceListActivity {
      * Populate the source list with characters
      */
     private void getChars() {
-        source = Toolbox.getCachedCharacters();
+    	source = Toolbox.getAllCharacters();
+    
     }
     
     /**
@@ -90,7 +92,7 @@ public class BrowseCharactersActivity extends TraceListActivity {
      * Display the current display list
      */
     private void displayChars() {
-        Collections.sort(display);
+        //Collections.sort(display);
         adapter = new LessonItemListAdapter(this, display, vi);
         setListAdapter(adapter);   
     }
@@ -232,12 +234,13 @@ public class BrowseCharactersActivity extends TraceListActivity {
         }
     }
     
-    // displays the filter pop up
+    // displays the filter pop-up
     private void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
         
         final EditText filterText = new EditText(this);
+        filterText.setInputType(InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE);
         builder.setView(filterText);
         
         builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
@@ -249,8 +252,6 @@ public class BrowseCharactersActivity extends TraceListActivity {
                 }
 
                 // Filter action: keep matching items from display list
-                // Note that it should be partial match for search terms 3
-                // characters or more.
                 ArrayList<LessonItem> newList = new ArrayList<LessonItem>();
                 topLoop: for (LessonItem item : display) {
                     List<String> tags = item.getTags();
@@ -295,9 +296,9 @@ public class BrowseCharactersActivity extends TraceListActivity {
     // clears the filter
     private void clearFilter() {
         displayAllChars();
-        filterButton.setText(R.string.filter);
+        filterButton.setText(R.string.search);
         filtered = false;
-        filterStatus.setText(R.string.filter_none);
+        filterStatus.setText("");
     }
     
     private void hideKeyboard(View view) {

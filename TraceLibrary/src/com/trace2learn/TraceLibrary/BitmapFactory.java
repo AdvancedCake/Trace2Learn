@@ -9,13 +9,6 @@ import android.graphics.Canvas;
 
 public class BitmapFactory {
 	
-	private static final int _default_width  = 64;
-	private static final int _default_height = 64;
-	
-	public static Bitmap buildBitmap(LessonItem item)
-	{
-		return buildBitmap(item, _default_width, _default_height);
-	}
 	
 	/**
 	 * Builds a bitmap composed of the provided items, each item with the given height
@@ -23,8 +16,10 @@ public class BitmapFactory {
 	 * @param height - the height of the bitmap to be created
 	 * @return a bitmap which is size (items.length()*height)x(height) in dimensions
 	 */
-	public static Bitmap buildBitmap(LessonItem item, int height)
+	public static Bitmap buildBitmap(LessonItem item)
 	{
+		int height = Toolbox.bitmapHeight;
+		
 		if(item.getItemType() == ItemType.WORD)
 		{
 			int width = ((LessonWord)item).length()*height;
@@ -44,7 +39,7 @@ public class BitmapFactory {
 	 * @param height - The height of the bitmap to be created
 	 * @return
 	 */
-	public static Bitmap buildBitmap(LessonItem item, int width, int height) {
+	private static Bitmap buildBitmap(LessonItem item, int width, int height) {
 		Bitmap bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         item.draw(canvas);

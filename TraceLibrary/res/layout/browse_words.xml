@@ -31,7 +31,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:onClick="onClickFilter"
-        android:text="@string/filter" />
+        android:text="@string/search" />
 
     <TextView
         android:id="@+id/filterStatus"
@@ -41,7 +41,7 @@
         android:layout_alignBottom="@+id/filterButton"
         android:layout_marginLeft="20dp"
         android:layout_toRightOf="@+id/filterButton"
-        android:text="@string/filter_none" />
+        android:textColor="@color/filter_label" />
 
     <ImageView
         android:id="@+id/infoButton"

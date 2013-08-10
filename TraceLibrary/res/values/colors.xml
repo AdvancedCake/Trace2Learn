@@ -6,5 +6,7 @@
     <color name="locked_collection">#666666</color>
     <color name="thumb_background">#000080</color>
     <color name="thumb_background_selected">#0000FF</color>
-
+    <color name="recently_viewed">#666699</color>
+    <color name="filter_label">#00FF00</color>
+    
 </resources>

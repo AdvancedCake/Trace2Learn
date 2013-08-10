@@ -461,9 +461,9 @@ public class BrowseWordsActivity extends TraceListActivity {
     // clears the filter
     private void clearFilter() {
         displayAllWords();
-        filterButton.setText(R.string.filter);
+        filterButton.setText(R.string.search);
         filtered = false;
-        filterStatus.setText(R.string.filter_none);
+        filterStatus.setText("");
     }
     
     private void hideKeyboard(View view) {

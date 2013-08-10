@@ -54,7 +54,7 @@ public class LessonItemListAdapter extends ArrayAdapter<LessonItem> {
 		TextView   text   = (TextView)v.findViewById(R.id.idView);
 		TextView   text2  = (TextView)v.findViewById(R.id.tagView);
 		image.setBackgroundColor(thumbBg);
-		image.setImageBitmap(BitmapFactory.buildBitmap(item, 64));
+		image.setImageBitmap(BitmapFactory.buildBitmap(item));
 		
 		// text
 		switch (item.getItemType())

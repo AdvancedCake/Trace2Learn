@@ -287,22 +287,22 @@ public class DbAdapterTest extends AndroidTestCase {
     	//Test Case: equivalence class: tag, 1 letter, character
     	Cursor result = db.browseByTag(ItemType.CHARACTER, "A");
     	assertEquals(1, result.getCount());
-    	assertEquals(a.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
+    	assertEquals(a.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.ID_COL)));
     	
     	//Test Case: equivalence class: tag, multiple character, character, case insensitive, partial match
     	result = db.browseByTag(ItemType.CHARACTER, "SON");
     	assertEquals(1, result.getCount());
-    	assertEquals(b.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
+    	assertEquals(b.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.ID_COL)));
     	
     	//Test Case: equivalence class: keyvalue, single character, character, case insensitive
     	result = db.browseByTag(ItemType.CHARACTER, "A");
     	assertEquals(1, result.getCount());
-    	assertEquals(a.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
+    	assertEquals(a.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.ID_COL)));
     	
     	//Test Case: equivalence class: keyvalue, multiple character, character, exact match
     	result = db.browseByTag(ItemType.CHARACTER, "batt");
     	assertEquals(1, result.getCount());
-    	assertEquals(b.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.CHARTAG_ID)));
+    	assertEquals(b.getStringId(), result.getString(result.getColumnIndexOrThrow(DbAdapter.ID_COL)));
     	
     	//Need more tests for words
     	result.close();

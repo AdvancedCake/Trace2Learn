@@ -19,7 +19,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/instructions" />
+        android:layout_below="@+id/instructions"
+        android:textColor="@color/filter_label" />
 
     <ListView
         android:id="@+id/charList"
@@ -68,7 +69,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/filter" />
+        android:text="@string/search" />
 
     <HorizontalScrollView
         android:id="@+id/thumbnail_gallery_scroll_view"

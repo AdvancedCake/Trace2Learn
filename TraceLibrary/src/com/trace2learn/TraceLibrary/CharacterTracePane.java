@@ -128,10 +128,13 @@ public class CharacterTracePane extends CharacterCreationPane {
 	}
 
 	@Override
-	protected void completeStroke(float newX, float newY)
+	protected boolean completeStroke(float newX, float newY)
 	{
-		super.completeStroke(newX, newY);
-		animateNextStroke();
+		boolean success = super.completeStroke(newX, newY);
+
+		// proceed to next stroke, but only if 
+		if(success) animateNextStroke();
+		return success;
 	}
 	
 	protected void animateNextStroke() {

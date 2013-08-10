@@ -1,8 +1,4 @@
 package com.trace2learn.TraceLibrary;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -10,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,11 +26,9 @@ import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class CreateWordActivity extends TraceBaseActivity {
-    
-    private LessonWord            newWord;
-    private List<LessonItem>      source;  // list of all characters
-    private List<LessonItem>      display; // list of items being displayed
-    private LessonItemListAdapter charAdapter;
+    private LessonWord				newWord;
+    private List<LessonItem>		display; // list of items being displayed
+    private LessonItemListAdapter	charAdapter;
     
     // Activity views
     private LinearLayout thumbnails;
@@ -76,8 +71,17 @@ public class CreateWordActivity extends TraceBaseActivity {
         
         thumbBgColor = getResources().getColor(R.color.thumb_background);
 
-        getChars();
-        displayAllChars();
+        // since there is nothing in the character cache on startup,
+        // display query results on the arbitrary search string 'ma' 
+        // so that the initial view is not empty
+        display = Toolbox.getMatchingChars("ma");
+        displayChars();        
+        // Set state to filtered
+        filterButton.setText(R.string.clear_filter);
+        filtered = true;
+        filterStatus.setText("Current filter: ma");
+        filterStatus.setVisibility(View.VISIBLE);
+        
     }
     
     @Override
@@ -106,7 +110,7 @@ public class CreateWordActivity extends TraceBaseActivity {
                 newWord.addCharacter(charId);
                 ImageView iv = new ImageView(getApplicationContext());
                 iv.setBackgroundColor(thumbBgColor);
-                iv.setImageBitmap(BitmapFactory.buildBitmap(item, 64, 64));
+                iv.setImageBitmap(BitmapFactory.buildBitmap(item));
                 thumbnails.addView(iv);
             }
         });
@@ -177,15 +181,12 @@ public class CreateWordActivity extends TraceBaseActivity {
         });
     }
     
-    private void getChars() {
-        source = Toolbox.getCachedCharacters();
-    }
 
     /**
-     * Set display list to source list, thus displaying all characters
+     * Set display list to source list, thus displaying all cached characters
      */
     private void displayAllChars() {
-        display = source;
+        display = Toolbox.getCachedCharacters();
         displayChars();      
     }
 
@@ -193,9 +194,8 @@ public class CreateWordActivity extends TraceBaseActivity {
      * Display the current display list
      */
     private void displayChars() {
-        Collections.sort(display);
         charAdapter = new LessonItemListAdapter(this, display, vi);
-        charList.setAdapter(charAdapter);   
+        charList.setAdapter(charAdapter);
     }
     
     private void addToCollection() {
@@ -234,50 +234,33 @@ public class CreateWordActivity extends TraceBaseActivity {
         }
     }
     
-    // displays the filter popup
+    // displays the filter pop-up
     private void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Apply Filter");
         
         final EditText filterText = new EditText(this);
+        filterText.setInputType(InputType.TYPE_TEXT_VARIATION_LONG_MESSAGE);
         builder.setView(filterText);
         
         builder.setPositiveButton(R.string.apply, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int which) {
-                String search = filterText.getText().toString();
-                if (search.equals("")) {
+                String searchString = filterText.getText().toString();
+                searchString.trim();
+                if (searchString.equals("")) {
                     hideKeyboard(filterText);
                     return;
                 }
                 
-                // Filter action: keep matching items from display list
-                // Note that it should be partial match for search terms 3
-                // characters or more.
-                ArrayList<LessonItem> newList = new ArrayList<LessonItem>();
-                topLoop: for (LessonItem item : display) {
-                    List<String> tags = item.getTags();
-                    for (String tag : tags) {
-                        if (Toolbox.containsMatch(1, tag, search)) {
-                            newList.add(item);
-                            continue topLoop;
-                        }
-                    }
-                    Collection<String> values = item.getKeyValues().values();
-                    for (String value : values) {
-                        if (Toolbox.containsMatch(1, value, search)) {
-                            newList.add(item);
-                            continue topLoop;
-                        }
-                    }
-                }
-                display = newList;
+                // run filtered query - this will look in the query cache first
+                display = Toolbox.getMatchingChars(searchString);
                 displayChars();
                 
                 // Set state to filtered
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
                 hideKeyboard(filterText);
-                filterStatus.setText("Current filter: " + search);
+                filterStatus.setText("Current filter: " + searchString);
                 filterStatus.setVisibility(View.VISIBLE);
             }
         });
@@ -296,7 +279,7 @@ public class CreateWordActivity extends TraceBaseActivity {
     // clears the filter
     private void clearFilter() {
         displayAllChars();
-        filterButton.setText(R.string.filter);
+        filterButton.setText(R.string.search);
         filtered = false;
         filterStatus.setVisibility(View.GONE);
     }

@@ -10,14 +10,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:text="@string/stats"
+        android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/header"
-        android:textSize="20sp"
         android:textStyle="bold" />
-
     <ImageView
         android:id="@+id/exit_button"
-        android:layout_width="25dp"
-        android:layout_height="25dp"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:layout_margin="5dp"
@@ -54,8 +53,9 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="@string/statsCollections"
-                android:textColor="@color/header"
-                android:textSize="20sp" />
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:textColor="@color/header" />
+
 
             <TextView
                 android:id="@+id/countCollections"
@@ -79,8 +79,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="@string/statsPhrases"
-                android:textColor="@color/header"
-                android:textSize="20sp" />
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:textColor="@color/header" />
 
             <TextView
                 android:id="@+id/countPhrases"
@@ -104,36 +104,11 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="@string/statsCharacters"
-                android:textColor="@color/header"
-                android:textSize="20sp" />
+		        android:textAppearance="?android:attr/textAppearanceLarge"
+		        android:textColor="@color/header" />
 
             <TextView
                 android:id="@+id/countCharacters"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingLeft="20dp"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRow4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp" >
-
-            <TextView
-                android:id="@+id/TextView4"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right"
-                android:text="@string/statsStrokes"
-                android:textColor="@color/header"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/countStrokes"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
@@ -161,8 +136,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/rule2"
         android:text="@string/chartLabel"
-        android:textColor="@color/header"
-        android:textSize="16sp"
+		android:textAppearance="?android:attr/textAppearanceSmall"
+		android:textColor="@color/header"
         android:textStyle="bold" />
 
     <LinearLayout

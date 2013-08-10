@@ -39,19 +39,20 @@ public class IntroductionActivity extends TraceBaseActivity {
         		+ "Patterns are present in every language spoken around the globe – in the sounds, in the grammar, in the writing.  "
         		+ "Chinese characters are no different.  At first they may seem complex and impenetrable, but in fact they are packed with repeating patterns.  "
         		+ "Our eyes and ears can pick up on these rich hints and clues to make learning easier.\n\n"
-        		+ "TraceMe!  is an innovative pattern-based system designed to help you quickly start to read and write.  "
-        		+ "The application is organized into collections that start with the basics and build on each other, gradually introducing new patterns along the way.  "
+        		+ "Trasee! is an innovative pattern-based system designed to help you quickly start to read and write.  "
+        		+ "The application is organized into collections that start with the basics and build on each other, gradually introducing new patterns along the way.\n\n"
         		+ "Characters and phrases are grouped together in different ways, according to their shape, their meaning, their sound and the role they play in the language.  "
-        		+ "The collections offer one set of associations.  TraceMe! also encourages you to discover the associations that make sense to you, and lets you build your own collections.\n\n"
-        		+ "Start by browsing the existing collections.  You can press down on any phrase to add it to a new custom collection.  "
-        		+ "Collections that you create will appear in a different color, and you will be able to reorder or delete them.  "
-        		+ "You can also use the catalog of characters to create your own phrases.\n\n"
-        		+ "Each collection is tagged according to one or more pattern types that it builds on:";
+        		+ "The collections offer one set of associations.  Trasee! also encourages you to discover the associations that make sense to you, and lets you build your own collections.\n\n"
+        		+ "Each collection is tagged according to one or more pattern types that it contains:";
         
-        String narrative2 = "\nA note on the style of characters used:  "
+        String narrative2 = "\nStart by browsing the existing collections.  "
+        		+ "You can press down on any phrase to add it to a new custom collection.  "
+        		+ "Collections that you create will appear in a different color, and you will be able to reorder or delete them.  "
+        		+ "You can also use the catalog of characters to create your own phrases.\n\n"        		
+        		+"A note on the style of characters used:  "
         		+ "The goal was a balance between the rigid, formal fonts you may see in print or on a computer screen, and a more natural handwritten script.  "
         		+ "There are countless fonts and styles used to write Chinese - calligraphy artists spend a lifetime mastering the art.  "
-        		+ "This tool does not teach calligraphy.  What it will do is let you discover for yourself how characters are composed, and how they interact with each other.  "
+        		+ "Trasee! does not teach calligraphy.  What it will do is let you discover for yourself how characters are composed, and how they interact with each other.  "
         		+ "This in turn will lead to increased reading fluecy and a broader vocabulary.";
         
         nameView.setText(lessonName);

@@ -1,7 +1,9 @@
 package com.trace2learn.TraceLibrary;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.HashMap;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -9,6 +11,8 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.view.View;
@@ -30,6 +34,7 @@ public class Toolbox {
     public static final String PREFS_PHRASE_MODE = "phraseMode";
     public static final String PREFS_IS_FULL_VER = "isFullVersion";
     public static final String PREFS_LAST_VER_NUMBER = "lastVersionNumber";
+    public static final String PREFS_LAST_VIEWED_LESSON = "lastViewedLesson";
     
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
@@ -45,8 +50,19 @@ public class Toolbox {
     // Sound Playback
     public static final float VOLUME = 1;
     
-    // Character Cache
-    private static List<LessonItem> characters;
+    // Character Cache - all previously queried characters
+    private static List<LessonItem> characterCache;
+    private static List<String> characterIdCache;
+    
+    //Character Query Cache
+    private static HashMap<String, List<LessonItem>> characterQueryCache;
+     
+    // All characters - will be used for admin functions only
+    private static List<LessonItem> allChars;
+    
+    // Screen size & ideal bitmap height
+    public static String detectedScreenSize = "Generic Screen";
+    public static int bitmapHeight = 64;
     
     public static DbAdapter dba;
     public static boolean dbaOpened = false;
@@ -105,14 +121,17 @@ public class Toolbox {
         try {
 
             AlertDialog.Builder builder = new AlertDialog.Builder(parentActy);
-            builder.setIcon(parentActy.getApplicationInfo().icon);
-            builder.setTitle(parentActy.getApplicationInfo().name);
+            PackageManager pm = parentActy.getPackageManager();
+            builder.setIcon(parentActy.getApplicationInfo().loadIcon(pm));
+            builder.setTitle(parentActy.getApplicationInfo().loadLabel(pm));
 
             Resources rc = parentActy.getResources();  
             
             String msg = (String) rc.getText(R.string.aboutCredits);
-            msg += "\n\nVersion ";
-            msg += parentActy.getPackageManager().getPackageInfo(parentActy.getPackageName(), 0).versionName;
+            msg += "\nVersion: ";
+            msg += pm.getPackageInfo(parentActy.getPackageName(), 0).versionName;
+            msg += "\nDetected: ";
+            msg += detectedScreenSize;
             builder.setMessage(msg);
             builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int which) {
@@ -134,19 +153,57 @@ public class Toolbox {
         dbaOpened = true;
         dba = new DbAdapter(context);
         dba.open();
-        if (initializeChars) characters = Toolbox.dba.getAllChars();
+        if (initializeChars) getAllCharacters();
+        
+        // initialize cache lists
+        characterCache = new ArrayList<LessonItem>();
+        characterIdCache = new ArrayList<String>();
+        characterQueryCache = new HashMap<String, List<LessonItem>>();
     }
     
     public static void resetDbAdapter() {
     	dba.close();
     	dba = null;
     	dbaOpened = false;
+    	
+        characterCache.clear();
+        characterIdCache.clear();
+        characterQueryCache.clear(); 
     }
     
+    // only to be used by admin functions - user-facing functions should use the
+    // character cache which is faster and less memory-intensive
+    public static List<LessonItem> getAllCharacters() {
+        if(allChars == null || allChars.size() == 0)
+        	allChars = dba.getAllChars();
+    	return allChars;
+    }
+
+    public static List<LessonItem> getMatchingChars(String queryString) {
+    	// look in query cache first
+    	if(characterQueryCache.containsKey(queryString))
+    		return characterQueryCache.get(queryString);
+
+    	// run query against the database
+    	List<LessonItem> newList = dba.getMatchingChars(queryString);
+    	characterQueryCache.put(queryString, newList);
+    	addToCharCache(newList);
+    	return newList;
+    }
+    
+    // character cache size will vary based on recent queries
     public static List<LessonItem> getCachedCharacters() {
-    	if(characters == null || characters.size() == 0)
-    		characters = dba.getAllChars();
-    	return characters;
+    	return characterCache;
+    }
+    
+    private static void addToCharCache(List<LessonItem> newList) {
+    	for(LessonItem c : newList) {
+	    	String id = c.getStringId();
+	    	if(!characterIdCache.contains(id)) {
+	    		characterIdCache.add(id);
+	    		characterCache.add(c);    		
+	    	}
+    	}
     }
     
     public static void promptAppUpgrade(final Context context) {
@@ -190,5 +247,31 @@ public class Toolbox {
                     .replace("&gt;", ">");
         }
         return out;
+    }
+    
+    public static void determineScreenSize(final Context context) {
+    	
+    	Configuration conf = context.getResources().getConfiguration();
+
+        if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {     
+        	detectedScreenSize = "Giant Screen";
+            bitmapHeight = 128;
+        }
+        else if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE) {     
+        	detectedScreenSize = "Large Screen";
+            bitmapHeight = 96;
+        }
+        else if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_NORMAL) {     
+        	detectedScreenSize = "Normal Screen";
+            bitmapHeight = 64;
+        } 
+        else if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_SMALL) {     
+        	detectedScreenSize = "Small Screen";
+            bitmapHeight = 40;
+        }
+        else {
+        	bitmapHeight = 64;
+        }
+    	
     }
 }

@@ -65,17 +65,22 @@ public class BrowseLessonsActivity extends TraceListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_lessons);   
 
+        // Identify and mark last viewed lesson
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        String lastViewedId = prefs.getString(Toolbox.PREFS_LAST_VIEWED_LESSON, "");
+
         items = new ArrayList<Lesson>(); 
         List<String> ids = Toolbox.dba.getAllLessonIds();
         for(String id : ids){
             Lesson lesson = Toolbox.dba.getLessonById(id);
             lesson.setTagList(Toolbox.dba.getLessonTags(id));
+            if(lastViewedId.equals(id)) {
+            	lesson.setLastViewed(true);
+            }
             items.add(lesson);
         }
 
-        // Set privileges
-        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
-                MODE_PRIVATE);
+        // Retrieve privileges
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         isFull  = prefs.getBoolean(Toolbox.PREFS_IS_FULL_VER, false);
 
@@ -104,12 +109,19 @@ public class BrowseLessonsActivity extends TraceListActivity {
 
         try {
             if (!isAdmin && !isFull && !lesson.isUserDefined() &&
-                    Integer.valueOf(name.substring(0, name.indexOf(':'))) > 10) {
+                    Integer.valueOf(name.substring(0, name.indexOf(':'))) > 11) {
                 Toolbox.promptAppUpgrade(this);
                 return;
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {/* swallow exception, in case collection name didn't start with an integer */}
 
+        // Record most recently viewed collection
+        SharedPreferences prefs = this.getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Toolbox.PREFS_LAST_VIEWED_LESSON, lesson.getStringId());
+        editor.commit();
+
+        // Launch the selected collection
         Intent i = new Intent(this, BrowseWordsActivity.class);
         i.putExtra("ID", lesson.getStringId());
         startActivityForResult(i, RequestCode.BROWSE_WORDS.ordinal());
@@ -304,9 +316,10 @@ public class BrowseLessonsActivity extends TraceListActivity {
                 v = vi.inflate(R.layout.lesson_desc, null);
             }
 
-            final Lesson item       = items.get(position);
+            final Lesson lesson     = items.get(position);
             TextView     nameView   = (TextView)  v.findViewById(R.id.nameView);
             TextView     sizeView   = (TextView)  v.findViewById(R.id.sizeView);
+            TextView     lastViewed = (TextView)  v.findViewById(R.id.lastViewed);
             ImageView    infoButton = (ImageView) v.findViewById(R.id.infoButton);
             ImageView    category1  = (ImageView) v.findViewById(R.id.category1);
             ImageView    category2  = (ImageView) v.findViewById(R.id.category2);
@@ -314,14 +327,16 @@ public class BrowseLessonsActivity extends TraceListActivity {
             ImageView    category4  = (ImageView) v.findViewById(R.id.category4);
             ImageView[]  categories = {category1, category2, category3, category4};
 
-            int    count = item.getNumWords();
-            String name  = item.getLessonName();
+            int    count = lesson.getNumWords();
+            String name = lesson.getLessonName();
             nameView.setText(name);
             sizeView.setText(count + (count == 1 ? " phrase" : " phrases"));
+            
+            if(lesson.isLastViewed()) lastViewed.setText(R.string.last_viewed); else lastViewed.setVisibility(View.GONE);
 
             // Display category icons
             int i = 0;
-            Set<LessonCategory> itemCategories = item.getCategories();
+            Set<LessonCategory> itemCategories = lesson.getCategories();
             if (itemCategories != null) {
                 for (LessonCategory category : itemCategories) {
                     categories[i].setImageResource(category.rid);
@@ -340,7 +355,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
             }
 
             // Check if this is an admin lesson or user lesson
-            if (item.isUserDefined()) {
+            if (lesson.isUserDefined()) {
                 nameView.setTextColor(userColor);
                 sizeView.setTextColor(userColor);
                 nameView.setTypeface(null, Typeface.ITALIC);
@@ -352,8 +367,8 @@ public class BrowseLessonsActivity extends TraceListActivity {
 
             // Check if this is the full version of the app
             try {
-                if (!isFull && !item.isUserDefined() &&
-                        Integer.valueOf(name.substring(0, name.indexOf(':'))) > 10) {
+                if (!isFull && !lesson.isUserDefined() &&
+                        Integer.valueOf(name.substring(0, name.indexOf(':'))) > 11) {
                     nameView.setTextColor(lockColor);
                     sizeView.setTextColor(lockColor);
                 }
@@ -363,7 +378,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
             infoButton.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    getItemInfo(item.getStringId());
+                    getItemInfo(lesson.getStringId());
                 }
             });
 

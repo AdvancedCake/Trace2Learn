@@ -503,7 +503,7 @@ public class ShoppingCartActivity extends Activity {
                 case CHARACTER:
                 case WORD:
                     // image
-                    Bitmap bitmap = BitmapFactory.buildBitmap(item, 64);
+                    Bitmap bitmap = BitmapFactory.buildBitmap(item);
                     image.setImageBitmap(bitmap);
 
                     // ids

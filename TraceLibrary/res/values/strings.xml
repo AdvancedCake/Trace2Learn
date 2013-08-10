@@ -1,10 +1,10 @@
 <resources>
 
-    <string name="admin_app_name">Admin Tracee</string>
-    <string name="user_app_name">Tracee</string>
-    <string name="user_app_name_trad">Tracee for Traditional Chinese</string>
-    <string name="user_app_name_simp">Tracee for Simplified Chinese</string>
-    <string name="user_app_name_free">Tracee Trial</string>
+    <string name="admin_app_name">Admin Trasee!</string>
+    <string name="user_app_name">Trasee!</string>
+    <string name="user_app_name_trad">Trasee! for Traditional Chinese</string>
+    <string name="user_app_name_simp">Trasee! for Simplified Chinese</string>
+    <string name="user_app_name_free">Trasee! Trial</string>
     <string name="file_dir_name">Trace2Learn</string>
     <string name="insert_tag">Insert a new tag</string>
     <string name="character">Character</string>
@@ -91,5 +91,6 @@
     <string name="add_to_collection">Add To Collection</string>
     <string name="name">name</string>
     <string name="create_new">Create New</string>
+    <string name="last_viewed">Last Viewed</string>
 
 </resources>

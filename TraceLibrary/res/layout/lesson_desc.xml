@@ -4,7 +4,7 @@
     android:layout_width="fill_parent"
     android:layout_height="?android:attr/listPreferredItemHeight"
     android:orientation="horizontal"
-    android:padding="3dip" >
+    android:padding="3dp" >
 
     <TextView
         android:id="@+id/nameView"
@@ -67,4 +67,14 @@
         android:contentDescription="@string/category"
         android:padding="2dp" />
 
+    <TextView
+        android:id="@+id/lastViewed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/infoButton"
+        android:layout_centerHorizontal="true"
+        android:layout_toLeftOf="@+id/infoButton"
+        android:layout_toRightOf="@+id/category4"
+        android:textColor="@color/recently_viewed" />
+    
 </RelativeLayout>

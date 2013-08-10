@@ -59,8 +59,10 @@ public class MainAdminActivity extends TraceListActivity {
         editor.putBoolean(Toolbox.PREFS_IS_FULL_VER, true);
         editor.commit();
         
-        // init db - optimization: don't load all characters yet
+        // init db - optimization: don't load all characters up front
         Toolbox.initDbAdapter(getApplicationContext(), /*initializeChars*/false);
+        
+        Toolbox.determineScreenSize(getApplicationContext());
 
         setListAdapter(new ArrayAdapter<String>(this, R.layout.main_menu, APPS));
 
@@ -166,7 +168,7 @@ public class MainAdminActivity extends TraceListActivity {
        
         String msg = ""; 		
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
-        List<LessonItem> chars = Toolbox.getCachedCharacters();
+        List<LessonItem> chars = Toolbox.getAllCharacters();
         for(LessonItem item: chars){
         	LessonCharacter ch = (LessonCharacter)item;
         	if(!ch.hasKey(Toolbox.PINYIN_KEY))

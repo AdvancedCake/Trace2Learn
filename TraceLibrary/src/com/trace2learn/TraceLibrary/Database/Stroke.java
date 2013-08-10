@@ -24,7 +24,7 @@ public class Stroke {
 	}
 	
 	/**
-	 * creates a new strokes which starts at (startX,  startY)
+	 * creates a new Stroke which starts at (startX,  startY)
 	 */
 	public Stroke(float startX, float startY)
 	{
@@ -32,7 +32,7 @@ public class Stroke {
 	}
 	
 	/**
-	 * creates a new strokes which starts at startP
+	 * creates a new Stroke which starts at startP
 	 * @param startP
 	 */
 	public Stroke(PointF startP)

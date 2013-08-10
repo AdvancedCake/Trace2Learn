@@ -18,12 +18,13 @@ import android.util.Log;
 
 public class Lesson extends LessonItem {
 
-    private List<String>              _words; // list of word IDs
-    private String                    name; // lesson name
-    private List<LessonItem>          wordObjects;
-    private SortedSet<LessonCategory> categories;
-    private String                    narrative;
-    private boolean                  isUserDefined;
+    private List<String>					_words; // list of word IDs
+    private String							name; // lesson name
+    private List<LessonItem>				wordObjects;
+    private SortedSet<LessonCategory>		categories;
+    private String							narrative;
+    private boolean							isUserDefined;
+    private boolean							isLastViewed;
 
     public Lesson() {
         this(null, true);
@@ -42,6 +43,7 @@ public class Lesson extends LessonItem {
         this._words        = new ArrayList<String>();
         this._stringid     = id;
         this.isUserDefined = isUserDefined;
+        this.isLastViewed  = false;
     }
     
     protected synchronized void initialize() {
@@ -85,7 +87,7 @@ public class Lesson extends LessonItem {
     }
 
     public String getLessonName() {
-        return this.name;
+        return name;
     }
 
     public void setName(String name) {
@@ -98,6 +100,14 @@ public class Lesson extends LessonItem {
     
     public void setUserDefined(boolean userDefined) {
         this.isUserDefined = userDefined;
+    }
+    
+    public boolean isLastViewed() {
+    	return isLastViewed;
+    }
+    
+    public void setLastViewed(boolean lastViewed){
+    	this.isLastViewed = lastViewed;
     }
 
     public SortedSet<LessonCategory> getCategories() {

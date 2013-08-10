@@ -47,7 +47,7 @@ public abstract class DrawingPane extends CharacterViewPane {
 	 * @param newX - the x coordinate of the sample point
 	 * @param newY - the y coordinate of the sample point
 	 */
-	protected abstract void completeStroke(float newX, float newY);
+	protected abstract boolean completeStroke(float newX, float newY);
 	
 	/**
 	 * Notifies the pane that a new stroke has been started on the screen
@@ -81,7 +81,7 @@ public abstract class DrawingPane extends CharacterViewPane {
 	 * @param x - the screen coordinate of the point in pixels
 	 * @param y - the screen coordinate of the point in pixels
 	 */
-	private void touchUp(float x, float y) {
+	private void touchFinish(float x, float y) {
 		completeStroke(x/getWidth(), y/getHeight());
 	}
 
@@ -103,7 +103,7 @@ public abstract class DrawingPane extends CharacterViewPane {
 			invalidate();
 			break;
 		case MotionEvent.ACTION_UP:
-			touchUp(x, y);
+			touchFinish(x, y);
 			invalidate();
 			break;
 		}

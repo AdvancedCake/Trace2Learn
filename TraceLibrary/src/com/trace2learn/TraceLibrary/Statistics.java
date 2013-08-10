@@ -10,6 +10,7 @@ import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.LinearLayout;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Paint.Align;
 
@@ -30,7 +31,6 @@ public class Statistics extends TraceBaseActivity {
     private TextView		countCollections;
     private TextView		countPhrases;
     private TextView		countCharacters;
-    private TextView		countStrokes;
     private ImageView		exitButton;
     private LinearLayout	chartLayout;
     
@@ -45,45 +45,68 @@ public class Statistics extends TraceBaseActivity {
         getHandlers();
         
         String txt = "";
-        int totalStrokes = 0;
         int maxStrokes = 0;
         int maxTally = 0;
  		
         List<String> lids = Toolbox.dba.getAllLessonIds();
-        txt += lids.size();
+        txt = "" + lids.size();
         countCollections.setText(txt);
                 
         List<String> wids = Toolbox.dba.getAllWordIds();
-        txt = "";
-        txt += wids.size();
+        txt = "" + wids.size();
         countPhrases.setText(txt);
 
-        List<LessonItem> chars = Toolbox.getCachedCharacters();
-        txt = "";
-        txt += chars.size();
+        List<String> chids = Toolbox.dba.getAllCharIds();
+        txt = "" + chids.size();
         countCharacters.setText(txt);
+        
+        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        boolean isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
+        
 
-        // Count total strokes, and also keep track of the distribution
-        // of stroke counts across characters
+        // Distribution of stroke counts across characters
         LinkedHashMap<Integer, Integer> strokeDistrib = new LinkedHashMap<Integer, Integer>();
-        for(LessonItem item : chars){
-        	LessonCharacter ch = (LessonCharacter) item;
-        	int numStrokes = ch.getNumStrokes();
-        	totalStrokes += numStrokes;
-        	if(numStrokes > maxStrokes) maxStrokes = numStrokes;
-        	// build a map of stroke count to # of matching characters
-        	if(!strokeDistrib.containsKey(numStrokes)){
-        		strokeDistrib.put(numStrokes, 1);
-        	}
-        	else {
-        		int prevTally = strokeDistrib.get(numStrokes);
-        		strokeDistrib.put(numStrokes, prevTally+1);
-        		if(prevTally+1 > maxTally) maxTally = prevTally+1;
-        	}
+        
+        if(isAdmin) {
+	        List<LessonItem> chars = Toolbox.getAllCharacters();
+	        for(LessonItem item : chars) {
+	        	LessonCharacter ch = (LessonCharacter) item;
+	        	int numStrokes = ch.getNumStrokes();
+	        	if(numStrokes > maxStrokes) maxStrokes = numStrokes;
+	        	// build a map of stroke count to # of matching characters
+	        	if(!strokeDistrib.containsKey(numStrokes)){
+	        		strokeDistrib.put(numStrokes, 1);
+	        	}
+	        	else {
+	        		int prevTally = strokeDistrib.get(numStrokes);
+	        		strokeDistrib.put(numStrokes, prevTally+1);
+	        		if(prevTally+1 > maxTally) maxTally = prevTally+1;
+	        	}
+	        }
         }
-        txt = "";
-        txt += totalStrokes;
-        countStrokes.setText(txt);
+        else /*non-admin, user mode*/
+        {
+        	// optimization, hard-code the distribution since will not change in
+        	// user mode, and building it from stroke data is very time-intensive
+        	strokeDistrib.put(1, 1);
+        	strokeDistrib.put(2, 12);
+        	strokeDistrib.put(3, 21);
+        	strokeDistrib.put(4, 41);
+        	strokeDistrib.put(5, 50);
+        	strokeDistrib.put(6, 58);
+        	strokeDistrib.put(7, 47);
+        	strokeDistrib.put(8, 82);
+        	strokeDistrib.put(9, 57);
+        	strokeDistrib.put(10, 68);
+        	strokeDistrib.put(11, 77);
+        	strokeDistrib.put(12, 68);
+        	strokeDistrib.put(13, 51);
+        	strokeDistrib.put(14, 40);
+        	strokeDistrib.put(15, 35);
+        	strokeDistrib.put(16, 26);
+        	maxStrokes = 16;
+        	maxTally= 82;
+        }
         
         Log.i("Statistics chart data: ", strokeDistrib.toString());
         
@@ -145,7 +168,6 @@ public class Statistics extends TraceBaseActivity {
     	countCollections	= (TextView) findViewById(R.id.countCollections);
     	countPhrases		= (TextView) findViewById(R.id.countPhrases);
     	countCharacters		= (TextView) findViewById(R.id.countCharacters);
-    	countStrokes		= (TextView) findViewById(R.id.countStrokes);
         exitButton			= (ImageView) findViewById(R.id.exit_button);
         chartLayout			= (LinearLayout) findViewById(R.id.chart);        
     }

@@ -49,9 +49,17 @@ public class CharacterCreationPane extends DrawingPane {
 	 * @param newY - the y coordinate of the sample point
 	 */
 	@Override
-	protected void completeStroke(float newX, float newY) {
-		// consider drawing just one stroke
+	protected boolean completeStroke(float newX, float newY) {
+		
+		// handle case where user tapped the screen without drawing an actual stroke
+		// this should be ignored in both creation & tracing modes
+		if(_currentStroke.getNumSamples() <= 1) {
+			_character.removeLastStroke();
+			return false;
+		}
+		
 		_currentStroke.addPoint(newX, newY);
+		return true;
 	}
 
 	@Override

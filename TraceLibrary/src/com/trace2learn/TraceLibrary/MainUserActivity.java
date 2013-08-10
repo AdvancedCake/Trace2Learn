@@ -14,9 +14,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
@@ -54,12 +57,18 @@ public class MainUserActivity extends TraceBaseActivity {
         editor.putBoolean(Toolbox.PREFS_IS_ADMIN, false);
         editor.commit();
         
-        // init db - optimization: don't load all characters yet
+        // init db - optimization: don't load all characters up front
         Toolbox.initDbAdapter(getApplicationContext(), /*initializeChars*/false);
+        
+        Toolbox.determineScreenSize(getApplicationContext());
 
         // set app title dynamically, read from the manifest file
-        String appTitle = getApplicationInfo().name;
-        ((TextView) findViewById(R.id.title)).setText(appTitle);
+        PackageManager pm = getPackageManager();
+        CharSequence appLabel = getApplicationInfo().loadLabel(pm);
+        Drawable appIcon = getApplicationInfo().loadIcon(pm);
+        ((TextView) findViewById(R.id.title)).setText(appLabel);
+        ((TextView) findViewById(R.id.title)).setGravity(Gravity.CENTER_HORIZONTAL);
+        ((ImageView) findViewById(R.id.logo)).setImageDrawable(appIcon);
 
         // show Upgrade button if free version
         if (!isFullVer) {
@@ -164,8 +173,9 @@ public class MainUserActivity extends TraceBaseActivity {
 	
 	        	// notify user of db upgrade
 	            AlertDialog.Builder builder = new AlertDialog.Builder(acty);
-	            builder.setIcon(acty.getApplicationInfo().icon);
-	            builder.setTitle(acty.getApplicationInfo().name);
+	            PackageManager pm = acty.getPackageManager();
+	            builder.setIcon(acty.getApplicationInfo().loadIcon(pm));
+	            builder.setTitle(acty.getApplicationInfo().loadLabel(pm));
 	            builder.setMessage(initMsg);
 	            builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
 	                public void onClick(DialogInterface dialog, int which) {
