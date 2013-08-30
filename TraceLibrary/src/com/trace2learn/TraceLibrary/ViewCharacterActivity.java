@@ -24,29 +24,28 @@ public class ViewCharacterActivity extends TraceBaseActivity {
 
     private TextView tagText;
 
-    private Mode currentMode = Mode.INVALID;
+    private Mode currentMode = Mode.VOID;
 
     private String id_to_pass = null;
 
     private boolean isChanged = false;
 
     public enum Mode {
-        CREATION, DISPLAY, INVALID, TRACE;
+        CREATION, DISPLAY, TRACE, VOID;
     }
 
     private static enum requestCodeENUM { EDIT_TAG };
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) 
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.display_char);
 
         charSlot = (FrameLayout) findViewById(R.id.character_slot);
         creationPane = new CharacterCreationPane(this);
-        playbackPane = new CharacterPlaybackPane(this, false, 2);
+        playbackPane = new CharacterPlaybackPane(this, false /*animated*/, 2);
         tracePane = new CharacterTracePane(this);
 
         left1  = (Button) findViewById(R.id.left1Button);
@@ -79,11 +78,14 @@ public class ViewCharacterActivity extends TraceBaseActivity {
             updateTags();
 
             if (mode.equals("trace")) {
+            	// trace mode
                 setCharacterTracePane();
-            } else { // display mode
+            } else { 
+            	// display mode
                 setCharacterDisplayPane();
             }
-        } else { // creation mode
+        } else { 
+        	// creation mode
             setCharacter(new LessonCharacter(true));
             setCharacterCreationPane();
         }
@@ -101,7 +103,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
             charSlot.addView(creationPane);
             left1.setVisibility(View.VISIBLE);
             left2.setVisibility(View.VISIBLE);
-            right2.setVisibility(View.INVISIBLE);
+            right2.setVisibility(View.GONE);
             right1.setVisibility(View.VISIBLE);
             left1.setText(R.string.clear);
             left2.setText(R.string.undo);
@@ -123,7 +125,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
             charSlot.removeAllViews();
             charSlot.addView(playbackPane);
             left1.setVisibility(View.VISIBLE);
-            left2.setVisibility(View.INVISIBLE);
+            left2.setVisibility(View.GONE);
             right2.setVisibility(View.VISIBLE);
             right1.setVisibility(View.VISIBLE);
             left1.setText(R.string.edit);
@@ -147,7 +149,7 @@ public class ViewCharacterActivity extends TraceBaseActivity {
             charSlot.removeAllViews();
             charSlot.addView(tracePane);
             left1.setVisibility(View.VISIBLE);
-            left2.setVisibility(View.INVISIBLE);
+            left2.setVisibility(View.GONE);
             right2.setVisibility(View.VISIBLE);
             right1.setVisibility(View.VISIBLE);
             left1.setText(R.string.edit);

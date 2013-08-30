@@ -11,6 +11,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/tag_list_scroll_view"
         android:layout_alignParentTop="true"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
         android:layout_marginTop="30dp" />
 
     <HorizontalScrollView
@@ -59,7 +61,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/left1Button"
+        android:layout_centerInParent="true"
         android:onClick="onLeft2ButtonClick" />
 
 </RelativeLayout>

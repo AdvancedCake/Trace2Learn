@@ -29,6 +29,7 @@ import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 import com.trace2learn.TraceLibrary.Database.LessonWord;
+import com.trace2learn.TraceLibrary.Database.Stroke;
 
 public class MainAdminActivity extends TraceListActivity {
 
@@ -113,8 +114,7 @@ public class MainAdminActivity extends TraceListActivity {
                 }
 
             }
-        }
-        	);
+        } );
     }
     
     @Override
@@ -164,7 +164,6 @@ public class MainAdminActivity extends TraceListActivity {
     	// - flag characters without pinyin tag
     	// - flag duplicate pinyin tags
     	// - flag phrases without pinyin tag
-
        
         String msg = ""; 		
         Hashtable<String, String> idMap = new Hashtable<String, String> ();
@@ -180,7 +179,12 @@ public class MainAdminActivity extends TraceListActivity {
         		if(idMap.contains(ch.getValue(Toolbox.ID_KEY))) 
         			msg = msg + "Repeat id for " + ch.getKeyValuesToString() + "\n";
         		idMap.put(ch.getValue(Toolbox.ID_KEY),"found");
-        	}	
+        	}
+        	
+        	for(Stroke stroke : ch.getStrokes()){
+        		if(stroke.getNumSamples() < 2)
+        			msg = msg + "Dot stroke for " + ch.getTagsToString() + "\n";
+        	}
         }
         
         List<String> wids = Toolbox.dba.getAllWordIds();

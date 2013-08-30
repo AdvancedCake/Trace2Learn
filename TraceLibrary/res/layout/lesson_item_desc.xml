@@ -39,4 +39,13 @@
         android:maxLines="1"
         android:singleLine="true" />
 
+    <ImageView
+        android:id="@+id/sound_button"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="@string/play_sound"
+        android:src="@drawable/sound_button" />
+
 </RelativeLayout>

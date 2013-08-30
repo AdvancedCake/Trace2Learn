@@ -15,7 +15,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
@@ -33,6 +32,7 @@ public class MainUserActivity extends TraceBaseActivity {
     SharedPreferences prefs;
     SharedPreferences.Editor editor;
     
+    ImageView logo;
     ImageView introduction;
     ImageView createPhrase;
     ImageView browseCollections;
@@ -65,11 +65,14 @@ public class MainUserActivity extends TraceBaseActivity {
         // set app title dynamically, read from the manifest file
         PackageManager pm = getPackageManager();
         CharSequence appLabel = getApplicationInfo().loadLabel(pm);
-        Drawable appIcon = getApplicationInfo().loadIcon(pm);
         ((TextView) findViewById(R.id.title)).setText(appLabel);
         ((TextView) findViewById(R.id.title)).setGravity(Gravity.CENTER_HORIZONTAL);
-        ((ImageView) findViewById(R.id.logo)).setImageDrawable(appIcon);
 
+        // hack, remove logo from small screen as it crowds out the menu items
+        if(Toolbox.isSmallScreen()) {
+        	logo.setImageBitmap(null);
+        }
+        
         // show Upgrade button if free version
         if (!isFullVer) {
             findViewById(R.id.upgrade).setVisibility(View.VISIBLE);
@@ -82,6 +85,7 @@ public class MainUserActivity extends TraceBaseActivity {
     }
     
     private void getViews() {
+        logo              = (ImageView) findViewById(R.id.logo);
         introduction      = (ImageView) findViewById(R.id.introduction);
         createPhrase      = (ImageView) findViewById(R.id.create_phrase);
         browseCollections = (ImageView) findViewById(R.id.browse_collections);

@@ -35,7 +35,7 @@ public class IntroductionActivity extends TraceBaseActivity {
         // Initialize values
         lessonName = "Introduction";
         categories = LessonCategory.values();
-        String narrative1  = "Learning to read and write Chinese has a lot to do with learning to recognize patterns.  "
+        String narrative1  = "\n\nLearning to read and write Chinese has a lot to do with learning to recognize patterns.  "
         		+ "Patterns are present in every language spoken around the globe – in the sounds, in the grammar, in the writing.  "
         		+ "Chinese characters are no different.  At first they may seem complex and impenetrable, but in fact they are packed with repeating patterns.  "
         		+ "Our eyes and ears can pick up on these rich hints and clues to make learning easier.\n\n"
@@ -53,7 +53,7 @@ public class IntroductionActivity extends TraceBaseActivity {
         		+ "The goal was a balance between the rigid, formal fonts you may see in print or on a computer screen, and a more natural handwritten script.  "
         		+ "There are countless fonts and styles used to write Chinese - calligraphy artists spend a lifetime mastering the art.  "
         		+ "Trasee! does not teach calligraphy.  What it will do is let you discover for yourself how characters are composed, and how they interact with each other.  "
-        		+ "This in turn will lead to increased reading fluecy and a broader vocabulary.";
+        		+ "This in turn will lead to increased reading fluecy and a broader vocabulary.\n\n";
         
         nameView.setText(lessonName);
         narrativeTop.setText(narrative1);

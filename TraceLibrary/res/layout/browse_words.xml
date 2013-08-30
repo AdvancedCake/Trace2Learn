@@ -14,14 +14,21 @@
         android:textColor="@color/header"
         android:textSize="20sp"
         android:textStyle="bold" />
-    
+
+    <TextView
+        android:id="@+id/filterStatus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/lesson_name"
+        android:textColor="@color/filter_label" />
+        
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_above="@+id/filterButton"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/lesson_name" >
+        android:layout_below="@+id/filterStatus" >
     </ListView>
 
     <Button
@@ -33,16 +40,6 @@
         android:onClick="onClickFilter"
         android:text="@string/search" />
 
-    <TextView
-        android:id="@+id/filterStatus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/filterButton"
-        android:layout_alignBottom="@+id/filterButton"
-        android:layout_marginLeft="20dp"
-        android:layout_toRightOf="@+id/filterButton"
-        android:textColor="@color/filter_label" />
-
     <ImageView
         android:id="@+id/infoButton"
         android:layout_alignParentRight="true"
@@ -52,5 +49,14 @@
         android:layout_alignTop="@+id/filterButton"
         android:contentDescription="@string/info"
         android:src="@drawable/info_button" />
+
+    <ToggleButton
+        android:id="@+id/showDefinitions"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerInParent="true"
+        android:textOff="@string/show"
+        android:textOn="@string/hide" />
 
 </RelativeLayout>

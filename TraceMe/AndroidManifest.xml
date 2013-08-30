@@ -16,6 +16,7 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/trace2learn"
+        android:logo="@drawable/logo"
         android:label="@string/user_app_name_trad" >
         <activity
             android:name="com.trace2learn.TraceLibrary.MainUserActivity"

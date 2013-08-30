@@ -90,22 +90,33 @@ public class Statistics extends TraceBaseActivity {
         	// user mode, and building it from stroke data is very time-intensive
         	strokeDistrib.put(1, 1);
         	strokeDistrib.put(2, 12);
-        	strokeDistrib.put(3, 21);
-        	strokeDistrib.put(4, 41);
-        	strokeDistrib.put(5, 50);
-        	strokeDistrib.put(6, 58);
-        	strokeDistrib.put(7, 47);
-        	strokeDistrib.put(8, 82);
-        	strokeDistrib.put(9, 57);
-        	strokeDistrib.put(10, 68);
-        	strokeDistrib.put(11, 77);
-        	strokeDistrib.put(12, 68);
-        	strokeDistrib.put(13, 51);
-        	strokeDistrib.put(14, 40);
-        	strokeDistrib.put(15, 35);
-        	strokeDistrib.put(16, 26);
-        	maxStrokes = 16;
-        	maxTally= 82;
+        	strokeDistrib.put(3, 22);
+        	strokeDistrib.put(4, 43);
+        	strokeDistrib.put(5, 53);
+        	strokeDistrib.put(6, 69);
+        	strokeDistrib.put(7, 60);
+        	strokeDistrib.put(8, 98);
+        	strokeDistrib.put(9, 70);
+        	strokeDistrib.put(10, 77);
+        	strokeDistrib.put(11, 85);
+        	strokeDistrib.put(12, 77);
+        	strokeDistrib.put(13, 58);
+        	strokeDistrib.put(14, 47);
+        	strokeDistrib.put(15, 42);
+        	strokeDistrib.put(16, 30);
+        	strokeDistrib.put(17, 24);
+        	strokeDistrib.put(18, 19);
+        	strokeDistrib.put(19, 12);
+        	strokeDistrib.put(20, 5);
+        	strokeDistrib.put(21, 5);
+        	strokeDistrib.put(22, 5);
+        	strokeDistrib.put(23, 3);
+        	strokeDistrib.put(24, 0);
+        	strokeDistrib.put(25, 3);
+        	strokeDistrib.put(26, 2);
+        	strokeDistrib.put(27, 1);
+        	maxStrokes = 27;
+        	maxTally= 98;
         }
         
         Log.i("Statistics chart data: ", strokeDistrib.toString());
@@ -143,7 +154,7 @@ public class Statistics extends TraceBaseActivity {
         multiRenderer.setXAxisMin(0);
         multiRenderer.setXAxisMax(maxStrokes+1);
         multiRenderer.setYAxisMin(0);
-        multiRenderer.setYAxisMax(maxTally+1);
+        multiRenderer.setYAxisMax(maxTally+5);
         // render vertically, to achieve horizontal bar chart
         multiRenderer.setOrientation(Orientation.VERTICAL);
         multiRenderer.setBarSpacing(0.2);

@@ -38,6 +38,8 @@ public class BrowseLessonsActivity extends TraceListActivity {
 
     private boolean isAdmin;
     private boolean isFull;
+    
+    SharedPreferences prefs;
 
     private enum ContextMenuItem {
         DELETE              (1, "Delete"),
@@ -65,22 +67,17 @@ public class BrowseLessonsActivity extends TraceListActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.browse_lessons);   
 
-        // Identify and mark last viewed lesson
-        SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
-        String lastViewedId = prefs.getString(Toolbox.PREFS_LAST_VIEWED_LESSON, "");
-
         items = new ArrayList<Lesson>(); 
         List<String> ids = Toolbox.dba.getAllLessonIds();
         for(String id : ids){
             Lesson lesson = Toolbox.dba.getLessonById(id);
             lesson.setTagList(Toolbox.dba.getLessonTags(id));
-            if(lastViewedId.equals(id)) {
-            	lesson.setLastViewed(true);
-            }
             items.add(lesson);
         }
 
         // Retrieve privileges
+        // Identify and mark last viewed lesson
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         isAdmin = prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false);
         isFull  = prefs.getBoolean(Toolbox.PREFS_IS_FULL_VER, false);
 
@@ -116,7 +113,6 @@ public class BrowseLessonsActivity extends TraceListActivity {
         } catch (Exception e) {/* swallow exception, in case collection name didn't start with an integer */}
 
         // Record most recently viewed collection
-        SharedPreferences prefs = this.getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Toolbox.PREFS_LAST_VIEWED_LESSON, lesson.getStringId());
         editor.commit();
@@ -306,7 +302,7 @@ public class BrowseLessonsActivity extends TraceListActivity {
          * Configures the view for the given item in the list
          * @param position - the index of the item in the list
          * @param convertView - the constructed view that should be modified
-         * @param parent - The contained of the list
+         * @param parent - The container of the list
          */
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {     
@@ -329,10 +325,19 @@ public class BrowseLessonsActivity extends TraceListActivity {
 
             int    count = lesson.getNumWords();
             String name = lesson.getLessonName();
+            String lessonId = lesson.getStringId();
             nameView.setText(name);
             sizeView.setText(count + (count == 1 ? " phrase" : " phrases"));
+
+            // Identify and mark last viewed lesson
+            String lastViewedId = prefs.getString(Toolbox.PREFS_LAST_VIEWED_LESSON, "");
             
-            if(lesson.isLastViewed()) lastViewed.setText(R.string.last_viewed); else lastViewed.setVisibility(View.GONE);
+            if(lessonId == lastViewedId) {
+            	lastViewed.setVisibility(View.VISIBLE);
+            	lastViewed.setText(R.string.last_viewed);
+            }
+            else
+            	lastViewed.setVisibility(View.GONE);
 
             // Display category icons
             int i = 0;

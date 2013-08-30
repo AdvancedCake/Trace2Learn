@@ -18,7 +18,7 @@ public class BitmapFactory {
 	 */
 	public static Bitmap buildBitmap(LessonItem item)
 	{
-		int height = Toolbox.bitmapHeight;
+		int height = Toolbox.bitmapHeight();
 		
 		if(item.getItemType() == ItemType.WORD)
 		{

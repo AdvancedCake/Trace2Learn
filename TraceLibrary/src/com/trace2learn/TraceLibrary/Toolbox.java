@@ -35,6 +35,8 @@ public class Toolbox {
     public static final String PREFS_IS_FULL_VER = "isFullVersion";
     public static final String PREFS_LAST_VER_NUMBER = "lastVersionNumber";
     public static final String PREFS_LAST_VIEWED_LESSON = "lastViewedLesson";
+    public static final String PREFS_LAST_USER_QUERY = "lastUserQuery";
+    public static final String PREFS_SHOW_WORD_DEFS = "showWordDefs";
     
     // Key-Value Pairs
     public static final String PINYIN_KEY = "pinyin";
@@ -46,9 +48,6 @@ public class Toolbox {
     
     // Link to apps in Play Store
     public static final String APP_STORE_LINK = "market://search?q=pub:Rovio+Mobile+Inc.";
-
-    // Sound Playback
-    public static final float VOLUME = 1;
     
     // Character Cache - all previously queried characters
     private static List<LessonItem> characterCache;
@@ -61,8 +60,8 @@ public class Toolbox {
     private static List<LessonItem> allChars;
     
     // Screen size & ideal bitmap height
-    public static String detectedScreenSize = "Generic Screen";
-    public static int bitmapHeight = 64;
+    private static String detectedScreenSize = "Generic Screen";
+    private static int bitmapHeight = 64;
     
     public static DbAdapter dba;
     public static boolean dbaOpened = false;
@@ -254,12 +253,12 @@ public class Toolbox {
     	Configuration conf = context.getResources().getConfiguration();
 
         if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_XLARGE) {     
-        	detectedScreenSize = "Giant Screen";
-            bitmapHeight = 128;
+        	detectedScreenSize = "XLarge Screen";
+            bitmapHeight = 70;
         }
         else if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_LARGE) {     
         	detectedScreenSize = "Large Screen";
-            bitmapHeight = 96;
+            bitmapHeight = 70;
         }
         else if ((conf.screenLayout & Configuration.SCREENLAYOUT_SIZE_MASK) == Configuration.SCREENLAYOUT_SIZE_NORMAL) {     
         	detectedScreenSize = "Normal Screen";
@@ -270,8 +269,18 @@ public class Toolbox {
             bitmapHeight = 40;
         }
         else {
+        	// default to normal
         	bitmapHeight = 64;
         }
     	
     }
+    
+    public static boolean isSmallScreen(){return detectedScreenSize.equals("Small Screen");}
+    
+    public static String screenSize(){return detectedScreenSize;}
+    
+    public static int bitmapHeight(){return bitmapHeight;}
+    
+
+    
 }

@@ -38,6 +38,11 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
     private LinearLayout categoryLayout;
     private ImageView    exitButton;
     private Button       editButton;
+    private Button       categoriesButton;
+
+    private enum RequestCode {
+        ASSIGN_CATEGORIES;
+    }
     
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,16 +81,18 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
     }
     
     private void getViews() {
-        nameView       = (TextView)     findViewById(R.id.lesson_name);
-        narrativeView  = (TextView)     findViewById(R.id.narrative);
-        categoryLayout = (LinearLayout) findViewById(R.id.categories);
-        exitButton     = (ImageView)    findViewById(R.id.exit_button);
-        editButton     = (Button)       findViewById(R.id.edit_button);
+        nameView          = (TextView)     findViewById(R.id.lesson_name);
+        narrativeView     = (TextView)     findViewById(R.id.narrative);
+        categoryLayout    = (LinearLayout) findViewById(R.id.categories);
+        exitButton        = (ImageView)    findViewById(R.id.exit_button);
+        editButton        = (Button)       findViewById(R.id.edit_button);
+        categoriesButton  = (Button)       findViewById(R.id.categories_button);
         
         if (!lesson.isUserDefined() &&
                 !prefs.getBoolean(Toolbox.PREFS_IS_ADMIN, false)) {
             // Lesson is admin, but user is not admin
             editButton.setVisibility(View.GONE);
+            categoriesButton.setVisibility(View.GONE);
         }
         
         // Because setMovementMethod causes the view to darken when clicked, we
@@ -110,6 +117,13 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
             @Override
             public void onClick(View v) {
                 editNarrative();
+            }
+        });   
+        
+        categoriesButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                editCategories();
             }
         });
     }
@@ -162,4 +176,33 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         dialog.show();
     }
     
+    private void editCategories() {
+    	
+    	Context ctx = getApplicationContext();
+        Intent i = new Intent(ctx, ChooseLessonCategoryActivity.class);
+        i.putExtra("ID",   lessonId);
+        i.putExtra("name", lessonName);
+
+        boolean[] original = new boolean[] {false, false, false, false};
+        SortedSet<LessonCategory> categories = lesson.getCategories();
+        if (categories != null) {
+            for (LessonCategory category : categories) {
+                original[category.ordinal()] = true;
+            }
+        }
+        i.putExtra("categories", original);
+        startActivityForResult(i, RequestCode.ASSIGN_CATEGORIES.ordinal());
+   	
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RequestCode.ASSIGN_CATEGORIES.ordinal() &&
+                resultCode == RESULT_OK) {
+        	// refresh categories list
+            startActivity(getIntent());
+            finish();
+        }
+    }
 }

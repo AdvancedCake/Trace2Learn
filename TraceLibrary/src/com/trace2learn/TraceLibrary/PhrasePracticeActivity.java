@@ -14,7 +14,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Vibrator;
 import android.text.Html;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -30,7 +29,7 @@ import com.trace2learn.TraceLibrary.Database.LessonWord;
 
 public class PhrasePracticeActivity extends TraceBaseActivity {
 
-    private Mode    currentMode = null;
+    private Mode    currentMode = Mode.VOID;
     private String  lessonID = null;
     private int     phraseIndex; // index of current phrase in collection
     private int     collectionSize;
@@ -42,8 +41,9 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private ArrayList<LessonCharacter> characters;
 
     private TextView			tagView;
+    private TextView            countView;
     private TextView			titleView;
-    private Button				playButton;
+    private Button				playbackButton;
     private Button				traceButton;
     private ToggleButton		quizToggle;
     private ImageView			quizIcon;
@@ -66,12 +66,17 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     private int thumbBgSelected;
 
     private enum Mode {
-        DISPLAY, TRACE;
+        DISPLAY, TRACE, VOID;
+    }
+    
+    private enum Scroll {
+    	LEFT, RIGHT, NONE;
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.practice_phrase);
 
         getViews();
@@ -88,6 +93,19 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         thumbBgSelected = getResources().getColor(R.color.thumb_background_selected);
 
         initializeMode();
+        
+        // set first char as current, will be picked up in onStart()
+        currentChar = 0;
+    }
+    
+    @Override
+    protected void onStart() {
+    	super.onStart();
+    	
+        setSelectedCharacter(currentChar, Scroll.NONE);  
+        //try { Thread.sleep(500); } catch (InterruptedException e) {}
+        //setSelectedCharacter(currentChar, Scroll.NONE);  
+        
     }
 
     @Override
@@ -102,15 +120,15 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (soundPool != null) {
+        if (soundPool != null)
             soundPool.release();
-        }
     };
 
     private void getViews() {
         titleView   = (TextView)     findViewById(R.id.phrase_title);
+        countView  = (TextView)      findViewById(R.id.phrase_count);
         tagView     = (TextView)     findViewById(R.id.tag_list);
-        playButton  = (Button)       findViewById(R.id.animate_button);
+        playbackButton  = (Button)       findViewById(R.id.animate_button);
         traceButton = (Button)       findViewById(R.id.trace_button);
         quizToggle  = (ToggleButton) findViewById(R.id.quiz_toggle);
         quizIcon    = (ImageView)    findViewById(R.id.quiz_icon);
@@ -127,15 +145,15 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         traceButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setCharacterTracePane();
+                setCharacterTracePane(false);
             }
         });
 
         // Play Button
-        playButton.setOnClickListener(new OnClickListener() {
+        playbackButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                setDisplayPane();
+                setDisplayPane(false);
             }
         });
         
@@ -193,7 +211,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             	// L>R swipe, proceed to previous char or next phrase
             	if (currentMode == Mode.DISPLAY) {
             		if (currentChar > 0) 
-            			setSelectedCharacter(currentChar - 1);
+            			setSelectedCharacter(currentChar - 1, Scroll.LEFT);
             		else
             			moveToPrevPhrase(/*swipe*/ true);
             	}
@@ -202,7 +220,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             	// R>L swipe, proceed to next char or next phrase
             	if (currentMode == Mode.DISPLAY) {
             		if (currentChar + 1 < characters.size()) 
-            			setSelectedCharacter(currentChar + 1);
+            			setSelectedCharacter(currentChar + 1, Scroll.RIGHT);
             		else
             			moveToNextPhrase(/*swipe*/ true);
             	}
@@ -224,7 +242,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             finish();
             
             Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
-            v.vibrate(300); //ms
+            v.vibrate(300); //milliseconds
         }
         else if(!swipe) {
         	// if at end of collection, return to browse collections
@@ -246,7 +264,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             finish();
             
             Vibrator v = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
-            v.vibrate(300); //ms
+            v.vibrate(300); //milliseconds
         }
     }    
     /**
@@ -263,26 +281,27 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             
             String wordId = bun.getString("wordId");
             word = Toolbox.dba.getWordById(wordId);
-            setWord(word);
+            setCharacterList(word.getCharacterIds());
             updateTags();
 
             lessonID = bun.getString("lessonID");
             if (lessonID == null) {
                 titleView.setText("");
+                countView.setText("");
             } else {
                 phraseIndex = bun.getInt("index");
                 collectionSize = bun.getInt("collectionSize");
                 lessonName = Toolbox.dba.getLessonById(lessonID).getLessonName();
-                titleView.setText(lessonName + " - " + phraseIndex + 
-                        " of " + collectionSize);
+                titleView.setText(lessonName);
+                countView.setText(phraseIndex + " of " + collectionSize);
             }
 
             // Activity Mode
             String mode = prefs.getString(Toolbox.PREFS_PHRASE_MODE, "trace"); 
             if (mode.equals("display")) {
-                setDisplayPane();
+                currentMode = Mode.DISPLAY;
             } else if (mode.equals("trace")) {
-                setCharacterTracePane();
+                currentMode = Mode.TRACE;
             }
             
             // Quiz Mode
@@ -293,11 +312,14 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             soundIcon.setVisibility(View.GONE);            
             int soundFile = 0;
             if (word.hasKey(Toolbox.SOUND_KEY) || word.hasKey(Toolbox.PINYIN_KEY)) {
-                soundPool = new SoundPool(1, AudioManager.STREAM_MUSIC, 0);
+                soundPool = new SoundPool(1, AudioManager.STREAM_RING, 0);
                 // use 'sound' tag to locate audio if it exists, otherwise use 'pinyin' tag
                 String audioKey = word.hasKey(Toolbox.SOUND_KEY) ? Toolbox.SOUND_KEY : Toolbox.PINYIN_KEY;
-                soundFile = getResources().getIdentifier(
-                        word.getValue(audioKey), "raw", getPackageName());
+	            // replace spaces with underscore
+	            String audioString = word.getValue(audioKey);
+	            audioString = audioString.replace(' ','_');
+	            soundFile = getResources().getIdentifier(
+                        audioString, "raw", getPackageName());
 	            if (soundFile != 0) { // check to make sure resource exists
 	                soundId = soundPool.load(getApplicationContext(), soundFile, 1);
 	                soundIcon.setVisibility(View.VISIBLE);
@@ -309,29 +331,40 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         }
     }
 
-    private void setSelectedCharacter(int position) {
-        charSlot.removeAllViews();
+    private void setSelectedCharacter(int position, Scroll scrollage) {
+        //charSlot.removeAllViews();
         thumbnails.getChildAt(currentChar).setBackgroundColor(thumbBg);
-        
+
         currentChar = position;
         if (currentMode == Mode.DISPLAY) {
-            playbackPanes.get(currentChar).setAnimated(true);
-            charSlot.addView(playbackPanes.get(currentChar));
+        //    playbackPanes.get(currentChar).setAnimated(true);
+        //    charSlot.addView(playbackPanes.get(currentChar));
+        	setDisplayPane(true);
         } else if (currentMode == Mode.TRACE) {
-            tracePanes.get(currentChar).clearPane();
-            charSlot.addView(tracePanes.get(currentChar));
+        //    tracePanes.get(currentChar).clearPane();
+        //    charSlot.addView(tracePanes.get(currentChar));
+        	setCharacterTracePane(true);
         }
 
         // set selected state, make sure it's visible in the thumbnail gallery
         thumbnails.getChildAt(currentChar).setBackgroundColor(thumbBgSelected);
-        // TODO move thumbscroll to ensure that new selection is visible
+       
+        // scroll the gallery, if necessary, to ensure that new selection is visible
+        int thumbWidth = thumbnails.getChildAt(currentChar).getWidth();
+        int selectionLeftEdge = thumbWidth * currentChar;
+        int selectionRightEdge = thumbWidth * (currentChar + 1);
+        int visibleLeftEdge = thumbscroll.getScrollX();
+        int visibleRightEdge = visibleLeftEdge = thumbscroll.getWidth();
+        		
+        if(scrollage == Scroll.LEFT &&
+        		selectionLeftEdge < visibleLeftEdge)
+        	thumbscroll.scrollBy(thumbWidth * (-1), 0);
+        if(scrollage == Scroll.RIGHT &&
+        		selectionRightEdge > visibleRightEdge)
+        	thumbscroll.scrollBy(thumbWidth, 0);
 
     }
 
-    private void setWord(LessonWord word) {
-        setCharacterList(word.getCharacterIds());
-        setSelectedCharacter(0);
-    }
 
     private void setCharacterList(List<String> ids) {
         Context context = getApplicationContext();
@@ -346,14 +379,13 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             iv.setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    setSelectedCharacter(i);
+                    setSelectedCharacter(i, Scroll.NONE);
                 }
             });
             this.characters.add(ch);
             this.thumbnails.addView(iv);
             
             // duration of rendering is dynamic based on # of strokes, 2 strokes per second
-            // TODO: make speed a configurable setting, as slow/moderate/fast
             int duration = ch.getNumStrokes() / 2 + 1;
             
             CharacterPlaybackPane dispPane = new CharacterPlaybackPane(
@@ -365,7 +397,6 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             
             tracePane.setTemplate(ch);
             tracePane.addMoveToNextHandler(moveToNext);
-
             this.tracePanes.add(tracePane);
         }
     }
@@ -373,10 +404,10 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     /**
      * Switches the display mode to display
      */
-    private synchronized void setDisplayPane() {
+    private synchronized void setDisplayPane(boolean forceRedraw) {
         playbackPanes.get(currentChar).setAnimated(true);
 
-        if (currentMode != Mode.DISPLAY) {
+        if (currentMode != Mode.DISPLAY  || forceRedraw) {
             currentMode = Mode.DISPLAY;
             charSlot.removeAllViews();
             charSlot.addView(playbackPanes.get(currentChar));
@@ -385,7 +416,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             editor.putString(Toolbox.PREFS_PHRASE_MODE, "display");
             editor.commit();
             
-            playButton.setText(Html.fromHtml("<b>" +
+            playbackButton.setText(Html.fromHtml("<b>" +
                     getString(R.string.animate) + "</b>"));
             traceButton.setText(getString(R.string.practice));
         }
@@ -394,10 +425,10 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     /**
      * Switches the display mode to display
      */
-    private synchronized void setCharacterTracePane() {
+    private synchronized void setCharacterTracePane(boolean forceRedraw) {
         this.tracePanes.get(currentChar).clearPane();
 
-        if (currentMode != Mode.TRACE) {
+        if (currentMode != Mode.TRACE  || forceRedraw) {
             currentMode = Mode.TRACE;
             charSlot.removeAllViews();
             charSlot.addView(tracePanes.get(currentChar));
@@ -409,7 +440,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
             
             traceButton.setText(Html.fromHtml("<b>" +
                     getString(R.string.practice) + "</b>"));
-            playButton.setText(getString(R.string.animate));
+            playbackButton.setText(getString(R.string.animate));
         }
     }
 
@@ -464,8 +495,12 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
     }
     
     private void playSound() {
-        Log.i("SoundPool", "Playing sound");
-        soundPool.play(soundId, Toolbox.VOLUME, Toolbox.VOLUME, 1, 0, 1);
+    	// determine appropriate volume level from system voice call settings
+        AudioManager audio = (AudioManager) getSystemService(AUDIO_SERVICE);
+        float volumeMax = audio.getStreamMaxVolume(AudioManager.STREAM_RING);
+        float volumeSet = audio.getStreamVolume(AudioManager.STREAM_RING);
+        float volume = (volumeMax == 0)? 0 : volumeSet / volumeMax;        
+        soundPool.play(soundId, volume, volume, 1, 0, 1);
     }
 
     @Override
@@ -478,7 +513,7 @@ public class PhrasePracticeActivity extends TraceBaseActivity {
         @Override
         public void handleMessage(Message m) {
             if (currentChar + 1 < characters.size()) {
-                setSelectedCharacter(currentChar + 1);
+                setSelectedCharacter(currentChar + 1, Scroll.NONE);
             } else {
                 // this is the end of the word
                 if (lessonID != null) {

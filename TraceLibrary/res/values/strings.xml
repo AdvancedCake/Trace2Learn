@@ -53,7 +53,7 @@
     <string name="undo">Undo</string>
     <string name="delete">Delete</string>
     <string name="info">Info</string>
-    <string name="category">Category</string>
+    <string name="category">Categories</string>
     <string name="assign_categories">Assign Categories</string>
     <string name="quizModeOn">Quiz On</string>
     <string name="quizModeOff">Quiz Off</string>
@@ -92,5 +92,7 @@
     <string name="name">name</string>
     <string name="create_new">Create New</string>
     <string name="last_viewed">Last Viewed</string>
+    <string name="show">Labels</string>
+    <string name="hide">Labels</string>
 
 </resources>

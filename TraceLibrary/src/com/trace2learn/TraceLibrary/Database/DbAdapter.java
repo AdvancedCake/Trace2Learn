@@ -21,7 +21,6 @@ import android.os.AsyncTask;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 
-import com.trace2learn.TraceLibrary.Toolbox;
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 import com.trace2learn.TraceLibrary.Database.LessonItem.ItemType;
 
@@ -1106,7 +1105,7 @@ public class DbAdapter {
      * @throws SQLException if character could not be found/retrieved
      */
     public List<String> getCharacterTags(String charId) throws SQLException {
-        //TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
+
         Cursor cursor = mDb.query(CHARTAG_TABLE, new String[] {CHARTAG_TAG},
                 ID_COL + "=?", new String[] {charId},
                 null, null, "sort ASC");
@@ -1262,8 +1261,7 @@ public class DbAdapter {
      * @throws SQLException if lesson could not be found/retrieved
      */
     public List<String> getLessonTags(String lessonId) throws SQLException {
-        //TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
-        //TODO: separate methods was easier to modify (Angela)
+
         Cursor mCursor =
             mDb.query(true, LESSONTAG_TABLE, new String[] {"tag"}, "_id" + "= '" + lessonId + "'", null,
                     null, null, "tag"+" ASC", null);
@@ -1292,9 +1290,8 @@ public class DbAdapter {
      * @throws SQLException if word could not be found/retrieved
      */
     public List<String> getWordTags(String wordId) throws SQLException {
-        //TODO: make just one method getTags(id, type) for char, word, and lesson (Seunghoon)
-        Cursor mCursor =
 
+        Cursor mCursor =
             mDb.query(true, WORDTAG_TABLE, new String[] {WORDTAG_TAG}, ID_COL + "='" + wordId + "'", null,
                     null, null, "sort ASC", null);
         List<String> tags = new ArrayList<String>();
@@ -1834,8 +1831,7 @@ public class DbAdapter {
             mDb.endTransaction();
             return false;
         }
-        // don't think we need to do this sort ... verify
-        // Collections.sort(Toolbox.characters);
+
         mDb.setTransactionSuccessful();
         mDb.endTransaction();
         return true;

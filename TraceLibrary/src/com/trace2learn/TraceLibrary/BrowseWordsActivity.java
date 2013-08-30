@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 import android.app.AlertDialog;
@@ -11,7 +12,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
+import android.media.SoundPool;
+import android.media.AudioManager;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -26,6 +31,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.ImageView;
+import android.widget.ToggleButton;
 
 import com.trace2learn.TraceLibrary.Database.Lesson;
 import com.trace2learn.TraceLibrary.Database.LessonItem;
@@ -36,21 +42,24 @@ public class BrowseWordsActivity extends TraceListActivity {
     private List<LessonItem> display; // list of items being displayed
     private LessonItemListAdapter adapter;
 
-    private ListView    list;
-    private TextView    lessonName;
-    private Button      filterButton;
-    private TextView    filterStatus;
-    private ImageView   infoButton;
-    private boolean    filtered;
+    private ListView      list;
+    private TextView      lessonName;
+    private Button        filterButton;
+    private TextView      filterStatus;
+    private ImageView     infoButton;
+    private ToggleButton  toggleShowDefs;
+    private boolean       showDefs;
+    private boolean       filtered;
 
     private LayoutInflater vi;
     
     private String  lessonId;
     private boolean userDefined;
-
-    private boolean isAdmin;
-    
+    private boolean isAdmin;    
     private boolean collectionsChanged = false; // does the browse collections page need to be refreshed?
+    
+    private SoundPool soundPool;
+    private HashMap<String, Integer> soundMap;
     
     private enum ContextMenuItem {
         ADD_TO_LESSON (0, "Add to Collection"),
@@ -88,19 +97,44 @@ public class BrowseWordsActivity extends TraceListActivity {
         getViews();
         getHandlers();
         
+        // Set toggle based on previous state
+        showDefs = prefs.getBoolean(Toolbox.PREFS_SHOW_WORD_DEFS, true);
+        toggleShowDefs.setChecked( showDefs );
+        
         getWords();
         displayAllWords();
         registerForContextMenu(list);
         
         filtered = false;
+        filterStatus.setVisibility(View.GONE);
+
+        // Sound  
+        soundPool = new SoundPool(1, AudioManager.STREAM_RING, 0);
+        soundMap = new HashMap<String, Integer>();
+        for(LessonItem word : adapter.items) {
+	        if (word.hasKey(Toolbox.SOUND_KEY) || word.hasKey(Toolbox.PINYIN_KEY)) {
+	            // use 'sound' tag to locate audio if it exists, otherwise use 'pinyin' tag
+	            String audioKey = word.hasKey(Toolbox.SOUND_KEY) ? Toolbox.SOUND_KEY : Toolbox.PINYIN_KEY;
+	            // replace spaces with underscore
+	            String audioString = word.getValue(audioKey);
+	            audioString = audioString.replace(' ','_');
+	            int soundFile = getResources().getIdentifier(
+	                    audioString, "raw", getPackageName());
+	            if (soundFile != 0) { // check to make sure resource exists
+	                int soundId = soundPool.load(getApplicationContext(), soundFile, 1);
+	                soundMap.put(word.getStringId(), soundId);
+	            }
+	        }
+        }
     }
     
     private void getViews() {
-        list = getListView();
-        lessonName   = (TextView)  findViewById(R.id.lesson_name);
-        filterButton = (Button)    findViewById(R.id.filterButton);
-        filterStatus = (TextView)  findViewById(R.id.filterStatus);
-        infoButton   = (ImageView) findViewById(R.id.infoButton);
+        list                = getListView();
+        lessonName          = (TextView)      findViewById(R.id.lesson_name);
+        filterButton        = (Button)        findViewById(R.id.filterButton);
+        filterStatus        = (TextView)      findViewById(R.id.filterStatus);
+        infoButton          = (ImageView)     findViewById(R.id.infoButton);
+        toggleShowDefs      = (ToggleButton)  findViewById(R.id.showDefinitions);
     }
     
     private void getHandlers() {
@@ -111,8 +145,30 @@ public class BrowseWordsActivity extends TraceListActivity {
                 i.putExtra("ID", lessonId);
                 startActivity(i);
             }
-        });        
+        });    
+        
+        // Clicking on the quiz icon while in quiz mode
+        toggleShowDefs.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+            	showDefs = !showDefs;
+            	// store in shared preferences
+                SharedPreferences prefs = getSharedPreferences(Toolbox.PREFS_FILE,
+                        MODE_PRIVATE);
+                Editor editor = prefs.edit();
+                editor.putBoolean(Toolbox.PREFS_SHOW_WORD_DEFS, showDefs);
+            	editor.commit();
+      	
+            	// redraw the list view, retain the list's scroll position
+            	Parcelable state = list.onSaveInstanceState();
+            	displayWords();
+            	list.onRestoreInstanceState(state);
+            }
+        }); 
+        
     }
+    
+    public boolean showDefs(){return showDefs;}
     
     /**
      * Populate the source list with words
@@ -158,23 +214,44 @@ public class BrowseWordsActivity extends TraceListActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-    };
-
-
-    @Override  
-    protected void onListItemClick(ListView l, View v, int position, long id) {  
-        super.onListItemClick(l, v, position, id);
-        clickOnItem(display.get(position), position);
-    }  
- 
+        if(soundPool != null) soundPool.release();
+        soundMap.clear();
+    }
+    
+    public boolean hasAudio(String wordId) {
+    	return soundMap.containsKey(wordId);
+    }
+    
     /**
-     * Opens the selected word in the practice activity
-     * 
-     * @param li the word
-     * @param position the index of the word in the lesson or list
-     * @param mode the mode to open, "trace" or "display"
+     * Play the audio associated with the specified word
+     * - this method will be called from the list adapter
      */
-    private void clickOnItem(LessonItem li, int position) {
+    public void playSound(String wordId) {
+    	// attempt to play audio for given word
+    	if(hasAudio(wordId)) {
+    		int soundId = soundMap.get(wordId);
+	    	// determine appropriate volume level from system voice call settings
+	        AudioManager audio = (AudioManager) getSystemService(AUDIO_SERVICE);
+	        float volumeMax = audio.getStreamMaxVolume(AudioManager.STREAM_RING);
+	        float volumeSet = audio.getStreamVolume(AudioManager.STREAM_RING);
+	        float volume = (volumeMax == 0)? 0 : volumeSet / volumeMax;        
+	        soundPool.play(soundId, volume, volume, 1, 0, 1);
+    	}    	
+    }
+
+    /**
+     * Launch practice activity for the specified word
+     * - this method will be called from the list adapter
+     */
+    public void launchPracticeActivity(LessonItem lessonItem, View subView, int position) {
+    	// make it look like the list view was clicked
+    	super.onListItemClick(list, subView, position, position);
+    	// launch practice activity
+    	launchPracticeActivity(lessonItem, position);
+    }
+   
+
+    private void launchPracticeActivity(LessonItem li, int position) {
         Intent intent = new Intent();
         Bundle bun = new Bundle();
 
@@ -380,7 +457,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                 resultCode == RESULT_OK) {
             int next = data.getExtras().getInt("next");
             if (next < display.size()) {
-                clickOnItem(display.get(next), next);
+                launchPracticeActivity(display.get(next), next);
             }
         } else if (requestCode == RequestCode.ADD_TO_COLLECTION.ordinal()) {
             collectionsChanged = (resultCode == RESULT_OK);
@@ -397,7 +474,8 @@ public class BrowseWordsActivity extends TraceListActivity {
             showFilterPopup();
         }
     }
-    
+
+
     // displays the filter pop up
     private void showFilterPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
@@ -440,6 +518,7 @@ public class BrowseWordsActivity extends TraceListActivity {
                 // Set state to filtered
                 filterButton.setText(R.string.clear_filter);
                 filtered = true;
+                filterStatus.setVisibility(View.VISIBLE);
                 filterStatus.setText("Filter: " + search);
                 hideKeyboard(filterText);
             }
@@ -463,7 +542,7 @@ public class BrowseWordsActivity extends TraceListActivity {
         displayAllWords();
         filterButton.setText(R.string.search);
         filtered = false;
-        filterStatus.setText("");
+        filterStatus.setVisibility(View.GONE);
     }
     
     private void hideKeyboard(View view) {

@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.InputType;
 import android.util.Log;
@@ -40,6 +41,8 @@ public class CreateWordActivity extends TraceBaseActivity {
     private Button       saveButton;
     private Button       filterButton;
     
+    private SharedPreferences prefs;
+    
     private LayoutInflater vi;
     
     private int thumbBgColor;
@@ -71,15 +74,18 @@ public class CreateWordActivity extends TraceBaseActivity {
         
         thumbBgColor = getResources().getColor(R.color.thumb_background);
 
-        // since there is nothing in the character cache on startup,
-        // display query results on the arbitrary search string 'ma' 
+        prefs = getSharedPreferences(Toolbox.PREFS_FILE, MODE_PRIVATE);
+        
+        // since there is nothing in the character cache on startup, display
+        // results of the last user query (or default to a search on 'ma'
         // so that the initial view is not empty
-        display = Toolbox.getMatchingChars("ma");
+        String queryString = prefs.getString(Toolbox.PREFS_LAST_USER_QUERY, "ma");
+        display = Toolbox.getMatchingChars(queryString);
         displayChars();        
         // Set state to filtered
         filterButton.setText(R.string.clear_filter);
         filtered = true;
-        filterStatus.setText("Current filter: ma");
+        filterStatus.setText("Current filter: " + queryString);
         filterStatus.setVisibility(View.VISIBLE);
         
     }
@@ -262,6 +268,11 @@ public class CreateWordActivity extends TraceBaseActivity {
                 hideKeyboard(filterText);
                 filterStatus.setText("Current filter: " + searchString);
                 filterStatus.setVisibility(View.VISIBLE);
+                
+                // save query in shared preferences
+                SharedPreferences.Editor editor = prefs.edit();
+                editor.putString(Toolbox.PREFS_LAST_USER_QUERY, searchString);
+                editor.commit();
             }
         });
         builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {

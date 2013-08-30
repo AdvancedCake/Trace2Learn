@@ -1,125 +1,160 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/RelativeLayout1"
-    android:layout_width="fill_parent"
-    android:layout_height="fill_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:gravity="bottom" >
 
-    <TextView
-        android:id="@+id/phrase_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:textColor="@color/header"
-        android:textSize="20sp"
-        android:textStyle="bold" />
-    
-    <HorizontalScrollView
-        android:id="@+id/thumbnail_gallery_scroll_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-    	android:layout_below="@+id/phrase_title"
-    	android:layout_marginLeft="40dp"
-    	android:layout_marginRight="40dp" 
-        android:layout_centerHorizontal="true" >
-
-        <LinearLayout
-	        android:id="@+id/thumbnail_gallery"
-	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content">
-	    </LinearLayout>
-	    
-   	</HorizontalScrollView>
-
-    <ImageView
-        android:id="@+id/go_prev"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignTop="@+id/thumbnail_gallery_scroll_view"
-        android:contentDescription="@string/go_prev"
-        android:src="@drawable/prev" />
-
-    <ImageView
-        android:id="@+id/go_next"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_alignParentRight="true"
-        android:layout_alignTop="@+id/thumbnail_gallery_scroll_view"
-        android:contentDescription="@string/go_next"
-        android:src="@drawable/next" />
-
-    <FrameLayout
-        android:id="@+id/character_slot"
+    <RelativeLayout
+        android:id="@+id/phrase_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/tag_list_scroll_view"
-        android:layout_below="@+id/thumbnail_gallery_scroll_view" />
-
-    <ImageView
-        android:id="@+id/sound_button"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
         android:layout_alignParentLeft="true"
-        android:layout_alignTop="@id/character_slot"
-        android:contentDescription="@string/play_sound"
-        android:src="@drawable/sound_button" />
-    
-    <HorizontalScrollView
-        android:id="@+id/tag_list_scroll_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/trace_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp" >
+        android:layout_alignParentTop="true" >
+	    
+	    <TextView
+	        android:id="@+id/phrase_title"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignParentTop="true"
+	        android:layout_toLeftOf="@+id/phrase_count"
+	        android:ellipsize="end"
+	        android:maxLines="1"
+	        android:scrollHorizontally="true"
+	        android:textColor="@color/header"
+	        android:textSize="20sp"
+	        android:textStyle="bold" />
+	    
+	    <TextView
+	        android:id="@+id/phrase_count"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignParentTop="true"
+	        android:maxLines="1"
+	        android:textColor="@color/header"
+	        android:textSize="20sp"
+	        android:textStyle="bold" />
 
-        <TextView
-            android:id="@+id/tag_list"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:gravity="center"
-            android:maxLines="2"
-            android:scrollHorizontally="true"
-            android:text="@string/tag"
-            android:textSize="19sp" />
-    </HorizontalScrollView>
+		<HorizontalScrollView
+	        android:id="@+id/thumbnail_gallery_scroll_view"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/phrase_title"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginBottom="5dp"
+	        android:layout_marginLeft="30dp"
+	        android:layout_marginRight="30dp" >
+	
+	        <LinearLayout
+		        android:id="@+id/thumbnail_gallery"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content">
+		    </LinearLayout>
+		    
+		</HorizontalScrollView>
+	
+	    <ImageView
+	        android:id="@+id/go_prev"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_alignParentLeft="true"
+	        android:layout_alignTop="@+id/thumbnail_gallery_scroll_view"
+	        android:contentDescription="@string/go_prev"
+	        android:src="@drawable/prev" />
+	
+	    <ImageView
+	        android:id="@+id/go_next"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_alignParentRight="true"
+	        android:layout_alignTop="@+id/thumbnail_gallery_scroll_view"
+	        android:contentDescription="@string/go_next"
+	        android:src="@drawable/next" />
+	    	   
+	</RelativeLayout>    
+ 
+    <RelativeLayout
+        android:id="@+id/phrase_practice_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/phrase_title_layout"> 
+		
+	    <FrameLayout
+	        android:id="@+id/character_slot"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/tag_list_scroll_view"
+	        android:layout_alignParentTop="true"
+	        android:layout_marginLeft="10dp"
+	        android:layout_marginRight="10dp" />
 
-    <ImageView
-        android:id="@+id/quiz_icon"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_above="@+id/trace_button"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="10dp"
-        android:contentDescription="@string/see_answer"
-        android:src="@drawable/quiz_button"
-        android:visibility="invisible" />
+	    <ImageView
+	        android:id="@+id/sound_button"
+	        android:layout_width="40dp"
+	        android:layout_height="40dp"
+	        android:layout_alignLeft="@id/character_slot"
+	        android:layout_alignTop="@id/character_slot"
+	        android:contentDescription="@string/play_sound"
+	        android:src="@drawable/sound_button" />
+	    
+	    <HorizontalScrollView
+	        android:id="@+id/tag_list_scroll_view"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_above="@+id/trace_button"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginBottom="10dp" >
+	
+	        <TextView
+	            android:id="@+id/tag_list"
+	            android:layout_width="wrap_content"
+	            android:layout_height="48dp"
+	            android:gravity="center"
+	            android:maxLines="2"
+	            android:scrollHorizontally="true"
+	            android:text="@string/tag"
+	            android:textSize="18sp" />
+	    </HorizontalScrollView>
+	
+	    <ImageView
+	        android:id="@+id/quiz_icon"
+	        android:layout_width="wrap_content"
+	        android:layout_height="40dp"
+	        android:layout_above="@+id/trace_button"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginBottom="10dp"
+	        android:contentDescription="@string/see_answer"
+	        android:src="@drawable/quiz_button"
+	        android:visibility="invisible" />
+	
+	    <Button
+	        android:id="@+id/trace_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentLeft="true"
+	        android:text="@string/practice" />
+	
+	    <Button
+	        android:id="@+id/animate_button"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBottom="@+id/trace_button"
+	        android:layout_toRightOf="@+id/trace_button"
+	        android:text="@string/animate" />
+	
+	    <ToggleButton
+	        android:id="@+id/quiz_toggle"
+	        android:layout_width="65dp"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBottom="@+id/trace_button"
+	        android:layout_alignParentBottom="true"
+	        android:layout_alignParentRight="true"
+	        android:textOff="@string/quizModeOff"
+	        android:textOn="@string/quizModeOn" />
 
-    <Button
-        android:id="@+id/trace_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentLeft="true"
-        android:text="@string/practice" />
-
-    <Button
-        android:id="@+id/animate_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/trace_button"
-        android:layout_toRightOf="@+id/trace_button"
-        android:text="@string/animate" />
-
-    <ToggleButton
-        android:id="@+id/quiz_toggle"
-        android:layout_width="65dp"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/trace_button"
-        android:layout_alignParentRight="true"
-        android:textOff="@string/quizModeOff"
-        android:textOn="@string/quizModeOn" />
-
+	    </RelativeLayout>
 
 </RelativeLayout>

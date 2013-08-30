@@ -78,7 +78,7 @@ public class CharacterTracePane extends CharacterCreationPane {
 					{
 						_handler.post(_update);
 						try {
-							Thread.sleep(20);
+							Thread.sleep(40);
 						} catch (InterruptedException e) {
 							break;
 						}
