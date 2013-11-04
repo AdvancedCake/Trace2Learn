@@ -176,7 +176,7 @@ public class DbAdapter {
     private static final int DATABASE_VERSION = 20130601;
 
     
-    private final Context mCtx;
+    public final Context mCtx;
     
     private boolean dbOpened;
 

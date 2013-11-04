@@ -76,5 +76,5 @@
         android:layout_toLeftOf="@+id/infoButton"
         android:layout_toRightOf="@+id/category4"
         android:textColor="@color/recently_viewed" />
-    
+
 </RelativeLayout>

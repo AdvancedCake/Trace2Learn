@@ -17,17 +17,17 @@ public abstract class CharacterViewPane extends View {
 	protected Paint _paint;
 	
 	protected int _backgroundColor = Color.GRAY;
+	private static final float _heightToStroke = 12F/400F;
 	
 	public CharacterViewPane(Context context) {
 		super(context);
 		_paint = new Paint();
 		_paint.setAntiAlias(true);
 		_paint.setDither(true);
-		_paint.setColor(0xFFFF0000);
+		_paint.setColor(Color.GREEN /*0xFFFF0000*/);
 		_paint.setStyle(Paint.Style.STROKE);
 		_paint.setStrokeJoin(Paint.Join.ROUND);
 		_paint.setStrokeCap(Paint.Cap.ROUND);
-		_paint.setStrokeWidth(12);
 	}
 
 	/**
@@ -37,6 +37,9 @@ public abstract class CharacterViewPane extends View {
 	 */
 	protected void drawStroke(Canvas canvas, Stroke stroke)
 	{
+        float dynamicStrokeWidth = canvas.getHeight()*_heightToStroke;
+        _paint.setStrokeWidth(dynamicStrokeWidth);
+				
 		canvas.drawPath(stroke.toPath(), _paint);
 	}
 	

@@ -8,5 +8,7 @@
     <color name="thumb_background_selected">#0000FF</color>
     <color name="recently_viewed">#666699</color>
     <color name="filter_label">#00FF00</color>
+    <color name="button_color1">#CCCCFF</color>
+    <color name="button_color2">#00CCFF</color>
     
 </resources>

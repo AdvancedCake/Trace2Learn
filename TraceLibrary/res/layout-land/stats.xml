@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginBottom="@dimen/activity_horizontal_margin"
         android:text="@string/stats"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/header"
@@ -23,156 +22,153 @@
         android:layout_height="20dp"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:layout_margin="5dp"
         android:contentDescription="@string/exit"
-        android:src="@drawable/exit_button" />    
-    
-		<LinearLayout
-		    android:id="@+id/statsLayoutHorizontal"
-		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content"
-		    android:layout_below="@id/statLabel"
-		    android:orientation="horizontal"
-		    android:baselineAligned="false" >
-	    
-		<RelativeLayout
-		    android:layout_width="fill_parent"
-		    android:layout_height="match_parent"
-		    android:layout_marginRight="@dimen/activity_vertical_margin"
-		    android:layout_weight=".6" >
-		
-		    <View
-		        android:id="@+id/rule1"
-		        android:layout_width="match_parent"
-		        android:layout_height="1dp"
-		        android:layout_alignParentLeft="true"
-		        android:layout_marginBottom="5dp"
-		        android:layout_marginTop="5dp"
-		        android:background="#FFFFFF" />
-		
-		
-		    <TableLayout
-		        android:id="@+id/statsTable"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/rule1" >
-		
-		        <TableRow
-		            android:id="@+id/tableRow1"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:paddingTop="10dp" >
-		
-		            <TextView
-		                android:id="@+id/textView1"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_gravity="right"
-		                android:text="@string/statsCollections"
-		                android:textAppearance="?android:attr/textAppearanceLarge"
-		                android:textColor="@color/header" />
-		
-		            <TextView
-		                android:id="@+id/countCollections"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_gravity="center"
-		                android:paddingLeft="20dp"
-		                android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        </TableRow>
-		
-		        <TableRow
-		            android:id="@+id/tableRow2"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:paddingTop="10dp" >
-		
-		            <TextView
-		                android:id="@+id/TextView2"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_gravity="right"
-		                android:text="@string/statsPhrases"
-		                android:textAppearance="?android:attr/textAppearanceLarge"
-		                android:textColor="@color/header" />
-		
-		            <TextView
-		                android:id="@+id/countPhrases"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_gravity="center"
-		                android:paddingLeft="20dp"
-		                android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        </TableRow>
-		
-		        <TableRow
-		            android:id="@+id/TableRow3"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:paddingTop="10dp" >
-		
-		            <TextView
-		                android:id="@+id/TextView3"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_gravity="right"
-		                android:text="@string/statsCharacters"
-		                android:textAppearance="?android:attr/textAppearanceLarge"
-		                android:textColor="@color/header" />
-		
-		            <TextView
-		                android:id="@+id/countCharacters"
-		                android:layout_width="wrap_content"
-		                android:layout_height="wrap_content"
-		                android:layout_gravity="center"
-		                android:paddingLeft="20dp"
-		                android:textAppearance="?android:attr/textAppearanceLarge" />
-		
-		        </TableRow>
-		
-		    </TableLayout>
-		
-		    <View
-		        android:id="@+id/rule2"
-		        android:layout_width="match_parent"
-		        android:layout_height="1dp"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/statsTable"
-		        android:layout_marginBottom="5dp"
-		        android:layout_marginTop="5dp"
-		        android:background="#FFFFFF" />
-		
-	
-		</RelativeLayout>
-		
-		<RelativeLayout
-		    android:layout_width="fill_parent"
-		    android:layout_height="match_parent"
-		    android:layout_weight=".4" >
-	
-		    <TextView
-		        android:id="@+id/chartLabel"
-		        android:layout_width="wrap_content"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:text="@string/chartLabel"
-		        android:textAppearance="?android:attr/textAppearanceSmall"
-		        android:textColor="@color/header"
-		        android:textStyle="bold" />
-		        
-		    <LinearLayout
-		        android:id="@+id/chart"
-		        android:layout_width="fill_parent"
-		        android:layout_height="wrap_content"
-		        android:layout_alignParentLeft="true"
-		        android:layout_below="@+id/chartLabel" >
-		    </LinearLayout>
-	
-		</RelativeLayout>
-	
-	</LinearLayout>
+        android:src="@drawable/exit_button" />
+
+    <RelativeLayout
+        android:id="@+id/statsLayoutHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/statLabel" >
+
+        <TableLayout
+            android:id="@+id/statsTable"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_marginRight="15dp" >
+
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp" >
+
+                <TextView
+                    android:id="@+id/textView1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="@string/statsCollections"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/header" />
+
+                <TextView
+                    android:id="@+id/countCollections"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp" >
+
+                <TextView
+                    android:id="@+id/TextView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="@string/statsPhrases"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/header" />
+
+                <TextView
+                    android:id="@+id/countPhrases"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/TableRow3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp" >
+
+                <TextView
+                    android:id="@+id/TextView3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="@string/statsCharacters"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/header" />
+
+                <TextView
+                    android:id="@+id/countCharacters"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </TableRow>
+
+            <TableRow
+                android:id="@+id/TableRow4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp" >
+
+                <TextView
+                    android:id="@+id/TextView4"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="right"
+                    android:text="@string/lifetimeScore"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@color/header" />
+
+                <TextView
+                    android:id="@+id/lifetimeScore"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:paddingLeft="20dp"
+                    android:textAppearance="?android:attr/textAppearanceLarge" />
+            </TableRow>
+        </TableLayout>
+        
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_alignRight="@id/statsTable"
+                android:layout_below="@id/statsTable"
+                android:text="@string/reset_score" />
+
+        <RelativeLayout
+            android:id="@+id/chartBlock"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="right"
+            android:layout_toRightOf="@+id/statsTable" >
+
+            <TextView
+                android:id="@+id/chartLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:text="@string/chartLabel"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textColor="@color/header"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:id="@+id/chart"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_below="@+id/chartLabel"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </RelativeLayout>
+    </RelativeLayout>
 
 </RelativeLayout>

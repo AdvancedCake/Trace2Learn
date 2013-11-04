@@ -53,15 +53,21 @@
         android:layout_marginTop="5dp"
         android:background="#FFFFFF" />
 
-    <TextView
-        android:id="@+id/narrative"
+    <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/edit_button"
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/rule2"
-        android:scrollbars="vertical"
-        android:textSize="16sp" />
+        android:fillViewport="true" >
+
+        <TextView
+            android:id="@+id/narrative"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="4dp"
+            android:paddingRight="4dp"
+            android:textSize="16sp" />
+    </ScrollView>
 
     <Button
         android:id="@+id/categories_button"
@@ -70,7 +76,7 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:text="@string/category" />
-    
+
     <Button
         android:id="@+id/edit_button"
         android:layout_width="wrap_content"

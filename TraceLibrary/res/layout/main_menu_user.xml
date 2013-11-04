@@ -25,45 +25,47 @@
         android:contentDescription="@string/user_app_name"
         android:src="@drawable/logo" />
 
-    <ImageView
-        android:id="@+id/introduction"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
+    <Button
+        android:id="@+id/introButton"
+        android:layout_width="225dp"
+        android:layout_height="45dp"
         android:layout_below="@+id/logo"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="30dp"
-        android:contentDescription="@string/introduction"
-        android:src="@drawable/menu_button_introduction" />
-
-    <ImageView
-        android:id="@+id/browse_collections"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_below="@+id/introduction"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="15dp"
-        android:contentDescription="@string/browse_collections"
-        android:src="@drawable/menu_button_browse_collections" />
+        android:background="@drawable/button_intro" />
 
-    <ImageView
-        android:id="@+id/create_phrase"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_below="@+id/browse_collections"
+    <Button
+        android:id="@+id/browseButton"
+        android:layout_width="225dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/introButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:contentDescription="@string/create_phrase"
-        android:src="@drawable/menu_button_build_phrase" />
+        android:background="@drawable/button_browse" />
 
-    <ImageView
-        android:id="@+id/upgrade"
-        android:layout_width="wrap_content"
-        android:layout_height="40dp"
-        android:layout_below="@+id/create_phrase"
+    <Button
+        android:id="@+id/buildPhraseButton"
+        android:layout_width="225dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/browseButton"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="15dp"
-        android:contentDescription="@string/upgrade_app"
-        android:visibility="gone"
-        android:src="@drawable/menu_button_upgrade" />
+        android:background="@drawable/button_build_phrase" />
+
+    <Button
+        android:id="@+id/quizButton"
+        android:layout_width="225dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/buildPhraseButton"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/button_quiz" />
+
+    <Button
+        android:id="@+id/upgradeButton"
+        android:layout_width="225dp"
+        android:layout_height="45dp"
+        android:layout_below="@+id/quizButton"
+        android:layout_centerHorizontal="true"
+        android:src="@drawable/button_upgrade"
+        android:background="@drawable/button_upgrade"
+        android:visibility="gone" />
 
 </RelativeLayout>

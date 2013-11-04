@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.trace2learn.TraceMe"
-    android:versionCode="15"
-    android:versionName="1.5" >
+    package="com.trace2learn.Trasee"
+    android:versionCode="19"
+    android:versionName="1.9" >
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -16,17 +16,16 @@
     <application
         android:allowBackup="true"
         android:icon="@drawable/trace2learn"
-        android:logo="@drawable/logo"
-        android:label="@string/user_app_name_trad" >
+        android:label="@string/user_app_name_trad"
+        android:logo="@drawable/logo" >
         <activity
             android:name="com.trace2learn.TraceLibrary.MainUserActivity"
             android:label="@string/user_app_name_trad" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.ViewCharacterActivity" >
         </activity>
         <activity
             android:name="com.trace2learn.TraceLibrary.CreateWordActivity"
@@ -38,17 +37,15 @@
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.TestTagDbActivity" >
         </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.BrowseCharactersActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.BrowseLessonsActivity" >
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.BrowseWordsActivity" >
         </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.BrowseLessonsActivity" >
+        <activity
+            android:name="com.trace2learn.TraceLibrary.PhrasePracticeActivity"
+            android:hardwareAccelerated="false" >
         </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.PhrasePracticeActivity" >
-        </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.ShoppingCartActivity" >
-        </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.FilePickerActivity" >
+        <activity android:name="com.trace2learn.TraceLibrary.QuizActivity" >
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.ChooseLessonCategoryActivity" >
         </activity>
@@ -58,7 +55,7 @@
         </activity>
         <activity android:name="com.trace2learn.TraceLibrary.Statistics" >
         </activity>
-        <activity android:name="com.trace2learn.TraceLibrary.AddToCollectionActivity">
+        <activity android:name="com.trace2learn.TraceLibrary.AddToCollectionActivity" >
         </activity>
     </application>
 

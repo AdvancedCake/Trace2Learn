@@ -7,9 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -98,11 +96,11 @@ public class LessonNarrativeActivity extends TraceBaseActivity {
         // Because setMovementMethod causes the view to darken when clicked, we
         // must disable the view. But that dims the text color, so we need to
         // save the old text color and change the color back.
-        ColorStateList colors = narrativeView.getTextColors();
-        int color = colors.getDefaultColor();
-        narrativeView.setMovementMethod(new ScrollingMovementMethod());
-        narrativeView.setEnabled(false);
-        narrativeView.setTextColor(color);
+        //ColorStateList colors = narrativeView.getTextColors();
+        //int color = colors.getDefaultColor();
+        //narrativeView.setMovementMethod(new ScrollingMovementMethod());
+        //narrativeView.setEnabled(false);
+        //narrativeView.setTextColor(color);
     }
     
     private void getHandlers() {

@@ -68,13 +68,13 @@
     <string name="statsCharacters">Characters:"</string>
     <string name="statsPhrases">Phrases:</string>
     <string name="statsCollections">Collections:</string>
-    <string name="statsStrokes">Strokes:</string>
+    <string name="lifetimeScore">Score:</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="menuGoHome">Home</string>
     <string name="menuStats">Statistics</string>
     <string name="menuAbout">About</string>
-    <string name="aboutCredits">created by\nJoe Varadi\nRobert Li\n</string>
+    <string name="aboutCredits">created by\nAggria Inc.</string>
     <string name="editkey_hint">key</string>
     <string name="editvaue_hint">value</string>
     <string name="edittag_hint">enter any tag or description</string>
@@ -94,5 +94,15 @@
     <string name="last_viewed">Last Viewed</string>
     <string name="show">Labels</string>
     <string name="hide">Labels</string>
-
+    <string name="view_edit_char">View/Edit Character</string>
+    <string name="quiz">Quiz</string>
+    <string name="tell_me">TellMe!</string>
+    <string-array name="quiz_difficulty">
+        <item>Basic</item>
+        <item>Intermediate</item>
+        <item>All Phrases</item>
+    </string-array>
+    <string name="fifty_fifty">50:50</string>
+    <string name="reset_score">Reset Score</string>
+    
 </resources>

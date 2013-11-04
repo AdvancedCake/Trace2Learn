@@ -13,6 +13,7 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="@color/header"
         android:textStyle="bold" />
+
     <ImageView
         android:id="@+id/exit_button"
         android:layout_width="20dp"
@@ -33,7 +34,6 @@
         android:layout_marginTop="5dp"
         android:background="#FFFFFF" />
 
-
     <TableLayout
         android:id="@+id/statsTable"
         android:layout_width="wrap_content"
@@ -44,8 +44,7 @@
         <TableRow
             android:id="@+id/tableRow1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingTop="10dp" >
+            android:layout_height="wrap_content" >
 
             <TextView
                 android:id="@+id/textView1"
@@ -53,9 +52,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="@string/statsCollections"
-		        android:textAppearance="?android:attr/textAppearanceLarge"
-		        android:textColor="@color/header" />
-
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/header" />
 
             <TextView
                 android:id="@+id/countCollections"
@@ -64,14 +62,13 @@
                 android:layout_gravity="center"
                 android:paddingLeft="20dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
         </TableRow>
 
         <TableRow
             android:id="@+id/tableRow2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp" >
+            android:paddingTop="5dp" >
 
             <TextView
                 android:id="@+id/TextView2"
@@ -79,8 +76,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="@string/statsPhrases"
-		        android:textAppearance="?android:attr/textAppearanceLarge"
-		        android:textColor="@color/header" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/header" />
 
             <TextView
                 android:id="@+id/countPhrases"
@@ -89,14 +86,13 @@
                 android:layout_gravity="center"
                 android:paddingLeft="20dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
         </TableRow>
 
         <TableRow
             android:id="@+id/TableRow3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="10dp" >
+            android:paddingTop="5dp" >
 
             <TextView
                 android:id="@+id/TextView3"
@@ -104,8 +100,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="right"
                 android:text="@string/statsCharacters"
-		        android:textAppearance="?android:attr/textAppearanceLarge"
-		        android:textColor="@color/header" />
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/header" />
 
             <TextView
                 android:id="@+id/countCharacters"
@@ -114,9 +110,39 @@
                 android:layout_gravity="center"
                 android:paddingLeft="20dp"
                 android:textAppearance="?android:attr/textAppearanceLarge" />
-
         </TableRow>
 
+        <TableRow
+            android:id="@+id/TableRow4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="5dp" >
+
+            <TextView
+                android:id="@+id/TextView4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:text="@string/lifetimeScore"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:textColor="@color/header" />
+
+            <TextView
+                android:id="@+id/lifetimeScore"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:paddingLeft="20dp"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <Button
+                android:id="@+id/resetButton"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:text="@string/reset_score" >
+
+            </Button>
+        </TableRow>
     </TableLayout>
 
     <View
@@ -136,8 +162,8 @@
         android:layout_alignParentLeft="true"
         android:layout_below="@+id/rule2"
         android:text="@string/chartLabel"
-		android:textAppearance="?android:attr/textAppearanceSmall"
-		android:textColor="@color/header"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="@color/header"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -145,7 +171,8 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
-        android:layout_below="@+id/chartLabel" >
+        android:layout_below="@+id/chartLabel"
+        android:orientation="horizontal" >
     </LinearLayout>
 
 </RelativeLayout>

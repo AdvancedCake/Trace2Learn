@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/RelativeLayout1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="bottom" >
+
+    <RelativeLayout
+        android:id="@+id/quiz_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/phrase_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:maxLines="1"
+            android:textColor="@color/header"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/phrase_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentTop="true"
+            android:layout_centerInParent="true"
+            android:maxLines="1"
+            android:textColor="@color/header"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/phrase_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:maxLines="1"
+            android:textColor="@color/header"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/thumbnail_gallery_scroll_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/phrase_title"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp" >
+
+            <LinearLayout
+                android:id="@+id/thumbnail_gallery"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+            </LinearLayout>
+        </HorizontalScrollView>
+
+        <ImageView
+            android:id="@+id/sound_button"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignTop="@+id/thumbnail_gallery_scroll_view"
+            android:contentDescription="@string/play_sound"
+            android:src="@drawable/sound_button" />
+
+        <ImageView
+            android:id="@+id/go_next"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/thumbnail_gallery_scroll_view"
+            android:contentDescription="@string/go_next"
+            android:src="@drawable/next" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/quiz_practice_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/quiz_title_layout"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:gravity="center_vertical" >
+
+        <View
+            android:id="@+id/rule0"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginTop="5dp"
+            android:background="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/choice1_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/rule0"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:text="A: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFD700"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/choice1_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/rule0"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/choice1_label" >
+
+            <TextView
+                android:id="@+id/choice1_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/rule1"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/choice1_scroll"
+            android:background="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/choice2_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/rule1"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="5dp"
+            android:text="B: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFD700"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/choice2_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/choice1_scroll"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@id/choice2_label" >
+
+            <TextView
+                android:id="@+id/choice2_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/rule2"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/choice2_scroll"
+            android:background="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/choice3_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/rule2"
+            android:layout_marginTop="5dp"
+            android:text="C: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFD700"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/choice3_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/choice2_scroll"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/choice4_label" >
+
+            <TextView
+                android:id="@+id/choice3_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/rule3"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@+id/choice3_scroll"
+            android:background="#FFFFFF" />
+
+        <TextView
+            android:id="@+id/choice4_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/rule3"
+            android:layout_marginTop="5dp"
+            android:text="D: "
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textColor="#FFD700"
+            android:textStyle="bold" />
+
+        <HorizontalScrollView
+            android:id="@+id/choice4_scroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/choice3_scroll"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_toRightOf="@+id/choice4_label" >
+
+            <TextView
+                android:id="@+id/choice4_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+        </HorizontalScrollView>
+
+        <View
+            android:id="@+id/rule4"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_below="@+id/choice4_scroll"
+            android:background="#FFFFFF" />
+
+        <Button
+            android:id="@+id/tellme_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:text="@string/tell_me" />
+
+        <Button
+            android:id="@+id/fifty_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/tellme_button"
+            android:layout_toRightOf="@+id/tellme_button"
+            android:text="@string/fifty_fifty"
+            android:textStyle="bold" />
+
+        <Spinner
+            android:id="@+id/quiz_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/fifty_button" />
+    </RelativeLayout>
+
+</RelativeLayout>

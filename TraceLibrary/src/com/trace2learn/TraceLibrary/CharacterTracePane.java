@@ -5,6 +5,7 @@ package com.trace2learn.TraceLibrary;
 
 import com.trace2learn.TraceLibrary.Database.LessonCharacter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -32,8 +33,10 @@ public class CharacterTracePane extends CharacterCreationPane {
 	protected Handler _handler;
 	private Handler moveToNext;
 	
+	@SuppressLint("NewApi")
 	public CharacterTracePane(Context context) {
 		super(context);
+				
 		_style = new Paint();
 		_style.setColor(Color.BLUE);
 		_style.setAntiAlias(true);
@@ -150,7 +153,10 @@ public class CharacterTracePane extends CharacterCreationPane {
 	public void onDraw(Canvas canvas) {	
 		updateTemplateTime();
 		Log.i("DRAW", "TIME: " + _strokeTime);
-		_style.setStrokeWidth(canvas.getHeight()*_heightToStroke);
+
+        float dynamicStrokeWidth = canvas.getHeight()*_heightToStroke;
+        _style.setStrokeWidth(dynamicStrokeWidth);
+				
 		canvas.drawColor(_backgroundColor);
 		if(_template != null) _template.draw(canvas, _style, _templateTime);
 		// Consider using a bitmap buffer so only new strokes are drawn.

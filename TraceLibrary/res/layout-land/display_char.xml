@@ -35,7 +35,18 @@
                 android:scrollHorizontally="true"
                 android:textSize="25sp" />
         </HorizontalScrollView>
-
+	
+	    <ImageView
+	        android:id="@+id/quiz_icon"
+	        android:layout_width="wrap_content"
+	        android:layout_height="40dp"
+	        android:layout_above="@+id/left1Button"
+	        android:layout_centerHorizontal="true"
+	        android:layout_marginBottom="10dp"
+	        android:contentDescription="@string/see_answer"
+	        android:src="@drawable/quiz_button"
+	        android:visibility="invisible" />
+	    
         <Button
             android:id="@+id/right1Button"
             android:layout_width="wrap_content"
@@ -65,8 +76,18 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:layout_toRightOf="@+id/left1Button"
+            android:layout_toRightOf="@+id/quiz_toggle"
             android:onClick="onLeft2ButtonClick" />
+	    	
+	    <ToggleButton
+	        android:id="@+id/quiz_toggle"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentBottom="true"
+	        android:layout_toRightOf="@+id/left1Button"
+	        android:textOff="@string/quizModeOff"
+	        android:textOn="@string/quizModeOn" />
+        
     </RelativeLayout>
 
 </LinearLayout>
